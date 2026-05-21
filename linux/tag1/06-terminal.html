@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 06 · Terminal, Shell &amp; Bash — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 06 von 12</div>
+    <h1 class="page-title">
+      Terminal, Shell &amp; <span class="highlight">Bash</span> verstehen
+    </h1>
+    <p class="page-subtitle">
+      Drei Begriffe, die ständig durcheinandergeworfen werden — Terminal, Konsole,
+      Shell. Wir trennen sie sauber, lernen warum Bash der Standard wurde und
+      üben die Tastenkürzel, die einen Admin von einem schnellen Admin trennen.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 06</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 30 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Theorie + Praxis</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ GESCHICHTE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.1</span>
+        <h2 class="timeblock-title">Wo kommt der Begriff „Terminal“ überhaupt her?</h2>
+        <span class="timeblock-badge badge-vortrag">Geschichte</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wir tippen heute auf einem Laptop und nennen das Fenster „Terminal“ — der
+        Name ist aber 80 Jahre alt und hat ursprünglich mit Linux nichts zu tun.</p>
+
+        <h4>1837 — Telegrafenstationen</h4>
+        <p>Der Begriff stammt aus der Welt der <strong>Telegrafen</strong>. Ein
+        Telegrafen-Terminal war das <em>Endgerät</em> einer langen Leitung — der Punkt,
+        an dem ein Mensch Nachrichten eintippte und empfing. Das Wort ist
+        lateinisch <em>terminus</em> = „Ende, Grenze“.</p>
+
+        <h4>1873 — Der Teletype</h4>
+        <p>Aus dem Telegrafen wurde der <strong>Teletype</strong> (TTY) — ein Gerät, das
+        Buchstaben statt Morsezeichen übertrug. Eine Tastatur tippte, ein Drucker
+        druckte. Diese Geräte waren laut, langsam, gigantisch — und sie waren das
+        erste, was Programmierer als „Eingabe-Ausgabe-Gerät“ an Computer anschlossen.</p>
+
+        <h4>1950er — TTY am Großrechner</h4>
+        <p>Die ersten Computer hatten keine Bildschirme. Programmierer saßen vor
+        Teletypes und kommunizierten mit dem Mainframe über genau diesen Schreib-Druck-Apparat.</p>
+
+        <div class="ascii-box">  Großrechner (gigantisch)
+        ↓ Kabel
+   ┌────TTY────┐
+   │ Tastatur  │ ← tippt Befehle
+   │ Drucker   │ ← druckt Antworten auf Endlospapier
+   └───────────┘</div>
+
+        <h4>1970 — Glas-Terminals</h4>
+        <p>Mit Aufkommen von Bildschirmen ersetzte das <strong>Video-Terminal</strong>
+        (DEC VT100 ist DAS Modell) den Teletype. Plötzlich war die Ausgabe nicht
+        mehr Papier, sondern grünes Glühen auf schwarzem Glas.</p>
+
+        <h4>Heute — Terminal-Emulator</h4>
+        <p>Auf modernen Computern gibt es keinen echten TTY mehr. Was du nutzt, ist ein
+        <strong>Terminal-Emulator</strong>: ein Programm, das das Verhalten eines
+        alten VT100 nachstellt. Beispiele: <em>gnome-terminal</em>, <em>konsole</em>,
+        <em>xterm</em>, <em>Windows Terminal</em>, <em>iTerm2</em>, <em>PuTTY</em>.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📜</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon?</div>
+            <p>In Linux heißen die virtuellen Konsolen bis heute <strong>/dev/tty1</strong>
+            bis <strong>/dev/tty6</strong>. Mit Strg+Alt+F2 wechselst du auf einer Linux-Maschine
+            mit GUI tatsächlich auf <em>"Teletype 2"</em> — ein Begriff aus den 1950ern,
+            der die Zeit überlebt hat.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BEGRIFFE TRENNEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.2</span>
+        <h2 class="timeblock-title">Terminal vs. Konsole vs. Shell — drei Begriffe, drei Bedeutungen</h2>
+        <span class="timeblock-badge badge-vortrag">Definition</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese drei Begriffe werden im Alltag wild durcheinandergeworfen.
+        Technisch sind sie aber drei verschiedene Dinge:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Begriff</th><th>Was ist das technisch?</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Terminal</strong></td>
+                <td>Das <em>Programm/Fenster</em>, das die Ein- und Ausgabe darstellt</td>
+                <td>gnome-terminal, iTerm2, Windows Terminal, PuTTY</td>
+              </tr>
+              <tr>
+                <td><strong>Konsole</strong></td>
+                <td>Strenggenommen die <em>physische</em> Anzeige direkt am Computer (TTY)</td>
+                <td>Was du siehst, wenn Rocky ohne GUI startet — schwarzer Bildschirm mit Login</td>
+              </tr>
+              <tr>
+                <td><strong>Shell</strong></td>
+                <td>Das <em>Programm</em>, das deine Befehle interpretiert und ausführt</td>
+                <td>bash, zsh, fish, sh — läuft im Terminal-Fenster</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>So passen sie zusammen</h4>
+        <div class="ascii-box">  ┌─────────────────────────────────────┐
+  │  Terminal-Fenster (Anzeige)         │  ← „Terminal“
+  │  ┌───────────────────────────────┐  │
+  │  │  $ ls -la                     │  │  ← deine Eingabe
+  │  │  total 8                      │  │
+  │  │  drwxr-xr-x ...               │  │
+  │  │  $                            │  │
+  │  └───────────────────────────────┘  │
+  │  ↑                                  │
+  │  Shell (bash) liest deine Eingabe, │   ← „Shell“
+  │  führt Befehle aus, gibt Ergebnis  │
+  │  ans Terminal zurück               │
+  └─────────────────────────────────────┘</div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Analogie</div>
+            <p>Stell dir vor, du sitzt im Café:
+            <strong>Terminal</strong> = der Tisch, an dem du schreibst.
+            <strong>Shell</strong> = der Kellner, der deine Bestellung versteht und in die
+            Küche weiterleitet.
+            <strong>Konsole</strong> = die Theke direkt vor dem Koch, wo du auch ohne Tisch
+            essen kannst.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SHELLS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.3</span>
+        <h2 class="timeblock-title">Shells im Vergleich</h2>
+        <span class="timeblock-badge badge-vortrag">Übersicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>„Die Shell“ ist nicht <em>eine</em> Software — es gibt mehrere konkurrierende
+        Implementierungen. Sie unterscheiden sich in Syntax-Details, Komfort-Features
+        und Skript-Kompatibilität.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Shell</th><th>Voller Name</th><th>Typische Rolle</th><th>Verbreitet auf</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sh</code></td><td>Bourne Shell (1977)</td><td>Ur-Shell, POSIX-Standard, sehr minimal</td><td>fast jedes Unix-System</td></tr>
+              <tr><td><code>bash</code> ⭐</td><td>Bourne Again Shell (1989)</td><td>De-facto-Standard auf Linux</td><td>Rocky, Debian, Ubuntu — überall</td></tr>
+              <tr><td><code>dash</code></td><td>Debian Almquist Shell</td><td>schlank, schnell, POSIX-rein</td><td>Debian/Ubuntu (<code>/bin/sh</code> → <code>dash</code>)</td></tr>
+              <tr><td><code>zsh</code></td><td>Z Shell</td><td>komfortabel, viele Features (Oh-My-Zsh)</td><td>macOS-Default seit 2019</td></tr>
+              <tr><td><code>fish</code></td><td>Friendly Interactive Shell</td><td>moderne Defaults, eigene (nicht-POSIX) Syntax</td><td>Linux-Enthusiasten</td></tr>
+              <tr><td><code>ksh</code></td><td>Korn Shell</td><td>klassische Wahl auf kommerziellen Unixe</td><td>AIX, Solaris</td></tr>
+              <tr><td><code>tcsh</code></td><td>Tenex C Shell</td><td>Skript-Syntax wie die Sprache C</td><td>BSD, älteres Unix</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Welche Shell läuft bei mir gerade?</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>echo $SHELL          # zeigt die Login-Shell des Users
+                     # z.B. /bin/bash
+
+echo $0              # zeigt die aktuell laufende Shell
+
+cat /etc/shells      # listet alle erlaubten Shells auf dem System</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Anekdote: „Bourne Again“</div>
+            <p>Der Name <strong>Bash</strong> = „Bourne Again SHell“ ist ein dreifaches
+            Wortspiel: Sie ist eine <em>Wiedergeburt</em> der ursprünglichen Bourne Shell
+            (born again), sie ist <em>besser geworden</em> (bourne → born), und sie ist
+            tatsächlich frei nutzbar (von Brian Fox 1989 unter GPL geschrieben).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WARUM BASH ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.4</span>
+        <h2 class="timeblock-title">Warum ist Bash der Standard?</h2>
+        <span class="timeblock-badge badge-vortrag">Begründung</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wir lernen <strong>Bash</strong>. Nicht weil es die schickste Shell wäre —
+        sondern aus drei sehr praktischen Gründen:</p>
+
+        <ol>
+          <li><strong>POSIX-kompatibel.</strong> Bash spricht POSIX, den IEEE-Standard für
+            Unix-Shells. Skripte, die du in Bash schreibst, laufen mit minimalen
+            Anpassungen überall.</li>
+          <li><strong>Überall installiert.</strong> Praktisch jedes Linux liefert Bash
+            mit. Auf Rocky/RHEL ist <code>/bin/bash</code> die Default-Login-Shell für
+            alle User. Du musst nichts extra installieren.</li>
+          <li><strong>Skripting-Tauglich.</strong> Bash ist genug Programmiersprache, um
+            ganze Admin-Workflows abzubilden — von Backup-Skripten bis zu CI/CD-Pipelines.</li>
+        </ol>
+
+        <p>Was Bash <em>nicht</em> ist: schön zu lesen. Erfahrene Admins fluchen über
+        Bash-Syntax mindestens einmal pro Woche. Aber: sie ist universell. Wer Bash
+        kann, kann sich auf jedem Linux-System bewegen — von Embedded-Router bis
+        Cloud-VM.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📊</div>
+          <div class="callout-content">
+            <div class="callout-title">Marktstellung</div>
+            <p>Auf etwa <strong>98 % aller Linux-Server</strong> ist Bash die Standard-Shell.
+            macOS hat sie 2019 als Default auf zsh getauscht — aber Bash ist auf macOS
+            weiterhin installiert. Im professionellen Admin-Alltag wirst du also mit
+            sehr hoher Wahrscheinlichkeit Bash benutzen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROMPT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.5</span>
+        <h2 class="timeblock-title">Anatomie des Prompts</h2>
+        <span class="timeblock-badge badge-vortrag">Lesen lernen</span>
+      </div>
+
+      <div class="subblock">
+        <p>Schau auf deine Konsole. Da steht etwas wie:</p>
+
+        <div class="ascii-box">  [admin@rocky-tn01 ~]$ _
+   │     │          │  │
+   │     │          │  └── Eingabezeichen ($ oder #)
+   │     │          └───── Aktuelles Verzeichnis (~ = Home)
+   │     └──────────────── Hostname (Name der Maschine)
+   └────────────────────── Eingeloggter User</div>
+
+        <h4>Die wichtigste Unterscheidung: <code>$</code> vs. <code>#</code></h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Zeichen</th><th>Bedeutung</th><th>Konsequenz</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>$</code></td>
+                <td>Du bist als <strong>normaler User</strong> eingeloggt</td>
+                <td>Kannst nichts Systemweites kaputt machen ohne <code>sudo</code></td>
+              </tr>
+              <tr>
+                <td><code>#</code></td>
+                <td>Du bist als <strong>root</strong> eingeloggt</td>
+                <td>VORSICHT! Jeder Befehl wirkt sofort und ohne Nachfrage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Erste Frage in jeder Konsole</div>
+            <p>Bevor du tippst, schau auf den Prompt: <strong>$ oder #?</strong>
+            Wenn # → langsamer tippen, doppelt prüfen, evtl. besser rausgehen
+            (<code>exit</code>) und mit <code>sudo</code> nur die einzelnen Befehle.</p>
+          </div>
+        </div>
+
+        <h4>Den Prompt anpassen: <code>$PS1</code></h4>
+        <p>Wie der Prompt aussieht, steuert die Umgebungsvariable <code>$PS1</code>
+        (Prompt String 1). Du kannst sie temporär ändern:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Aktuelles PS1 anzeigen
+echo "$PS1"
+
+# Mini-Demo: Prompt auf "&gt; " setzen (nur diese Session)
+PS1="&gt; "
+
+# Standard-Rocky-Prompt wiederherstellen
+PS1='[\u@\h \W]\$ '
+
+# Dauerhaft? Eintrag in ~/.bashrc</code></pre>
+        </div>
+
+        <h4>Häufige Platzhalter in PS1</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Platzhalter</th><th>Bedeutet</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>\u</code></td><td>Username</td></tr>
+              <tr><td><code>\h</code></td><td>Hostname (kurz)</td></tr>
+              <tr><td><code>\H</code></td><td>Hostname (vollständig)</td></tr>
+              <tr><td><code>\w</code></td><td>volles aktuelles Verzeichnis</td></tr>
+              <tr><td><code>\W</code></td><td>nur das letzte Verzeichnis (~)</td></tr>
+              <tr><td><code>\$</code></td><td><code>$</code> bei User, <code>#</code> bei root</td></tr>
+              <tr><td><code>\t</code></td><td>aktuelle Uhrzeit (HH:MM:SS)</td></tr>
+              <tr><td><code>\d</code></td><td>Datum</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TASTENKÜRZEL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.6</span>
+        <h2 class="timeblock-title">Tastenkürzel — die schnellsten Admins kommen ohne Maus aus</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese Tastenkürzel <strong>musst</strong> du beherrschen. Sie sparen
+        täglich Stunden, wenn du sie in Muscle Memory hast.</p>
+
+        <h4>Editieren in der aktuellen Zeile</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Tastenkürzel</th><th>Funktion</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Tab</code></td><td>Auto-Completion (Datei-, Befehls-, Optionsnamen)</td></tr>
+              <tr><td><code>Tab Tab</code></td><td>Zeigt alle möglichen Vervollständigungen</td></tr>
+              <tr><td><code>Strg + A</code></td><td>Cursor an den <strong>A</strong>nfang der Zeile</td></tr>
+              <tr><td><code>Strg + E</code></td><td>Cursor ans <strong>E</strong>nde der Zeile</td></tr>
+              <tr><td><code>Strg + U</code></td><td>Vom Cursor bis Zeilen-Anfang löschen</td></tr>
+              <tr><td><code>Strg + K</code></td><td>Vom Cursor bis Zeilen-Ende löschen</td></tr>
+              <tr><td><code>Strg + W</code></td><td>Vorheriges Wort löschen</td></tr>
+              <tr><td><code>Strg + Y</code></td><td>Zuletzt Gelöschtes wieder einfügen (Yank)</td></tr>
+              <tr><td><code>Strg + L</code></td><td>Bildschirm leeren (wie <code>clear</code>)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Befehle und Sessions steuern</h4>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>Strg + C</code></td><td>Aktuellen Befehl <strong>abbrechen</strong> (SIGINT senden)</td></tr>
+              <tr><td><code>Strg + D</code></td><td>EOF — beendet die Shell-Session (wie <code>exit</code>)</td></tr>
+              <tr><td><code>Strg + Z</code></td><td>Aktuellen Befehl in den Hintergrund pausieren</td></tr>
+              <tr><td><code>Strg + R</code></td><td><strong>Reverse-i-search</strong> — durch History suchen ⭐</td></tr>
+              <tr><td><code>Strg + S</code> / <code>Strg + Q</code></td><td>Bildschirm einfrieren / fortsetzen (selten gewollt)</td></tr>
+              <tr><td><code>Strg + Alt + F2…F6</code></td><td>Wechsel zu virtuellen Konsolen (auf Bare-Metal Linux)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">⚡</div>
+          <div class="callout-content">
+            <div class="callout-title">Der Game-Changer: Strg+R</div>
+            <p>Drück <code>Strg+R</code> und tipp ein paar Buchstaben — Bash sucht
+            rückwärts durch deine Befehlshistorie. Weitere <code>Strg+R</code> springt zum
+            nächsten Treffer. <code>Enter</code> führt den Befehl aus, <code>Esc</code>
+            übernimmt ihn in die Zeile zum Editieren. Wer einmal Strg+R lernt, will
+            nie wieder ohne arbeiten.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Falle: Strg+S</div>
+            <p>Drückst du aus Reflex (wie in Word) <code>Strg+S</code>, friert die Anzeige
+            ein. Strg+Q taut sie wieder auf. Wer das nicht weiß, glaubt das Terminal sei
+            kaputt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HISTORY ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.7</span>
+        <h2 class="timeblock-title">Die History — was du schon getippt hast</h2>
+        <span class="timeblock-badge badge-vortrag">Produktivität</span>
+      </div>
+
+      <div class="subblock">
+        <p>Bash speichert jeden Befehl in einer Datei (<code>~/.bash_history</code>).
+        Default: die letzten 1000 Befehle. Damit lässt sich rumspielen:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>history              # zeigt komplette History
+history | tail -20   # nur die letzten 20
+
+!!                   # führt den vorherigen Befehl nochmal aus
+sudo !!              # vorheriger Befehl, diesmal mit sudo
+                     # (klassischer Lebensretter!)
+
+!42                  # führt Befehl Nummer 42 aus der History aus
+!ls                  # führt den letzten Befehl aus, der mit "ls" anfing
+!?config?            # führt den letzten Befehl aus, der "config" enthält
+
+^alt^neu             # wiederhole letzten Befehl, ersetze "alt" durch "neu"
+                     # Beispiel: cat /ets/hosts → ^ets^etc → cat /etc/hosts</code></pre>
+        </div>
+
+        <h4>History mit Pfeiltasten</h4>
+        <p>Einfacher als <code>!42</code> ist meistens:</p>
+        <ul>
+          <li><strong>Pfeil hoch ↑</strong> — vorheriger Befehl</li>
+          <li><strong>Pfeil runter ↓</strong> — nächster Befehl</li>
+          <li><strong>Pos1 / Ende</strong> — Anfang / Ende der Zeile</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Profi-Tipp</div>
+            <p>Befehl mit <strong>Leerzeichen davor</strong> tippen lässt ihn <em>nicht</em>
+            in der History landen — perfekt für sensible Daten wie temporäre
+            Passwörter. Aktiviert ist das auf Rocky standardmäßig durch
+            <code>HISTCONTROL=ignoreboth</code> in <code>/etc/bashrc</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB COMPLETION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.8</span>
+        <h2 class="timeblock-title">Tab-Completion — schneller tippen als denken</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Bash hilft dir beim Tippen. <strong>Tab</strong> ist deine wichtigste Taste —
+        wichtiger als Enter.</p>
+
+        <h4>Beispiele</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">tab demos</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Befehlsname vervollständigen
+$ syst&lt;TAB&gt;
+$ systemctl
+
+# Dateinamen vervollständigen
+$ cd /etc/sys&lt;TAB&gt;
+$ cd /etc/systemd/
+
+# Wenn mehrere Optionen passen, einmal Tab macht NICHTS,
+# zweimal Tab listet alle Möglichkeiten
+$ cat /etc/host&lt;TAB&gt;&lt;TAB&gt;
+hostname  hosts  hosts.allow  hosts.deny
+
+# Auch Optionen werden vervollständigt
+$ systemctl sta&lt;TAB&gt;
+start  status</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Goldene Regel</div>
+            <p>Tippe <strong>nie</strong> einen langen Pfad komplett aus. Bis zur ersten
+            Mehrdeutigkeit tippen → Tab → weiter tippen → Tab → fertig. Das spart Tippfehler
+            und Sekunden. Profis tippen mit ~30 % Tab-Anteil.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MAN HELP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.9</span>
+        <h2 class="timeblock-title"><code>man</code> und <code>--help</code> — die Lebensretter</h2>
+        <span class="timeblock-badge badge-vortrag">Doku</span>
+      </div>
+
+      <div class="subblock">
+        <p>Niemand erinnert sich an alle Optionen aller Befehle. Linux hat eine
+        Eigenschaft, die es Windows weit voraus hat: <strong>jede Software bringt
+        ihre Dokumentation mit</strong>.</p>
+
+        <h4>Drei Arten, Hilfe zu finden</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">help</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># 1) Kurze Hilfe direkt am Befehl
+ls --help
+cp --help
+sudo --help
+
+# 2) Vollständige Manpage
+man ls
+man cp
+man sudo
+
+# 3) Wenn du nicht weißt, welcher Befehl es ist:
+apropos "search files"     # durchsucht Beschreibungen
+whatis ls                  # einzeilige Beschreibung</code></pre>
+        </div>
+
+        <h4>In <code>man</code> navigieren</h4>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>Space</code> / <code>Bild ↓</code></td><td>nächste Seite</td></tr>
+              <tr><td><code>b</code> / <code>Bild ↑</code></td><td>vorherige Seite</td></tr>
+              <tr><td><code>/</code><em>begriff</em></td><td>Vorwärts-Suche</td></tr>
+              <tr><td><code>n</code> / <code>N</code></td><td>nächster / vorheriger Treffer</td></tr>
+              <tr><td><code>g</code> / <code>G</code></td><td>zum Anfang / Ende springen</td></tr>
+              <tr><td><code>q</code></td><td>man beenden</td></tr>
+              <tr><td><code>h</code></td><td>man-Hilfe anzeigen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Manpage-Sektionen verstehen</h4>
+        <p>Manpages sind in <strong>9 Sektionen</strong> aufgeteilt. Steht in der
+        Kopfzeile, z.B. <code>LS(1)</code> bedeutet „ls aus Sektion 1“.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Sektion</th><th>Bedeutung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>User-Befehle (ausführbare Programme)</td><td><code>ls</code>, <code>cp</code></td></tr>
+              <tr><td>2</td><td>System-Aufrufe (Kernel-API)</td><td><code>open</code>, <code>read</code></td></tr>
+              <tr><td>3</td><td>Bibliotheksfunktionen (C-Lib)</td><td><code>printf</code>, <code>malloc</code></td></tr>
+              <tr><td>4</td><td>Spezialdateien (/dev)</td><td><code>tty</code>, <code>null</code></td></tr>
+              <tr><td>5</td><td>Dateiformate</td><td><code>passwd</code>, <code>fstab</code></td></tr>
+              <tr><td>6</td><td>Spiele</td><td><code>nethack</code></td></tr>
+              <tr><td>7</td><td>Konventionen, Misc</td><td><code>signal</code>, <code>regex</code></td></tr>
+              <tr><td>8</td><td>Admin-Befehle</td><td><code>mount</code>, <code>shutdown</code></td></tr>
+              <tr><td>9</td><td>Kernel-interne</td><td><em>selten</em></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Wichtig: Manche Wörter haben mehrere Manpages! <code>passwd</code> ist sowohl
+        ein Befehl (Sektion 1) als auch ein Dateiformat (Sektion 5). Mit
+        <code>man 5 passwd</code> sprichst du gezielt das Dateiformat an.</p>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p><code>man man</code> — die Manpage über das Manpage-System. Klingt
+            albern, ist aber tatsächlich eine der besten Erklärungen für die Sektionen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MINI-QUIZ ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Mini-Quiz: Was macht Strg+R?</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <p>Bevor wir weitergehen, schnell drei Verständnisfragen für zwischendurch:</p>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Frage 1: Was passiert, wenn du Strg+R drückst und „inst“ tippst?</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p>Bash sucht <strong>rückwärts durch die History</strong> nach dem letzten Befehl,
+            der „inst“ enthält — z.B. <code>sudo dnf install nano -y</code>. Weiteres Strg+R
+            springt zum nächst-älteren Treffer. <code>Enter</code> = ausführen,
+            <code>Esc</code> = in Zeile übernehmen.</p>
+          </div>
+        </div>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Frage 2: Du hast versehentlich <code>nano</code> ohne sudo gestartet, willst was in <code>/etc</code> ändern. Was tippst du als nächstes?</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p>Mit <code>Strg+C</code> nano abbrechen (oder im Editor speichern und beenden),
+            dann <code>sudo !!</code> — das wiederholt den letzten Befehl mit sudo davor:
+            <em>sudo nano /etc/&lt;datei&gt;</em>. Spart das Hochpfeilen und Vorne-Voranstellen
+            von „sudo“.</p>
+          </div>
+        </div>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Frage 3: Wie öffnest du die Manpage zum Datei-Format /etc/passwd statt zum Befehl <code>passwd</code>?</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p><code>man 5 passwd</code> — die <strong>5</strong> ist die Sektions-Nummer
+            für Dateiformate. Ohne Nummer zeigt <code>man</code> die erste Übereinstimmung,
+            das wäre Sektion 1 (Befehl <code>passwd</code>).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Abschluss</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Erkläre in eigenen Worten den Unterschied zwischen Terminal, Konsole und Shell.</li>
+          <li>Welche Shell ist auf Rocky Linux der Standard? Wofür steht ihr Name?</li>
+          <li>Was unterscheidet das Prompt-Zeichen <code>$</code> von <code>#</code>?</li>
+          <li>Wie zeigst du an, welche Shell gerade läuft?</li>
+          <li>Nenne mindestens fünf Tastenkürzel, die du beherrschen solltest.</li>
+          <li>Welcher Befehl wiederholt den letzten Befehl, diesmal mit sudo?</li>
+          <li>Wie findest du heraus, welche Optionen <code>ls</code> hat?</li>
+          <li>Was bedeutet die <code>5</code> in <code>man 5 passwd</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>Terminal</strong> = das Programm, das die Ein-/Ausgabe darstellt
+                (Fenster). <strong>Konsole</strong> = der physische TTY-Bildschirm direkt am
+                Rechner. <strong>Shell</strong> = das Programm, das Befehle interpretiert
+                (Bash, Zsh, …).</li>
+              <li><strong>Bash</strong> — „Bourne Again SHell“. Wortspiel auf die ursprüngliche
+                Bourne Shell von 1977.</li>
+              <li><code>$</code> = normaler User · <code>#</code> = root. Bei # ist äußerste
+                Vorsicht geboten, jeder Befehl wirkt sofort und ohne Schutz.</li>
+              <li><code>echo $SHELL</code> (Login-Shell) oder <code>echo $0</code> (aktuelle Shell).</li>
+              <li>Beispiele: Tab, Strg+R, Strg+C, Strg+D, Strg+L, Strg+A, Strg+E, Strg+U.</li>
+              <li><code>sudo !!</code></li>
+              <li><code>ls --help</code> (kurze Übersicht) oder <code>man ls</code> (vollständig).</li>
+              <li>Die Sektions-Nummer der Manpage — hier <strong>5</strong> = Dateiformate.
+                <code>man 5 passwd</code> zeigt also das Format der <code>/etc/passwd</code>-Datei,
+                nicht den Befehl <code>passwd</code>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="05-installation.html">
+        <span class="nav-eyebrow">← Kapitel 05</span>
+        <span class="nav-title">Rocky Linux Installation</span>
+      </a>
+      <a href="07-dateisystem.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 07 →</span>
+        <span class="nav-title">Dateisystem &amp; FHS</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 06 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

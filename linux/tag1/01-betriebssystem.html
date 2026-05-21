@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 01 · Was ist ein Betriebssystem? — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 01 von 12</div>
+    <h1 class="page-title">
+      Was ist ein <span class="highlight">Betriebssystem</span>?
+    </h1>
+    <p class="page-subtitle">
+      Bevor wir Linux installieren, ein Schritt zurück: Was macht ein
+      Betriebssystem eigentlich? Welche Schichten gibt es, welche Aufgaben hat es,
+      und wo läuft Linux überall, ohne dass wir es merken?
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 01</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Theorie</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ DEFINITION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.1</span>
+        <h2 class="timeblock-title">Die einfache Definition</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p>Ein <strong>Betriebssystem (BS)</strong>, englisch <em>Operating System (OS)</em>,
+        ist die <strong>Vermittlerschicht zwischen Mensch und Hardware</strong>. Es
+        verbirgt die Komplexität der Hardware vor den Anwendungen und sorgt
+        dafür, dass mehrere Programme gleichzeitig auf einer einzigen CPU laufen
+        können, ohne sich gegenseitig zu zerstören.</p>
+
+        <p>Stell es dir wie den <em>Hausmeister im Hochhaus</em> vor: er verteilt
+        Strom, regelt wer welchen Raum belegt, sorgt für Ordnung in den Fluren und
+        ruft die Feuerwehr, wenn es brennt. Ohne Hausmeister wäre Chaos —
+        ohne Betriebssystem müsste jedes Programm direkt mit der Hardware reden,
+        und sie würden sich gegenseitig den Strom abdrehen.</p>
+
+        <h4>Das klassische Schichtenmodell</h4>
+        <div class="ascii-box">  ┌───────────────────────────────────────────────┐
+  │  Anwendungen — Browser, Office, Spotify        │
+  ├───────────────────────────────────────────────┤
+  │  API / Systemaufrufe — "Wie rede ich mit dem BS?"
+  ├───────────────────────────────────────────────┤
+  │  Kernel — Herz des Betriebssystems             │
+  │  - Prozess-Scheduler                           │
+  │  - Speicherverwaltung                          │
+  │  - Treiber                                     │
+  │  - Dateisystem                                 │
+  ├───────────────────────────────────────────────┤
+  │  Hardware — CPU, RAM, Festplatte, Netzwerk     │
+  └───────────────────────────────────────────────┘</div>
+
+        <p>Anwendungen reden <strong>nie direkt mit der Hardware</strong>. Sie reden
+        über klar definierte Schnittstellen (Systemaufrufe) mit dem Kernel — und der
+        Kernel kümmert sich um den Rest. Das schützt sowohl die Hardware als auch die
+        Anwendungen voreinander.</p>
+      </div>
+    </section>
+
+    <!-- ============ AUFGABEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.2</span>
+        <h2 class="timeblock-title">Die vier Hauptaufgaben eines Betriebssystems</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht-Wissen</span>
+      </div>
+
+      <div class="subblock">
+        <p>Egal ob Windows, macOS, Linux oder Android — jedes Betriebssystem erfüllt
+        im Kern dieselben vier Aufgaben:</p>
+
+        <h4>1. Prozessverwaltung — Wer darf gerade rechnen?</h4>
+        <p>Auf einem modernen Laptop laufen Dutzende, oft Hunderte Prozesse parallel:
+        Browser, Mailclient, Antivirus, Treiber, Systemdienste. Die CPU kann (pro Kern)
+        aber nur <em>einen</em> Prozess gleichzeitig ausführen.</p>
+        <p>Der <strong>Scheduler</strong> ist das Stück Kernel, das jede Tausendstel-Sekunde
+        entscheidet: „Du, Browser, hast jetzt 5 ms CPU. Du, Mailclient, danach. Du,
+        Hintergrund-Update, später.“ Das Umschalten passiert so schnell, dass sich das
+        Multitasking für uns wie echte Parallelität anfühlt.</p>
+
+        <h4>2. Speicherverwaltung — Wer kriegt wie viel RAM?</h4>
+        <p>Jedes Programm braucht Arbeitsspeicher. Auf einem 16-GB-System wollen
+        Dutzende Programme gleichzeitig RAM. Das BS:</p>
+        <ul>
+          <li>weist jedem Prozess einen eigenen <strong>virtuellen Adressraum</strong> zu (kein Programm sieht den Speicher des anderen)</li>
+          <li>lagert wenig genutzten Speicher auf die Disk aus (<strong>Swap</strong>)</li>
+          <li>verhindert, dass ein Programm den Speicher des anderen liest oder zerstört</li>
+        </ul>
+
+        <h4>3. Geräteverwaltung — Drucker, Maus, USB</h4>
+        <p>Es gibt tausende verschiedene Hardware-Hersteller. Ohne Betriebssystem
+        müsste jedes Programm wissen, wie es mit jedem einzelnen Drucker spricht.
+        Stattdessen liefert das BS <strong>Treiber</strong>: standardisierte Schnittstellen.
+        Word ruft „drucke Seite“ — der Treiber übersetzt das in Befehle für genau
+        deinen Drucker.</p>
+
+        <h4>4. Dateisystem — Wo liegen die Daten?</h4>
+        <p>Festplatten speichern technisch nur Bytes in nummerierten Sektoren. Das
+        Dateisystem (FAT, NTFS, ext4, XFS, Btrfs, ZFS) ist die Software-Schicht, die
+        daraus „Dateien“ und „Ordner“ macht. Es verwaltet Namen, Rechte, Zeitstempel,
+        Verzeichnisbäume und Fehlertoleranz.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Merksatz</div>
+            <p><strong>P-S-G-D</strong> — <strong>P</strong>rozesse,
+            <strong>S</strong>peicher, <strong>G</strong>eräte,
+            <strong>D</strong>ateisystem. Diese vier Aufgaben kommen in jeder
+            IT-Prüfung dran und sind die Grundlage für alles, was wir die nächsten Tage
+            lernen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KERNEL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.3</span>
+        <h2 class="timeblock-title">Der Kernel — das Herzstück</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p>Der <strong>Kernel</strong> (deutsch „Kern“) ist das Herzstück jedes
+        Betriebssystems. Er ist das einzige Programm, das in einem privilegierten
+        CPU-Modus läuft („Kernel Mode“ oder „Ring 0“) und damit direkten Zugriff auf
+        die Hardware hat.</p>
+
+        <p>Alle anderen Programme — auch deine Shell und alle Anwendungen — laufen im
+        <strong>User Mode</strong> („Ring 3“). Sie müssen den Kernel bitten, wenn sie
+        etwas Hardware-nahes tun wollen, z.B. eine Datei lesen oder einen Netzwerkpakte
+        verschicken. Diese Bitte heißt <strong>System Call</strong>.</p>
+
+        <div class="ascii-box">  User-Programm:  fprintf(file, "Hallo");
+                      │
+                      ▼
+  glibc (Library):  open(), write()
+                      │
+                      ▼
+  System Call:    int 0x80  /  syscall
+                      │
+                      ▼ Kernel Mode
+  Kernel:         tatsächliches Schreiben auf die Disk</div>
+
+        <h4>Kernel-Architekturen im Vergleich</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Architektur</th><th>Idee</th><th>Beispiele</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Monolithisch</strong></td>
+                <td>Alles (Treiber, Netzwerk, Dateisystem) im Kernel-Adressraum</td>
+                <td>Linux (modular monolithisch), BSD</td>
+              </tr>
+              <tr>
+                <td><strong>Microkernel</strong></td>
+                <td>Kernel klein halten, fast alles als User-Programm</td>
+                <td>Minix, QNX, GNU Hurd</td>
+              </tr>
+              <tr>
+                <td><strong>Hybrid</strong></td>
+                <td>Mischform aus monolithisch und Micro</td>
+                <td>Windows NT, macOS (XNU)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Linux ist <em>monolithisch</em>, aber mit dem wichtigen Zusatz
+        <strong>modular</strong>: Treiber und Dateisysteme können als Kernel-Module
+        (<code>.ko</code>-Dateien) zur Laufzeit nachgeladen werden. So ist Linux
+        schnell wie ein klassischer monolithischer Kernel und flexibel wie ein
+        Microkernel.</p>
+      </div>
+    </section>
+
+    <!-- ============ WO LÄUFT LINUX ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.4</span>
+        <h2 class="timeblock-title">Wo läuft eigentlich überall Linux?</h2>
+        <span class="timeblock-badge badge-vortrag">Realitäts-Check</span>
+      </div>
+
+      <div class="subblock">
+        <p>Auf dem Schreibtisch dominiert Windows. Aber auf praktisch allem anderen
+        läuft Linux — oft ohne dass es jemand merkt:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Bereich</th><th>Linux-Anteil</th><th>Wo genau?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Top500-Supercomputer</td><td><strong>100 %</strong></td><td>jeder einzelne der schnellsten Rechner</td></tr>
+              <tr><td>Webserver</td><td>~ 70–90 %</td><td>nginx, Apache laufen primär auf Linux</td></tr>
+              <tr><td>Public Cloud (AWS, Azure, GCP)</td><td>&gt; 90 %</td><td>EC2-Instanzen, Container-Hosts</td></tr>
+              <tr><td>Smartphones</td><td>~ 70 %</td><td>jedes Android-Gerät</td></tr>
+              <tr><td>Smart-TVs / Streaming</td><td>~ 80 %</td><td>Samsung Tizen, LG webOS, Sony Bravia</td></tr>
+              <tr><td>Router / Embedded</td><td>~ 90 %</td><td>FritzBox, Speedport, OpenWRT</td></tr>
+              <tr><td>Autos (Infotainment)</td><td>steigend</td><td>Tesla, Mercedes MBUX, BMW</td></tr>
+              <tr><td>ISS / Raumfahrt</td><td>100 %</td><td>NASA wechselte 2013 von XP auf Debian</td></tr>
+              <tr><td>Desktop</td><td>~ 3–4 %</td><td>einziger Bereich, in dem Linux klein bleibt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Knaller-Fakt</div>
+            <p>Wenn du heute eine Google-Suche absetzt, eine Netflix-Serie schaust oder
+            eine Pizza online bestellst, hat dein Klick wahrscheinlich auf seinem Weg
+            <em>fünfzehn Linux-Server</em> berührt — von der DNS-Auflösung über den
+            CDN-Knoten bis zur Datenbank. Linux ist das Skelett des Internets.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p><strong>Frage in die Runde:</strong> „Wo nutzt ihr schon Linux, ohne es zu
+            wissen?“ Sammelt Antworten und löst auf: Android, Smart-TV, Router, Auto
+            (Tesla, MBUX), Geldautomaten, ISS, jeder Webserver. Aha-Effekt fast garantiert.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BS-FAMILIEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.5</span>
+        <h2 class="timeblock-title">Die großen BS-Familien im Überblick</h2>
+        <span class="timeblock-badge badge-vortrag">Übersicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Familie</th><th>Kernel</th><th>Typische Vertreter</th><th>Stärke</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Linux</strong></td>
+                <td>Linux (monolithisch, modular)</td>
+                <td>Rocky, Debian, Ubuntu, Android</td>
+                <td>Server, Cloud, Embedded</td>
+              </tr>
+              <tr>
+                <td><strong>BSD-Familie</strong></td>
+                <td>BSD (UC Berkeley-Linie)</td>
+                <td>FreeBSD, OpenBSD, NetBSD</td>
+                <td>Server, Forschung, Netzwerk-Appliances</td>
+              </tr>
+              <tr>
+                <td><strong>macOS / iOS</strong></td>
+                <td>XNU (Hybrid, BSD-basiert)</td>
+                <td>macOS, iOS, iPadOS</td>
+                <td>Desktop, Mobile, Tablet</td>
+              </tr>
+              <tr>
+                <td><strong>Windows</strong></td>
+                <td>NT (Hybrid)</td>
+                <td>Windows 10, 11, Server</td>
+                <td>Desktop, klassische Büro-Server</td>
+              </tr>
+              <tr>
+                <td><strong>Klassisches Unix</strong></td>
+                <td>System V</td>
+                <td>AIX (IBM), Solaris, HP-UX</td>
+                <td>Großrechner, Banken (rückläufig)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Wer einmal verstanden hat, was ein Betriebssystem tut und welche Schichten
+        es hat, kann sich in jede dieser Familien einarbeiten. Die Konzepte sind
+        überall ähnlich — nur die Details und Tools unterscheiden sich.</p>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Was ist die zentrale Aufgabe eines Betriebssystems in einem Satz?</li>
+          <li>Nenne die vier Hauptaufgaben eines BS — und gib jeweils ein Beispiel.</li>
+          <li>Was ist der Unterschied zwischen Kernel Mode und User Mode?</li>
+          <li>Was ist ein Systemaufruf (System Call)?</li>
+          <li>Welche drei Kernel-Architekturen gibt es, und wo liegt Linux darin?</li>
+          <li>Auf welchen Geräteklassen läuft Linux mit fast 100 % Anteil — und wo dagegen kaum?</li>
+          <li>Welche Betriebssystem-Familie steckt hinter macOS?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li>Es vermittelt zwischen Anwendungen und Hardware und verwaltet die
+                Ressourcen so, dass viele Programme gleichzeitig sicher laufen können.</li>
+              <li><strong>P</strong>rozesse (Scheduler), <strong>S</strong>peicher (RAM
+                + Swap), <strong>G</strong>eräte (Treiber), <strong>D</strong>ateisystem
+                (Festplatten-Organisation).</li>
+              <li>Kernel Mode (Ring 0) hat direkten Hardware-Zugriff; nur der Kernel läuft
+                dort. User Mode (Ring 3) ist abgeschottet — Programme müssen den Kernel um
+                Hardware-Operationen bitten.</li>
+              <li>Eine Anfrage eines User-Programms an den Kernel, etwas Privilegiertes zu
+                tun (z.B. eine Datei öffnen, ins Netzwerk schreiben).</li>
+              <li>Monolithisch, Microkernel, Hybrid. Linux ist <strong>monolithisch
+                modular</strong> — alles im Kernel-Adressraum, Treiber aber als ladbare
+                Module.</li>
+              <li>~ 100 %: Supercomputer, ISS. Sehr hoch: Webserver, Cloud, Smartphones
+                (Android), Router. Gering (~3–4 %): Desktop-PCs.</li>
+              <li><strong>BSD-Linie</strong> — macOS basiert auf Darwin, das wiederum
+                auf NeXTSTEP und FreeBSD aufbaut. macOS ist ein echtes Unix-zertifiziertes
+                System.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="index.html">
+        <span class="nav-eyebrow">↑ Tag 1 Übersicht</span>
+        <span class="nav-title">Übersicht aller Kapitel</span>
+      </a>
+      <a href="02-unix-geschichte.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 02 →</span>
+        <span class="nav-title">Unix &amp; Linux-Geschichte</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 01 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

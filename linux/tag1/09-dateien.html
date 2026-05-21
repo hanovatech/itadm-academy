@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 09 · Dateien &amp; Ordner — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 09 von 12</div>
+    <h1 class="page-title">
+      Dateien &amp; Ordner <span class="highlight">erstellen</span>, kopieren, löschen
+    </h1>
+    <p class="page-subtitle">
+      Jetzt verändern wir das Dateisystem. Wir lernen <code>touch</code>,
+      <code>mkdir</code>, <code>cp</code>, <code>mv</code> und das gefährliche
+      <code>rm</code> — und schauen uns mit <code>file</code> und <code>stat</code>
+      an, was eigentlich in einer Datei steckt.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 09</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Praxis</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ TOUCH ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.1</span>
+        <h2 class="timeblock-title"><code>touch</code> — eigentlich gar nicht zum Erstellen gedacht</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p>Die meisten kennen <code>touch</code> als „den Befehl, der leere Dateien
+        erstellt“. Tatsächlich ist das nur ein <strong>Nebeneffekt</strong>. Der
+        eigentliche Zweck von <code>touch</code> ist: <strong>Zeitstempel verändern</strong>.</p>
+
+        <p>Jede Datei in Linux hat drei Zeitstempel:</p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Zeitstempel</th><th>Bedeutet</th><th>Bei <code>ls -l</code></th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>atime</strong> (access)</td><td>letzter Lesezugriff</td><td>nicht angezeigt</td></tr>
+              <tr><td><strong>mtime</strong> (modify)</td><td>letzte Inhalts-Änderung</td><td>ja — das ist die Default-Anzeige</td></tr>
+              <tr><td><strong>ctime</strong> (change)</td><td>letzte Status-Änderung (auch Rechte!)</td><td>nicht angezeigt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Was macht <code>touch</code> wirklich?</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Existiert die Datei NICHT? → wird leer erstellt
+touch neue-datei.txt
+
+# Existiert die Datei? → atime + mtime auf JETZT
+touch alte-datei.txt
+ls -l alte-datei.txt    # Datum springt auf aktuelle Zeit
+
+# Mehrere auf einmal
+touch a.txt b.txt c.txt
+
+# Mit Brace Expansion (Vorgriff Kapitel 11)
+touch test{1..10}.txt   # erstellt test1.txt bis test10.txt
+
+# Bestimmten Zeitstempel setzen
+touch -t 202401151200 datei.txt    # 2024-01-15 12:00:00
+touch -d "2023-12-24 18:00" datei.txt</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum dann „touch“?</div>
+            <p>Der Befehl wurde 1979 erfunden, weil <code>make</code> (das Build-Tool)
+            mtime nutzt, um zu entscheiden, ob etwas neu kompiliert werden muss. Wenn
+            du eine Datei „berühren“ wolltest, damit make sie als „verändert“ ansieht,
+            hieß das schon damals <em>touchen</em>. Erst Jahre später haben Leute
+            entdeckt: „Cool, das erstellt ja auch leere Dateien.“ Heute ist genau das
+            die häufigste Verwendung.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MKDIR ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.2</span>
+        <h2 class="timeblock-title"><code>mkdir</code> — Verzeichnisse anlegen</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>mkdir</code> = <strong>m</strong>a<strong>k</strong>e
+        <strong>dir</strong>ectory. Erstellt ein oder mehrere Verzeichnisse.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Einzelner Ordner
+mkdir test
+
+# Mehrere parallel
+mkdir alpha beta gamma
+
+# Verschachtelt — KLAPPT NICHT ohne -p!
+mkdir projekte/2025/januar
+# Fehler: projekte existiert nicht → mkdir verweigert
+
+# Mit -p: alle Zwischenebenen anlegen
+mkdir -p projekte/2025/januar
+mkdir -p projekte/2025/februar
+ls -R projekte/
+
+# -p ist auch idempotent: kein Fehler bei existierendem Verzeichnis
+mkdir -p test   # macht nichts, wenn test schon existiert
+
+# Mit Brace Expansion: ganze Strukturen in einer Zeile
+mkdir -p projekte/2025/{januar,februar,maerz,april}
+mkdir -p firma/{buchhaltung,it,personal}/{aktiv,archiv}</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Profi-Tipp</div>
+            <p><code>mkdir -p</code> sollte fast immer dein Reflex sein. Es schadet nie
+            und rettet dich vor dem klassischen „<em>Verzeichnis existiert nicht</em>“-Fehler
+            in Skripten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.3</span>
+        <h2 class="timeblock-title"><code>cp</code> — kopieren mit vielen Spielarten</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>cp</code> = <strong>c</strong>o<strong>p</strong>y. Macht eine
+        Kopie einer Datei oder eines Verzeichnisses. Syntax:
+        <code>cp QUELLE ZIEL</code>.</p>
+
+        <h4>Die wichtigsten Optionen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Option</th><th>Was sie bewirkt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>-i</code></td><td><strong>I</strong>nteractive — fragt vor Überschreiben</td></tr>
+              <tr><td><code>-v</code></td><td><strong>V</strong>erbose — zeigt jede kopierte Datei</td></tr>
+              <tr><td><code>-r</code> bzw. <code>-R</code></td><td><strong>R</strong>ekursiv — für Verzeichnisse</td></tr>
+              <tr><td><code>-a</code></td><td><strong>A</strong>rchive — kopiert mit allen Rechten, Symlinks, Zeitstempeln (Klassiker!)</td></tr>
+              <tr><td><code>-u</code></td><td><strong>U</strong>pdate — kopiert nur, wenn Quelle neuer als Ziel</td></tr>
+              <tr><td><code>-n</code></td><td>kein Überschreiben — schweigt einfach</td></tr>
+              <tr><td><code>--backup</code></td><td>vor Überschreiben Backup mit Tilde erstellen</td></tr>
+              <tr><td><code>-p</code></td><td>Permissions + Zeitstempel beibehalten</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Typische Anwendungen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Datei → Datei (Kopie mit neuem Namen)
+cp original.txt kopie.txt
+
+# Datei → Verzeichnis (Kopie behält Namen)
+cp notes.txt ~/backup/
+# erzeugt: ~/backup/notes.txt
+
+# Viele Dateien → Verzeichnis
+cp *.txt ~/backup/
+
+# Verzeichnis rekursiv
+cp -r projekte/ backup-projekte/
+
+# Mit Permissions, Owner, Zeitstempeln (Klassiker für Backups)
+cp -a /etc /backup/etc-$(date +%F)
+
+# Mit Bestätigung bei Überschreiben (sicher!)
+cp -i wichtig.conf /etc/
+
+# Mit Backup-Datei vor Überschreiben
+cp --backup nginx.conf /etc/nginx/
+# erzeugt /etc/nginx/nginx.conf~ als Backup</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Schrägstrich am Verzeichnis macht einen Unterschied</div>
+            <p><code>cp -r src dst/</code> kopiert <code>src</code> als
+            Unterverzeichnis IN <code>dst</code>. Ergebnis: <code>dst/src/</code>.<br>
+            <code>cp -r src/ dst/</code> kopiert den <strong>Inhalt</strong> von
+            <code>src</code> in <code>dst</code>. Ergebnis: <code>dst/...</code>.<br>
+            Der trailing slash auf der <em>Quelle</em> ändert das Verhalten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MV ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.4</span>
+        <h2 class="timeblock-title"><code>mv</code> — verschieben und umbenennen in einem</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>mv</code> = <strong>m</strong>o<strong>v</strong>e. Erfüllt zwei
+        Aufgaben gleichzeitig — Verschieben und Umbenennen. In Linux gibt es keinen
+        eigenen „rename“-Befehl in der Grundinstallation: man benennt um, indem man
+        eine Datei an denselben Ort mit anderem Namen verschiebt.</p>
+
+        <h4>Umbenennen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Quelle und Ziel im selben Verzeichnis → Umbenennen
+mv alter-name.txt neuer-name.txt
+
+# Auch für Verzeichnisse
+mv altes-projekt/ neues-projekt/</code></pre>
+        </div>
+
+        <h4>Verschieben</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># In anderes Verzeichnis verschieben
+mv datei.txt ~/archiv/
+
+# Mehrere Dateien in ein Verzeichnis
+mv *.log ~/archiv/
+
+# Verschieben + Umbenennen in einem Schritt
+mv ~/Downloads/datei.txt ~/projekte/neuer-name.txt</code></pre>
+        </div>
+
+        <h4>Nützliche Optionen</h4>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>-i</code></td><td>Interactive: fragt vor Überschreiben</td></tr>
+              <tr><td><code>-v</code></td><td>Verbose: zeigt jede Aktion</td></tr>
+              <tr><td><code>-n</code></td><td>kein Überschreiben</td></tr>
+              <tr><td><code>-u</code></td><td>nur ersetzen, wenn Quelle neuer</td></tr>
+              <tr><td><code>--backup</code></td><td>Backup vor Überschreiben anlegen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">⚡</div>
+          <div class="callout-content">
+            <div class="callout-title">Schneller als <code>cp</code> + <code>rm</code></div>
+            <p>Wenn Quelle und Ziel auf demselben Dateisystem liegen, ist <code>mv</code>
+            blitzschnell — nur ein Eintrag im Inode-Index wird geändert, die Daten selbst
+            bleiben auf der Disk. Über Dateisystem-Grenzen hinweg (z.B. von Disk auf
+            USB-Stick) muss es real kopieren und kann lange dauern.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RM ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.5</span>
+        <h2 class="timeblock-title"><code>rm</code> — der gefährlichste Befehl überhaupt</h2>
+        <span class="timeblock-badge badge-warn">VORSICHT</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>rm</code> = <strong>r</strong>e<strong>m</strong>ove. Löscht
+        Dateien. Hier gibt es <strong>keinen Papierkorb</strong>. Was du mit
+        <code>rm</code> löschst, ist weg. Endgültig. Es gibt keine Wiederherstellung
+        ohne Spezial-Tools.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Einfache Datei löschen
+rm datei.txt
+
+# Mehrere
+rm a.txt b.txt c.txt
+rm *.log
+
+# Verzeichnisse löschen — braucht -r (rekursiv)
+rm -r altes-projekt/
+
+# Mit Nachfrage (sicher!)
+rm -i datei.txt
+# rm: regular file 'datei.txt' entfernen? (y/n)
+
+# Verbose: zeigt was gelöscht wird
+rm -v *.tmp
+
+# FORCE: keine Fragen, keine Fehler bei nicht-existierenden Dateien
+rm -f *.tmp
+
+# DIE Kombination: rekursiv + force
+rm -rf altes-projekt/</code></pre>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">💀</div>
+          <div class="callout-content">
+            <div class="callout-title">Die berühmteste gefährliche Zeile der Welt</div>
+            <p><code>sudo rm -rf /</code> löscht alles, auf das du Schreibrechte hast —
+            also als root das komplette System. Aktuelle <code>rm</code>-Versionen
+            verweigern das ohne <code>--no-preserve-root</code>, aber:</p>
+            <ul style="margin-top: 0.5rem;">
+              <li><code>rm -rf /*</code> — umgeht den Schutz</li>
+              <li><code>rm -rf /home</code> — löscht alle User-Daten</li>
+              <li><code>rm -rf /etc</code> — kein bootfähiges System mehr</li>
+              <li><code>rm -rf ~/</code> — löscht dein gesamtes Home</li>
+            </ul>
+            <p style="margin-top: 0.6rem;"><strong>Niemals</strong> <code>rm -rf</code>
+            tippen, ohne den Pfad zweimal zu prüfen. Erst recht nicht als root.</p>
+          </div>
+        </div>
+
+        <h4>Klassiker-Falle: Leerzeichen vor dem Pfad</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Gewollt: alles in /tmp/cache löschen
+rm -rf /tmp/cache
+
+# Tippfehler! Leerzeichen nach /tmp:
+rm -rf /tmp /cache
+# → löscht /tmp UND /cache (= /cache wird erzeugt erst gar nicht gefunden)
+# → kann je nach Inhalt katastrophal sein
+
+# Ein Leerzeichen, ein Tag Arbeit weg.</code></pre>
+        </div>
+
+        <h4>Verzeichnisse: <code>rmdir</code> vs. <code>rm -r</code></h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Verhalten</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>rmdir leer/</code></td><td>Löscht NUR ein leeres Verzeichnis. Fehler bei Inhalt.</td></tr>
+              <tr><td><code>rm -r voll/</code></td><td>Löscht das Verzeichnis und alles darin.</td></tr>
+              <tr><td><code>rm -ri voll/</code></td><td>Wie oben, aber fragt vor jeder Datei nach.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Sicherheits-Trick: Alias <code>rm='rm -i'</code></div>
+            <p>Viele Distros (und viele Admins) setzen in <code>~/.bashrc</code> einen
+            Alias, damit jedes <code>rm</code> nachfragt:</p>
+            <div class="code-block" style="margin-top: 0.7rem;">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">~/.bashrc</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code>alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'</code></pre>
+            </div>
+            <p style="margin-top: 0.5rem;">Auf Rocky ist das für root standardmäßig
+            aktiv, für normale User nicht. Wer es haben will, fügt obige Zeilen in
+            <code>~/.bashrc</code> ein und ruft danach <code>source ~/.bashrc</code> auf.</p>
+            <p style="margin-top: 0.5rem;"><strong>Wichtig:</strong> Verlasse dich
+            <em>nicht</em> auf den Alias als einziges Sicherheitsnetz. Auf fremden
+            Systemen (SSH zu Kollegenrechner) ist er nicht gesetzt. Tippe immer wachsam.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🕰️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon? — Versteckte Dateien sind ein Versehen</div>
+            <p>Dateien, die mit <code>.</code> beginnen (Dotfiles), sind in Linux
+            „versteckt“ — <code>ls</code> zeigt sie nicht ohne <code>-a</code>.
+            Wenig bekannt: das war ein <strong>Bug</strong>!</p>
+            <p style="margin-top: 0.6rem;">In den 1970er Bell Labs wollten die Entwickler,
+            dass <code>ls</code> die Einträge <code>.</code> und <code>..</code>
+            (aktuelles und übergeordnetes Verzeichnis) ausblendet. Sie schrieben ein
+            kleines if-Statement: „<em>überspringe alles, was mit Punkt anfängt</em>“.
+            Damit waren versehentlich <strong>alle</strong> Dotfiles unsichtbar.</p>
+            <p style="margin-top: 0.6rem;">Das war zwar nicht so geplant, aber praktisch:
+            User-Konfigurationen wie <code>.bashrc</code> stören jetzt nicht beim
+            normalen <code>ls</code>. So wurde aus einem Bug ein Standard, der bis
+            heute existiert.</p>
+            <p style="margin-top: 0.6rem;"><em>Quelle: Rob Pike (Bell Labs / Plan 9
+            / Go), 2012, „Dotfiles: a brief history“.</em></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FILE STAT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.6</span>
+        <h2 class="timeblock-title"><code>file</code> und <code>stat</code> — was steckt drin?</h2>
+        <span class="timeblock-badge badge-vortrag">Bonus</span>
+      </div>
+
+      <div class="subblock">
+        <p>In Linux gibt es <strong>keine Dateiendungen-Pflicht</strong>. Eine Datei
+        <code>script</code> ohne <code>.sh</code> kann trotzdem ein Shell-Skript sein.
+        Wie findet man heraus, was wirklich drin ist?</p>
+
+        <h4><code>file</code> — verrät den Inhaltstyp</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>file /etc/hosts
+# /etc/hosts: ASCII text
+
+file /bin/ls
+# /bin/ls: ELF 64-bit LSB pie executable, x86-64, ...
+
+file /usr/share/icons/breeze/places/96/folder.svg
+# ...: SVG Scalable Vector Graphics image
+
+file image.jpg
+# image.jpg: JPEG image data, baseline, ...
+
+# Über alle Dateien eines Ordners
+file /etc/*</code></pre>
+        </div>
+
+        <p><code>file</code> schaut auf die <strong>ersten Bytes</strong> einer Datei
+        (Magic Number) und entscheidet so den Typ — ohne sich auf die Endung zu
+        verlassen.</p>
+
+        <h4><code>stat</code> — Detail-Informationen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>stat /etc/hosts
+# Beispiel-Output:
+#   File: /etc/hosts
+#   Size: 158        Blocks: 8          IO Block: 4096   regular file
+#   Device: 802h/2050d    Inode: 67108993    Links: 1
+#   Access: (0644/-rw-r--r--)  Uid: ( 0/ root)   Gid: ( 0/ root)
+#   Access: 2026-05-21 09:14:33.000000000 +0200
+#   Modify: 2024-11-08 13:51:01.000000000 +0100
+#   Change: 2024-11-08 13:51:01.000000000 +0100
+#   Birth: 2024-11-08 13:51:01.000000000 +0100</code></pre>
+        </div>
+
+        <p><code>stat</code> zeigt <em>alles</em>: Größe, Block-Layout, Inode-Nummer,
+        UID/GID, Rechte (numerisch und symbolisch) und alle vier Zeitstempel.</p>
+      </div>
+    </section>
+
+    <!-- ============ ANZEIGE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">9.7</span>
+        <h2 class="timeblock-title">Dateien anschauen: <code>cat</code>, <code>less</code>, <code>head</code>, <code>tail</code></h2>
+        <span class="timeblock-badge badge-vortrag">Vorgriff</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese Werkzeuge sind eigentlich für Tag 2 reserviert, aber du brauchst sie
+        ständig — deshalb kurz angerissen:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wofür?</th><th>Wann nutzen?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>cat datei</code></td><td>komplette Datei auf einmal ausgeben</td><td>Kleine Dateien (&lt; 100 Zeilen)</td></tr>
+              <tr><td><code>less datei</code></td><td>Datei seitenweise anzeigen (mit Suche)</td><td>Lange Logs, Manpages, /etc-Files</td></tr>
+              <tr><td><code>head datei</code></td><td>erste 10 Zeilen</td><td>Erste Zeilen eines Logs ansehen</td></tr>
+              <tr><td><code>head -50 datei</code></td><td>erste 50 Zeilen</td><td>Anpassbare Anzahl</td></tr>
+              <tr><td><code>tail datei</code></td><td>letzte 10 Zeilen</td><td>Neueste Logs</td></tr>
+              <tr><td><code>tail -f datei</code></td><td>Datei <strong>live</strong> mitlesen</td><td>Logs in Echtzeit beobachten — Klassiker!</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Mini-Demo</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Schnell mal die ersten und letzten 5 Zeilen
+head -5 /etc/os-release
+tail -5 /etc/os-release
+
+# Langes Log seitenweise lesen (Space = Seite vor, q = beenden, / = suchen)
+less /var/log/messages    # benötigt evtl. sudo
+
+# Datei live beobachten
+sudo tail -f /var/log/secure
+# Strg+C zum Beenden</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">📺</div>
+          <div class="callout-content">
+            <div class="callout-title">Lifesaver: <code>tail -f</code></div>
+            <p>Wenn du an einem Webserver oder einer Anwendung debuggst, ist
+            <code>sudo tail -f /var/log/nginx/error.log</code> dein bester Freund. Du
+            siehst Fehler in Echtzeit, während du in einem anderen Terminal Anfragen
+            schickst. An Tag 3 vertiefen wir das.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MINI ÜBUNG ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🛠️</span>
+        <h2 class="timeblock-title">Mini-Übungen — gleich mitmachen</h2>
+        <span class="timeblock-badge badge-action">Praxis</span>
+      </div>
+
+      <div class="subblock">
+        <p>Drei kurze Aufgaben zum direkt eintippen. Im großen Lab in Kapitel 10
+        wird's dann ernst.</p>
+
+        <ol class="lab-tasks">
+          <li>Erstelle in deinem Home einen Ordner <code>spielwiese</code>, wechsle hinein
+            und lege darin die Dateien <code>a.txt</code>, <code>b.txt</code>, <code>c.txt</code>
+            in <strong>einem</strong> Befehl an.</li>
+          <li>Kopiere <code>a.txt</code> zu <code>a.bak</code>, benenne <code>b.txt</code>
+            in <code>notizen.txt</code> um.</li>
+          <li>Lege mit <code>mkdir -p</code> die Struktur <code>archiv/2024/{q1,q2,q3,q4}</code>
+            an. Prüfe das Ergebnis mit <code>ls -R archiv/</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1)
+mkdir ~/spielwiese
+cd ~/spielwiese
+touch a.txt b.txt c.txt
+
+# 2)
+cp a.txt a.bak
+mv b.txt notizen.txt
+
+# 3)
+mkdir -p archiv/2024/{q1,q2,q3,q4}
+ls -R archiv/</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🧹</div>
+          <div class="callout-content">
+            <div class="callout-title">Aufräumen nach der Übung</div>
+            <p>Wenn du fertig bist:
+            <code>cd ~ &amp;&amp; rm -r spielwiese</code> (vorher: <strong>doppelt</strong>
+            prüfen, dass du wirklich im Home bist mit <code>pwd</code>).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wofür wurde <code>touch</code> ursprünglich erfunden — und was ist heute
+            seine häufigste Verwendung?</li>
+          <li>Welche Option brauchst du bei <code>mkdir</code>, um verschachtelte Pfade
+            in einem Schritt anzulegen?</li>
+          <li>Was unterscheidet <code>cp -r src dst/</code> von <code>cp -r src/ dst/</code>?</li>
+          <li>Linux kennt keinen eigenen „rename“-Befehl. Wie benennt man trotzdem um?</li>
+          <li>Was passiert bei <code>rm -rf /tmp /cache</code> (mit dem fatalen Leerzeichen)?</li>
+          <li>Was bewirken die Aliase <code>rm='rm -i'</code> und <code>cp='cp -i'</code>?</li>
+          <li>Welcher Befehl zeigt dir, ob eine Datei eine Textdatei, ein Binary oder
+            ein Bild ist — unabhängig von der Endung?</li>
+          <li>Wofür benutzt man <code>tail -f</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><code>touch</code> wurde 1979 erfunden, um <strong>Zeitstempel zu
+                verändern</strong> (für <code>make</code>). Heute am häufigsten benutzt, um
+                <strong>leere Dateien zu erstellen</strong> — ein Seiteneffekt des Befehls.</li>
+              <li><code>-p</code> (für <em>parents</em>): <code>mkdir -p a/b/c</code>.</li>
+              <li>Ohne trailing slash auf der Quelle: <code>src</code> landet als
+                Unterverzeichnis IN <code>dst</code> (→ <code>dst/src/</code>). Mit trailing
+                slash: nur der <strong>Inhalt</strong> von <code>src</code> wandert nach
+                <code>dst</code>.</li>
+              <li>Mit <code>mv</code>: <code>mv altername neuername</code> im selben
+                Verzeichnis = Umbenennen.</li>
+              <li>Das löscht <strong>zwei separate Pfade</strong>: <code>/tmp</code> und
+                <code>/cache</code>. <code>/tmp</code> existiert und wird komplett geleert
+                — sehr schmerzhaft, vor allem für laufende Dienste.</li>
+              <li>Beide Aliase machen die Befehle interaktiv — sie fragen vor jeder
+                Löschung bzw. Überschreibung nach. Klassischer Sicherheitsnetz-Trick.</li>
+              <li><code>file</code> (z.B. <code>file /bin/ls</code>) — er liest die Magic
+                Number am Datei-Anfang.</li>
+              <li>Eine Datei <strong>live</strong> mitzulesen — neue Zeilen erscheinen sofort
+                am Bildschirm. Klassiker für Log-Überwachung in Echtzeit.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="08-navigation.html">
+        <span class="nav-eyebrow">← Kapitel 08</span>
+        <span class="nav-title">Navigation + Lab 1.1</span>
+      </a>
+      <a href="10-editoren.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 10 →</span>
+        <span class="nav-title">Editoren + Lab 1.2</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 09 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

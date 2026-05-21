@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 12 · Tages-Quiz &amp; Cheat-Sheet — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 12 von 12 · Finale</div>
+    <h1 class="page-title">
+      Tages-Quiz &amp; <span class="highlight">Cheat-Sheet</span>
+    </h1>
+    <p class="page-subtitle">
+      18 Fragen quer durch den Tag, eine ehrliche Selbsteinschätzung, eine
+      Befehls-Referenz zum Ausdrucken — und der Ausblick auf Tag 2.
+      Wer hier durchkommt, hat den ersten Linux-Tag gerockt.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 12</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> 18 Fragen</span>
+      <span class="meta-item"><span class="meta-item-icon">📋</span> Cheat-Sheet</span>
+      <span class="meta-item"><span class="meta-item-icon">🚀</span> Tag-2-Ausblick</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ QUIZ INTRO ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Tages-Quiz Tag 1</h2>
+        <span class="timeblock-badge badge-quiz">18 Fragen</span>
+      </div>
+
+      <div class="subblock">
+        <p>18 Fragen aus allen Kapiteln. Multiple Choice + Praxis-Fragen. Klicke auf
+        die Antwort, die du für richtig hältst — die UI zeigt sofort, ob das passt.
+        Ziel: <strong>mind. 15/18 richtig</strong> → du bist tagfit für die nächsten
+        Tage.</p>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p>Wer 15+ schafft, holt morgen den ersten virtuellen Kaffee ☕. Wer
+            10–14 hat, ist solide unterwegs. Bei &lt; 10 würde ich empfehlen,
+            die entsprechenden Kapitel nochmal kurz durchzuklicken.</p>
+          </div>
+        </div>
+
+        <div class="quiz-container">
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">01</span>Welches Zeichen steht für dein Home-Verzeichnis in der Shell?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">/</button>
+              <button class="quiz-option" data-correct="true">~</button>
+              <button class="quiz-option" data-correct="false">.</button>
+              <button class="quiz-option" data-correct="false">$</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">02</span>Was macht <code>cd -</code>?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Wechselt ins Home-Verzeichnis</button>
+              <button class="quiz-option" data-correct="false">Geht ein Verzeichnis nach oben</button>
+              <button class="quiz-option" data-correct="true">Springt zum vorherigen Verzeichnis zurück</button>
+              <button class="quiz-option" data-correct="false">Beendet die Shell</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">03</span>Welche <code>ls</code>-Option zeigt versteckte Dateien an?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">-l</button>
+              <button class="quiz-option" data-correct="true">-a</button>
+              <button class="quiz-option" data-correct="false">-h</button>
+              <button class="quiz-option" data-correct="false">-r</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">04</span>Welcher Befehl legt verschachtelte Verzeichnisse in einem Schritt an?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">mkdir -r a/b/c</button>
+              <button class="quiz-option" data-correct="true">mkdir -p a/b/c</button>
+              <button class="quiz-option" data-correct="false">touch -p a/b/c</button>
+              <button class="quiz-option" data-correct="false">mkdir -n a/b/c</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">05</span>Was unterscheidet <code>&gt;</code> von <code>&gt;&gt;</code>?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Gibt es keinen — sind identisch</button>
+              <button class="quiz-option" data-correct="true"><code>&gt;</code> überschreibt, <code>&gt;&gt;</code> hängt an</button>
+              <button class="quiz-option" data-correct="false"><code>&gt;</code> hängt an, <code>&gt;&gt;</code> überschreibt</button>
+              <button class="quiz-option" data-correct="false"><code>&gt;</code> ist für Fehler, <code>&gt;&gt;</code> für Ausgabe</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">06</span>Welche Wildcard steht für GENAU EIN Zeichen?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">*</button>
+              <button class="quiz-option" data-correct="true">?</button>
+              <button class="quiz-option" data-correct="false">[]</button>
+              <button class="quiz-option" data-correct="false">!</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">07</span>Wie löschst du ein Verzeichnis samt Inhalt?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">rmdir ordner</button>
+              <button class="quiz-option" data-correct="true">rm -r ordner</button>
+              <button class="quiz-option" data-correct="false">rm -i ordner</button>
+              <button class="quiz-option" data-correct="false">delete ordner</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">08</span>Wie leitest du nur Fehler (stderr) in eine Datei um?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">befehl &gt; fehler.log</button>
+              <button class="quiz-option" data-correct="false">befehl &gt;&gt; fehler.log</button>
+              <button class="quiz-option" data-correct="true">befehl 2&gt; fehler.log</button>
+              <button class="quiz-option" data-correct="false">befehl 1&gt; fehler.log</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">09</span>Welcher Editor ist auf Rocky-Minimal NICHT vorinstalliert?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">vi</button>
+              <button class="quiz-option" data-correct="true">nano</button>
+              <button class="quiz-option" data-correct="false">vim</button>
+              <button class="quiz-option" data-correct="false">cat</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">10</span>Welche Distribution nutzen wir in diesem Kurs?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Ubuntu</button>
+              <button class="quiz-option" data-correct="true">Rocky Linux 9</button>
+              <button class="quiz-option" data-correct="false">Arch Linux</button>
+              <button class="quiz-option" data-correct="false">Kali Linux</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">11</span>Wofür steht <code>pwd</code>?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">password</button>
+              <button class="quiz-option" data-correct="true">print working directory</button>
+              <button class="quiz-option" data-correct="false">previous working directory</button>
+              <button class="quiz-option" data-correct="false">put working data</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">12</span>Welcher Befehl zeigt, wer du bist?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">hostname</button>
+              <button class="quiz-option" data-correct="false">id-me</button>
+              <button class="quiz-option" data-correct="true">whoami</button>
+              <button class="quiz-option" data-correct="false">myname</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">13</span>Was bedeutet das Prompt-Zeichen <code>#</code>?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Du bist als normaler User eingeloggt</button>
+              <button class="quiz-option" data-correct="true">Du bist als <strong>root</strong> eingeloggt — Vorsicht!</button>
+              <button class="quiz-option" data-correct="false">Es ist ein Kommentar in der Shell</button>
+              <button class="quiz-option" data-correct="false">Du benutzt zsh statt bash</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">14</span>Welcher Type Hypervisor ist VMware Workstation Pro?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Type-1 (Bare-Metal)</button>
+              <button class="quiz-option" data-correct="true">Type-2 (Hosted)</button>
+              <button class="quiz-option" data-correct="false">Type-3 (Para-virtualisiert)</button>
+              <button class="quiz-option" data-correct="false">Type-0 (Hardware)</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">15</span>Welcher Netzwerkmodus ist am robustesten in fremden WLANs?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="true">NAT</button>
+              <button class="quiz-option" data-correct="false">Bridged</button>
+              <button class="quiz-option" data-correct="false">Host-Only</button>
+              <button class="quiz-option" data-correct="false">Bridged mit statischer IP</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">16</span>Was passiert bei <code>touch existing-file.txt</code>?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Die Datei wird gelöscht</button>
+              <button class="quiz-option" data-correct="false">Eine Fehlermeldung „file exists“</button>
+              <button class="quiz-option" data-correct="true">Die Zeitstempel atime und mtime werden auf JETZT gesetzt</button>
+              <button class="quiz-option" data-correct="false">Der Inhalt wird geleert</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">17</span>Wie verlässt du vim, falls du dich verirrt hast (Standardausweg)?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Strg+C, dann y</button>
+              <button class="quiz-option" data-correct="true">Esc, dann :q! und Enter</button>
+              <button class="quiz-option" data-correct="false">Strg+X, dann y</button>
+              <button class="quiz-option" data-correct="false">Strg+W, dann q</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-card">
+            <div class="quiz-question"><span class="quiz-question-number">18</span>Was bewirkt <code>cp /etc/hosts{,.bak}</code>?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">Es ist ein Syntaxfehler</button>
+              <button class="quiz-option" data-correct="true">Es legt eine Kopie <code>/etc/hosts.bak</code> an (Brace Expansion)</button>
+              <button class="quiz-option" data-correct="false">Es löscht die hosts-Datei</button>
+              <button class="quiz-option" data-correct="false">Es zeigt den Inhalt der Datei</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRAXIS-FRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🛠️</span>
+        <h2 class="timeblock-title">Praxis-Bonus: „Was ist falsch an diesem Befehl?“</h2>
+        <span class="timeblock-badge badge-quiz">Bonus</span>
+      </div>
+
+      <div class="subblock">
+        <p>Drei reale Befehle, die ein Anfänger geschrieben hat. Was passt jeweils
+        nicht? Erst selbst überlegen, dann Spoiler aufklappen.</p>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>P1: <code>rm -rf /tmp /cache</code></span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p><strong>Problem:</strong> Wegen des Leerzeichens nach <code>/tmp</code>
+            sind das <em>zwei separate Pfade</em>. <code>/tmp</code> wird komplett
+            geleert (autsch — laufende Dienste sind kaputt) und <code>/cache</code> sucht
+            der Befehl an der falschen Stelle (existiert meist gar nicht).</p>
+            <p><strong>Richtig wäre:</strong> <code>rm -rf /tmp/cache</code> — als ein
+            einziger Pfad ohne Leerzeichen.</p>
+          </div>
+        </div>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>P2: <code>cd Documents</code> — antwortet <em>„No such file or directory“</em></span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p><strong>Problem:</strong> Linux ist case-sensitiv. Der Ordner heißt
+            wahrscheinlich <code>documents</code> (klein) oder
+            <code>dokumente</code> (deutsch). <code>Documents</code> mit großem D ist
+            eine andere Datei.</p>
+            <p><strong>Lösung:</strong> Mit <code>ls -la ~</code> prüfen, wie der Ordner
+            wirklich heißt, oder Tab-Completion nutzen — die zeigt sofort die richtige
+            Schreibweise.</p>
+          </div>
+        </div>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>P3: <code>sudo echo "127.0.0.1 testhost" &gt;&gt; /etc/hosts</code></span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p><strong>Problem:</strong> Der Redirect <code>&gt;&gt;</code> wird von der
+            Shell ausgeführt — und die hat <em>kein</em> sudo. <code>sudo</code> hebt nur
+            <code>echo</code> auf root-Rechte, das schreibende <code>&gt;&gt;</code> aber
+            nicht. Ergebnis: „Permission denied“.</p>
+            <p><strong>Lösung:</strong>
+            <code>echo "127.0.0.1 testhost" | sudo tee -a /etc/hosts</code> —
+            <code>tee</code> übernimmt das Schreiben und wird mit sudo aufgerufen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHEAT-SHEET ============ -->
+    <section class="timeblock" id="cheatsheet">
+      <div class="timeblock-header">
+        <span class="timeblock-time">📋</span>
+        <h2 class="timeblock-title">Cheat-Sheet — alle Befehle des Tages</h2>
+        <span class="timeblock-badge badge-vortrag">Druckbar</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese Tabelle ausdrucken (oder die Seite als PDF speichern) und neben den
+        Bildschirm legen — das ist dein Begleiter für die nächsten Tage.</p>
+
+        <h4>Navigation &amp; Info</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>pwd</code></td><td>aktuelles Verzeichnis</td><td><code>pwd</code></td></tr>
+              <tr><td><code>cd</code></td><td>Verzeichnis wechseln</td><td><code>cd /etc</code></td></tr>
+              <tr><td><code>cd ~</code> / <code>cd</code></td><td>ins Home</td><td><code>cd</code></td></tr>
+              <tr><td><code>cd ..</code></td><td>ein Verzeichnis hoch</td><td><code>cd ..</code></td></tr>
+              <tr><td><code>cd -</code></td><td>vorheriges Verzeichnis</td><td><code>cd -</code></td></tr>
+              <tr><td><code>ls</code></td><td>Inhalt eines Verzeichnisses</td><td><code>ls</code></td></tr>
+              <tr><td><code>ls -la</code></td><td>Long + alle (auch versteckte)</td><td><code>ls -la /etc</code></td></tr>
+              <tr><td><code>ls -lh</code></td><td>Long + human-readable Größen</td><td><code>ls -lh</code></td></tr>
+              <tr><td><code>ls -lt</code></td><td>nach Zeit sortiert, neueste zuerst</td><td><code>ls -lt /var/log</code></td></tr>
+              <tr><td><code>ls -lS</code></td><td>nach Größe sortiert</td><td><code>ls -lhS</code></td></tr>
+              <tr><td><code>tree</code></td><td>Baum-Ansicht</td><td><code>tree -L 2 ~</code></td></tr>
+              <tr><td><code>whoami</code></td><td>eigener Username</td><td><code>whoami</code></td></tr>
+              <tr><td><code>hostname</code></td><td>Name der Maschine</td><td><code>hostname</code></td></tr>
+              <tr><td><code>date</code></td><td>Datum + Uhrzeit</td><td><code>date</code></td></tr>
+              <tr><td><code>uptime</code></td><td>wie lange läuft das System?</td><td><code>uptime</code></td></tr>
+              <tr><td><code>uname -a</code></td><td>Kernel-Infos</td><td><code>uname -a</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Dateien &amp; Verzeichnisse verwalten</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>touch DATEI</code></td><td>leere Datei / Zeitstempel ändern</td><td><code>touch a.txt</code></td></tr>
+              <tr><td><code>mkdir ORDNER</code></td><td>Verzeichnis erstellen</td><td><code>mkdir test</code></td></tr>
+              <tr><td><code>mkdir -p a/b/c</code></td><td>verschachtelt erstellen</td><td><code>mkdir -p p/2025/{q1..q4}</code></td></tr>
+              <tr><td><code>cp Q Z</code></td><td>Datei kopieren</td><td><code>cp orig.txt kopie.txt</code></td></tr>
+              <tr><td><code>cp -r Q Z</code></td><td>Ordner rekursiv kopieren</td><td><code>cp -r src/ backup/</code></td></tr>
+              <tr><td><code>cp -a Q Z</code></td><td>Kopie inkl. Rechten + Zeit</td><td><code>cp -a /etc /backup/</code></td></tr>
+              <tr><td><code>mv Q Z</code></td><td>verschieben / umbenennen</td><td><code>mv alt.txt neu.txt</code></td></tr>
+              <tr><td><code>rm DATEI</code></td><td>Datei löschen</td><td><code>rm tmp.log</code></td></tr>
+              <tr><td><code>rm -i DATEI</code></td><td>mit Nachfrage löschen</td><td><code>rm -i wichtig.txt</code></td></tr>
+              <tr><td><code>rm -r ORDNER</code></td><td>Ordner samt Inhalt</td><td><code>rm -r alt-projekt/</code></td></tr>
+              <tr><td><code>rmdir ORDNER</code></td><td>NUR leere Ordner</td><td><code>rmdir test/</code></td></tr>
+              <tr><td><code>file DATEI</code></td><td>Inhaltstyp anzeigen</td><td><code>file /bin/ls</code></td></tr>
+              <tr><td><code>stat DATEI</code></td><td>Detail-Infos (Inode, Zeit, Rechte)</td><td><code>stat /etc/hosts</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Anzeigen, Editieren, Anhängen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>cat DATEI</code></td><td>Inhalt komplett ausgeben</td><td><code>cat /etc/hostname</code></td></tr>
+              <tr><td><code>less DATEI</code></td><td>seitenweise anzeigen</td><td><code>less /var/log/messages</code></td></tr>
+              <tr><td><code>head DATEI</code></td><td>erste 10 Zeilen</td><td><code>head /etc/os-release</code></td></tr>
+              <tr><td><code>head -50 DATEI</code></td><td>erste N Zeilen</td><td><code>head -5 file.log</code></td></tr>
+              <tr><td><code>tail DATEI</code></td><td>letzte 10 Zeilen</td><td><code>tail /var/log/secure</code></td></tr>
+              <tr><td><code>tail -f DATEI</code></td><td>Datei LIVE mitlesen</td><td><code>tail -f nginx.log</code></td></tr>
+              <tr><td><code>nano DATEI</code></td><td>einfacher Editor</td><td><code>nano notes.txt</code></td></tr>
+              <tr><td><code>vim DATEI</code></td><td>Profi-Editor (Esc :q! Enter zum Verlassen)</td><td><code>vim config.yaml</code></td></tr>
+              <tr><td><code>wc DATEI</code></td><td>Zähle Zeilen/Wörter/Bytes</td><td><code>wc -l file.log</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Echo, Wildcards, Redirection</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl / Operator</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>echo TEXT</code></td><td>Text ausgeben</td><td><code>echo "Hi $USER"</code></td></tr>
+              <tr><td><code>echo -n</code></td><td>ohne Zeilenumbruch</td><td><code>echo -n "Frage: "</code></td></tr>
+              <tr><td><code>echo -e "..."</code></td><td>Escape-Sequenzen interpretieren</td><td><code>echo -e "a\nb"</code></td></tr>
+              <tr><td><code>*</code></td><td>Wildcard: viele Zeichen</td><td><code>ls *.log</code></td></tr>
+              <tr><td><code>?</code></td><td>Wildcard: 1 Zeichen</td><td><code>ls test?.txt</code></td></tr>
+              <tr><td><code>[abc]</code></td><td>Wildcard: 1 Zeichen aus Liste</td><td><code>ls test[135].txt</code></td></tr>
+              <tr><td><code>{1..10}</code></td><td>Brace Expansion: Range</td><td><code>touch f{1..10}.txt</code></td></tr>
+              <tr><td><code>{a,b,c}</code></td><td>Brace Expansion: Liste</td><td><code>mkdir {src,docs,tests}</code></td></tr>
+              <tr><td><code>&gt; DATEI</code></td><td>stdout in Datei (überschreibt)</td><td><code>ls &gt; out.txt</code></td></tr>
+              <tr><td><code>&gt;&gt; DATEI</code></td><td>stdout anhängen</td><td><code>date &gt;&gt; log.txt</code></td></tr>
+              <tr><td><code>2&gt; DATEI</code></td><td>stderr umleiten</td><td><code>ls /x 2&gt; err.log</code></td></tr>
+              <tr><td><code>&amp;&gt; DATEI</code></td><td>stdout + stderr</td><td><code>cmd &amp;&gt; all.log</code></td></tr>
+              <tr><td><code>&lt; DATEI</code></td><td>stdin aus Datei</td><td><code>sort &lt; liste.txt</code></td></tr>
+              <tr><td><code>|</code></td><td>Pipe: stdout → stdin</td><td><code>ls | wc -l</code></td></tr>
+              <tr><td><code>tee DATEI</code></td><td>stdout UND in Datei</td><td><code>ls | tee out.txt</code></td></tr>
+              <tr><td><code>/dev/null</code></td><td>schwarzes Loch</td><td><code>cmd &amp;&gt; /dev/null</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>System &amp; Pakete</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sudo BEFEHL</code></td><td>Befehl als root ausführen</td><td><code>sudo systemctl restart nginx</code></td></tr>
+              <tr><td><code>sudo -i</code></td><td>root-Shell öffnen (sparsam!)</td><td><code>sudo -i</code></td></tr>
+              <tr><td><code>dnf install X</code></td><td>Paket installieren (Rocky/RHEL)</td><td><code>sudo dnf install nano -y</code></td></tr>
+              <tr><td><code>dnf update</code></td><td>System aktualisieren</td><td><code>sudo dnf update -y</code></td></tr>
+              <tr><td><code>man BEFEHL</code></td><td>Handbuchseite</td><td><code>man ls</code></td></tr>
+              <tr><td><code>BEFEHL --help</code></td><td>Kurzhilfe</td><td><code>ls --help</code></td></tr>
+              <tr><td><code>which BEFEHL</code></td><td>Pfad eines Befehls</td><td><code>which python3</code></td></tr>
+              <tr><td><code>history</code></td><td>Befehls-History anzeigen</td><td><code>history | tail</code></td></tr>
+              <tr><td><code>!!</code></td><td>letzten Befehl wiederholen</td><td><code>sudo !!</code></td></tr>
+              <tr><td><code>cat /etc/os-release</code></td><td>welche Distro?</td><td>—</td></tr>
+              <tr><td><code>df -h</code></td><td>Festplatten-Belegung</td><td><code>df -h</code></td></tr>
+              <tr><td><code>free -h</code></td><td>RAM-Belegung</td><td><code>free -h</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TASTENKÜRZEL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">⌨️</span>
+        <h2 class="timeblock-title">Tastenkürzel-Sheet</h2>
+        <span class="timeblock-badge badge-vortrag">Speed</span>
+      </div>
+
+      <div class="subblock">
+        <h4>Bash / Terminal</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Tastenkürzel</th><th>Funktion</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Tab</code></td><td>Auto-Completion (Befehle, Dateien, Optionen)</td></tr>
+              <tr><td><code>Tab Tab</code></td><td>alle Möglichkeiten zeigen</td></tr>
+              <tr><td><code>Strg + C</code></td><td>aktuellen Befehl abbrechen</td></tr>
+              <tr><td><code>Strg + D</code></td><td>Shell verlassen (EOF)</td></tr>
+              <tr><td><code>Strg + L</code></td><td>Bildschirm leeren</td></tr>
+              <tr><td><code>Strg + R</code></td><td>Reverse-Search durch History ⭐</td></tr>
+              <tr><td><code>Strg + A</code></td><td>Cursor → Anfang der Zeile</td></tr>
+              <tr><td><code>Strg + E</code></td><td>Cursor → Ende der Zeile</td></tr>
+              <tr><td><code>Strg + U</code></td><td>Zeile vor Cursor löschen</td></tr>
+              <tr><td><code>Strg + K</code></td><td>Zeile nach Cursor löschen</td></tr>
+              <tr><td><code>Strg + W</code></td><td>vorheriges Wort löschen</td></tr>
+              <tr><td><code>Strg + Y</code></td><td>zuletzt Gelöschtes einfügen</td></tr>
+              <tr><td><code>↑ / ↓</code></td><td>History durchblättern</td></tr>
+              <tr><td><code>!!</code></td><td>letzten Befehl wiederholen</td></tr>
+              <tr><td><code>sudo !!</code></td><td>letzten Befehl mit sudo wiederholen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>nano</h4>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>Strg + O</code></td><td>Speichern</td></tr>
+              <tr><td><code>Strg + X</code></td><td>Beenden</td></tr>
+              <tr><td><code>Strg + W</code></td><td>Suchen</td></tr>
+              <tr><td><code>Strg + \</code></td><td>Suchen + Ersetzen</td></tr>
+              <tr><td><code>Strg + K</code></td><td>Zeile ausschneiden</td></tr>
+              <tr><td><code>Strg + U</code></td><td>Einfügen</td></tr>
+              <tr><td><code>Strg + G</code></td><td>Hilfe</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>vim (Survival)</h4>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>i</code></td><td>Insert-Modus (tippen)</td></tr>
+              <tr><td><code>Esc</code></td><td>zurück zum Normal-Modus</td></tr>
+              <tr><td><code>:w</code></td><td>speichern</td></tr>
+              <tr><td><code>:q</code></td><td>beenden (ohne Änderungen)</td></tr>
+              <tr><td><code>:wq</code></td><td>speichern + beenden</td></tr>
+              <tr><td><code>:q!</code></td><td>beenden + verwerfen</td></tr>
+              <tr><td><code>gg</code> / <code>G</code></td><td>Anfang / Ende</td></tr>
+              <tr><td><code>dd</code></td><td>Zeile löschen</td></tr>
+              <tr><td><code>yy</code></td><td>Zeile kopieren</td></tr>
+              <tr><td><code>p</code></td><td>einfügen</td></tr>
+              <tr><td><code>u</code></td><td>undo</td></tr>
+              <tr><td><code>/text</code></td><td>vorwärts suchen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ AUSBLICK TAG 2 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🚀</span>
+        <h2 class="timeblock-title">Ausblick: Was kommt an Tag 2?</h2>
+        <span class="timeblock-badge badge-vortrag">Vorschau</span>
+      </div>
+
+      <div class="subblock">
+        <p>Tag 1 war das <strong>Fundament</strong>. Du kannst dich orientieren,
+        Dateien verwalten und Befehle verkettenden. Tag 2 baut darauf auf — wir
+        gehen ins „echte Sysadmin-Land“:</p>
+
+        <ul>
+          <li><strong>Benutzer &amp; Gruppen</strong> — <code>useradd</code>, <code>passwd</code>,
+            <code>groupadd</code>, <code>/etc/passwd</code>, <code>/etc/shadow</code></li>
+          <li><strong>Berechtigungen</strong> — <code>chmod</code>, <code>chown</code>,
+            <code>chgrp</code>; rwx, oktale Notation (755, 644), SUID/SGID/Sticky</li>
+          <li><strong>Hard- und Softlinks</strong> — Inodes verstehen, <code>ln</code>,
+            <code>ln -s</code>, wann nutzt man was</li>
+          <li><strong>Archivieren &amp; Komprimieren</strong> — <code>tar</code>,
+            <code>gzip</code>, <code>bzip2</code>, <code>xz</code>; Backup-Workflows</li>
+          <li><strong>Suchen</strong> — <code>find</code> (mächtigster Befehl überhaupt),
+            <code>locate</code>, <code>which</code>, <code>whereis</code></li>
+          <li><strong>Text-Filterung</strong> — <code>grep</code>, <code>sed</code>,
+            <code>awk</code> in der Praxis</li>
+          <li><strong>Pipes vertiefen</strong> — <code>cut</code>, <code>sort</code>,
+            <code>uniq</code>, <code>wc</code> zusammenstecken</li>
+          <li><strong>Lab 2.x</strong> — Backup-Skript für HanovaTech bauen</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💼</div>
+          <div class="callout-content">
+            <div class="callout-title">Hausaufgabe für die nächsten Tage</div>
+            <p>Spiele 30 Minuten mit deiner Rocky-VM. Probier alles aus, was dir
+            einfällt. Wenn was kaputt geht — Snapshot zurück. Das ist genau der
+            Sinn der VM. Wer am Mittwoch mit Erinnerung an die Befehle vom Montag
+            kommt, hat Tag 2 schon halb gewonnen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Empfehlung für freiwillige Vertiefung</div>
+            <ul style="margin-top: 0.5rem;">
+              <li><a href="https://www.gnu.org/software/bash/manual/" target="_blank" rel="noopener">Bash Reference Manual</a> — die offizielle Bash-Doku</li>
+              <li><a href="https://man7.org/linux/man-pages/" target="_blank" rel="noopener">man7.org Manpages</a> — alle Linux-Manpages online</li>
+              <li><code>vimtutor</code> direkt in der VM starten — 30 Min, lohnt sich</li>
+              <li>Eine zweite VM mit Debian/Ubuntu aufsetzen — sehen, wo die Unterschiede zu Rocky liegen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABSCHLUSS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎉</span>
+        <h2 class="timeblock-title">Tag 1 — geschafft!</h2>
+        <span class="timeblock-badge badge-vortrag">Finale</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-tip">
+          <div class="callout-icon">🥳</div>
+          <div class="callout-content">
+            <div class="callout-title">Du hast heute richtig viel geschafft</div>
+            <ul style="margin-top: 0.5rem;">
+              <li>Verstehst, was ein Betriebssystem ist und woher Linux kommt</li>
+              <li>Kennst die wichtigsten Distros und kannst Rocky begründen</li>
+              <li>Hast eine VM aufgesetzt und Rocky Linux installiert</li>
+              <li>Bewegst dich sicher im Terminal mit Bash</li>
+              <li>Kennst den Filesystem Hierarchy Standard und seine Hauptverzeichnisse</li>
+              <li>Erstellst, kopierst, verschiebst, löschst Dateien und Ordner</li>
+              <li>Editierst Konfigurationen mit nano (und überlebst vim)</li>
+              <li>Setzt Wildcards und Redirection produktiv ein</li>
+            </ul>
+            <p style="margin-top: 0.8rem;">Das ist mehr Linux, als die meisten
+            IT-Studierenden in einem ganzen Semester lernen. Sei stolz drauf.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info" style="margin-top: 1.5rem;">
+          <div class="callout-icon">☕</div>
+          <div class="callout-content">
+            <div class="callout-title">Feierabend-Tipp</div>
+            <p>Bevor du den Laptop zuklappst: <strong>Snapshot deiner VM</strong>.
+            Nenn ihn <code>tag1-abschluss</code>. So weißt du morgen sicher, dass du
+            den gleichen sauberen Stand vorfindest, mit dem du heute aufgehört hast.</p>
+          </div>
+        </div>
+
+        <p style="margin-top: 2rem; text-align: center; font-size: 1.1rem;">
+          <strong>Bis morgen, frischer Linux-Admin. 🐧</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="11-wildcards.html">
+        <span class="nav-eyebrow">← Kapitel 11</span>
+        <span class="nav-title">Wildcards + Lab 1.3</span>
+      </a>
+      <a href="index.html" class="nav-next">
+        <span class="nav-eyebrow">↑ Tag 1 Übersicht</span>
+        <span class="nav-title">zurück zur Kapitel-Übersicht</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 12 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash · Tag 1 abgeschlossen</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

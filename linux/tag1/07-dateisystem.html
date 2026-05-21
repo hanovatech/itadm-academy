@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 07 · Dateisystem &amp; FHS — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 07 von 12</div>
+    <h1 class="page-title">
+      Dateisystem &amp; <span class="highlight">FHS</span> — der Verzeichnisbaum erklärt
+    </h1>
+    <p class="page-subtitle">
+      Auf Linux ist <em>alles</em> eine Datei. Und alle Dateien hängen an einem
+      einzigen Baum, dessen Aufbau seit 30 Jahren standardisiert ist: dem
+      Filesystem Hierarchy Standard. Wer ihn kennt, findet sich auf jedem
+      Linux-System sofort zurecht.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 07</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Theorie</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ FHS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.1</span>
+        <h2 class="timeblock-title">Was ist der Filesystem Hierarchy Standard?</h2>
+        <span class="timeblock-badge badge-vortrag">Theorie</span>
+      </div>
+
+      <div class="subblock">
+        <p>Der <strong>Filesystem Hierarchy Standard (FHS)</strong> ist ein Dokument
+        der <em>Linux Foundation</em>, das beschreibt, <strong>welches Verzeichnis
+        wofür da ist</strong> — in welchem Ordner Konfigurationen liegen müssen,
+        wohin Logs gehören, wo Benutzerprogramme installiert werden.</p>
+
+        <p>Die erste Version erschien <strong>1994</strong>, die aktuelle (Version
+        3.0) ist von 2015. Praktisch alle Linux-Distributionen halten sich daran.
+        Das hat einen großen Vorteil:</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🗺️</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum FHS gut für dich ist</div>
+            <p>Wenn du auf eine fremde Linux-Maschine kommst (egal ob Debian, Rocky
+            oder Alpine), weißt du <strong>vor dem ersten Befehl</strong>, wo du suchen
+            musst: <code>/etc</code> für Configs, <code>/var/log</code> für Logs,
+            <code>/home</code> für User-Daten. Das ist ein riesiger Vorteil gegenüber
+            Windows, wo ein Programm seine Daten in C:\Programme, C:\ProgramData,
+            HKEY_LOCAL_MACHINE und %APPDATA% gleichzeitig ablegen kann.</p>
+          </div>
+        </div>
+
+        <h4>Drei Leitprinzipien des FHS</h4>
+        <ol>
+          <li><strong>Trennung von „statisch“ und „variabel“.</strong> Software liegt in
+            Bereichen, die sich nicht ständig ändern (<code>/usr</code>). Daten und Logs
+            in Bereichen, die wachsen (<code>/var</code>).</li>
+          <li><strong>Trennung von „shareable“ und „unshareable“.</strong> Dinge, die
+            mehrere Rechner per Netz teilen können (<code>/usr</code>, <code>/home</code>)
+            werden anders behandelt als reine Lokal-Daten (<code>/etc</code>,
+            <code>/var/run</code>).</li>
+          <li><strong>Trennung von „Boot-relevant“ und „Rest“.</strong> Was schon vor dem
+            Mount von <code>/usr</code> nutzbar sein muss, liegt direkt unter
+            <code>/</code> (z.B. <code>/bin</code>, <code>/sbin</code>).</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ ALLES IST DATEI ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.2</span>
+        <h2 class="timeblock-title">„Alles ist eine Datei“ — die Unix-Philosophie</h2>
+        <span class="timeblock-badge badge-vortrag">Konzept</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine der radikalen Ideen aus den Bell Labs der 1970er war:
+        <strong>auch Geräte und Kommunikationskanäle sollen wie Dateien aussehen</strong>.
+        Damit kann man auf eine Festplatte, einen Drucker, eine USB-Maus, ja sogar
+        auf das Netzwerk mit denselben Befehlen zugreifen wie auf eine Textdatei.</p>
+
+        <h4>Was ist auf Linux alles eine „Datei“?</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Art</th><th>Symbol bei <code>ls -l</code></th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Reguläre Datei (Text, Binary, …)</td><td><code>-</code></td><td><code>/etc/hosts</code></td></tr>
+              <tr><td>Verzeichnis</td><td><code>d</code></td><td><code>/etc</code></td></tr>
+              <tr><td>Symbolischer Link (Softlink)</td><td><code>l</code></td><td><code>/etc/os-release → ../usr/lib/os-release</code></td></tr>
+              <tr><td>Block-Device (Festplatte)</td><td><code>b</code></td><td><code>/dev/sda</code></td></tr>
+              <tr><td>Character-Device (Tastatur, Maus, Pipe)</td><td><code>c</code></td><td><code>/dev/tty1</code>, <code>/dev/null</code></td></tr>
+              <tr><td>Named Pipe (FIFO)</td><td><code>p</code></td><td>selten direkt sichtbar</td></tr>
+              <tr><td>Socket</td><td><code>s</code></td><td><code>/run/systemd/notify</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Demonstration: die Tastatur als Datei lesen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># /dev/random ist eine Datei voller Zufallszahlen
+head -c 16 /dev/random | xxd
+
+# /dev/null ist die berühmte "Mülltonne" — was rein geht, ist weg
+echo "Geheim" &gt; /dev/null
+
+# /dev/zero liefert unendlich viele Null-Bytes
+head -c 1024 /dev/zero | wc -c</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Mentales Modell</div>
+            <p>Wenn du in Linux einen Drucker ansprichst, schreibst du in eine Datei
+            unter <code>/dev/</code>. Wenn du das Netzwerk konfigurierst, schreibst du in
+            eine Datei in <code>/sys/class/net/</code>. Das ist die <strong>große
+            Eleganz</strong> von Unix: ein Werkzeug-Set für viele Aufgaben.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BAUM ÜBERSICHT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.3</span>
+        <h2 class="timeblock-title">Der Linux-Verzeichnisbaum auf einen Blick</h2>
+        <span class="timeblock-badge badge-vortrag">Übersicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Alles unter Linux hängt an einer einzigen Wurzel: <code>/</code> (gesprochen
+        „Slash“ oder „Root“). Es gibt KEINE Laufwerksbuchstaben wie C: oder D:. Eine
+        zweite Festplatte wird einfach <em>irgendwo in den Baum</em> gemountet.</p>
+
+        <div class="ascii-box">  /                       ← Wurzel (Root-Verzeichnis)
+  │
+  ├── bin/                Standard-Benutzerbefehle (heute Symlink zu /usr/bin)
+  ├── sbin/               System-Befehle für root (Symlink zu /usr/sbin)
+  ├── boot/               Kernel, initramfs, GRUB
+  ├── dev/                Gerätedateien (alles ist eine Datei!)
+  ├── etc/                Systemweite Konfigurationsdateien
+  ├── home/               User-Heimatverzeichnisse
+  │   ├── admin/
+  │   └── meier/
+  ├── lib/                Bibliotheken (Symlink zu /usr/lib)
+  ├── lib64/              64-Bit-Bibliotheken (Symlink zu /usr/lib64)
+  ├── media/              automatische Mountpoints für Wechselmedien
+  ├── mnt/                manueller Mountpunkt
+  ├── opt/                optionale „große“ Drittsoftware (z.B. /opt/oracle)
+  ├── proc/               virtuelles Dateisystem — Prozesse &amp; Kernel
+  ├── root/               Home-Verzeichnis des root-Users
+  ├── run/                Laufzeit-Daten (PIDs, Sockets) — wird beim Boot geleert
+  ├── srv/                Daten von Servern (selten genutzt)
+  ├── sys/                virtuelles Dateisystem — Hardware-Informationen
+  ├── tmp/                temporäre Dateien — werden regelmäßig gelöscht
+  ├── usr/                "Userland" — Programme, Bibliotheken, Doku
+  │   ├── bin/            Programme für normale User
+  │   ├── sbin/           Programme für Admins
+  │   ├── lib/            Bibliotheken
+  │   ├── local/          lokal installierte (nicht-Paketmanager-) Software
+  │   └── share/          architektur-unabhängige Daten (Manpages, Icons)
+  └── var/                veränderliche Daten — Logs, Caches, Datenbanken
+      ├── log/            Systemlogs
+      ├── www/            Webserver-Daten
+      └── spool/          Druckaufträge, Mail, cron-Queues</div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Achtung: <code>/</code> ≠ <code>/root</code></div>
+            <p>Das ist eine der häufigsten Verwechslungen für Einsteiger:
+            <strong><code>/</code></strong> ist das <em>Root-Verzeichnis</em> (die Wurzel
+            des Dateisystems). <strong><code>/root</code></strong> ist das <em>Home-Verzeichnis
+            des Users „root“</em>. Zwei völlig verschiedene Dinge mit ähnlichem Namen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BIN SBIN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.4</span>
+        <h2 class="timeblock-title"><code>/bin</code> · <code>/sbin</code> · <code>/usr/bin</code> · <code>/usr/sbin</code></h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese vier Verzeichnisse beherbergen die <strong>ausführbaren Programme</strong>.
+        Der Unterschied erklärt sich aus zwei Achsen: <em>User vs. Admin</em> und
+        <em>Boot-essenziell vs. Rest</em>.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Verzeichnis</th><th>Für wen?</th><th>Wofür?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/bin</code></td><td>Alle User</td><td>Boot-essenzielle User-Befehle: <code>ls</code>, <code>cp</code>, <code>cat</code>, <code>bash</code></td></tr>
+              <tr><td><code>/sbin</code></td><td>Root / Admins</td><td>Boot-essenzielle System-Befehle: <code>mount</code>, <code>fsck</code>, <code>shutdown</code></td></tr>
+              <tr><td><code>/usr/bin</code></td><td>Alle User</td><td>Sonstige User-Befehle: <code>git</code>, <code>vim</code>, <code>python3</code></td></tr>
+              <tr><td><code>/usr/sbin</code></td><td>Root / Admins</td><td>Sonstige Admin-Tools: <code>nginx</code>, <code>useradd</code>, <code>dnf</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🔗</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon? — Warum es <code>/bin</code> UND <code>/usr/bin</code> gibt</div>
+            <p>Bei modernen Distros (Rocky 9, Fedora 17+, Ubuntu 20.04+) sind <code>/bin</code>,
+            <code>/sbin</code>, <code>/lib</code>, <code>/lib64</code> nur noch
+            <strong>Symlinks</strong> nach <code>/usr/bin</code>, <code>/usr/sbin</code>,
+            <code>/usr/lib</code>, <code>/usr/lib64</code>. Das nennt sich
+            <em>„UsrMerge“</em>.</p>
+            <p style="margin-top: 0.6rem;">Historischer Grund: In den 1970ern war
+            <code>/</code> auf einer kleinen, schnellen Disk, <code>/usr</code> auf einer
+            großen, langsamen Disk. Booten mit der schnellen Disk → essenzielle Tools in
+            <code>/bin</code>. Heute irrelevant — daher die Zusammenführung.</p>
+            <p style="margin-top: 0.6rem;">Auf Rocky 9 prüfe es mit <code>ls -l /</code> —
+            du wirst <code>bin -> usr/bin</code> sehen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /ETC ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.5</span>
+        <h2 class="timeblock-title"><code>/etc</code> — das Herz der Konfiguration</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong><code>/etc</code></strong> (von et cetera, „und so weiter“) enthält
+        die <strong>systemweiten Konfigurationsdateien</strong>. Wenn du irgendwo auf
+        einem Linux-Server etwas konfigurieren willst, fängst du in
+        <code>/etc</code> an zu suchen.</p>
+
+        <h4>Wichtige Dateien und Unterordner</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Was steht drin?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/etc/passwd</code></td><td>Liste aller User-Accounts (öffentlich lesbar)</td></tr>
+              <tr><td><code>/etc/shadow</code></td><td>Verschlüsselte Passwörter (nur root)</td></tr>
+              <tr><td><code>/etc/group</code></td><td>Gruppen und ihre Mitglieder</td></tr>
+              <tr><td><code>/etc/hostname</code></td><td>Name dieser Maschine</td></tr>
+              <tr><td><code>/etc/hosts</code></td><td>lokale Namensauflösung (vor DNS)</td></tr>
+              <tr><td><code>/etc/resolv.conf</code></td><td>DNS-Server-Konfiguration</td></tr>
+              <tr><td><code>/etc/fstab</code></td><td>Mount-Tabelle: was wird beim Boot gemountet?</td></tr>
+              <tr><td><code>/etc/sudoers</code></td><td>wer darf was via sudo?</td></tr>
+              <tr><td><code>/etc/ssh/sshd_config</code></td><td>SSH-Server-Einstellungen</td></tr>
+              <tr><td><code>/etc/systemd/</code></td><td>systemd-Unit-Dateien (Dienste)</td></tr>
+              <tr><td><code>/etc/dnf/</code></td><td>Paketmanager-Konfiguration</td></tr>
+              <tr><td><code>/etc/os-release</code></td><td>Welche Distro und welche Version?</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Goldene Regel</div>
+            <p>Bevor du in <code>/etc</code> eine Datei änderst, mach ein Backup:
+            <code>sudo cp /etc/datei /etc/datei.bak</code>. Wenn du dich verkonfigurierst,
+            ist die Original-Datei einen Befehl weit weg.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /HOME /ROOT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.6</span>
+        <h2 class="timeblock-title"><code>/home</code> und <code>/root</code> — wo die User wohnen</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong><code>/home</code></strong> enthält die <strong>Heimatverzeichnisse</strong>
+        aller normalen User. Jeder User <code>tn01</code> bekommt automatisch
+        <code>/home/tn01/</code>. Dort liegen seine Dateien, sein Browser-Profil,
+        seine Mailbox.</p>
+
+        <p><strong><code>/root</code></strong> ist eine Ausnahme: das Home-Verzeichnis
+        des <strong>root-Users</strong> liegt direkt unter der Wurzel, nicht in
+        <code>/home</code>. Begründung: <code>/home</code> könnte ein gemountetes
+        Netzwerk-Volume sein (NFS, AD-Profile). Wenn der Mount fehlschlägt, soll root
+        sich trotzdem einloggen und reparieren können.</p>
+
+        <h4>Was liegt im Home?</h4>
+        <p>Typischerweise versteckte Konfigurationsdateien („Dotfiles“, beginnen mit
+        Punkt) und sichtbare User-Ordner:</p>
+
+        <div class="ascii-box">  /home/admin/
+  ├── .bashrc           ← Bash-Konfiguration (Aliase, PS1, …)
+  ├── .bash_history     ← Historie der Befehle
+  ├── .bash_profile     ← Login-Shell-Setup
+  ├── .ssh/             ← SSH-Keys und known_hosts
+  │   ├── id_ed25519
+  │   └── authorized_keys
+  ├── .config/          ← Anwendungs-Configs (XDG-Standard)
+  ├── Documents/
+  ├── Downloads/
+  └── projekte/</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📁</div>
+          <div class="callout-content">
+            <div class="callout-title">Tilde — <code>~</code></div>
+            <p>Das Zeichen <code>~</code> ist ein Kürzel für „mein eigenes Home“.
+            <code>cd ~</code> bringt dich direkt rein, <code>cd ~/projekte</code> ins
+            Projekte-Verzeichnis. <code>~admin</code> wäre das Home von User admin.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /VAR ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.7</span>
+        <h2 class="timeblock-title"><code>/var</code> — alles, was sich verändert</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong><code>/var</code></strong> (von <em>variable</em>) ist der Container
+        für alle Daten, die sich während des laufenden Betriebs <strong>ändern</strong>.
+        Wenn dein System gerade einfriert, liegt der Fehler statistisch wahrscheinlich
+        in einem überlaufenden <code>/var</code>.</p>
+
+        <h4>Wichtige Unterverzeichnisse</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Inhalt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/var/log/</code></td><td>Systemlogs: <code>messages</code>, <code>secure</code>, <code>journal/</code></td></tr>
+              <tr><td><code>/var/www/</code></td><td>Webserver-Daten (Apache, nginx)</td></tr>
+              <tr><td><code>/var/lib/</code></td><td>persistenter Status von Diensten (z.B. <code>/var/lib/mysql</code>)</td></tr>
+              <tr><td><code>/var/cache/</code></td><td>regenerierbare Caches (dnf-Pakete, Browser-Cache)</td></tr>
+              <tr><td><code>/var/spool/</code></td><td>Warteschlangen: Druck, Mail, cron-Jobs</td></tr>
+              <tr><td><code>/var/tmp/</code></td><td>temporäre Dateien — anders als <code>/tmp</code>: <strong>überlebt Reboots</strong></td></tr>
+              <tr><td><code>/var/mail/</code></td><td>Mailboxen lokaler User</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Klassiker-Fehler: <code>/var/log</code> läuft voll</div>
+            <p>Wenn ein Dienst plötzlich extrem viele Logs schreibt (z.B. eine
+            DDoS-Attacke auf nginx), kann <code>/var/log</code> die Festplatte voll
+            machen und das System lahmlegen. Deshalb gehört <code>/var</code> in
+            Produktion auf eine <strong>eigene Partition</strong> — dann kann
+            es notfalls vollaufen ohne dass <code>/</code> davon betroffen ist.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /TMP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.8</span>
+        <h2 class="timeblock-title"><code>/tmp</code> — temporär heißt wirklich temporär</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>/tmp</code> ist der <strong>Mülleimer für kurzlebige Daten</strong>.
+        Jeder User darf dort schreiben. Bei Rocky/RHEL ist <code>/tmp</code> ein
+        sogenanntes <strong>tmpfs</strong> — ein RAM-basiertes Dateisystem:</p>
+
+        <ul>
+          <li>Liegt im <strong>Arbeitsspeicher</strong>, nicht auf der Disk</li>
+          <li>Wird beim <strong>Reboot vollständig geleert</strong></li>
+          <li>Standard-Größe: meist die Hälfte des verfügbaren RAM</li>
+          <li>Schnell, weil RAM, aber begrenzt</li>
+        </ul>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Anschauen ob /tmp tmpfs ist
+findmnt /tmp
+
+# Sieht etwa so aus:
+# TARGET SOURCE FSTYPE OPTIONS
+# /tmp   tmpfs  tmpfs  rw,nosuid,nodev,size=...</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🔄</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>/tmp</code> vs. <code>/var/tmp</code></div>
+            <p><strong><code>/tmp</code></strong> = kurzlebig, geht beim Reboot weg
+            (tmpfs).<br>
+            <strong><code>/var/tmp</code></strong> = etwas länger lebig, übersteht
+            Reboots, wird aber auch irgendwann (~30 Tage) automatisch geleert.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /OPT vs /USR/LOCAL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.9</span>
+        <h2 class="timeblock-title"><code>/opt</code> vs. <code>/usr/local</code> — wohin mit eigener Software?</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wenn du Software installierst, die <strong>nicht aus dem Paketmanager</strong>
+        kommt, hast du zwei traditionelle Orte:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Wofür?</th><th>Beispiele</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>/opt</code></strong></td>
+                <td>Große, geschlossene <em>Komplettpakete</em> einer Drittfirma, die
+                    ihren eigenen Ordner mitbringen</td>
+                <td><code>/opt/oracle</code>, <code>/opt/google/chrome</code>, <code>/opt/zoom</code></td>
+              </tr>
+              <tr>
+                <td><strong><code>/usr/local</code></strong></td>
+                <td>Selbst kompilierte Open-Source-Software, die sich in das normale
+                    FHS-Schema einfügt (<code>/usr/local/bin</code>, <code>/usr/local/lib</code>, …)</td>
+                <td>Eigene <code>./configure &amp;&amp; make install</code>-Builds</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel</div>
+            <p>Hat die Software ein klassisches <code>bin/</code>, <code>lib/</code>,
+            <code>share/</code>-Layout? → <strong><code>/usr/local</code></strong>. Ist sie
+            ein abgeschlossener Klumpen, der gerne in einem einzigen Verzeichnis lebt
+            (z.B. eine 2-GB-Java-Anwendung)? → <strong><code>/opt</code></strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /DEV /PROC /SYS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.10</span>
+        <h2 class="timeblock-title">Die magischen Verzeichnisse: <code>/dev</code>, <code>/proc</code>, <code>/sys</code></h2>
+        <span class="timeblock-badge badge-vortrag">Faszinierend</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese drei Verzeichnisse <strong>existieren auf der Disk gar nicht</strong>.
+        Sie werden vom Kernel zur Laufzeit gefüllt — wie virtuelle Fenster ins
+        Innere des Systems.</p>
+
+        <h4><code>/dev</code> — Gerätedateien</h4>
+        <p>Jedes Gerät, das der Kernel kennt, hat eine Datei in <code>/dev</code>:</p>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>/dev/sda</code></td><td>erste Festplatte (SATA/SCSI)</td></tr>
+              <tr><td><code>/dev/sda1</code></td><td>erste Partition auf /dev/sda</td></tr>
+              <tr><td><code>/dev/nvme0n1</code></td><td>erste NVMe-SSD</td></tr>
+              <tr><td><code>/dev/null</code></td><td>die berühmte „Mülltonne“ — alles, was hineingeht, ist weg</td></tr>
+              <tr><td><code>/dev/zero</code></td><td>liefert unendlich viele Null-Bytes</td></tr>
+              <tr><td><code>/dev/random</code></td><td>kryptografisch sicherer Zufall</td></tr>
+              <tr><td><code>/dev/urandom</code></td><td>schneller Zufall, für die meisten Zwecke ausreichend</td></tr>
+              <tr><td><code>/dev/tty1</code></td><td>erste virtuelle Konsole</td></tr>
+              <tr><td><code>/dev/pts/0</code></td><td>SSH/Terminal-Session</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4><code>/proc</code> — Prozess- und Kernel-Infos</h4>
+        <p><code>/proc</code> ist ein virtuelles Dateisystem (<code>procfs</code>), das den
+        aktuellen Zustand von Prozessen und Kernel als „Dateien“ ausgibt:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>cat /proc/cpuinfo       # alles über deine CPU
+cat /proc/meminfo       # alles über den RAM
+cat /proc/version       # Kernel-Version
+cat /proc/uptime        # wie lange läuft das System?
+
+# Jeder Prozess hat ein Unterverzeichnis mit seiner PID:
+ls /proc/1/             # alles über Prozess 1 (systemd)
+cat /proc/1/cmdline     # mit welchen Argumenten wurde systemd gestartet?</code></pre>
+        </div>
+
+        <h4><code>/sys</code> — Hardware-Informationen</h4>
+        <p><code>/sys</code> (sysfs) zeigt die Hardware-Sicht des Kernels. Du kannst
+        z.B. einzelne CPU-Kerne aus- und einschalten:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Block-Devices anschauen
+ls /sys/block/
+
+# Netzwerk-Interfaces
+ls /sys/class/net/
+
+# Aktueller CPU-Takt
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon?</div>
+            <p>Wenn du <code>cat /proc/cpuinfo</code> tippst, gibt es diese Datei
+            <strong>nirgendwo auf der Festplatte</strong>. Der Kernel erzeugt den Inhalt
+            in dem Moment, in dem du ihn anforderst — direkt aus seinen internen
+            Strukturen. Das ist die elegante Umsetzung von „alles ist eine Datei“ auf
+            Kernel-Internas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /BOOT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.11</span>
+        <h2 class="timeblock-title"><code>/boot</code> — Kernel und Bootloader</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>/boot</code> enthält alles, was zum <strong>Starten des Systems</strong>
+        nötig ist:</p>
+
+        <ul>
+          <li><strong>Kernel-Images</strong> (<code>vmlinuz-…</code>) — der Linux-Kernel selbst</li>
+          <li><strong>initramfs</strong> (<code>initramfs-…</code>) — RAM-Disk mit Boot-Treibern</li>
+          <li><strong>GRUB-Konfiguration</strong> (<code>grub2/</code>) — Bootloader-Menü</li>
+          <li>auf UEFI-Systemen: <code>/boot/efi/</code> mit EFI-Bootloadern</li>
+        </ul>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Vorsicht!</div>
+            <p>Wenn du <code>/boot</code> mit alten Kernel-Versionen vollmüllst (passiert
+            nach vielen Updates), bekommt das nächste Kernel-Update keinen Platz mehr und
+            schlägt fehl. Lösung: alte Kernels aufräumen mit <code>sudo dnf
+            remove $(dnf repoquery --installonly --latest-limit=-2 -q)</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ /MNT /MEDIA ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.12</span>
+        <h2 class="timeblock-title"><code>/mnt</code> und <code>/media</code> — Mounten von Devices</h2>
+        <span class="timeblock-badge badge-vortrag">Detail</span>
+      </div>
+
+      <div class="subblock">
+        <p>Linux kennt keine Laufwerksbuchstaben. Eine zweite Festplatte oder ein
+        USB-Stick wird <strong>gemountet</strong> — also an einer Stelle in den Baum
+        eingehängt. Zwei Standard-Punkte gibt es dafür:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Wofür?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>/media</code></strong></td>
+                <td>Automatisch gemountete Wechselmedien — USB-Stick, externe Disk, CD-ROM.
+                    Der Desktop hängt die Geräte dort ein.</td>
+              </tr>
+              <tr>
+                <td><strong><code>/mnt</code></strong></td>
+                <td>Manuell gemountete Filesysteme. Reserviert für temporäre Admin-Mounts:
+                    <code>mount /dev/sdb1 /mnt</code> zum schnellen Datenrettungs-Job.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Alle aktuell gemounteten Dateisysteme anzeigen
+mount
+
+# Übersichtlicher
+df -h
+
+# Tree-Ansicht der Mounts
+findmnt</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRAXIS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">7.13</span>
+        <h2 class="timeblock-title">Mach mit: rein in den Baum</h2>
+        <span class="timeblock-badge badge-action">Praxis</span>
+      </div>
+
+      <div class="subblock">
+        <p>Jetzt selbst schauen, bevor wir in Kapitel 8 mit Navigation richtig
+        einsteigen. Tipp die Befehle ab — bitte nichts ändern, nur lesen.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Top-Level-Verzeichnisse ansehen
+ls /
+
+# Mit Long-Listing — siehst du die Symlinks (l) und Verzeichnisse (d)?
+ls -l /
+
+# Was ist in /etc?
+ls /etc/
+
+# Welche Distro läuft hier?
+cat /etc/os-release
+
+# Wer kann sich einloggen?
+cat /etc/passwd
+
+# Wie viel RAM hat das System?
+cat /proc/meminfo | head
+
+# Welche Disks sind angeschlossen?
+ls /dev/sd*  2&gt;/dev/null
+ls /dev/nvme* 2&gt;/dev/null</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wofür steht das Akronym <strong>FHS</strong> und wozu ist es da?</li>
+          <li>Erkläre die Unix-Philosophie „alles ist eine Datei“ in einem Satz.</li>
+          <li>Was ist der Unterschied zwischen <code>/</code> und <code>/root</code>?</li>
+          <li>Was steht in <code>/etc</code>?</li>
+          <li>Warum gibt es <code>/bin</code> und <code>/usr/bin</code> — und was hat sich daran auf modernen Distros geändert?</li>
+          <li>Was ist <code>/proc</code> und wo liegen die Dateien dort physisch?</li>
+          <li>Welcher Unterschied besteht zwischen <code>/tmp</code> und <code>/var/tmp</code>?</li>
+          <li>Wann nutzt man <code>/opt</code>, wann <code>/usr/local</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>Filesystem Hierarchy Standard</strong>. Standardisiert, welche
+                Verzeichnisse wofür da sind, sodass jede Linux-Distro ähnlich aufgebaut ist
+                und Admins sich überall zurechtfinden.</li>
+              <li>Auf Unix/Linux sind nicht nur Texte, sondern auch Geräte, Prozesse und
+                Kommunikationskanäle als Dateien dargestellt — damit man sie mit denselben
+                Werkzeugen lesen und schreiben kann.</li>
+              <li><code>/</code> = Wurzel des gesamten Dateisystems. <code>/root</code> =
+                Home-Verzeichnis speziell des Users „root“. Zwei unterschiedliche Dinge mit
+                ähnlichem Namen.</li>
+              <li>Systemweite Konfigurationsdateien (z.B. <code>/etc/passwd</code>,
+                <code>/etc/hosts</code>, <code>/etc/ssh/sshd_config</code>).</li>
+              <li>Historisch: <code>/</code> auf kleiner Boot-Disk, <code>/usr</code> auf
+                großer Daten-Disk. Auf modernen Distros (Rocky 9, Fedora 17+, Ubuntu 20.04+)
+                sind <code>/bin</code>, <code>/sbin</code> &amp; Co. nur noch <strong>Symlinks</strong>
+                nach <code>/usr/bin</code> usw. — der UsrMerge.</li>
+              <li><code>/proc</code> ist ein <strong>virtuelles Dateisystem (procfs)</strong>,
+                das vom Kernel zur Laufzeit erzeugt wird. Die Dateien dort liegen
+                <strong>nicht auf der Disk</strong>, sondern werden bei jedem Zugriff aus den
+                internen Kernel-Strukturen generiert.</li>
+              <li><code>/tmp</code> ist meist tmpfs (im RAM) und wird beim Reboot komplett
+                geleert. <code>/var/tmp</code> liegt auf Disk und übersteht Reboots, wird aber
+                nach ca. 30 Tagen automatisch aufgeräumt.</li>
+              <li><code>/opt</code> = große geschlossene Drittpakete mit eigenem Verzeichnis-Layout
+                (z.B. Oracle). <code>/usr/local</code> = selbst kompilierte Open-Source-Software,
+                die sich in das klassische bin/lib/share-Schema einpasst.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="06-terminal.html">
+        <span class="nav-eyebrow">← Kapitel 06</span>
+        <span class="nav-title">Terminal, Shell &amp; Bash</span>
+      </a>
+      <a href="08-navigation.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 08 →</span>
+        <span class="nav-title">Navigation + Lab 1.1</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 07 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

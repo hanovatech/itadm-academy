@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 05 · Rocky Linux Installation — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 05 von 12</div>
+    <h1 class="page-title">
+      Rocky Linux <span class="highlight">Installation</span> mit Anaconda
+    </h1>
+    <p class="page-subtitle">
+      Schritt für Schritt von der leeren VM zum frisch installierten Server.
+      Wir gehen den Anaconda-Installer durch, klären die Partitionierung,
+      richten User und Netzwerk korrekt ein — und vermeiden die fünf
+      häufigsten Anfänger-Fallen.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 05</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Lesezeit + 25 min Install</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Aktion</span>
+    </div>
+  </section>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">📋</div>
+    <div class="callout-content">
+      <div class="callout-title">Voraussetzungen</div>
+      <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+        <li>VMware Workstation Pro installiert (oder VirtualBox)</li>
+        <li>Rocky Linux 9 — Minimal ISO heruntergeladen (~2 GB)</li>
+        <li>VM angelegt: 2 vCPU, 2 GB RAM, 20 GB Disk, Netzwerk NAT</li>
+        <li>VT-x bzw. AMD-V im BIOS aktiv (siehe Kapitel 04)</li>
+      </ul>
+    </div>
+  </div>
+
+  <article>
+
+    <!-- ============ ANACONDA ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.1</span>
+        <h2 class="timeblock-title">Was ist Anaconda?</h2>
+        <span class="timeblock-badge badge-vortrag">Theorie</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Anaconda</strong> ist der grafische Installer der Red-Hat-Familie
+        (RHEL, Rocky, AlmaLinux, Fedora). Wenn du irgendwann an einer dieser Distros
+        sitzt, siehst du immer die gleiche Oberfläche. Wer Anaconda einmal verstanden
+        hat, kann jede Red-Hat-Maschine aufsetzen.</p>
+
+        <p>Anaconda ist überraschend mächtig:</p>
+        <ul>
+          <li><strong>Interaktiv</strong> wie bei uns — du klickst dich durch</li>
+          <li><strong>Automatisch</strong> per <code>Kickstart</code>-Datei (Massen-Rollout in Firmen)</li>
+          <li><strong>Text-Modus</strong> für Server ohne Grafik</li>
+          <li>Unterstützt <strong>LVM</strong>, <strong>RAID</strong>, <strong>Verschlüsselung</strong> und mehr</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🐍</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon?</div>
+            <p>Der Installer heißt Anaconda — wie die Schlange. Den Namen hat er nicht
+            zufällig: Er ist komplett in <strong>Python</strong> geschrieben (und Python
+            wiederum heißt nach der Komikertruppe Monty Python). Die Python-Distribution
+            für Data Science <em>"Anaconda"</em> hat damit übrigens nichts zu tun — beide
+            haben den Namen unabhängig voneinander gewählt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BOOT INS INSTALLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.2</span>
+        <h2 class="timeblock-title">VM starten und ins Boot-Menü</h2>
+        <span class="timeblock-badge badge-action">Aktion</span>
+      </div>
+
+      <div class="subblock">
+        <ol>
+          <li>In VMware Workstation die VM anklicken → <strong>Power on this virtual machine</strong></li>
+          <li>Das schwarze BIOS-Bild blitzt kurz auf — die VM versucht, von der ISO zu booten</li>
+          <li>Es erscheint das blau-graue Rocky-Boot-Menü mit drei Optionen:</li>
+        </ol>
+
+        <div class="ascii-box">  ┌──────────────────────────────────────────────────┐
+  │  Rocky Linux 9                                   │
+  │                                                  │
+  │    Install Rocky Linux 9          ← unsere Wahl  │
+  │    Test this media & install Rocky Linux 9       │
+  │    Troubleshooting →                             │
+  │                                                  │
+  │  Press Tab for full configuration options ...    │
+  └──────────────────────────────────────────────────┘</div>
+
+        <p>Mit den <strong>Pfeiltasten</strong> auf <em>"Install Rocky Linux 9"</em>
+        und <strong>Enter</strong>. Der Kernel wird geladen, du siehst weißen Text
+        auf schwarzem Grund (das ist normal). Nach 20–60 Sekunden öffnet sich die
+        grafische Anaconda-Oberfläche.</p>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Wenn die VM die ISO nicht findet</div>
+            <p>Falls du sofort eine Meldung wie <em>"No bootable device"</em> siehst:
+            VM herunterfahren → Settings → CD/DVD → <strong>"Connect at power on"</strong>
+            anhaken und die ISO-Datei erneut auswählen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SPRACHE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.3</span>
+        <h2 class="timeblock-title">Sprache &amp; Tastaturlayout</h2>
+        <span class="timeblock-badge badge-action">Schritt 1</span>
+      </div>
+
+      <div class="subblock">
+        <p>Anaconda startet mit der Frage nach der Installations-Sprache. Das ist
+        die Sprache des <strong>Installers</strong> — nicht zwingend die spätere
+        Sprache des Systems (lässt sich aber gleichschalten).</p>
+
+        <ol>
+          <li>In der Liste links auf <strong>Deutsch (Deutschland)</strong> klicken</li>
+          <li>Rechts <strong>Deutsch (Deutschland)</strong> als Region wählen</li>
+          <li>Unten rechts auf <strong>Fortfahren</strong> klicken</li>
+        </ol>
+
+        <p>Du landest in der <strong>Installations-Übersicht</strong> — dem zentralen
+        Anaconda-Bildschirm mit 8 Kacheln. Punkte mit einem orangefarbenen
+        Ausrufezeichen ⚠️ <strong>müssen</strong> noch konfiguriert werden, bevor du
+        installieren kannst.</p>
+
+        <div class="ascii-box">  ┌─────────────────────────────────────────────────┐
+  │  INSTALLATIONSÜBERSICHT                         │
+  ├─────────────────────────────────────────────────┤
+  │  ⏰ Zeit & Datum        ⌨ Tastatur               │
+  │  🌐 Sprache             🅰 Sprachunterstützung    │
+  ├─────────────────────────────────────────────────┤
+  │  💿 Installationsquelle 📦 Software-Auswahl      │
+  │  🗄 Installationsziel ⚠ 🔐 KDUMP                  │
+  ├─────────────────────────────────────────────────┤
+  │  🌐 Netzwerk & Hostname ⚠  🔒 Sicherheitsrichtlinie│
+  ├─────────────────────────────────────────────────┤
+  │  🔑 Root-Passwort ⚠    👤 Benutzer-Erstellung ⚠   │
+  └─────────────────────────────────────────────────┘
+       Beenden                    Installation beginnen (grau)</div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⌨️</div>
+          <div class="callout-content">
+            <div class="callout-title">Tastaturlayout prüfen!</div>
+            <p>Klicke auf <strong>Tastatur</strong> und stelle sicher, dass
+            <em>"Deutsch"</em> ganz oben in der Liste steht. Sonst tippst du gleich
+            ein Passwort, das du nie wieder eingeben kannst, weil Y und Z vertauscht
+            sind.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ INSTALLATIONSZIEL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.4</span>
+        <h2 class="timeblock-title">Installationsziel: automatisch vs. manuell</h2>
+        <span class="timeblock-badge badge-vortrag">Wichtige Entscheidung</span>
+      </div>
+
+      <div class="subblock">
+        <p>Klicke auf <strong>Installationsziel</strong>. Du siehst deine 20-GB-VM-Disk.
+        Jetzt kommt die Schlüsselfrage: Wie soll Rocky die Platte aufteilen?</p>
+
+        <h4>Option A — Automatisch (für uns ideal)</h4>
+        <p>Anaconda übernimmt das Partitionieren. Du wählst einfach
+        <strong>"Automatisch"</strong> und klickst auf <strong>Fertig</strong>. Das
+        Ergebnis sieht etwa so aus:</p>
+
+        <div class="ascii-box">  /dev/sda                          20 GB
+  ├─ /dev/sda1   /boot         ~1 GB  (Kernel, GRUB)
+  ├─ /dev/sda2   /boot/efi     ~600 MB (nur bei UEFI)
+  └─ /dev/sda3   LVM-Container ~18 GB
+        ├─ rl-root    /          ~16 GB
+        └─ rl-swap    swap       ~2 GB</div>
+
+        <h4>Option B — Manuell (für Fortgeschrittene)</h4>
+        <p>Du legst jede Partition selbst an. Das ist sinnvoll, wenn du:</p>
+        <ul>
+          <li>Verschiedene Mountpoints auf verschiedene Disks legen willst</li>
+          <li>LVM, RAID, Verschlüsselung oder Quotas anders konfigurieren musst</li>
+          <li>einen sehr großen <code>/var</code>-Bereich brauchst (z.B. Mailserver)</li>
+        </ul>
+
+        <h4>Die wichtigsten Mountpoints erklärt</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Mountpoint</th><th>Was liegt da?</th><th>Empfohlene Größe (Server)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/</code></td><td>Wurzel des Systems, alles was nicht eigene Partition ist</td><td>Rest der Disk</td></tr>
+              <tr><td><code>/boot</code></td><td>Kernel, initramfs, GRUB-Dateien</td><td>1 GB</td></tr>
+              <tr><td><code>/boot/efi</code></td><td>EFI System Partition (FAT, nur UEFI)</td><td>500–600 MB</td></tr>
+              <tr><td><code>/home</code></td><td>User-Daten — eigene Partition macht Re-Installs leicht</td><td>variabel, bei Workstation groß</td></tr>
+              <tr><td><code>/var</code></td><td>Logs, Datenbanken, Webserver-Daten</td><td>5–20 GB+ je nach Last</td></tr>
+              <tr><td><code>swap</code></td><td>Auslagerungsspeicher (kein Mountpoint im klassischen Sinn)</td><td>1–2× RAM, max 8 GB</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💾</div>
+          <div class="callout-content">
+            <div class="callout-title">Was ist Swap?</div>
+            <p>Swap ist ein Bereich auf der Festplatte, den der Kernel als „verlängerten
+            RAM“ nutzen kann, wenn der echte RAM voll ist. Da Disk viel langsamer ist als
+            RAM, gilt: <em>Swap als Notpuffer ja, als Dauerlösung nein</em>. Auf modernen
+            Servern mit viel RAM oft nur 2 GB Swap.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p>Für den Kurs nehmen wir <strong>"Automatisch"</strong>. Manuelles
+            Partitionieren mit LVM kostet schnell 30 Minuten und ist Stoff für Tag 2.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SOFTWARE-AUSWAHL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.5</span>
+        <h2 class="timeblock-title">Software-Auswahl: Minimal vs. Server vs. Workstation</h2>
+        <span class="timeblock-badge badge-vortrag">Wichtige Entscheidung</span>
+      </div>
+
+      <div class="subblock">
+        <p>Klicke auf <strong>Software-Auswahl</strong>. Hier wählst du, welche
+        Pakete sofort mitinstalliert werden. Rocky bietet mehrere Basis-Umgebungen:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Umgebung</th><th>Was ist drin?</th><th>Größe</th><th>Wofür?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Server with GUI</strong></td>
+                <td>GNOME-Desktop + Serverdienste</td>
+                <td>~ 4 GB</td>
+                <td>Selten — Server haben normalerweise keine GUI</td>
+              </tr>
+              <tr>
+                <td><strong>Server</strong> ← <strong>wir!</strong></td>
+                <td>Klassiker-Server-Tools ohne GUI</td>
+                <td>~ 2.5 GB</td>
+                <td>Produktions-Server, Lern-VM mit Komfort</td>
+              </tr>
+              <tr>
+                <td><strong>Workstation</strong></td>
+                <td>GNOME, Office, Multimedia</td>
+                <td>~ 5 GB</td>
+                <td>Linux als Desktop-Betriebssystem</td>
+              </tr>
+              <tr>
+                <td><strong>Custom Operating System</strong></td>
+                <td>nur das Allernötigste</td>
+                <td>~ 800 MB</td>
+                <td>Container-Hosts, eingebettete Systeme</td>
+              </tr>
+              <tr>
+                <td><strong>Minimal Install</strong></td>
+                <td>Basis-Tools + ssh</td>
+                <td>~ 1.5 GB</td>
+                <td>maximale Kontrolle, alles nachinstallieren</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Wir nehmen <strong>"Server"</strong> (nicht „Server with GUI“!). Rechts kannst
+        du noch Zusatz-Add-ons anhaken — wir lassen das fürs Erste bei den Defaults.
+        Klick auf <strong>Fertig</strong>.</p>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Achtung: Minimal Install hat KEIN nano</div>
+            <p>Wenn du „Minimal Install“ wählst, fehlt sogar der Texteditor
+            <code>nano</code>. Wir müssten ihn später per <code>dnf install nano</code>
+            nachladen. „Server“ ist für Lehrumgebungen die bessere Wahl.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NETZWERK ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.6</span>
+        <h2 class="timeblock-title">Netzwerk &amp; Hostname konfigurieren</h2>
+        <span class="timeblock-badge badge-action">⚠️ Häufige Falle!</span>
+      </div>
+
+      <div class="subblock">
+        <p>Klicke auf <strong>Netzwerk &amp; Hostname</strong>. Du siehst dein
+        virtuelles Ethernet-Interface (meist <code>ens160</code> oder
+        <code>ens33</code>). Es ist standardmäßig <strong>AUSGESCHALTET</strong>.</p>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">DIE wichtigste Fußangel</div>
+            <p>Der Ethernet-Schalter oben rechts steht auf <strong>AUS</strong>. Wenn du
+            das vergisst, hast du nach der Installation <strong>kein Netzwerk</strong>!
+            Schalte ihn JETZT auf <strong>EIN</strong>. Du siehst dann sofort eine IP-Adresse
+            (z.B. 192.168.211.128) und einen Gateway-Eintrag.</p>
+          </div>
+        </div>
+
+        <h4>Hostname setzen</h4>
+        <p>Unten links steht ein Feld <strong>Hostname</strong>. Default ist
+        <code>localhost.localdomain</code>. Trage ein:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">hostname</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>rocky-tn01</code></pre>
+        </div>
+
+        <p>(„tn01“ = Teilnehmer 01. Wenn ihr eine Nummer habt, eure Nummer eintragen.)
+        Klick auf <strong>Anwenden</strong> rechts daneben — der Hostname springt in
+        die untere Anzeige.</p>
+
+        <p>Mit <strong>Fertig</strong> zurück zur Übersicht.</p>
+      </div>
+    </section>
+
+    <!-- ============ ROOT + USER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.7</span>
+        <h2 class="timeblock-title">Root-Passwort und Benutzer anlegen</h2>
+        <span class="timeblock-badge badge-action">Schritt 5</span>
+      </div>
+
+      <div class="subblock">
+        <h4>Root-Passwort setzen</h4>
+        <p>Klicke auf <strong>Root-Passwort</strong>. Wichtig: <strong>root</strong> ist
+        der Super-Admin von Linux — er darf alles, auch das ganze System löschen.
+        Deshalb das Passwort sicher wählen.</p>
+
+        <p>Für den Kurs verwenden wir:</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">root-pw</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>linux123</code></pre>
+        </div>
+
+        <p>Anaconda meckert, das Passwort sei schwach. <strong>"Fertig"</strong>
+        zweimal drücken — dann akzeptiert es. (In Produktion würde man hier ein
+        20+ Zeichen langes generiertes Passwort nehmen.)</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🔓</div>
+          <div class="callout-content">
+            <div class="callout-title">"Anmeldung als root mit Passwort erlauben"</div>
+            <p>Bei Rocky 9 ist das Häkchen <em>"Root-Anmeldung mit Passwort erlauben"</em>
+            standardmäßig <strong>aus</strong> — gut so, denn root sollte nicht direkt per
+            SSH erreichbar sein. Für unseren Kursrechner haken wir es trotzdem an, weil
+            wir manchmal direkt am Konsolen-Login als root reinkommen wollen.</p>
+          </div>
+        </div>
+
+        <h4>Benutzer anlegen</h4>
+        <p>Klicke auf <strong>Benutzer-Erstellung</strong>. Trage ein:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><strong>Vollständiger Name</strong></td><td><code>Admin User</code></td></tr>
+              <tr><td><strong>Benutzername</strong></td><td><code>admin</code></td></tr>
+              <tr><td><strong>Passwort</strong></td><td><code>linux123</code></td></tr>
+              <tr><td><strong>Passwort bestätigen</strong></td><td><code>linux123</code></td></tr>
+              <tr><td><strong>✅ Diesen Benutzer zum Administrator machen</strong></td><td>HÄKCHEN SETZEN!</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Das Häkchen <em>"Administrator"</em> fügt den User der Gruppe
+        <code>wheel</code> hinzu — und damit darf er <code>sudo</code> benutzen.
+        Mehr dazu gleich.</p>
+
+        <p>Klick auf <strong>Fertig</strong> (zweimal, wegen schwachem PW).</p>
+      </div>
+    </section>
+
+    <!-- ============ INSTALLATION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.8</span>
+        <h2 class="timeblock-title">Installation starten und ersten Reboot</h2>
+        <span class="timeblock-badge badge-action">Schritt 6</span>
+      </div>
+
+      <div class="subblock">
+        <p>Alle ⚠️-Symbole sind weg. Unten rechts wird <strong>"Installation beginnen"</strong>
+        klickbar. Drauf!</p>
+
+        <p>Anaconda fängt jetzt an, Pakete auf die Disk zu schreiben. Du siehst
+        einen Fortschrittsbalken und Werbe-Slides für Rocky. Das dauert je nach
+        Hardware <strong>5–15 Minuten</strong>.</p>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">☕</div>
+          <div class="callout-content">
+            <div class="callout-title">Kaffeepause</div>
+            <p>Perfekter Moment für eine kurze Pause. Nicht abbrechen, nicht klicken,
+            einfach laufen lassen.</p>
+          </div>
+        </div>
+
+        <p>Wenn die Installation fertig ist:</p>
+        <ol>
+          <li><strong>System neu starten</strong> klicken</li>
+          <li>Die VM bootet neu — wichtig: jetzt von der virtuellen Disk, nicht mehr von der ISO</li>
+          <li>VMware löst die ISO automatisch aus, sobald die VM startet</li>
+          <li>Es erscheint kurz das <strong>GRUB-Menü</strong> (3 Sek. Countdown)</li>
+          <li>Der Kernel startet, systemd lädt Dienste, am Ende erscheint:</li>
+        </ol>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">first login</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>Rocky Linux 9.x (Blue Onyx)
+Kernel 5.14.0-... on an x86_64
+
+rocky-tn01 login: admin
+Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
+
+[admin@rocky-tn01 ~]$</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Glückwunsch!</div>
+            <p>Du hast dein erstes Linux installiert. Das ist mehr, als 95 % aller
+            Windows-Nutzer in ihrem Leben tun.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SUDO ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.9</span>
+        <h2 class="timeblock-title">Warum NIE direkt als root arbeiten? — das sudo-Konzept</h2>
+        <span class="timeblock-badge badge-vortrag">SEHR WICHTIG</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diesen Abschnitt bitte zweimal lesen. Er ist die Grundlage für
+        <strong>sauberes Linux-Adminstrieren</strong>.</p>
+
+        <h4>Was kann root?</h4>
+        <p>Der User <code>root</code> (UID 0) hat <strong>uneingeschränkte Rechte</strong>:</p>
+        <ul>
+          <li>Jede Datei lesen, schreiben, löschen — auch in <code>/etc</code>, <code>/boot</code> oder <code>/dev</code></li>
+          <li>Jeden Prozess starten oder beenden</li>
+          <li>Den Kernel neu konfigurieren</li>
+          <li>Festplatten formatieren, das Dateisystem zerschießen</li>
+          <li>Die berühmte Zeile <code>rm -rf /</code> ausführen — und damit das ganze System</li>
+        </ul>
+
+        <h4>Wo ist das Problem?</h4>
+        <p>Drei Gründe, warum man als root NIE direkt arbeiten sollte:</p>
+
+        <ol>
+          <li><strong>Kein Sicherheitsnetz.</strong> Linux fragt root nicht zurück. Wenn du
+            als root <code>rm -rf /etc</code> tippst, ist <code>/etc</code> weg. Punkt.</li>
+          <li><strong>Tippfehler werden katastrophal.</strong> Ein Leerzeichen zuviel
+            (<code>rm -rf / etc</code> statt <code>rm -rf /etc</code>) — System gelöscht.</li>
+          <li><strong>Keine Spur.</strong> root-Aktionen tauchen in keinem Audit-Log mit
+            dem echten Verantwortlichen auf. Wenn drei Admins root-Zugang teilen,
+            weiß hinterher niemand, wer was getan hat.</li>
+        </ol>
+
+        <h4>Die Lösung: sudo</h4>
+        <p><code>sudo</code> steht für <em>"<strong>su</strong>bstitute <strong>do</strong>"</em>
+        — manchmal auch als <em>"<strong>s</strong>uper<strong>u</strong>ser <strong>do</strong>"</em> gelesen.
+        Es lässt dich als normaler User EINEN Befehl mit root-Rechten ausführen:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Falsch (als root eingeloggt sein):
+#   [root@rocky ~]# dnf install nano
+
+# Richtig (als admin, einzelner Befehl mit sudo):
+[admin@rocky-tn01 ~]$ sudo dnf install nano
+[sudo] password for admin:        ← dein eigenes Passwort, NICHT root!
+...</code></pre>
+        </div>
+
+        <p>Vorteile von sudo:</p>
+        <ul>
+          <li><strong>Granular</strong> — root-Rechte nur für genau diesen Befehl, dann wieder zurück</li>
+          <li><strong>Auditierbar</strong> — jeder sudo-Aufruf landet in <code>/var/log/secure</code> mit Username und Befehl</li>
+          <li><strong>Konfigurierbar</strong> — in <code>/etc/sudoers</code> lässt sich genau festlegen, wer welche Befehle nutzen darf</li>
+          <li><strong>15-Minuten-Cache</strong> — danach noch mal Passwort, gut gegen weglaufenden Admin am offenen Terminal</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">👥</div>
+          <div class="callout-content">
+            <div class="callout-title">Die Gruppe „wheel“</div>
+            <p>Bei RHEL/Rocky/Fedora dürfen alle User der Gruppe <code>wheel</code>
+            standardmäßig <code>sudo</code> nutzen. Bei Ubuntu/Debian heißt die Gruppe
+            <code>sudo</code>. Das Häkchen <em>„Administrator“</em> im Installer hat
+            unseren <code>admin</code>-User automatisch in <code>wheel</code> aufgenommen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p>Wenn du <em>doch mal</em> eine längere Shell-Session als root brauchst:
+            <code>sudo -i</code> öffnet eine root-Shell. Sieht am Prompt durch das
+            <strong>#</strong> sofort. Aber: immer so kurz wie möglich, danach
+            <code>exit</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BOOT-PROZESS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.10</span>
+        <h2 class="timeblock-title">Was passiert eigentlich beim Boot?</h2>
+        <span class="timeblock-badge badge-vortrag">Tiefer Blick</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wenn du die VM startest und das Login erscheint, sind im Hintergrund
+        fünf Phasen abgelaufen. Du musst nicht jede Phase auswendig können, aber
+        die Reihenfolge im Kopf haben — das hilft bei jedem späteren Bootproblem.</p>
+
+        <div class="ascii-box">  1. BIOS / UEFI         "Welche Disk soll booten?"
+         │
+         ▼
+  2. Bootloader (GRUB)   "Welcher Kernel soll laden?"
+         │
+         ▼
+  3. Linux-Kernel         "Hardware erkennen, Treiber laden, initramfs"
+         │
+         ▼
+  4. init / systemd       "Dienste starten in der richtigen Reihenfolge"
+         │
+         ▼
+  5. Login-Prompt         "Wer bist du?"</div>
+
+        <h4>Die fünf Phasen im Detail</h4>
+        <ol>
+          <li><strong>BIOS/UEFI</strong> — die Firmware auf deinem Mainboard erkennt
+            die Hardware (CPU, RAM, Disks) und sucht eine bootfähige Disk. UEFI ist
+            die moderne Variante mit grafischer Oberfläche, BIOS die klassische.</li>
+          <li><strong>GRUB (GRand Unified Bootloader)</strong> — wird vom UEFI von
+            <code>/boot/efi</code> geladen und zeigt das Boot-Menü. Erlaubt dir, einen
+            bestimmten Kernel zu wählen (auch ältere bei Bootproblemen).</li>
+          <li><strong>Linux-Kernel</strong> — wird von <code>/boot</code> in den RAM
+            geladen, initialisiert Geräte-Treiber, lädt das <code>initramfs</code>
+            (eine kleine RAM-Disk mit den essentiellen Treibern), mountet die
+            echte Root-Partition.</li>
+          <li><strong>systemd</strong> (PID 1) — der Init-Prozess. Startet alle
+            Dienste parallel und in der richtigen Reihenfolge (Netzwerk vor SSH,
+            SSH vor Login, etc.). Mehr dazu an Tag 3.</li>
+          <li><strong>Login-Prompt</strong> — getty zeigt den Login-Prompt, du tippst
+            User und Passwort, PAM prüft die Credentials, Shell startet.</li>
+        </ol>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">⏱️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wie lange dauert das alles?</div>
+            <p>Auf einer VM mit SSD: 5–15 Sekunden. Auf einem alten Server mit HDDs
+            und vielen Diensten: bis zu 2 Minuten. Mit <code>systemd-analyze</code>
+            kannst du dir genau anzeigen lassen, welcher Dienst wie lange beim Booten
+            gebraucht hat — gehört in jeden Optimierer-Werkzeugkasten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VMWARE TOOLS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.11</span>
+        <h2 class="timeblock-title">open-vm-tools installieren</h2>
+        <span class="timeblock-badge badge-action">Nachpflege</span>
+      </div>
+
+      <div class="subblock">
+        <p>VMware-Tools sind ein Paket, das die VM <em>"freundlicher"</em> zum Host macht:
+        bessere Maus-Integration, Copy-Paste zwischen Host und VM, Shared Folders,
+        Zeit-Synchronisation, sauberes Herunterfahren vom Host aus.</p>
+
+        <p>Bei Rocky benutzen wir <strong>open-vm-tools</strong> (die offene
+        Variante), nicht die proprietären VMware-Tools von der ISO.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Aktuelle Paketquellen aktualisieren
+sudo dnf update -y
+
+# open-vm-tools installieren
+sudo dnf install open-vm-tools -y
+
+# Dienst aktivieren und starten
+sudo systemctl enable --now vmtoolsd
+
+# Status prüfen
+systemctl status vmtoolsd</code></pre>
+        </div>
+
+        <p>Bei <code>systemctl status</code> sollte „<strong>active (running)</strong>“
+        stehen. Mit <code>q</code> beendest du die Statusanzeige.</p>
+      </div>
+    </section>
+
+    <!-- ============ SNAPSHOT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.12</span>
+        <h2 class="timeblock-title">JETZT einen Snapshot anlegen!</h2>
+        <span class="timeblock-badge badge-tip">Lifesaver</span>
+      </div>
+
+      <div class="subblock">
+        <p>Genau jetzt ist der ideale Zeitpunkt für deinen ersten Snapshot. Das
+        System ist frisch, vollständig konfiguriert, alle Updates eingespielt.
+        Wenn du in den nächsten Stunden etwas verbiegst — Snapshot zurück, fertig.</p>
+
+        <ol>
+          <li>In VMware Workstation oben rechts auf <strong>VM → Snapshot → Take Snapshot</strong>
+            (oder Strg+M)</li>
+          <li><strong>Name:</strong> <code>00-frisch-installiert</code></li>
+          <li><strong>Beschreibung:</strong> <code>Rocky 9 Server-Install, open-vm-tools, admin/linux123</code></li>
+          <li><strong>Take Snapshot</strong> klicken</li>
+        </ol>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Goldene Regel</div>
+            <p>Nach <strong>jeder größeren Einstellung</strong>, die funktioniert, einen
+            Snapshot machen und sinnvoll benennen. <em>„nach-nano-installation“</em>,
+            <em>„vor-firewall-config“</em>, etc. Das spart dir später Stunden.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HÄUFIGE FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.13</span>
+        <h2 class="timeblock-title">Häufige Installations-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Troubleshooting</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — Zu kleine Disk</div>
+            <p><strong>Symptom:</strong> Anaconda meldet „Nicht genug Speicherplatz“
+            oder bricht beim Software-Install ab.</p>
+            <p><strong>Lösung:</strong> Mindestens 20 GB vDisk. Bei Server with GUI
+            besser 30 GB.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Kein Internet beim Install</div>
+            <p><strong>Symptom:</strong> Die Installation läuft durch, aber
+            <code>dnf update</code> findet keine Repos. Pakete lassen sich nicht
+            installieren.</p>
+            <p><strong>Ursache:</strong> Ethernet-Schalter im Anaconda war auf AUS.</p>
+            <p><strong>Schnelle Lösung:</strong> Als root anmelden, dann
+            <code>nmtui</code> aufrufen → <em>Verbindung aktivieren</em> →
+            die Verbindung anklicken → bei <em>Automatisch verbinden</em> Häkchen setzen
+            → speichern. Neu starten.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — root-Passwort vergessen</div>
+            <p><strong>Symptom:</strong> Du kannst dich nicht als root einloggen, weißt
+            das Passwort nicht mehr.</p>
+            <p><strong>Lösung (bei VMs!):</strong> Beim GRUB-Menü <code>e</code> drücken,
+            in der Kernel-Zeile <code>rd.break</code> ans Ende anhängen, Strg+X, dann in der
+            Notfall-Shell:
+            <code>mount -o remount,rw /sysroot</code> → <code>chroot /sysroot</code>
+            → <code>passwd</code> → neues PW setzen → SELinux-Relabel mit
+            <code>touch /.autorelabel</code> → 2× <code>exit</code> → Reboot.</p>
+            <p>Anfangs lieber: Snapshot „00-frisch-installiert“ zurückspielen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Y und Z vertauscht</div>
+            <p><strong>Symptom:</strong> Passwort wird beim Login nicht akzeptiert.</p>
+            <p><strong>Ursache:</strong> Tastaturlayout steht auf US (QWERTY) statt
+            DE (QWERTZ). Beim Passwort siehst du nichts, also merkst du den Fehler nicht.</p>
+            <p><strong>Lösung:</strong> Erst mal als <em>Test</em> dein Passwort am
+            Login-Prompt sichtbar in der „Benutzername:“-Zeile tippen. Wenn da
+            <code>linuy</code> statt <code>linuz</code> steht, ist klar, was los ist.
+            Layout im Installer korrigieren — oder einmal mit fehlertolerantem PW
+            arbeiten.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 5 — VM bootet wieder von der ISO</div>
+            <p><strong>Symptom:</strong> Nach dem Neustart erscheint wieder das
+            Rocky-Installations-Menü statt deines frischen Systems.</p>
+            <p><strong>Ursache:</strong> Die ISO ist noch im virtuellen CD-Laufwerk
+            eingelegt, und die VM bootet bevorzugt von CD.</p>
+            <p><strong>Lösung:</strong> VM herunterfahren → Settings → CD/DVD →
+            <em>"Connect at power on"</em> deaktivieren oder ISO entfernen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Was ist Anaconda? In welcher Sprache ist er geschrieben?</li>
+          <li>Welche Mindestgröße sollte deine vDisk für eine Server-Installation haben?</li>
+          <li>Welches ist die wichtigste Einstellung, die TN im Installer oft vergessen?</li>
+          <li>Was bedeutet das Häkchen <em>„Diesen Benutzer zum Administrator machen“</em> technisch?</li>
+          <li>Warum sollte man NIE direkt als root arbeiten? Nenne mindestens zwei Gründe.</li>
+          <li>Wofür steht <code>sudo</code> und wie funktioniert es prinzipiell?</li>
+          <li>Nenne die fünf Phasen des Linux-Boot-Prozesses in der richtigen Reihenfolge.</li>
+          <li>Wann ist der ideale Zeitpunkt für den ersten Snapshot — und warum gerade dann?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li>Anaconda ist der grafische Installer der Red-Hat-Familie. Geschrieben in <strong>Python</strong>.</li>
+              <li>Für „Server“ mindestens <strong>20 GB</strong>, für „Server with GUI“ besser 30 GB.</li>
+              <li>Den <strong>Ethernet-Schalter</strong> in „Netzwerk &amp; Hostname“ auf EIN stellen.
+                Sonst gibt es nach der Installation kein Netzwerk.</li>
+              <li>Der User wird der Gruppe <code>wheel</code> hinzugefügt und darf damit
+                standardmäßig <code>sudo</code> nutzen.</li>
+              <li>(1) Kein Sicherheitsnetz — root fragt nicht zurück; (2) Tippfehler werden
+                katastrophal; (3) Keine Audit-Spur, wenn mehrere Admins root teilen.</li>
+              <li><code>sudo</code> = „substitute do“ (oder „superuser do“). Es lässt einen
+                normalen User einen einzelnen Befehl mit root-Rechten ausführen, fragt nach
+                dem <em>eigenen</em> Passwort, cached die Berechtigung 15 Minuten und schreibt
+                jeden Aufruf nach <code>/var/log/secure</code>.</li>
+              <li>BIOS/UEFI → GRUB → Linux-Kernel → systemd (init) → Login-Prompt (getty + PAM + Shell).</li>
+              <li>Direkt nach erfolgreicher Installation mit Updates und vm-tools. Weil
+                das System dann sauber und vollständig ist und du in den nächsten Stunden
+                viel ausprobieren wirst — Snapshot zurück = Reset auf bekannten guten Stand.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="04-virtualisierung.html">
+        <span class="nav-eyebrow">← Kapitel 04</span>
+        <span class="nav-title">Virtualisierung</span>
+      </a>
+      <a href="06-terminal.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 06 →</span>
+        <span class="nav-title">Terminal, Shell &amp; Bash</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 05 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

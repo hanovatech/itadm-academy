@@ -17,7 +17,20 @@ itadm-academy/
 │
 ├── linux/                   ← Linux-Modul
 │   ├── index.html           ← Linux Übersicht
-│   ├── tag1.html            ← Tag 1 (komplett)
+│   ├── tag1/                ← Tag 1, aufgeteilt in 12 Kapitelseiten
+│   │   ├── index.html       ← Tag-1-Übersicht
+│   │   ├── 01-betriebssystem.html
+│   │   ├── 02-unix-geschichte.html
+│   │   ├── 03-distributionen.html
+│   │   ├── 04-virtualisierung.html
+│   │   ├── 05-installation.html
+│   │   ├── 06-terminal.html
+│   │   ├── 07-dateisystem.html
+│   │   ├── 08-navigation.html
+│   │   ├── 09-dateien.html
+│   │   ├── 10-editoren.html
+│   │   ├── 11-wildcards.html
+│   │   └── 12-quiz.html
 │   ├── tag2.html            ← Tag 2 (Platzhalter)
 │   └── tag3.html            ← Tag 3 (Platzhalter)
 │
@@ -83,7 +96,7 @@ Netlify deployed automatisch in ~30 Sek.
 
 ### Trainer-Modus
 - URL mit `?trainer=1` aufrufen
-- Beispiel: `https://itadm-academy.netlify.app/linux/tag1.html?trainer=1`
+- Beispiel: `https://itadm-academy.netlify.app/linux/tag1/index.html?trainer=1`
 - Lila Trainer-Boxen werden eingeblendet
 
 ## ✨ Features

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 10 · Editoren + Lab 1.2 — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 10 von 12</div>
+    <h1 class="page-title">
+      Editoren: <span class="highlight">nano</span>, vi/vim &amp; emacs
+    </h1>
+    <p class="page-subtitle">
+      Drei legendäre Texteditoren mit drei Philosophien. Wir lernen nano gründlich
+      (das Werkzeug für jeden Admin-Alltag), schnuppern in vi/vim rein (das Werkzeug
+      der Profis) und überleben das Lab 1.2 mit beiden.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 10</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 60 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 1.2</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ ÜBERBLICK ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">10.1</span>
+        <h2 class="timeblock-title">Drei Editoren, drei Welten</h2>
+        <span class="timeblock-badge badge-vortrag">Überblick</span>
+      </div>
+
+      <div class="subblock">
+        <p>In der Unix-Welt gibt es <em>einen</em> heiligen Krieg, der seit den
+        1980ern tobt: <strong>vi gegen emacs</strong>. Beide Lager sind überzeugt, dass
+        ihre Wahl die einzig richtige ist. Heute kommt ein dritter, friedlicher
+        Editor dazu: <strong>nano</strong>. Wir schauen alle drei kurz an.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Editor</th><th>Erschienen</th><th>Philosophie</th><th>Lernkurve</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>nano</strong></td>
+                <td>1999</td>
+                <td>„Einfach, freundlich, alle Tastenkürzel unten sichtbar.“</td>
+                <td>0 — sofort nutzbar</td>
+              </tr>
+              <tr>
+                <td><strong>vi / vim</strong></td>
+                <td>vi 1976, vim 1991</td>
+                <td>„Editieren mit minimaler Hand-Bewegung. Modus-basiert.“</td>
+                <td>steil, aber lohnenswert</td>
+              </tr>
+              <tr>
+                <td><strong>emacs</strong></td>
+                <td>1976</td>
+                <td>„Editor + Mailclient + Browser + Terminal + Lebensphilosophie.“</td>
+                <td>kein Ende</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Wann welchen?</h4>
+        <ul>
+          <li><strong>nano</strong> — wenn du <em>jetzt</em> schnell eine Config-Datei
+            ändern willst. Standardwahl im Admin-Alltag.</li>
+          <li><strong>vim</strong> — wenn du Linux ernsthaft betreibst. Auf jedem Server
+            vorinstalliert. Ohne Maus extrem schnell. Pflicht-Skill für Senior-Admins.</li>
+          <li><strong>emacs</strong> — Lifestyle-Entscheidung. Großartig, wenn man bereit
+            ist, Wochen zu investieren. Selten zwingend nötig.</li>
+        </ul>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p>Heute lernen wir nano gründlich und vi/vim grundlegend. Ziel: nano
+            blind beherrschen, vi/vim genug, um nicht panisch zu werden, wenn du auf
+            einem System landest, wo nano fehlt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NANO ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">10.2</span>
+        <h2 class="timeblock-title">nano — der freundliche Editor</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>nano war ursprünglich ein Klon des <em>pico</em>-Editors (Teil des Mail-Clients
+        Pine). Heute ist nano der „Default für Einsteiger“ auf den meisten Distros —
+        bei Debian/Ubuntu bereits vorinstalliert, bei Rocky Minimal muss man ihn
+        nachholen.</p>
+
+        <h4>Installieren (falls nicht da)</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>sudo dnf install nano -y</code></pre>
+        </div>
+
+        <h4>Starten und Aussehen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Neue Datei anlegen oder existierende öffnen
+nano notizen.txt
+
+# Mit Sprung zu Zeile 42
+nano +42 datei.txt
+
+# Read-only öffnen
+nano -v /etc/passwd</code></pre>
+        </div>
+
+        <p>Du landest sofort im <strong>Edit-Modus</strong> — du kannst tippen wie in
+        einem normalen Editor. Am unteren Rand siehst du immer die wichtigsten
+        Tastenkürzel:</p>
+
+        <div class="ascii-box">  ┌─ Dateiname und Status ─────────────────────────────────┐
+  │ GNU nano 5.6.1                  notizen.txt           │
+  │                                                       │
+  │  Hier tippst du.                                      │
+  │  _                                                    │
+  │                                                       │
+  │                                                       │
+  ├────────────────────────────────────────────────────────┤
+  │ ^G Help    ^O Write Out  ^W Where Is    ^K Cut Text   │
+  │ ^X Exit    ^J Justify    ^R Read File   ^U Paste      │
+  └────────────────────────────────────────────────────────┘
+       ^ = Strg-Taste
+       M = Alt-Taste (Meta)</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Das schöne an nano</div>
+            <p>Die wichtigen Tastenkürzel stehen <strong>immer unten</strong>. Du musst
+            nichts auswendig lernen. Wer einmal die Konvention <code>^</code> = Strg
+            verstanden hat, kommt sofort klar.</p>
+          </div>
+        </div>
+
+        <h4>Wichtigste Tastenkürzel</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Tastenkürzel</th><th>Funktion</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Strg + O</code></td><td>Speichern (<strong>O</strong>utput / WriteOut) — dann Dateiname mit Enter bestätigen</td></tr>
+              <tr><td><code>Strg + X</code></td><td>Beenden (mit Nachfrage, ob speichern)</td></tr>
+              <tr><td><code>Strg + W</code></td><td>Suchen (<strong>W</strong>here Is)</td></tr>
+              <tr><td><code>Strg + \</code></td><td>Suchen und Ersetzen</td></tr>
+              <tr><td><code>Strg + K</code></td><td>Aktuelle Zeile ausschneiden (in Buffer)</td></tr>
+              <tr><td><code>Strg + U</code></td><td>Buffer einfügen (<strong>U</strong>ncut)</td></tr>
+              <tr><td><code>Strg + G</code></td><td>Hilfe-Seite öffnen</td></tr>
+              <tr><td><code>Strg + C</code></td><td>Aktuelle Cursor-Position anzeigen</td></tr>
+              <tr><td><code>Strg + _</code></td><td>Zu bestimmter Zeile/Spalte springen</td></tr>
+              <tr><td><code>Alt + U</code></td><td>Rückgängig (Undo) — nicht überall verfügbar</td></tr>
+              <tr><td><code>Alt + E</code></td><td>Wiederherstellen (Redo)</td></tr>
+              <tr><td><code>Alt + A</code></td><td>Marken/Block-Modus starten</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Mini-Demo zum Mitmachen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>nano hallo.txt
+
+# Tipp rein:
+#   Hallo Linux-Welt!
+#   Heute lerne ich nano.
+#
+# Strg+O → Enter (speichern)
+# Strg+X (beenden)
+
+cat hallo.txt</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VI/VIM ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">10.3</span>
+        <h2 class="timeblock-title">vi / vim — der Profi-Editor</h2>
+        <span class="timeblock-badge badge-vortrag">Survival</span>
+      </div>
+
+      <div class="subblock">
+        <p>vi (gesprochen „wie-aih“ oder „wi“) wurde 1976 von Bill Joy für BSD geschrieben.
+        <strong>vim</strong> (<em>vi improved</em>) ist die modernere Version mit
+        Syntax-Highlighting, Undo, Plugins. Auf Rocky steht <code>vi</code> meist als
+        Symlink auf <code>vim</code>.</p>
+
+        <p>Das Besondere an vim: er hat <strong>Modi</strong>. Eine Taste macht je nach
+        Modus völlig unterschiedliche Dinge. Wer das nicht weiß, ist sofort verloren.</p>
+
+        <h4>Die drei wichtigen Modi</h4>
+        <div class="ascii-box">              ┌─────────────────────┐
+              │  NORMAL-MODUS       │  ← Start-Modus, Tasten = Befehle
+              │  „Befehle geben“    │
+              └──────────┬──────────┘
+                  ↑      │      ↑
+            ESC   │      │      │   ESC
+                  │      │      │
+        ┌─────────┴──┐   │   ┌──┴────────────────┐
+        │  INSERT    │   │   │  VISUAL-MODUS     │
+        │  i, a, o   │   │   │  v, V, Strg+v     │
+        │  „Tippen“  │   │   │  „Auswählen“      │
+        └────────────┘   │   └───────────────────┘
+                         │
+                  ┌──────┴──────────┐
+                  │  COMMAND-MODUS  │  : ↑ ↓ z.B. :w :q
+                  │  „: am Anfang“  │
+                  └─────────────────┘</div>
+
+        <h4>Modus-Wechsel</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Aus / Nach</th><th>Taste</th><th>Was passiert?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Normal → Insert</td><td><code>i</code></td><td><strong>I</strong>nsert vor dem Cursor</td></tr>
+              <tr><td>Normal → Insert</td><td><code>a</code></td><td><strong>A</strong>ppend nach dem Cursor</td></tr>
+              <tr><td>Normal → Insert</td><td><code>o</code></td><td>neue Zeile darunter + Insert</td></tr>
+              <tr><td>Normal → Insert</td><td><code>O</code></td><td>neue Zeile darüber + Insert</td></tr>
+              <tr><td>Insert → Normal</td><td><code>Esc</code></td><td>Tippen beenden, zurück zu Befehlen</td></tr>
+              <tr><td>Normal → Visual</td><td><code>v</code></td><td>Auswahl per Zeichen</td></tr>
+              <tr><td>Normal → Visual</td><td><code>V</code></td><td>Auswahl per Zeile</td></tr>
+              <tr><td>Normal → Command</td><td><code>:</code></td><td>Befehlszeile öffnen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Bewegen im Normal-Modus</h4>
+        <p>Pfeiltasten funktionieren — aber Profis nutzen die Buchstaben
+        <code>h j k l</code>. Erklärung kommt gleich.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>h</code></td><td>links</td></tr>
+              <tr><td><code>j</code></td><td>runter</td></tr>
+              <tr><td><code>k</code></td><td>hoch</td></tr>
+              <tr><td><code>l</code></td><td>rechts</td></tr>
+              <tr><td><code>w</code></td><td>ein Wort vorwärts</td></tr>
+              <tr><td><code>b</code></td><td>ein Wort rückwärts</td></tr>
+              <tr><td><code>0</code> (Null)</td><td>Zeilenanfang</td></tr>
+              <tr><td><code>$</code></td><td>Zeilenende</td></tr>
+              <tr><td><code>gg</code></td><td>Anfang der Datei</td></tr>
+              <tr><td><code>G</code></td><td>Ende der Datei</td></tr>
+              <tr><td><code>42G</code> oder <code>:42</code></td><td>zu Zeile 42</td></tr>
+              <tr><td><code>/text</code></td><td>vorwärts nach <em>text</em> suchen</td></tr>
+              <tr><td><code>n</code> / <code>N</code></td><td>nächster / vorheriger Treffer</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Speichern und Beenden</h4>
+        <p>Im <strong>Command-Modus</strong> (also <code>:</code> drücken):</p>
+
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>:w</code></td><td>Datei speichern (<strong>w</strong>rite)</td></tr>
+              <tr><td><code>:q</code></td><td>beenden (<strong>q</strong>uit) — nur wenn keine Änderungen</td></tr>
+              <tr><td><code>:wq</code></td><td>speichern und beenden</td></tr>
+              <tr><td><code>:x</code></td><td>wie :wq, speichert aber nur bei Änderungen</td></tr>
+              <tr><td><code>:q!</code></td><td>beenden OHNE Speichern — Änderungen verwerfen</td></tr>
+              <tr><td><code>:w neuername</code></td><td>unter anderem Namen speichern</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Bearbeiten im Normal-Modus</h4>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>x</code></td><td>Zeichen unter Cursor löschen</td></tr>
+              <tr><td><code>dd</code></td><td>aktuelle Zeile löschen (<strong>d</strong>elete)</td></tr>
+              <tr><td><code>yy</code></td><td>aktuelle Zeile kopieren (<strong>y</strong>ank)</td></tr>
+              <tr><td><code>p</code></td><td>einfügen (<strong>p</strong>ut)</td></tr>
+              <tr><td><code>u</code></td><td>Undo</td></tr>
+              <tr><td><code>Strg + r</code></td><td>Redo</td></tr>
+              <tr><td><code>r</code><em>x</em></td><td>Zeichen unter Cursor durch <em>x</em> ersetzen</td></tr>
+              <tr><td><code>R</code></td><td>Replace-Modus (überschreibt beim Tippen)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">⌨️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon? — Warum hjkl?</div>
+            <p>Bill Joy entwickelte vi 1976 auf einem ADM-3A Terminal. Diese Tastatur
+            hatte <strong>keine eigenen Pfeiltasten</strong> — stattdessen waren die
+            Pfeile <em>aufgedruckt auf den Tasten h, j, k, l</em>.</p>
+            <p style="margin-top: 0.6rem;">Heute ein Anachronismus, aber die Erinnerung
+            bleibt: <code>j</code> hat im englischen Layout einen kleinen Haken nach
+            unten — passend, weil j „runter“ bedeutet. Profis nutzen hjkl, weil die Finger
+            nie die Home-Row verlassen müssen — das macht vim mit Übung schneller
+            als jeden anderen Editor.</p>
+            <p style="margin-top: 0.6rem;"><em>Auch interessant:</em> Auf dem ADM-3A
+            war zusätzlich das <strong>~</strong> auf der gleichen Taste wie das Home-Symbol
+            — deshalb steht <code>~</code> in Unix bis heute für das Home-Verzeichnis.</p>
+          </div>
+        </div>
+
+        <h4>Erste vim-Session — minimaler Überlebenstest</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># vim öffnen
+vim test.txt
+
+# Du bist im NORMAL-Modus
+# 1. Taste "i" drücken → INSERT-Modus
+# 2. Tippe ein paar Zeilen
+# 3. ESC → zurück zu NORMAL
+# 4. ":wq" tippen → speichern und beenden
+
+cat test.txt</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">😱</div>
+          <div class="callout-content">
+            <div class="callout-title">Hilfe! vim hängt!</div>
+            <p>Das berühmteste Anfänger-Erlebnis: du landest versehentlich in vim und
+            kommst nicht mehr raus. Drei Schritte:</p>
+            <ol style="margin-top: 0.5rem;">
+              <li><strong>Esc</strong> drücken — zurück in den Normal-Modus.</li>
+              <li><code>:q!</code> tippen — beenden ohne Speichern.</li>
+              <li><strong>Enter</strong>. Fertig.</li>
+            </ol>
+            <p style="margin-top: 0.5rem;">Diese drei Schritte sind die wichtigste
+            vim-Lektion: <em>Esc, :q!, Enter</em>. Lerne sie auswendig.</p>
+          </div>
+        </div>
+
+        <h4>vimtutor — das eingebaute Tutorial</h4>
+        <p>vim bringt seinen eigenen Lehrgang mit. Ungefähr 30 Minuten und du kannst
+        deutlich mehr als die meisten Linux-User:</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Auf Rocky vorinstalliert, sonst:
+sudo dnf install vim-enhanced -y
+
+vimtutor</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EMACS KURZ ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">10.4</span>
+        <h2 class="timeblock-title">emacs — der dritte im Bunde (kurz angerissen)</h2>
+        <span class="timeblock-badge badge-vortrag">Bonus</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>emacs</strong> wurde 1976 von Richard Stallman (ja, dem aus
+        Kapitel 02) entwickelt. Er ist <em>nicht</em> nur ein Editor — emacs ist eine
+        Lisp-basierte Plattform, in der man E-Mail liest, Code kompiliert, Kalender
+        führt, IRC chattet und programmiert.</p>
+
+        <p>Die Tastenkürzel sind „Strg-irgendwas“-lastig:</p>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr><td><code>Strg + x</code> dann <code>Strg + s</code></td><td>Speichern</td></tr>
+              <tr><td><code>Strg + x</code> dann <code>Strg + c</code></td><td>Beenden</td></tr>
+              <tr><td><code>Strg + x</code> dann <code>Strg + f</code></td><td>Datei öffnen</td></tr>
+              <tr><td><code>Strg + g</code></td><td>Aktion abbrechen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🤓</div>
+          <div class="callout-content">
+            <div class="callout-title">Lerne emacs, wenn …</div>
+            <p>… du sowieso programmieren willst und eine voll-anpassbare Umgebung
+            schätzt. Wer aber „nur“ Linux administrieren möchte, kommt mit nano + vim
+            ein ganzes Leben aus. emacs ist eine Reise, kein Wochenend-Lernprojekt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 1.2 ============ -->
+    <section class="lab" id="lab-1-2">
+      <div class="lab-header">
+        <span class="lab-icon">🧪</span>
+        <span class="lab-label">Lab 1.2</span>
+        <span class="lab-title">Konfigurationsdatei bearbeiten</span>
+        <span class="lab-duration">60 min</span>
+      </div>
+      <div class="lab-body">
+        <div class="lab-scenario">
+          <strong>📧 E-Mail vom Senior-Admin:</strong><br>
+          „Du sollst heute eine kleine Webserver-Konfiguration für HanovaTech anlegen
+          und pflegen. Dabei wirst du nano produktiv nutzen und einmal kurz vim
+          ausprobieren. Wenn du fertig bist: zeig mir die fertige Struktur.“
+        </div>
+
+        <div class="lab-section-title">Teil A — Struktur und Dateien anlegen (15 min)</div>
+        <ol class="lab-tasks">
+          <li>Wechsle in dein Home und lege die folgende Struktur in einem
+            <code>mkdir -p</code>-Aufruf an:
+            <div class="ascii-box" style="margin-top: 0.5rem;">~/hanovatech/
+├── configs/
+├── logs/
+└── docs/</div>
+          </li>
+          <li>In <code>configs/</code> nano öffnen und die Datei <code>webserver.conf</code>
+            mit folgendem Inhalt anlegen:
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">conf</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># HanovaTech Webserver Konfiguration
+# Stand: 2026-05-21
+# Verantwortlich: admin
+
+Hostname: web01.hanovatech.local
+Port: 80
+DocRoot: /var/www/hanovatech
+LogLevel: warn</code></pre>
+            </div>
+          </li>
+          <li>Mit Strg+O speichern, Strg+X beenden. Inhalt mit <code>cat</code> prüfen.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1) Struktur
+cd ~
+mkdir -p hanovatech/{configs,logs,docs}
+ls -R hanovatech/
+
+# 2) Datei mit nano anlegen
+cd hanovatech/configs/
+nano webserver.conf
+# Inhalt einfügen — Strg+O Enter Strg+X
+
+# 3) Inhalt prüfen
+cat webserver.conf</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Datei mit nano bearbeiten (15 min)</div>
+        <ol class="lab-tasks" start="4">
+          <li>Öffne <code>webserver.conf</code> wieder mit nano.</li>
+          <li>Ändere den Port von <code>80</code> auf <code>8080</code>.</li>
+          <li>Suche mit <strong>Strg+W</strong> nach <code>LogLevel</code> und ändere den
+            Wert auf <code>info</code>.</li>
+          <li>Füge am Ende der Datei eine neue Zeile hinzu: <code>MaxClients: 200</code>.</li>
+          <li>Speichern und beenden. Inhalt mit cat prüfen.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p>nano ist intuitiv — keine spezielle Befehlsfolge, du editierst wie in
+            einem normalen Editor. Wichtig:</p>
+            <ul>
+              <li><strong>Strg+W</strong> → „LogLevel“ tippen → Enter → springt zur Stelle</li>
+              <li>Zur letzten Zeile: <strong>Strg+End</strong> oder einfach mit Pfeil-runter</li>
+              <li>Strg+O → Enter (speichern) → Strg+X (beenden)</li>
+            </ul>
+            <p><code>cat webserver.conf</code> bestätigt die Änderungen.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Mit vi/vim spielen (15 min)</div>
+        <ol class="lab-tasks" start="9">
+          <li>In <code>~/hanovatech/docs/</code> öffne mit <strong>vim</strong> eine neue
+            Datei <code>README.md</code>.</li>
+          <li>Wechsle mit <code>i</code> in den Insert-Modus und schreibe folgenden Text:
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">markdown</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># HanovaTech Webserver
+
+Dieses Repository enthält die Konfiguration unseres
+HanovaTech-Webservers.
+
+## Struktur
+- configs/    Konfigurationsdateien
+- logs/       Logfiles
+- docs/       Dokumentation</code></pre>
+            </div>
+          </li>
+          <li>Drücke <strong>Esc</strong>, dann tippe <code>:wq</code> + Enter — Datei wird
+            gespeichert und vim beendet.</li>
+          <li>Öffne die Datei nochmal mit vim. Springe mit <code>gg</code> an den Anfang,
+            mit <code>G</code> ans Ende.</li>
+          <li>Lösche mit <code>dd</code> eine Zeile und mache es mit <code>u</code> rückgängig.</li>
+          <li>Beende vim mit <code>:q</code> (ohne Änderungen) oder <code>:q!</code>
+            (mit Verwerfen).</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 9) vim öffnen
+cd ~/hanovatech/docs/
+vim README.md
+
+# 10) i  → INSERT, Text tippen
+# 11) Esc → :wq → Enter
+
+# 12) gg  → an den Anfang
+#     G   → ans Ende
+
+# 13) dd  → Zeile löschen
+#     u   → undo
+
+# 14) :q   → beenden (wenn nichts geändert)
+#     :q!  → beenden mit Verwerfen</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Suchen, Ersetzen, Multi-Edit (15 min)</div>
+        <ol class="lab-tasks" start="15">
+          <li>Öffne <code>webserver.conf</code> nochmal mit nano.</li>
+          <li>Nutze <strong>Strg+\</strong> (Suchen und Ersetzen): ersetze <code>warn</code>
+            durch <code>debug</code>. Antworte auf die Nachfragen sinnvoll.</li>
+          <li>Speichere und beende.</li>
+          <li>Kopiere <code>webserver.conf</code> nach <code>webserver.conf.bak</code>
+            (Backup).</li>
+          <li>Lege mit nano in <code>docs/</code> eine Datei <code>CHANGELOG.md</code> mit
+            einem Eintrag an:
+            <em>"2026-05-21 — Initial Setup durch admin"</em>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 15-17) nano + Replace
+cd ~/hanovatech/configs/
+nano webserver.conf
+# Strg+\  → "warn" → Enter → "debug" → Enter
+# Bei Nachfrage "A" für "All"
+# Strg+O Enter Strg+X
+
+# 18) Backup
+cp webserver.conf webserver.conf.bak
+
+# 19) CHANGELOG
+nano ~/hanovatech/docs/CHANGELOG.md
+# Inhalt: 2026-05-21 - Initial Setup durch admin
+# Strg+O Enter Strg+X</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+        <ol class="lab-tasks" start="20">
+          <li>Öffne <code>webserver.conf</code> nun mit <strong>vim</strong> (statt nano).
+            Ändere mit dem vim-Befehl <code>:%s/8080/8443/g</code> alle Vorkommen von 8080
+            auf 8443. Speichern mit <code>:wq</code>.</li>
+          <li>Erkläre einem Kollegen in einem Satz den Unterschied zwischen
+            <code>:wq</code> und <code>:q!</code>.</li>
+          <li>Recherchiere und probiere aus: was macht <code>:set number</code> in vim?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">vim</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 20) Search&amp;Replace in vim
+vim webserver.conf
+:%s/8080/8443/g    " globally ersetzen
+:wq                " speichern + beenden
+
+# 21) :wq speichert UND beendet.
+#     :q! verwirft Änderungen UND beendet.
+
+# 22) :set number     " zeigt Zeilennummern am linken Rand
+#     :set nonumber   " schaltet sie wieder aus</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 1.2 geschafft?</div>
+            <p>Wenn du Teil A–D durch hast: du beherrschst nano produktiv und kannst
+            vim überleben. Das reicht für 90 % aller Admin-Aufgaben. Wer den Bonus
+            mitmacht, hat den vi-Drachen besiegt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TYPISCHE FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">10.5</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — vim ohne Esc verlassen wollen</div>
+            <p>Du tippst <code>:q</code> oder <code>:wq</code>, aber die Zeichen
+            erscheinen im Text statt am unteren Rand. Du bist noch im <strong>Insert-Modus</strong>.
+            Lösung: <strong>Esc drücken</strong>, dann nochmal versuchen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — falscher Modus in vim</div>
+            <p>vim verhält sich „komisch“, Tasten machen unerwartete Dinge.
+            Faustregel: bei jedem Verwirrungs-Moment <strong>einmal Esc</strong> drücken.
+            Damit bist du sicher im Normal-Modus.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — In nano <code>^</code> als „caret“ tippen</div>
+            <p>nano-Hilfe sagt „<code>^O Speichern</code>“. Manche tippen tatsächlich
+            ein <code>^</code>-Zeichen plus <code>O</code>. Falsch! <code>^</code>
+            steht für die <strong>Strg-Taste</strong>. <code>^O</code> heißt:
+            <strong>Strg + O</strong>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Vergessenes Speichern</div>
+            <p>nano fragt zwar beim Beenden („Save modified buffer?“), aber wer hektisch
+            mit „N“ antwortet, verliert seine Arbeit. Lösung: angewöhnen, vor dem Beenden
+            <strong>Strg+O</strong> zu drücken — dann ist gespeichert, und Strg+X läuft
+            ohne Frage durch.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 5 — Datei mit sudo öffnen vergessen</div>
+            <p>Du hast eine wichtige <code>/etc/...</code>-Datei in nano bearbeitet und
+            bei Strg+O kommt „Error writing: Permission denied“. Lösung: Datei mit
+            <code>sudo nano /etc/...</code> öffnen. Workaround in vim mit
+            <code>:w !sudo tee %</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Welche drei großen Editoren gibt es, und welcher ist Standard für Einsteiger?</li>
+          <li>Welche Tasten speichern und beenden in nano?</li>
+          <li>Wie heißt das Zeichen <code>^</code> in nano-Anleitungen?</li>
+          <li>Was sind die drei wichtigen Modi von vim?</li>
+          <li>Wie kommst du in vim aus dem Insert-Modus zurück in den Normal-Modus?</li>
+          <li>Welche drei Schritte sichern dich, falls du in vim gefangen bist?</li>
+          <li>Wofür stehen <code>:wq</code> und <code>:q!</code>?</li>
+          <li>Warum nutzen Profis <code>h j k l</code> statt der Pfeiltasten?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>nano</strong> (Einsteiger), <strong>vi/vim</strong> (Profis),
+                <strong>emacs</strong> (Power-User). nano ist Standard für Einsteiger.</li>
+              <li><strong>Strg+O</strong> speichert, <strong>Strg+X</strong> beendet.</li>
+              <li><code>^</code> ist die Konvention für die <strong>Strg-Taste</strong>.
+                <code>^O</code> = Strg + O.</li>
+              <li><strong>Normal-Modus</strong> (Tasten = Befehle), <strong>Insert-Modus</strong>
+                (Tippen wie normaler Editor), <strong>Visual-Modus</strong> (Auswahl).
+                Plus Command-Modus (mit <code>:</code>).</li>
+              <li>Mit der <strong>Esc-Taste</strong>.</li>
+              <li><strong>Esc</strong>, dann <code>:q!</code> tippen, dann <strong>Enter</strong>.</li>
+              <li><code>:wq</code> = speichern und beenden. <code>:q!</code> = beenden ohne
+                Speichern (Änderungen verwerfen).</li>
+              <li>Weil die Finger die Home-Row nicht verlassen müssen — das macht das
+                Editieren mit Übung deutlich schneller als mit Pfeiltasten. Historisch
+                stammt es von einem Terminal ohne Pfeiltasten (ADM-3A).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="09-dateien.html">
+        <span class="nav-eyebrow">← Kapitel 09</span>
+        <span class="nav-title">Dateien &amp; Ordner</span>
+      </a>
+      <a href="11-wildcards.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 11 →</span>
+        <span class="nav-title">Wildcards + Lab 1.3</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 10 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

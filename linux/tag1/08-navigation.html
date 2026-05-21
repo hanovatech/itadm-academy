@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 08 · Navigation + Lab 1.1 — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 08 von 12</div>
+    <h1 class="page-title">
+      Navigation im <span class="highlight">Terminal</span> — pwd, cd &amp; ls
+    </h1>
+    <p class="page-subtitle">
+      Jetzt wird's praktisch. Drei Befehle — <code>pwd</code>, <code>cd</code>,
+      <code>ls</code> — sind dein Werkzeug für 80 % aller Admin-Sitzungen. Wir gehen
+      sie in allen Spielarten durch und schließen mit Lab 1.1 ab: dem
+      HanovaTech-Verzeichnis-Detektiv.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 08</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 35 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 1.1</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ PWD ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.1</span>
+        <h2 class="timeblock-title"><code>pwd</code> — wo bin ich überhaupt?</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>pwd</code> = <strong>p</strong>rint <strong>w</strong>orking
+        <strong>d</strong>irectory. Zeigt das absolute aktuelle Verzeichnis.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>$ pwd
+/home/admin
+
+# Mit -P folgt es symbolischen Links zum echten Pfad
+$ cd /bin           # auf modernen Distros ist /bin ein Symlink
+$ pwd
+/bin
+$ pwd -P
+/usr/bin            # so heißt das Verzeichnis "wirklich"</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p>Bei langen SSH-Sessions kann der Prompt auf <code>~</code> oder
+            <code>configs</code> zeigen — dann weißt du nicht mehr, ob du in
+            <code>/etc/nginx/conf.d/configs</code> oder <code>/var/log/configs</code>
+            steckst. <code>pwd</code> klärt das in einer Sekunde.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CD ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.2</span>
+        <h2 class="timeblock-title"><code>cd</code> — alle Tricks</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>cd</code> = <strong>c</strong>hange <strong>d</strong>irectory.
+        Wechselt das aktuelle Verzeichnis.</p>
+
+        <h4>Die wichtigsten Varianten</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>cd /etc           # absoluter Pfad: nach /etc
+cd /var/log/      # tieferer absoluter Pfad
+cd configs        # relativer Pfad: ins Unterverzeichnis "configs"
+
+cd ..             # ein Verzeichnis HOCH
+cd ../..          # zwei Verzeichnisse hoch
+cd ../etc         # rüber: ein hoch, dann nach etc
+
+cd ~              # ins eigene Home (~ = $HOME)
+cd                # auch ins Home (ohne Argument)
+cd ~admin         # ins Home von User admin
+cd $HOME          # alternative Schreibweise
+
+cd -              # ZURÜCK zum vorherigen Verzeichnis
+                  # extrem nützlich: hin- und herspringen!
+cd /              # zur Wurzel</code></pre>
+        </div>
+
+        <h4>Das berühmte <code>cd -</code>: Toggle zwischen zwei Verzeichnissen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>$ pwd
+/home/admin
+$ cd /var/log/
+$ pwd
+/var/log
+$ cd -            # zurück nach /home/admin
+/home/admin
+$ cd -            # wieder nach /var/log
+/var/log</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p><code>cd -</code> ist Gold wert, wenn du zwischen zwei tiefen Pfaden
+            wechselst (z.B. <code>/etc/nginx/conf.d/</code> und
+            <code>/var/log/nginx/</code>). Ein Tastendruck statt 30 Zeichen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABSOLUT VS RELATIV ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.3</span>
+        <h2 class="timeblock-title">Absolute vs. relative Pfade</h2>
+        <span class="timeblock-badge badge-vortrag">Wichtig</span>
+      </div>
+
+      <div class="subblock">
+        <p>Ein <strong>Pfad</strong> ist die Adresse einer Datei im Dateibaum. Es gibt
+        zwei Schreibweisen:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Typ</th><th>Beginnt mit</th><th>Bedeutung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Absolut</strong></td>
+                <td><code>/</code></td>
+                <td>Vollständig ab der Wurzel — funktioniert immer, egal wo du gerade bist</td>
+                <td><code>/etc/hosts</code></td>
+              </tr>
+              <tr>
+                <td><strong>Relativ</strong></td>
+                <td>Name, <code>.</code>, <code>..</code> oder <code>~</code></td>
+                <td>Vom aktuellen Verzeichnis aus gesehen</td>
+                <td><code>configs/nginx.conf</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Sonderzeichen-Übersicht</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Zeichen</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/</code></td><td>Wurzelverzeichnis</td></tr>
+              <tr><td><code>~</code></td><td>mein Home-Verzeichnis</td></tr>
+              <tr><td><code>~user</code></td><td>Home-Verzeichnis eines anderen Users</td></tr>
+              <tr><td><code>.</code></td><td>aktuelles Verzeichnis</td></tr>
+              <tr><td><code>..</code></td><td>ein Verzeichnis höher</td></tr>
+              <tr><td><code>-</code></td><td>vorheriges Verzeichnis (nur in <code>cd</code>)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Visuell: gleicher Zielpunkt, zwei Wege</h4>
+        <div class="ascii-box">  Du bist hier: /home/admin
+                       │
+                       ▼
+  Ziel: /etc/hosts
+
+  ABSOLUT:    cd /etc/hosts          (oder cat /etc/hosts)
+              ^
+              └── beginnt mit /, eindeutig
+
+  RELATIV:    cd ../../etc/hosts
+              ^
+              └── relativ zu /home/admin:
+                    .. → /home
+                    .. → /
+                    etc → /etc
+                    hosts → /etc/hosts</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel</div>
+            <p>In <strong>Skripten</strong> immer absolute Pfade — sie sind eindeutig und
+            unabhängig vom Aufruf-Verzeichnis. In der <strong>interaktiven Session</strong>
+            relative Pfade — sie sind kürzer und passen zur „Wanderung“ durch den Baum.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.4</span>
+        <h2 class="timeblock-title"><code>ls</code> ausführlich — der meistgenutzte Befehl überhaupt</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>ls</code> = <strong>l</strong>i<strong>s</strong>t. Zeigt den Inhalt
+        eines Verzeichnisses. Hat über 50 Optionen — du brauchst nur ein halbes
+        Dutzend.</p>
+
+        <h4>Die wichtigsten Optionen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Option</th><th>Was sie bewirkt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>-l</code></td><td><strong>L</strong>ong-Listing — Details: Rechte, Owner, Größe, Datum</td></tr>
+              <tr><td><code>-a</code></td><td><strong>A</strong>ll — auch versteckte Dateien (beginnen mit „.“)</td></tr>
+              <tr><td><code>-h</code></td><td><strong>H</strong>uman-readable — Größen als 1.5K, 3.2M, 12G</td></tr>
+              <tr><td><code>-t</code></td><td>Sortierung nach <strong>T</strong>ime (Änderung), neueste zuerst</td></tr>
+              <tr><td><code>-S</code></td><td>Sortierung nach <strong>S</strong>ize, größte zuerst</td></tr>
+              <tr><td><code>-r</code></td><td><strong>R</strong>everse — Sortierung umdrehen</td></tr>
+              <tr><td><code>-R</code></td><td><strong>R</strong>ekursiv — auch Unterverzeichnisse</td></tr>
+              <tr><td><code>-d</code></td><td>nur das Verzeichnis selbst, nicht den Inhalt</td></tr>
+              <tr><td><code>-1</code></td><td>eine Datei pro Zeile (gut für Skripte)</td></tr>
+              <tr><td><code>--color=auto</code></td><td>farbige Ausgabe (Default auf Rocky)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Klassische Kombinationen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>ls               # einfache Liste
+ls -l            # Long-Listing
+ls -la           # plus versteckte Dateien
+ls -lh           # plus human-readable
+ls -lah          # alles zusammen (Klassiker!)
+ls -laht         # plus nach Zeit sortiert, neueste oben
+ls -lahS         # plus nach Größe sortiert, größte oben
+ls -laR /etc     # rekursiv durch /etc — Vorsicht, viel Output!
+ls -d */         # nur Verzeichnisse im aktuellen Pfad</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LS -L SPALTEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.5</span>
+        <h2 class="timeblock-title"><code>ls -l</code> Zeile für Zeile lesen</h2>
+        <span class="timeblock-badge badge-vortrag">Tief</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine <code>ls -l</code>-Zeile ist <strong>vollgepackt mit Information</strong>.
+        Hier eine typische Zeile und was alle Teile bedeuten:</p>
+
+        <div class="ascii-box">  -rw-r--r--  1  admin  admin  1.2K  Mai 21 10:42  notizen.txt
+  │           │  │      │      │     │             │
+  │           │  │      │      │     │             └── Dateiname
+  │           │  │      │      │     └──────────────── Datum der letzten Änderung
+  │           │  │      │      └────────────────────── Größe in Bytes (mit -h human-readable)
+  │           │  │      └───────────────────────────── Gruppe
+  │           │  └──────────────────────────────────── Eigentümer (Owner)
+  │           └─────────────────────────────────────── Anzahl Hardlinks
+  └──────────────────────────────────────────────────  Dateityp + Berechtigungen</div>
+
+        <h4>Spalte 1 im Detail: Typ und Rechte</h4>
+        <div class="ascii-box">  -    rwx    r-x    r--
+  │    │      │      │
+  │    │      │      └── Rechte für ALLE anderen (others)
+  │    │      └───────── Rechte für die GRUPPE
+  │    └──────────────── Rechte für den BESITZER
+  └───────────────────── Dateityp
+
+  Dateityp:  - reguläre Datei · d Verzeichnis · l Symlink
+             b Blockdevice · c Chardevice · s Socket · p Pipe
+
+  Rechte:    r = read (lesen)
+             w = write (schreiben)
+             x = execute (ausführen / bei Verzeichnis: betreten)
+             - = Recht nicht vorhanden</div>
+
+        <p>Im Beispiel <code>-rw-r--r--</code> liest sich das so:</p>
+        <ul>
+          <li><strong>-</strong> → reguläre Datei (kein Verzeichnis, kein Symlink)</li>
+          <li><strong>rw-</strong> → Besitzer darf lesen + schreiben, nicht ausführen</li>
+          <li><strong>r--</strong> → Gruppe darf nur lesen</li>
+          <li><strong>r--</strong> → Alle anderen dürfen nur lesen</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🔒</div>
+          <div class="callout-content">
+            <div class="callout-title">Vorausschau</div>
+            <p>Berechtigungen mit <code>chmod</code> und <code>chown</code> setzen wir an
+            <strong>Tag 2</strong> ausführlich. Für heute reicht zu wissen, dass jede
+            Datei drei mal drei Rechte hat: für Besitzer, Gruppe und Andere.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TREE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.6</span>
+        <h2 class="timeblock-title"><code>tree</code> installieren — der hübschere Bruder von <code>ls -R</code></h2>
+        <span class="timeblock-badge badge-action">Praxis</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>tree</code> zeigt Verzeichnisbäume als ASCII-Baum. Ist auf Rocky
+        Minimal nicht vorinstalliert — flott nachholen:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>sudo dnf install tree -y
+
+# In Aktion
+tree /etc/ssh/
+
+# Tiefe begrenzen
+tree -L 2 /etc/
+
+# Mit versteckten Dateien
+tree -a ~/
+
+# Nur Verzeichnisse, keine Dateien
+tree -d /var/log/
+
+# Größen anzeigen
+tree -h /var/log/</code></pre>
+        </div>
+
+        <p>Beispiel-Output:</p>
+        <div class="ascii-box">  /etc/ssh/
+  ├── ssh_config
+  ├── ssh_config.d
+  │   └── 50-redhat.conf
+  ├── sshd_config
+  └── sshd_config.d
+      └── 50-cloud-init.conf
+
+  2 directories, 4 files</div>
+      </div>
+    </section>
+
+    <!-- ============ TAB COMPLETION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.7</span>
+        <h2 class="timeblock-title">Tab-Completion in der Praxis</h2>
+        <span class="timeblock-badge badge-vortrag">Speed-Up</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wir haben Tab schon in Kapitel 06 angesprochen. Hier konkret beim
+        Navigieren — <strong>nie wieder lange Pfade tippen</strong>:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">tab demos</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Du willst nach /usr/share/doc/openssh/
+$ cd /us&lt;TAB&gt;          # → cd /usr/
+$ cd /usr/sh&lt;TAB&gt;       # → cd /usr/share/
+$ cd /usr/share/d&lt;TAB&gt;  # → cd /usr/share/doc/
+$ cd /usr/share/doc/op&lt;TAB&gt;
+                       # → cd /usr/share/doc/openssh/
+
+# Bei Mehrdeutigkeit zweimal Tab:
+$ ls /etc/host&lt;TAB&gt;&lt;TAB&gt;
+hostname  hosts  hosts.allow  hosts.deny</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">⚡</div>
+          <div class="callout-content">
+            <div class="callout-title">Geschwindigkeit</div>
+            <p>Ein erfahrener Admin tippt selten mehr als 3–4 Buchstaben am Stück. Der
+            Rest ist Tab. Wer den Reflex hat, schreibt Befehle in einem Viertel der
+            Zeit — und macht weniger Tippfehler.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TYPISCHE FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">8.8</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — Case-Sensitivity vergessen</div>
+            <p>Linux unterscheidet streng zwischen Groß- und Kleinschreibung.
+            <code>Datei.txt</code>, <code>datei.txt</code> und <code>DATEI.TXT</code>
+            sind <strong>drei verschiedene Dateien</strong>. Anders als Windows.
+            <code>cd Documents</code> funktioniert nicht, wenn der Ordner <code>documents</code>
+            heißt.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Vergessenes <code>/</code> vor absolutem Pfad</div>
+            <p><code>cd etc</code> sucht <em>relativ</em> nach einem Verzeichnis
+            <code>etc</code> im aktuellen Standort — was meistens nicht existiert.
+            Für den absoluten Pfad muss vorne <code>/</code>: <code>cd /etc</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — Tippfehler bei langen Pfaden</div>
+            <p><code>cd /etc/syslmd/system</code> statt <code>/etc/systemd/system</code> —
+            klassischer Buchstabendreher. Lösung: <strong>immer Tab nutzen</strong>.
+            Vertippt sich Tab, weiß man sofort, dass der Pfad falsch ist.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Leerzeichen in Dateinamen</div>
+            <p><code>cd Mein Ordner</code> versucht in „Mein“ zu wechseln und gibt „Ordner“
+            als zweites Argument an cd weiter. Lösungen:
+            <code>cd "Mein Ordner"</code> (Quotes) oder
+            <code>cd Mein\ Ordner</code> (Backslash-Escape). Profis vermeiden Leerzeichen
+            in Dateinamen ganz und nehmen <code>mein-ordner</code> oder
+            <code>mein_ordner</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 1.1 ============ -->
+    <section class="lab" id="lab-1-1">
+      <div class="lab-header">
+        <span class="lab-icon">🧪</span>
+        <span class="lab-label">Lab 1.1</span>
+        <span class="lab-title">HanovaTech-Verzeichnis erkunden</span>
+        <span class="lab-duration">35 min</span>
+      </div>
+      <div class="lab-body">
+        <div class="lab-scenario">
+          <strong>📧 E-Mail vom Senior-Admin (HanovaTech GmbH):</strong><br>
+          „Willkommen im Team! Bevor du irgendwas auf dem System veränderst, lerne
+          es erstmal kennen. Geh die folgenden Aufgaben durch — alle ohne sudo,
+          du sollst nur LESEN und navigieren. Sag Bescheid, wenn du fertig bist
+          oder feststeckst.“
+        </div>
+
+        <div class="lab-section-title">Teil A — Orientierung (5 min)</div>
+        <ol class="lab-tasks">
+          <li>Schalte deine VM an, logge dich als <code>admin</code> ein.</li>
+          <li>In welchem Verzeichnis stehst du direkt nach dem Login? Welcher Befehl zeigt das an?</li>
+          <li>Wer bist du, wie heißt die Maschine, wie spät ist es? Nutze drei kleine Befehle.</li>
+          <li>Welche Linux-Version läuft hier? Schau in <code>/etc/os-release</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 2) aktuelles Verzeichnis
+pwd
+# erwartet: /home/admin
+
+# 3) wer + wo + wann
+whoami
+hostname
+date
+
+# 4) Linux-Version
+cat /etc/os-release</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Navigieren (10 min)</div>
+        <ol class="lab-tasks" start="5">
+          <li>Wechsle nach <code>/etc</code> und liste alle Dateien im Long-Format,
+            einschließlich versteckter.</li>
+          <li>Zeige den Inhalt der Datei <code>/etc/hostname</code> an. Was steht drin?</li>
+          <li>Wechsle direkt nach <code>/var/log</code> — mit einem einzigen Befehl.</li>
+          <li>Wie viele Einträge hat dieses Verzeichnis ungefähr? (Tipp: <code>ls | wc -l</code>)</li>
+          <li>Gehe ein Verzeichnis hoch. Wo bist du jetzt? Prüfe mit pwd.</li>
+          <li>Wechsle zurück ins vorherige Verzeichnis — <strong>mit nur zwei Zeichen</strong>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 5) /etc Long+Hidden
+cd /etc
+ls -la
+
+# 6) hostname-Datei
+cat /etc/hostname
+# erwartet: rocky-tn01
+
+# 7) direkt nach /var/log
+cd /var/log
+
+# 8) Anzahl Einträge
+ls | wc -l
+
+# 9) ein Verzeichnis hoch
+cd ..
+pwd
+# erwartet: /var
+
+# 10) zurück ins vorherige
+cd -
+# springt zurück nach /var/log</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — ls in allen Spielarten (10 min)</div>
+        <ol class="lab-tasks" start="11">
+          <li>Wechsle in dein Home-Verzeichnis — <strong>drei verschiedene Schreibweisen</strong>
+            sollst du aufschreiben.</li>
+          <li>Liste den Inhalt deines Homes inklusive versteckter Dateien.</li>
+          <li>Welche versteckten Konfigurationsdateien (Dotfiles) findest du? Nenne drei.</li>
+          <li>Zeige nur die größten Dateien in <code>/var/log</code> (nach Größe sortiert,
+            human-readable, Long-Listing).</li>
+          <li>Zeige in <code>/var/log</code> die <strong>neuesten</strong> 5 Dateien.
+            Tipp: nach Zeit sortieren, dann <code>| head -5</code>.</li>
+          <li>Liste alle Verzeichnisse in <code>/etc</code>, die mit „<code>s</code>“ anfangen.
+            Tipp: <code>ls -d /etc/s*/</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 11) drei Schreibweisen
+cd ~
+cd
+cd $HOME
+# oder: cd /home/admin
+
+# 12) Home mit versteckten Dateien
+ls -la ~
+
+# 13) typische Dotfiles
+# .bashrc, .bash_profile, .bash_history, .bash_logout
+# .ssh/, .config/ (falls vorhanden)
+
+# 14) /var/log nach Größe
+ls -lhS /var/log | head -10
+
+# 15) /var/log neueste 5
+ls -lt /var/log | head -6
+# (head -6, weil erste Zeile "total ..." ist)
+
+# 16) /etc-Verzeichnisse mit s am Anfang
+ls -d /etc/s*/</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Detektivarbeit (10 min)</div>
+        <ol class="lab-tasks" start="17">
+          <li>Wo liegt das Binary von <code>ls</code> selbst? Tipp: <code>which ls</code>
+            oder <code>type ls</code>.</li>
+          <li>Folge dem Symlink von <code>/bin</code> mit <code>ls -l /</code>. Wohin zeigt
+            <code>/bin</code> auf Rocky 9?</li>
+          <li>Wechsle nach <code>/proc/1/</code>. Wer oder was ist Prozess 1?
+            (Tipp: <code>cat cmdline</code> — die Ausgabe hat keine Zeilenumbrüche,
+            das ist normal).</li>
+          <li>Wie viele CPUs hat dein System? Schau in <code>/proc/cpuinfo</code> und
+            zähle die Zeilen mit „processor“. Tipp: <code>grep -c processor /proc/cpuinfo</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 17) Wo liegt ls?
+which ls
+# /usr/bin/ls
+type ls
+# ls is aliased to `ls --color=auto'   (Rocky-Default)
+
+# 18) Symlink-Ziel von /bin
+ls -l /
+# u.a.: bin -&gt; usr/bin
+
+# 19) Prozess 1
+cd /proc/1
+cat cmdline
+# /usr/lib/systemd/systemd ... (alles in einer Zeile)
+# Prozess 1 = systemd, der Init-Prozess
+
+# 20) Anzahl CPUs
+grep -c processor /proc/cpuinfo
+# 2  (so viele vCPUs hast du der VM gegeben)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer (5–10 min)</div>
+        <ol class="lab-tasks" start="21">
+          <li>Installiere mit sudo das Paket <code>tree</code>. Zeige damit dein
+            Home-Verzeichnis bis Tiefe 2 — auch versteckte Dateien.</li>
+          <li>Welches sind die <strong>drei größten</strong> Dateien in
+            <code>/usr/bin/</code>? Tipp: <code>ls -lhS</code> + <code>head</code>.</li>
+          <li>Zeige nur die Verzeichnisse in deinem Home — kein File darf in der Ausgabe sein.</li>
+          <li>Erkläre kurz in eigenen Worten: Was ist der Unterschied zwischen
+            <code>cd</code>, <code>cd ~</code> und <code>cd /</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 21) tree installieren und Home anzeigen
+sudo dnf install tree -y
+tree -L 2 -a ~
+
+# 22) drei größte Dateien in /usr/bin
+ls -lhS /usr/bin/ | head -4
+# head -4 weil erste Zeile "total ..." ist
+
+# 23) nur Verzeichnisse im Home
+ls -ld ~/*/
+# oder
+ls -d ~/*/
+
+# 24) Erklärung
+# cd     → ins Home des aktuellen Users (Kurzform von cd ~)
+# cd ~   → ins Home des aktuellen Users (explizit)
+# cd /   → zur Wurzel des Dateisystems
+#
+# cd und cd ~ tun also dasselbe.
+# cd / ist eine ganz andere Stelle: die Spitze des Baums.</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 1.1 geschafft?</div>
+            <p>Wenn ja: melde dich beim Trainer oder hak es auf dem Whiteboard ab.
+            In Kapitel 09 lernen wir Dateien und Ordner zu <em>erstellen</em> und zu
+            <em>löschen</em> — bisher haben wir nur gelesen und navigiert.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wofür steht <code>pwd</code> und welche Information gibt es zurück?</li>
+          <li>Was machen die folgenden Befehle: <code>cd</code>, <code>cd ~</code>,
+            <code>cd ..</code>, <code>cd -</code>, <code>cd /</code>?</li>
+          <li>Was unterscheidet einen absoluten von einem relativen Pfad?</li>
+          <li>Welche fünf häufigsten <code>ls</code>-Optionen gibt es und was bedeuten sie?</li>
+          <li>Was sagt das erste Zeichen einer <code>ls -l</code>-Ausgabezeile aus?</li>
+          <li>Wie zeigst du nur Verzeichnisse, keine Dateien?</li>
+          <li>Warum ist Tab-Completion so wichtig?</li>
+          <li>Nenne drei typische Anfänger-Fehler beim Navigieren.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>print working directory</strong> — gibt den absoluten Pfad des aktuellen
+                Arbeitsverzeichnisses aus.</li>
+              <li><code>cd</code> = Home. <code>cd ~</code> = Home (explizit).
+                <code>cd ..</code> = ein Verzeichnis hoch. <code>cd -</code> = ins vorherige Verzeichnis.
+                <code>cd /</code> = zur Wurzel.</li>
+              <li>Absolut: beginnt mit <code>/</code>, eindeutig ab der Wurzel. Relativ: beginnt
+                mit Name, <code>.</code>, <code>..</code> oder <code>~</code> — vom aktuellen Standort aus.</li>
+              <li><code>-l</code> long, <code>-a</code> all (auch hidden), <code>-h</code> human-readable,
+                <code>-t</code> nach Time, <code>-S</code> nach Size, <code>-R</code> rekursiv,
+                <code>-d</code> nur Verzeichnis selbst (mind. fünf nennen).</li>
+              <li>Den Dateityp: <code>-</code> = reguläre Datei, <code>d</code> = Verzeichnis,
+                <code>l</code> = Symlink, <code>b</code>/<code>c</code> = Block-/Chardevice, …</li>
+              <li><code>ls -d */</code> oder kombiniert <code>ls -ld */</code>.</li>
+              <li>Spart Tipparbeit, vermeidet Tippfehler, beweist sofort wenn ein Pfad falsch ist
+                (kein Tab-Treffer = nichts existiert).</li>
+              <li>Case-Sensitivity vergessen, fehlendes <code>/</code> vor absolutem Pfad, Leerzeichen
+                in Dateinamen nicht escaped, Tippfehler bei langen Pfaden.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="07-dateisystem.html">
+        <span class="nav-eyebrow">← Kapitel 07</span>
+        <span class="nav-title">Dateisystem &amp; FHS</span>
+      </a>
+      <a href="09-dateien-ordner.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 09 →</span>
+        <span class="nav-title">Dateien &amp; Ordner</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 08 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>
