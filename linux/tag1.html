@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux · Tag 1 · Setup &amp; erste Schritte — ITADM Academy</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Start</a></li>
+      <li><a href="index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+  <div class="page-layout">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar">
+      <div class="sidebar-title">Linux · Tag 1</div>
+      <ul class="sidebar-list">
+        <li><a href="#block-1" class="block-link">B1 · 08:00 Setup &amp; Theorie</a></li>
+        <li><a href="#what-is-os">└ Was ist ein BS?</a></li>
+        <li><a href="#linux-history">└ Linux-Geschichte</a></li>
+        <li><a href="#distributions">└ Distributionen</a></li>
+        <li><a href="#virtualisation">└ Virtualisierung</a></li>
+
+        <li><a href="#block-2" class="block-link">B2 · 09:45 VM &amp; Installation</a></li>
+        <li><a href="#vm-create">└ VM erstellen</a></li>
+        <li><a href="#rocky-install">└ Rocky installieren</a></li>
+
+        <li><a href="#block-3" class="block-link">B3 · 11:30 Terminal-Basics</a></li>
+        <li><a href="#terminal-anatomy">└ Prompt-Anatomie</a></li>
+        <li><a href="#navigation">└ cd &amp; ls</a></li>
+        <li><a href="#paths">└ Pfade</a></li>
+        <li><a href="#lab-1-1" class="lab-link">🧪 Lab 1.1</a></li>
+
+        <li><a href="#block-4" class="block-link">B4 · 13:30 Dateien &amp; nano</a></li>
+        <li><a href="#file-commands">└ touch / cp / mv / rm</a></li>
+        <li><a href="#nano">└ Editor nano</a></li>
+        <li><a href="#lab-1-2" class="lab-link">🧪 Lab 1.2</a></li>
+
+        <li><a href="#block-5" class="block-link">B5 · 15:15 Wildcards &amp; Quiz</a></li>
+        <li><a href="#echo-wildcards">└ echo &amp; Wildcards</a></li>
+        <li><a href="#redirection">└ Redirection</a></li>
+        <li><a href="#lab-1-3" class="lab-link">🧪 Lab 1.3</a></li>
+        <li><a href="#quiz">└ 🎯 Tages-Quiz</a></li>
+
+        <div class="sidebar-divider"></div>
+        <li><a href="#cheatsheet" class="block-link">📋 Cheat-Sheet</a></li>
+      </ul>
+    </aside>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <article>
+
+      <section class="page-hero">
+        <div class="page-eyebrow">Linux · Tag 1 von 3</div>
+        <h1 class="page-title">
+          Vom Setup zur ersten <span class="highlight">Linux-Konsole</span>
+        </h1>
+        <p class="page-subtitle">
+          Heute installierst du dein erstes Linux, lernst dich im Terminal zu orientieren
+          und arbeitest mit Dateien, Wildcards und Ausgabeumleitung.
+        </p>
+        <div class="page-meta">
+          <span class="meta-item"><span class="meta-item-icon">⏰</span> 08:00 – 16:45</span>
+          <span class="meta-item"><span class="meta-item-icon">🐧</span> Rocky Linux 9</span>
+          <span class="meta-item"><span class="meta-item-icon">💻</span> VMware Workstation</span>
+          <span class="meta-item"><span class="meta-item-icon">🎯</span> 3 Labs · 1 Quiz</span>
+        </div>
+      </section>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-content">
+          <div class="callout-title">Am Ende des Tages kannst du …</div>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+            <li>eine Linux-VM in VMware aufsetzen und Rocky Linux installieren</li>
+            <li>dich im Linux-Dateisystem orientieren</li>
+            <li>Dateien und Ordner anlegen, kopieren, verschieben, löschen</li>
+            <li>Textdateien mit <code>nano</code> bearbeiten</li>
+            <li>Wildcards und Ausgabeumleitung sinnvoll einsetzen</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ====================================================
+           BLOCK 1
+           ==================================================== -->
+      <section id="block-1" class="timeblock">
+        <div class="timeblock-header">
+          <span class="timeblock-time">08:00 – 09:30</span>
+          <h2 class="timeblock-title">Block 1 · Setup &amp; Theorie parallel</h2>
+          <span class="timeblock-badge badge-vortrag">Vortrag + Aktion</span>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">⚡</div>
+          <div class="callout-content">
+            <div class="callout-title">Sofort starten — Downloads laufen lassen!</div>
+            <p>Bevor wir Theorie machen, startet ihr jetzt diese zwei Downloads:</p>
+            <ol style="margin-top: 0.5rem; padding-left: 1.25rem;">
+              <li><strong>VMware Workstation Pro</strong> (kostenlos für Privatnutzung)<br>
+                <a href="https://www.vmware.com/products/workstation-pro.html" target="_blank">vmware.com/products/workstation-pro.html</a></li>
+              <li><strong>Rocky Linux 9 — Minimal ISO</strong><br>
+                <a href="https://rockylinux.org/download" target="_blank">rockylinux.org/download</a>
+                → <code>x86_64</code> → <code>Minimal ISO</code></li>
+            </ol>
+            <p style="margin-top: 0.7rem;">Beide laufen im Hintergrund, während wir die Einführung machen.</p>
+          </div>
+        </div>
+
+        <!-- WAS IST EIN BS -->
+        <div class="subblock" id="what-is-os">
+          <div class="subblock-header">
+            <span class="subblock-time">08:10 – 08:30</span>
+            <h3 class="subblock-title">Was ist ein Betriebssystem?</h3>
+          </div>
+
+          <p>Ein Betriebssystem (BS) ist die <strong>Vermittlerschicht</strong> zwischen Mensch und Hardware.
+          Stell dir das BS wie den <em>Hausmeister im Hochhaus</em> vor: verteilt Strom, regelt wer welche
+          Räume nutzt, sorgt für Ordnung. Ohne BS müsste jedes Programm direkt mit der Hardware reden — Chaos!</p>
+
+          <div class="ascii-box">   Anwendungen   ← Word, Browser, Spotify
+        ↑
+       API       ← Schnittstelle "Wie rede ich mit dem BS?"
+        ↑
+      Kernel    ← Das Herz des Betriebssystems
+        ↑
+    Hardware    ← CPU, RAM, Festplatte</div>
+
+          <h4>Die vier Hauptaufgaben eines BS</h4>
+          <ul>
+            <li><strong>Prozessverwaltung</strong> — Wer darf gerade auf der CPU rechnen?</li>
+            <li><strong>Speicherverwaltung</strong> — Wer kriegt wie viel RAM?</li>
+            <li><strong>Geräteverwaltung</strong> — Welcher Drucker, welche USB-Maus?</li>
+            <li><strong>Dateisystem</strong> — Wo liegen die Daten auf der Platte?</li>
+          </ul>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">Knaller-Fakt</div>
+              <p>Auf den <strong>Top500</strong> Supercomputern der Welt läuft 100 % Linux.
+              Auf 0 von 500 läuft Windows.</p>
+            </div>
+          </div>
+
+          <div class="callout callout-trainer">
+            <div class="callout-icon">🎓</div>
+            <div class="callout-content">
+              <div class="callout-title">Trainer-Hinweis</div>
+              <p><strong>Chat-Frage stellen:</strong> "Wo nutzt ihr schon Linux, ohne es zu wissen?"
+              Antworten sammeln und auflösen: Android, Smart-TV, Router, Auto (Tesla, MBUX),
+              Geldautomaten, ISS, jeder Webserver.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LINUX HISTORY -->
+        <div class="subblock" id="linux-history">
+          <div class="subblock-header">
+            <span class="subblock-time">08:30 – 08:50</span>
+            <h3 class="subblock-title">Linux-Geschichte als Story</h3>
+          </div>
+
+          <p><strong>1969 —</strong> In den Bell Labs (AT&amp;T) bauen ein paar Entwickler ein neues
+          Betriebssystem: <strong>Unix</strong>. Es ist gut. Es ist frei. Universitäten weltweit
+          nutzen es zum Lernen.</p>
+
+          <p><strong>1979 —</strong> AT&amp;T merkt: "Hey, damit kann man Geld verdienen!" Unix wird
+          <strong>kommerziell</strong>. Universitäten sind sauer.</p>
+
+          <p><strong>1984 —</strong> <strong>Richard Stallman</strong> vom MIT sagt:
+          "Wenn die nicht freie Software wollen, machen wir unsere eigene!" Er startet das
+          <strong>GNU-Projekt</strong> und erfindet die <strong>GPL-Lizenz</strong> — die Idee,
+          dass Software für immer frei bleiben muss.</p>
+
+          <p><strong>Problem:</strong> GNU hat alle Werkzeuge fertig — aber kein Herzstück. <strong>Kein Kernel.</strong></p>
+
+          <p><strong>1991 —</strong> Ein finnischer Informatik-Student namens <strong>Linus Torvalds</strong>
+          schreibt in seinem Studentenzimmer einen Kernel als <strong>Hobby</strong>. Postet im Internet:</p>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">📜</div>
+            <div class="callout-content">
+              <em>"Hello everybody, I'm doing a free operating system
+              (just a hobby, won't be big and professional…)"</em>
+            </div>
+          </div>
+
+          <p>Heute, 35 Jahre später: Sein <strong>"Hobby"</strong> läuft auf <strong>90 % des Internets</strong>.</p>
+        </div>
+
+        <!-- DISTRIBUTIONS -->
+        <div class="subblock" id="distributions">
+          <div class="subblock-header">
+            <span class="subblock-time">08:50 – 09:10</span>
+            <h3 class="subblock-title">Linux-Distributionen &amp; warum Rocky?</h3>
+          </div>
+
+          <div class="ascii-box">                Linux-Kernel (Linus Torvalds)
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+   Debian-Familie  Red Hat-Familie  Arch-Familie
+        │               │               │
+   - Ubuntu        - RHEL (€€€)      - Arch
+   - Mint          - Fedora          - Manjaro
+   - Kali          - CentOS (✝2021)
+                   - Rocky ✅ ← unser Kurs!
+                   - AlmaLinux</div>
+
+          <h4>Warum Rocky Linux?</h4>
+          <ol>
+            <li><strong>Kostenlos</strong>, aber 1:1 kompatibel mit RHEL (Red Hat Enterprise Linux, ~800 €/Jahr)</li>
+            <li><strong>Im Enterprise-Markt riesig</strong> — etwa 35 % aller Linux-Server sind RHEL-Familie</li>
+            <li><strong>Im Bewerbungsgespräch zählt's</strong> — "Erfahrung mit Red Hat oder Rocky?" wird gefragt</li>
+          </ol>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">🎯</div>
+            <div class="callout-content">
+              <div class="callout-title">Praxis-Tipp</div>
+              <p>Wer Rocky kann, kann automatisch auch RHEL und CentOS. Das ist Gold wert im Bewerbungsgespräch.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIRTUALIZATION -->
+        <div class="subblock" id="virtualisation">
+          <div class="subblock-header">
+            <span class="subblock-time">09:10 – 09:30</span>
+            <h3 class="subblock-title">Virtualisierung verstehen</h3>
+          </div>
+
+          <p>Bevor wir installieren: <strong>Was ist überhaupt eine VM?</strong></p>
+
+          <div class="ascii-box">┌─────────────────────────────────────────┐
+│  Euer echter PC (HOST)                  │
+│  Windows 11                             │
+│  ┌─────────────────────────────────┐    │
+│  │  VMware Workstation             │    │
+│  │  (Hypervisor Type-2)            │    │
+│  │  ┌──────────────────────┐       │    │
+│  │  │  Virtuelle Maschine  │       │    │
+│  │  │  (GUEST)             │       │    │
+│  │  │  Rocky Linux 9       │       │    │
+│  │  │  - 2 GB RAM          │       │    │
+│  │  │  - 20 GB Disk        │       │    │
+│  │  │  - 2 CPU-Kerne       │       │    │
+│  │  └──────────────────────┘       │    │
+│  └─────────────────────────────────┘    │
+└─────────────────────────────────────────┘</div>
+
+          <h4>Wichtige Begriffe</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Begriff</th><th>Bedeutung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>Host</code></td><td>Euer Laptop (das echte Windows)</td></tr>
+                <tr><td><code>Guest / Gast</code></td><td>Die VM (Rocky Linux)</td></tr>
+                <tr><td><code>Hypervisor</code></td><td>Die Software, die VMs verwaltet (VMware Workstation)</td></tr>
+                <tr><td><code>Type-1 Hypervisor</code></td><td>Läuft direkt auf Hardware (VMware ESXi, Hyper-V Server)</td></tr>
+                <tr><td><code>Type-2 Hypervisor</code></td><td>Läuft auf normalem BS (VMware Workstation, VirtualBox)</td></tr>
+                <tr><td><code>Snapshot</code></td><td>"Foto" der VM — Zustand einfrieren und zurückspringen</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Vorteile einer VM</h4>
+          <ul>
+            <li>✅ <strong>Risikofrei</strong> — kaputt? Snapshot zurück oder VM löschen</li>
+            <li>✅ <strong>Mehrere Systeme parallel</strong> (Linux + Windows gleichzeitig)</li>
+            <li>✅ <strong>Test-Umgebung</strong> für Admins (vor Produktiv-Server)</li>
+            <li>✅ <strong>Hardware-Konsolidierung</strong> (1 Hardware-Server = 20 virtuelle)</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           BLOCK 2
+           ==================================================== -->
+      <section id="block-2" class="timeblock">
+        <div class="timeblock-header">
+          <span class="timeblock-time">09:45 – 11:15</span>
+          <h2 class="timeblock-title">Block 2 · VM erstellen &amp; Rocky installieren</h2>
+          <span class="timeblock-badge badge-action">Aktion</span>
+        </div>
+
+        <div class="subblock" id="vm-create">
+          <div class="subblock-header">
+            <span class="subblock-time">09:45 – 10:00</span>
+            <h3 class="subblock-title">VM in VMware Workstation erstellen</h3>
+          </div>
+
+          <p>Geführte Demo — bitte parallel mitmachen. Wer abgehängt ist: <strong>✋ im Chat</strong>!</p>
+
+          <h4>Schritt-für-Schritt</h4>
+          <ol>
+            <li>VMware Workstation Pro starten <em>(beim ersten Start: "Use for Personal Use" wählen)</em></li>
+            <li><strong>File → New Virtual Machine</strong> (oder <code>Strg+N</code>)</li>
+            <li><strong>Typical (recommended)</strong> → Next</li>
+            <li><strong>Installer disc image file (iso)</strong> → Browse → eure Rocky-ISO → Next</li>
+            <li>Guest OS: <strong>Linux</strong> → Version: <strong>Red Hat Enterprise Linux 9 64-bit</strong> → Next</li>
+            <li>VM Name: <code>Rocky-Linux-Kurs</code> → Standardpfad lassen → Next</li>
+            <li>Disk Size: <strong>20 GB</strong> + "Store as a single file" → Next</li>
+            <li><strong>Customize Hardware</strong>:
+              <ul>
+                <li>Memory: <strong>2048 MB</strong></li>
+                <li>Processors: <strong>2</strong></li>
+                <li>Network Adapter: <strong>NAT</strong> ⚠️</li>
+                <li>Remove: USB Controller, Sound Card, Printer</li>
+              </ul>
+            </li>
+            <li>Close → Finish</li>
+          </ol>
+
+          <div class="callout callout-warn">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Wichtig</div>
+              <p>Ignoriert die "Easy Install"-Meldung, falls sie auftaucht. Wir installieren manuell,
+              weil Easy Install gerne Probleme macht.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subblock" id="rocky-install">
+          <div class="subblock-header">
+            <span class="subblock-time">10:00 – 11:15</span>
+            <h3 class="subblock-title">Rocky Linux Installation</h3>
+          </div>
+
+          <p>VM starten mit <strong>Power on this virtual machine</strong>. Im blauen Boot-Menü mit den
+          Pfeiltasten auf <strong>Install Rocky Linux 9</strong> → Enter.</p>
+
+          <h4>Anaconda-Installer (grafisch) — die Schritte</h4>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Schritt</th><th>Was tun?</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sprache</strong></td>
+                  <td>Deutsch → Weiter</td>
+                </tr>
+                <tr>
+                  <td><strong>Installationsziel</strong></td>
+                  <td>20-GB-Disk ist bereits ausgewählt → Fertig (oben links)</td>
+                </tr>
+                <tr>
+                  <td><strong>Netzwerk &amp; Hostname</strong> ⚠️</td>
+                  <td>Ethernet-Schalter auf <strong>EIN</strong> stellen! Hostname: <code>rocky-tn01</code> → Fertig</td>
+                </tr>
+                <tr>
+                  <td><strong>Software-Auswahl</strong></td>
+                  <td><strong>Server</strong> (NICHT "Server with GUI") → Fertig</td>
+                </tr>
+                <tr>
+                  <td><strong>Root-Passwort</strong></td>
+                  <td><code>linux123</code> + ✅ "Anmeldung als root mit Passwort erlauben" → Fertig (2×)</td>
+                </tr>
+                <tr>
+                  <td><strong>Benutzer-Erstellung</strong></td>
+                  <td>User: <code>admin</code>, Passwort: <code>linux123</code>, ✅ "Administrator" → Fertig</td>
+                </tr>
+                <tr>
+                  <td><strong>Installation</strong></td>
+                  <td>"Installation beginnen" klicken — dauert 10–15 min</td>
+                </tr>
+                <tr>
+                  <td><strong>Neustart</strong></td>
+                  <td>"System neu starten" → Login mit <code>admin</code> / <code>linux123</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-warn">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Netzwerk-Falle</div>
+              <p>Wenn ihr das Netzwerk im Installer NICHT aktiviert, könnt ihr später keine Software installieren.
+              Schalter <strong>jetzt</strong> auf EIN!</p>
+            </div>
+          </div>
+
+          <h4>Erster Login — endlich!</h4>
+          <p>Beim Boot erscheint ein schwarzer Bildschirm mit <code>rocky-tn01 login:</code>.
+          Loggt euch ein:</p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">login</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>rocky-tn01 login: admin
+Password: linux123</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">Linux-Geheimnis</div>
+              <p>Beim Passwort-Tippen seht ihr <strong>NICHTS</strong> — keine Sternchen, nichts.
+              Das ist Linux-Standard. Einfach tippen und Enter drücken.</p>
+            </div>
+          </div>
+
+          <h4>Erste Befehle — gemeinsam tippen!</h4>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>whoami
+hostname
+date
+echo "Ich bin drin!"
+cat /etc/os-release</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">🎉</div>
+            <div class="callout-content">
+              <div class="callout-title">Glückwunsch!</div>
+              <p>Ihr habt euer erstes Linux installiert! Das ist mehr, als 90 % aller Windows-User je gemacht haben.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           BLOCK 3
+           ==================================================== -->
+      <section id="block-3" class="timeblock">
+        <div class="timeblock-header">
+          <span class="timeblock-time">11:30 – 12:45</span>
+          <h2 class="timeblock-title">Block 3 · Erste Schritte im Terminal</h2>
+          <span class="timeblock-badge badge-lab">Lab</span>
+        </div>
+
+        <div class="subblock" id="terminal-anatomy">
+          <div class="subblock-header">
+            <span class="subblock-time">11:30 – 11:45</span>
+            <h3 class="subblock-title">Das Terminal verstehen</h3>
+          </div>
+
+          <p>Schaut euch eure Konsole an. Da steht etwas wie:</p>
+
+          <div class="ascii-box">[admin@rocky-tn01 ~]$
+ │       │          │  │
+ │       │          │  └── Eingabezeichen ($ = User, # = root!)
+ │       │          └───── Aktuelles Verzeichnis (~ = Home)
+ │       └───────────────── Hostname (Name der Maschine)
+ └───────────────────────── Eingeloggter User</div>
+
+          <div class="callout callout-danger">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Vorsicht</div>
+              <p>Wenn ihr ein <code>#</code> statt <code>$</code> seht, seid ihr <strong>root</strong> —
+              also Super-Admin mit allen Rechten. Da kann viel kaputtgehen!</p>
+            </div>
+          </div>
+
+          <h4>Drei wichtige Sofort-Befehle</h4>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>whoami      # Wer bin ich?
+hostname    # Wie heißt diese Maschine?
+pwd         # Wo bin ich? (print working directory)</code></pre>
+          </div>
+        </div>
+
+        <div class="subblock" id="navigation">
+          <div class="subblock-header">
+            <span class="subblock-time">11:45 – 12:00</span>
+            <h3 class="subblock-title">Navigation mit cd &amp; ls</h3>
+          </div>
+
+          <h4>Der Linux-Verzeichnisbaum</h4>
+          <div class="ascii-box">/                      ← Wurzel (Root-Verzeichnis, nicht "root user"!)
+├── bin/               ← Wichtige Programme
+├── boot/              ← Kernel, Bootloader
+├── etc/               ← Konfigurationsdateien (extremely tasty configs 😉)
+├── home/              ← Home-Verzeichnisse aller User
+│   └── admin/         ← unser Home (= ~)
+├── root/              ← Home von root
+├── tmp/               ← Temporäre Dateien
+├── usr/               ← User-Programme und Bibliotheken
+└── var/               ← Variable Daten (Logs, Datenbanken)</div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">Linux ist anders als Windows!</div>
+              <ul>
+                <li>Trenner: <code>/</code> in Linux, <code>\</code> in Windows</li>
+                <li>Linux ist <strong>case-sensitive</strong>: <code>Datei.txt</code> ≠ <code>datei.txt</code></li>
+                <li>Es gibt nur einen Wurzelpfad <code>/</code> — keine Laufwerke wie C:\ oder D:\</li>
+              </ul>
+            </div>
+          </div>
+
+          <h4>Die wichtigsten Befehle</h4>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>cd /etc          # ins /etc-Verzeichnis wechseln
+ls               # was ist drin?
+ls -l            # Long-Listing (Details!)
+ls -la           # auch versteckte Dateien (.dotfiles)
+ls -lh           # Human-readable (KB, MB)
+ls -lah          # alles zusammen
+
+cd ..            # ein Verzeichnis hoch
+cd ~             # ins Home
+cd               # auch ins Home (ohne Argument)
+cd -             # zurück zum letzten Verzeichnis</code></pre>
+          </div>
+        </div>
+
+        <div class="subblock" id="paths">
+          <div class="subblock-header">
+            <span class="subblock-time">12:00 – 12:10</span>
+            <h3 class="subblock-title">Absolute vs. relative Pfade</h3>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Typ</th><th>Beginnt mit</th><th>Beispiel</th><th>Was bedeutet's?</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Absolut</strong></td>
+                  <td><code>/</code></td>
+                  <td><code>cd /home/admin/Documents</code></td>
+                  <td>Pfad ab Wurzel</td>
+                </tr>
+                <tr>
+                  <td><strong>Relativ</strong></td>
+                  <td>Name oder <code>.</code> / <code>..</code></td>
+                  <td><code>cd Documents</code></td>
+                  <td>Pfad ab aktuellem Standort</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Sonderzeichen-Übersicht</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Zeichen</th><th>Bedeutung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>/</code></td><td>Wurzel (root-Verzeichnis)</td></tr>
+                <tr><td><code>~</code></td><td>mein Home-Verzeichnis</td></tr>
+                <tr><td><code>.</code></td><td>aktuelles Verzeichnis</td></tr>
+                <tr><td><code>..</code></td><td>ein Verzeichnis höher</td></tr>
+                <tr><td><code>-</code></td><td>vorheriges Verzeichnis (mit cd)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- LAB 1.1 -->
+        <div class="lab" id="lab-1-1">
+          <div class="lab-header">
+            <span class="lab-icon">🧪</span>
+            <span class="lab-label">Lab 1.1</span>
+            <span class="lab-title">Verzeichnis-Detektiv</span>
+            <span class="lab-duration">35 min</span>
+          </div>
+          <div class="lab-body">
+            <div class="lab-scenario">
+              <strong>📧 E-Mail vom Senior-Admin (HanovaTech GmbH):</strong><br>
+              "Willkommen im Team! Bevor du irgendwas änderst, lerne erstmal das System kennen.
+              Geh die folgenden Aufgaben durch und sag Bescheid, wenn du fertig bist."
+            </div>
+
+            <div class="lab-section-title">Aufgaben</div>
+            <ol class="lab-tasks">
+              <li>In welchem Verzeichnis bist du direkt nach dem Login? Welcher Befehl zeigt das an?</li>
+              <li>Wechsle nach <code>/etc/</code> und zeige alle Dateien im Long-Format <strong>mit</strong> versteckten Dateien.</li>
+              <li>Was steckt in <code>/etc/os-release</code>? <em>(Tipp: <code>cat &lt;datei&gt;</code>)</em></li>
+              <li>Welche Linux-Version habt ihr genau? (Aus os-release ablesen)</li>
+              <li>Wechsle mit <strong>einem</strong> Befehl direkt nach <code>/var/log/</code>.</li>
+              <li>Wie viele Log-Dateien gibt's da etwa?</li>
+              <li>Gehe ein Verzeichnis nach oben. Wo bist du jetzt?</li>
+              <li>Wechsle in dein Home-Verzeichnis — schreibe <strong>drei verschiedene Möglichkeiten</strong> auf.</li>
+              <li>Liste den Inhalt deines Home-Verzeichnisses in human-readable-Form auf.</li>
+              <li><strong>Bonus:</strong> Was bedeutet das <code>~</code>-Zeichen?</li>
+              <li><strong>Bonus:</strong> Was passiert bei <code>cd -</code>? Probier's aus!</li>
+            </ol>
+
+            <div class="solution">
+              <button class="solution-toggle">
+                <span>Lösung zeigen — aber erst selbst probieren!</span>
+                <span class="toggle-arrow">▼</span>
+              </button>
+              <div class="solution-content">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-dots">
+                      <span class="code-dot code-dot-red"></span>
+                      <span class="code-dot code-dot-yellow"></span>
+                      <span class="code-dot code-dot-green"></span>
+                    </div>
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn">📋 Kopieren</button>
+                  </div>
+<pre><code># 1) Aktuelles Verzeichnis anzeigen
+pwd
+# Erwartet: /home/admin
+
+# 2) Nach /etc, alle Dateien long + hidden
+cd /etc/
+ls -la
+
+# 3+4) os-release anzeigen
+cat /etc/os-release
+# Zeigt: Rocky Linux 9.x ...
+
+# 5) Direkt nach /var/log/
+cd /var/log/
+
+# 6) Anzahl der Einträge
+ls -l | wc -l
+
+# 7) Ein Verzeichnis hoch
+cd ..
+pwd
+# Erwartet: /var
+
+# 8) Drei Wege ins Home
+cd ~
+cd
+cd /home/admin
+
+# 9) Human-readable
+ls -lh ~
+
+# 10) ~ = Home-Verzeichnis des eingeloggten Users
+# 11) cd - springt zurück zum vorherigen Verzeichnis</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           BLOCK 4
+           ==================================================== -->
+      <section id="block-4" class="timeblock">
+        <div class="timeblock-header">
+          <span class="timeblock-time">13:30 – 15:00</span>
+          <h2 class="timeblock-title">Block 4 · Dateien, Ordner &amp; nano</h2>
+          <span class="timeblock-badge badge-lab">Lab</span>
+        </div>
+
+        <div class="subblock" id="file-commands">
+          <div class="subblock-header">
+            <span class="subblock-time">13:30 – 13:45</span>
+            <h3 class="subblock-title">Dateien und Ordner verwalten</h3>
+          </div>
+
+          <p>Jetzt wird's praktisch. Wir lernen die <strong>essentiellen Datei-Befehle</strong>:</p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code># Ordner erstellen
+mkdir test1
+mkdir -p projekte/2025/januar    # mit Unterordnern
+
+# Leere Datei erstellen
+touch datei1.txt
+
+# Kopieren
+cp datei1.txt kopie.txt
+cp datei1.txt test1/             # in Ordner
+cp -r ordner1 ordner2            # Ordner rekursiv kopieren
+
+# Verschieben / Umbenennen
+mv kopie.txt umbenannt.txt       # Umbenennen
+mv umbenannt.txt test1/          # Verschieben
+
+# Löschen
+rm datei1.txt                    # Datei löschen
+rm -i datei1.txt                 # mit Nachfrage
+rmdir leerer_ordner              # NUR leere Ordner
+rm -r ordner_mit_inhalt          # Ordner samt Inhalt
+rm -rf ordner                    # FORCE - VORSICHT!</code></pre>
+          </div>
+
+          <div class="callout callout-danger">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Die gefährlichste Linux-Zeile</div>
+              <p><code>rm -rf /</code> löscht euer GANZES Linux! Es gibt <strong>keinen Papierkorb</strong> in der Konsole.
+              Was weg ist, ist weg. Tippt das niemals als root!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subblock" id="nano">
+          <div class="subblock-header">
+            <span class="subblock-time">13:45 – 14:00</span>
+            <h3 class="subblock-title">Der Editor nano</h3>
+          </div>
+
+          <p>Wir brauchen einen Texteditor. Es gibt zwei berühmte:
+          <strong>nano</strong> (einfach, freundlich) und <strong>vim</strong> (mächtig, aber Lernkurve wie Eiger-Nordwand).
+          Heute: nano.</p>
+
+          <div class="callout callout-warn">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Rocky Minimal hat kein nano</div>
+              <p>Auf Rocky Linux Minimal ist <code>nano</code> nicht vorinstalliert! Wir müssen es zuerst installieren:</p>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>sudo dnf install nano -y</code></pre>
+          </div>
+
+          <p><code>sudo</code> = Admin-Rechte · <code>dnf install</code> = Paket installieren · <code>-y</code> = automatisches Ja</p>
+
+          <h4>Nano-Tastenkürzel</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Tastenkürzel</th><th>Funktion</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>Strg + O</code></td><td>Speichern (WriteOut)</td></tr>
+                <tr><td><code>Strg + X</code></td><td>Beenden</td></tr>
+                <tr><td><code>Strg + K</code></td><td>Zeile ausschneiden</td></tr>
+                <tr><td><code>Strg + U</code></td><td>Einfügen (Uncut)</td></tr>
+                <tr><td><code>Strg + W</code></td><td>Suchen</td></tr>
+                <tr><td><code>Strg + G</code></td><td>Hilfe</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">Erste Hilfe</div>
+              <p>Die Tastenkürzel stehen <strong>immer unten in nano</strong>. Schaut einfach hin!</p>
+            </div>
+          </div>
+
+          <h4>Mini-Übung — alle machen mit</h4>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>nano hallo.txt
+# Tippt rein: "Hallo Linux-Welt!"
+# Strg+O → Enter (speichern)
+# Strg+X (beenden)
+
+cat hallo.txt</code></pre>
+          </div>
+        </div>
+
+        <!-- LAB 1.2 -->
+        <div class="lab" id="lab-1-2">
+          <div class="lab-header">
+            <span class="lab-icon">🧪</span>
+            <span class="lab-label">Lab 1.2</span>
+            <span class="lab-title">HanovaTech-Ordnerstruktur</span>
+            <span class="lab-duration">60 min</span>
+          </div>
+          <div class="lab-body">
+            <div class="lab-scenario">
+              <strong>📧 E-Mail vom Senior-Admin:</strong><br>
+              "Bevor wir richtig loslegen: Wir brauchen eine saubere Ordnerstruktur in deinem Home
+              für die HanovaTech-Abteilungen. Bau das bitte heute auf — wir nutzen das die nächsten Tage."
+            </div>
+
+            <div class="lab-section-title">Teil A — Struktur bauen (15 min)</div>
+            <ol class="lab-tasks">
+              <li>Gehe in dein Home-Verzeichnis.</li>
+              <li>Erstelle mit <strong>einem einzigen Befehl</strong> folgende Struktur:
+                <div class="ascii-box" style="margin-top: 0.5rem;">~/hanovatech/
+├── buchhaltung/rechnungen/2025/
+├── buchhaltung/rechnungen/2024/
+├── it/server/configs/
+├── it/server/logs/
+├── personal/mitarbeiter/
+└── personal/bewerbungen/</div>
+                <em>Tipp: <code>mkdir -p</code> + geschweifte Klammern <code>{}</code></em>
+              </li>
+              <li>Prüfe die Struktur mit <code>ls -R</code>.</li>
+            </ol>
+
+            <div class="lab-section-title">Teil B — Dateien anlegen (15 min)</div>
+            <ol class="lab-tasks" start="4">
+              <li>Erstelle in <code>personal/mitarbeiter/</code> mit <strong>einem</strong> Befehl die leeren Dateien:<br>
+                <code>anna.txt</code>, <code>bernd.txt</code>, <code>clara.txt</code>, <code>dirk.txt</code></li>
+              <li>Erstelle in <code>it/server/configs/</code> mit nano die Datei <code>webserver.conf</code> mit folgendem Inhalt:
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-dots">
+                      <span class="code-dot code-dot-red"></span>
+                      <span class="code-dot code-dot-yellow"></span>
+                      <span class="code-dot code-dot-green"></span>
+                    </div>
+                    <span class="code-lang">conf</span>
+                    <button class="copy-btn">📋 Kopieren</button>
+                  </div>
+<pre><code># Webserver-Konfiguration
+Port: 80
+Hostname: hanovatech.local</code></pre>
+                </div>
+              </li>
+              <li>Erstelle ebenso <code>database.conf</code>:
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-dots">
+                      <span class="code-dot code-dot-red"></span>
+                      <span class="code-dot code-dot-yellow"></span>
+                      <span class="code-dot code-dot-green"></span>
+                    </div>
+                    <span class="code-lang">conf</span>
+                    <button class="copy-btn">📋 Kopieren</button>
+                  </div>
+<pre><code># Datenbank-Konfiguration
+Type: MySQL
+Port: 3306</code></pre>
+                </div>
+              </li>
+            </ol>
+
+            <div class="lab-section-title">Teil C — Kopieren, Verschieben, Umbenennen (15 min)</div>
+            <ol class="lab-tasks" start="7">
+              <li>Kopiere <code>webserver.conf</code> nach <code>webserver_backup.conf</code>.</li>
+              <li>Verschiebe <code>clara.txt</code> nach <code>personal/bewerbungen/</code>.</li>
+              <li>Benenne <code>bernd.txt</code> um in <code>bernd_mueller.txt</code>.</li>
+              <li>Erstelle eine Kopie des kompletten <code>2025</code>-Ordners als <code>2025_backup</code>.</li>
+            </ol>
+
+            <div class="lab-section-title">Teil D — Aufräumen (10 min)</div>
+            <ol class="lab-tasks" start="11">
+              <li>Lösche <code>dirk.txt</code>.</li>
+              <li>Versuche <code>2024</code> mit <code>rm</code> zu löschen (ohne <code>-r</code>). Was passiert? Warum?</li>
+              <li>Lösche den leeren <code>2024</code>-Ordner mit <code>rmdir</code>.</li>
+              <li>Lösche <code>2025_backup</code> samt Inhalt.</li>
+              <li><strong>Bonus:</strong> Was passiert bei <code>rm -rf ~/hanovatech/</code>?
+                <strong>NICHT MACHEN!</strong> Nur drüber nachdenken.</li>
+            </ol>
+
+            <div class="lab-section-title">Teil E — Zeigen (5 min)</div>
+            <ol class="lab-tasks" start="16">
+              <li>Liste eure finale Struktur auf mit <code>ls -R ~/hanovatech/</code>.</li>
+            </ol>
+
+            <div class="solution">
+              <button class="solution-toggle">
+                <span>Lösung zeigen — aber erst selbst probieren!</span>
+                <span class="toggle-arrow">▼</span>
+              </button>
+              <div class="solution-content">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-dots">
+                      <span class="code-dot code-dot-red"></span>
+                      <span class="code-dot code-dot-yellow"></span>
+                      <span class="code-dot code-dot-green"></span>
+                    </div>
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn">📋 Kopieren</button>
+                  </div>
+<pre><code># Teil A
+cd ~
+mkdir -p hanovatech/{buchhaltung/rechnungen/{2024,2025},it/server/{configs,logs},personal/{mitarbeiter,bewerbungen}}
+ls -R hanovatech/
+
+# Teil B
+cd ~/hanovatech/personal/mitarbeiter/
+touch anna.txt bernd.txt clara.txt dirk.txt
+
+cd ~/hanovatech/it/server/configs/
+nano webserver.conf
+# (Inhalt eintippen, Strg+O, Enter, Strg+X)
+nano database.conf
+
+# Teil C
+cp webserver.conf webserver_backup.conf
+mv ~/hanovatech/personal/mitarbeiter/clara.txt ~/hanovatech/personal/bewerbungen/
+mv ~/hanovatech/personal/mitarbeiter/bernd.txt ~/hanovatech/personal/mitarbeiter/bernd_mueller.txt
+cp -r ~/hanovatech/buchhaltung/rechnungen/2025 ~/hanovatech/buchhaltung/rechnungen/2025_backup
+
+# Teil D
+rm ~/hanovatech/personal/mitarbeiter/dirk.txt
+# rm 2024 → Fehler! 2024 ist ein Verzeichnis, kein File
+rmdir ~/hanovatech/buchhaltung/rechnungen/2024
+rm -r ~/hanovatech/buchhaltung/rechnungen/2025_backup
+
+# Teil E
+ls -R ~/hanovatech/</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           BLOCK 5
+           ==================================================== -->
+      <section id="block-5" class="timeblock">
+        <div class="timeblock-header">
+          <span class="timeblock-time">15:15 – 16:45</span>
+          <h2 class="timeblock-title">Block 5 · Wildcards, Echo, Redirection &amp; Quiz</h2>
+          <span class="timeblock-badge badge-quiz">Lab + Quiz</span>
+        </div>
+
+        <div class="subblock" id="echo-wildcards">
+          <div class="subblock-header">
+            <span class="subblock-time">15:15 – 15:30</span>
+            <h3 class="subblock-title">echo &amp; Wildcards</h3>
+          </div>
+
+          <h4>echo — der einfachste Befehl</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>echo "Hallo Welt"
+echo "Heute ist $(date)"
+echo "Mein User: $USER"</code></pre>
+          </div>
+
+          <h4>Wildcards (Platzhalter)</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Wildcard</th><th>Bedeutung</th><th>Beispiel</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>*</code></td>
+                  <td>beliebig viele beliebige Zeichen</td>
+                  <td><code>ls *.txt</code> — alle txt-Dateien</td>
+                </tr>
+                <tr>
+                  <td><code>?</code></td>
+                  <td>GENAU EIN beliebiges Zeichen</td>
+                  <td><code>ls test?.txt</code> — test1.txt bis test9.txt</td>
+                </tr>
+                <tr>
+                  <td><code>[ ]</code></td>
+                  <td>ein Zeichen aus der Liste</td>
+                  <td><code>ls test[135].txt</code> — nur 1, 3, 5</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Live-Demo</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>cd /usr/bin
+ls m*           # alles, was mit m beginnt
+ls m?           # m + 1 beliebiges Zeichen
+ls m??          # m + 2 beliebige Zeichen
+ls [abc]*       # alles, was mit a, b oder c beginnt
+
+cd /etc
+ls *.conf       # alle .conf-Dateien</code></pre>
+          </div>
+        </div>
+
+        <div class="subblock" id="redirection">
+          <div class="subblock-header">
+            <span class="subblock-time">15:30 – 15:45</span>
+            <h3 class="subblock-title">Ausgabeumleitung (Redirection)</h3>
+          </div>
+
+          <p>Normalerweise gibt Linux alles auf den Bildschirm aus. Mit <strong>Redirection</strong>
+          können wir diese Ausgabe in Dateien umlenken.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Operator</th><th>Bedeutung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>&gt;</code></td><td>stdout in Datei (überschreibt!)</td></tr>
+                <tr><td><code>&gt;&gt;</code></td><td>stdout an Datei anhängen</td></tr>
+                <tr><td><code>2&gt;</code></td><td>stderr (Fehler) in Datei</td></tr>
+                <tr><td><code>&lt;</code></td><td>stdin aus Datei lesen</td></tr>
+                <tr><td><code>&amp;&gt;</code></td><td>stdout + stderr zusammen</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Live-Demo</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code># Ausgabe in Datei (überschreibt!)
+ls -la > inhalt.txt
+cat inhalt.txt
+
+# Anhängen statt überschreiben
+echo "Neuer Eintrag" >> inhalt.txt
+cat inhalt.txt
+
+# Fehler umleiten
+cd /existiert_nicht 2> fehler.log
+cat fehler.log
+
+# Beides: stdout UND stderr
+ls /etc /existiert_nicht &> alles.log
+cat alles.log</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">Profi-Tipp</div>
+              <p><code>&gt; /dev/null</code> bedeutet "wegwerfen". Manchmal will man Ausgabe gar nicht sehen
+              — z.B. in Skripten, die im Hintergrund laufen.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 1.3 -->
+        <div class="lab" id="lab-1-3">
+          <div class="lab-header">
+            <span class="lab-icon">🧪</span>
+            <span class="lab-label">Lab 1.3</span>
+            <span class="lab-title">Ordnung im Chaos</span>
+            <span class="lab-duration">45 min</span>
+          </div>
+          <div class="lab-body">
+            <div class="lab-scenario">
+              <strong>📧 E-Mail vom Senior-Admin:</strong><br>
+              "Im logs/-Ordner ist viel los — und du kennst dich noch nicht mit Log-Files aus.
+              Üb das bitte heute. Wildcards und Umleitung sind die wichtigsten Werkzeuge
+              eines Admins. Wer das nicht kann, ist verloren."
+            </div>
+
+            <div class="lab-section-title">Teil A — Log-Dateien erstellen (10 min)</div>
+            <ol class="lab-tasks">
+              <li>Gehe in <code>~/hanovatech/it/server/logs/</code>.</li>
+              <li>Schreibe mit <code>echo</code> "Server gestartet um 08:00" in eine neue Datei <code>start.log</code>.</li>
+              <li>Hänge mit <code>echo</code> "User admin eingeloggt um 08:05" an dieselbe Datei an.</li>
+              <li>Hänge das aktuelle Datum mit <code>echo "Datum: $(date)"</code> an die Datei an.</li>
+              <li>Zeige den Inhalt mit <code>cat</code>.</li>
+            </ol>
+
+            <div class="lab-section-title">Teil B — System-Infos sammeln (10 min)</div>
+            <ol class="lab-tasks" start="6">
+              <li>Schreibe die Liste aller Dateien aus <code>/etc/</code> (Long-Format) in <code>etc_inhalt.log</code>.</li>
+              <li>Versuche <code>cd /existiert_nicht/</code> und leite den <strong>Fehler</strong> in <code>fehler.log</code> um.</li>
+              <li>Schreibe Username, Hostname und aktuelles Datum in eine Datei <code>system_info.log</code> (3 echo-Befehle mit <code>&gt;&gt;</code>).</li>
+            </ol>
+
+            <div class="lab-section-title">Teil C — Wildcards-Detektivarbeit (15 min)</div>
+            <ol class="lab-tasks" start="9">
+              <li>Erzeuge mit <code>touch</code> 10 Dateien: <code>test1.txt</code> bis <code>test10.txt</code>
+                <em>(Tipp: <code>touch test{1..10}.txt</code>)</em></li>
+              <li>Liste alle Dateien auf, die mit <code>test</code> beginnen.</li>
+              <li>Liste nur die Dateien, die mit <code>test</code> beginnen und nur <strong>eine Ziffer</strong> haben.</li>
+              <li>Liste nur <code>test1.txt</code>, <code>test3.txt</code>, <code>test5.txt</code>.</li>
+              <li>Erzeuge auch noch: <code>report_anna.txt</code>, <code>report_bernd.txt</code>, <code>daten_2024.csv</code>, <code>daten_2025.csv</code>.</li>
+              <li>Liste alle <code>report_</code>-Dateien auf.</li>
+              <li>Liste alle <code>.csv</code>-Dateien auf.</li>
+            </ol>
+
+            <div class="lab-section-title">Teil D — Aufräumen (10 min)</div>
+            <ol class="lab-tasks" start="16">
+              <li>Lösche alle <code>test</code>-Dateien mit <strong>einem</strong> Befehl.</li>
+              <li>Lösche alle <code>.csv</code>-Dateien mit <strong>einem</strong> Befehl.</li>
+              <li><strong>Bonus:</strong> Lösche alle Dateien, die mit <code>report_</code> beginnen.</li>
+            </ol>
+
+            <div class="solution">
+              <button class="solution-toggle">
+                <span>Lösung zeigen — aber erst selbst probieren!</span>
+                <span class="toggle-arrow">▼</span>
+              </button>
+              <div class="solution-content">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-header-dots">
+                      <span class="code-dot code-dot-red"></span>
+                      <span class="code-dot code-dot-yellow"></span>
+                      <span class="code-dot code-dot-green"></span>
+                    </div>
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn">📋 Kopieren</button>
+                  </div>
+<pre><code># Teil A
+cd ~/hanovatech/it/server/logs/
+echo "Server gestartet um 08:00" > start.log
+echo "User admin eingeloggt um 08:05" >> start.log
+echo "Datum: $(date)" >> start.log
+cat start.log
+
+# Teil B
+ls -la /etc/ > etc_inhalt.log
+cd /existiert_nicht/ 2> fehler.log
+echo "User: $USER" > system_info.log
+echo "Host: $(hostname)" >> system_info.log
+echo "Date: $(date)" >> system_info.log
+
+# Teil C
+touch test{1..10}.txt
+ls test*
+ls test?.txt          # nur einstellige Zahlen
+ls test[135].txt      # nur 1, 3, 5
+touch report_anna.txt report_bernd.txt daten_2024.csv daten_2025.csv
+ls report_*
+ls *.csv
+
+# Teil D
+rm test*.txt
+rm *.csv
+rm report_*</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUIZ -->
+        <div id="quiz">
+          <h3 style="font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--color-purple);">
+            🎯 Tages-Quiz Tag 1
+          </h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            12 Fragen — wer 10 richtig hat, gewinnt morgen den ersten virtuellen Kaffee! ☕
+          </p>
+
+          <div class="quiz-container">
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">01</span>Welches Zeichen steht für mein Home-Verzeichnis?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">/</button>
+                <button class="quiz-option" data-correct="true">~</button>
+                <button class="quiz-option" data-correct="false">.</button>
+                <button class="quiz-option" data-correct="false">$</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">02</span>Was macht <code>cd ..</code>?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">Ins Home-Verzeichnis wechseln</button>
+                <button class="quiz-option" data-correct="true">Ein Verzeichnis nach oben</button>
+                <button class="quiz-option" data-correct="false">Zum letzten Verzeichnis zurück</button>
+                <button class="quiz-option" data-correct="false">Verzeichnis erstellen</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">03</span>Welche Option zeigt versteckte Dateien bei <code>ls</code>?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">-l</button>
+                <button class="quiz-option" data-correct="true">-a</button>
+                <button class="quiz-option" data-correct="false">-h</button>
+                <button class="quiz-option" data-correct="false">-v</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">04</span>Womit erstelle ich verschachtelte Ordner in einem Schritt?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">mkdir -r</button>
+                <button class="quiz-option" data-correct="true">mkdir -p</button>
+                <button class="quiz-option" data-correct="false">mkdir -n</button>
+                <button class="quiz-option" data-correct="false">touch -p</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">05</span>Was ist der Unterschied zwischen <code>&gt;</code> und <code>&gt;&gt;</code>?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">Gibt es keinen — sind identisch</button>
+                <button class="quiz-option" data-correct="true"><code>&gt;</code> überschreibt, <code>&gt;&gt;</code> hängt an</button>
+                <button class="quiz-option" data-correct="false"><code>&gt;</code> hängt an, <code>&gt;&gt;</code> überschreibt</button>
+                <button class="quiz-option" data-correct="false"><code>&gt;</code> ist für Fehler, <code>&gt;&gt;</code> für Ausgabe</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">06</span>Welche Wildcard steht für GENAU EIN Zeichen?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">*</button>
+                <button class="quiz-option" data-correct="true">?</button>
+                <button class="quiz-option" data-correct="false">[]</button>
+                <button class="quiz-option" data-correct="false">!</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">07</span>Welcher Befehl löscht einen Ordner samt Inhalt?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">rmdir</button>
+                <button class="quiz-option" data-correct="true">rm -r</button>
+                <button class="quiz-option" data-correct="false">rm -i</button>
+                <button class="quiz-option" data-correct="false">delete</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">08</span>Wie leite ich eine Fehlermeldung in eine Datei um?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">&gt;</button>
+                <button class="quiz-option" data-correct="false">&gt;&gt;</button>
+                <button class="quiz-option" data-correct="true">2&gt;</button>
+                <button class="quiz-option" data-correct="false">1&gt;</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">09</span>Wie heißt der Editor, den wir heute genutzt haben?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">vim</button>
+                <button class="quiz-option" data-correct="true">nano</button>
+                <button class="quiz-option" data-correct="false">emacs</button>
+                <button class="quiz-option" data-correct="false">notepad</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">10</span>Welche Linux-Distribution nutzen wir?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">Ubuntu</button>
+                <button class="quiz-option" data-correct="true">Rocky Linux</button>
+                <button class="quiz-option" data-correct="false">Arch</button>
+                <button class="quiz-option" data-correct="false">Kali</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">11</span>Was bedeutet <code>pwd</code>?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">password</button>
+                <button class="quiz-option" data-correct="true">print working directory</button>
+                <button class="quiz-option" data-correct="false">previous working directory</button>
+                <button class="quiz-option" data-correct="false">print web data</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-card">
+              <div class="quiz-question"><span class="quiz-question-number">12</span>Welcher Befehl zeigt, wer ich bin?</div>
+              <div class="quiz-options">
+                <button class="quiz-option" data-correct="false">hostname</button>
+                <button class="quiz-option" data-correct="false">id</button>
+                <button class="quiz-option" data-correct="true">whoami</button>
+                <button class="quiz-option" data-correct="false">myname</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 3rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Mega! Tag 1 geschafft!</div>
+            <p>Ihr habt heute richtig viel geschafft:</p>
+            <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+              <li>VMware installiert</li>
+              <li>Rocky Linux installiert</li>
+              <li>20+ Linux-Befehle gelernt</li>
+              <li>Mit Wildcards und Umleitung gearbeitet</li>
+            </ul>
+            <p style="margin-top: 0.7rem;"><strong>Morgen wird's spannend:</strong> Berechtigungen, Hard-/Softlinks, Backup-Strategien.</p>
+            <p style="margin-top: 0.5rem;"><strong>Freiwillige Hausaufgabe:</strong> Spielt 30 min mit der VM. Kaputt? Egal — ihr könnt jederzeit neu starten.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHEAT-SHEET -->
+      <section id="cheatsheet" class="timeblock">
+        <div class="timeblock-header">
+          <span class="timeblock-time">📋</span>
+          <h2 class="timeblock-title">Cheat-Sheet Tag 1</h2>
+        </div>
+
+        <p>Die wichtigsten Befehle des Tages zum Ausdrucken oder Speichern:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Was er macht</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>pwd</code></td><td>Aktuelles Verzeichnis anzeigen</td></tr>
+              <tr><td><code>whoami</code></td><td>Eingeloggter User</td></tr>
+              <tr><td><code>hostname</code></td><td>Name des Systems</td></tr>
+              <tr><td><code>date</code></td><td>Datum und Uhrzeit</td></tr>
+              <tr><td><code>cd Pfad</code></td><td>Verzeichnis wechseln</td></tr>
+              <tr><td><code>cd ..</code></td><td>Ein Verzeichnis hoch</td></tr>
+              <tr><td><code>cd ~</code> oder <code>cd</code></td><td>Ins Home</td></tr>
+              <tr><td><code>cd -</code></td><td>Zum vorherigen Verzeichnis</td></tr>
+              <tr><td><code>ls</code></td><td>Verzeichnisinhalt</td></tr>
+              <tr><td><code>ls -la</code></td><td>Detailliert + versteckte Dateien</td></tr>
+              <tr><td><code>ls -lh</code></td><td>Human-readable Größen</td></tr>
+              <tr><td><code>mkdir Name</code></td><td>Verzeichnis erstellen</td></tr>
+              <tr><td><code>mkdir -p a/b/c</code></td><td>Verschachtelt erstellen</td></tr>
+              <tr><td><code>touch Datei</code></td><td>Leere Datei erstellen</td></tr>
+              <tr><td><code>cp Q Z</code></td><td>Datei kopieren</td></tr>
+              <tr><td><code>cp -r O1 O2</code></td><td>Ordner rekursiv kopieren</td></tr>
+              <tr><td><code>mv Q Z</code></td><td>Verschieben / Umbenennen</td></tr>
+              <tr><td><code>rm Datei</code></td><td>Datei löschen</td></tr>
+              <tr><td><code>rmdir Ordner</code></td><td>Leeren Ordner löschen</td></tr>
+              <tr><td><code>rm -r Ordner</code></td><td>Ordner samt Inhalt löschen</td></tr>
+              <tr><td><code>cat Datei</code></td><td>Dateiinhalt anzeigen</td></tr>
+              <tr><td><code>nano Datei</code></td><td>Datei editieren</td></tr>
+              <tr><td><code>echo "Text"</code></td><td>Text ausgeben</td></tr>
+              <tr><td><code>echo "X" &gt; D</code></td><td>In Datei schreiben (überschreibt)</td></tr>
+              <tr><td><code>echo "X" &gt;&gt; D</code></td><td>An Datei anhängen</td></tr>
+              <tr><td><code>Befehl 2&gt; D</code></td><td>Fehler in Datei umleiten</td></tr>
+              <tr><td><code>ls *.txt</code></td><td>Wildcard *: alle .txt</td></tr>
+              <tr><td><code>ls test?.txt</code></td><td>Wildcard ?: ein Zeichen</td></tr>
+              <tr><td><code>ls test[135].txt</code></td><td>Wildcard []: Auswahl</td></tr>
+              <tr><td><code>sudo Befehl</code></td><td>Befehl als Admin ausführen</td></tr>
+              <tr><td><code>sudo dnf install X -y</code></td><td>Paket installieren</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · <a href="tag2.html">Weiter zu Tag 2 →</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../script.js"></script>
+</body>
+</html>

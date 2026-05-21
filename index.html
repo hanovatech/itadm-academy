@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITADM Academy — IT-Administrator (IHK) Lernplattform</title>
+  <meta name="description" content="Lernplattform für die IT-Administrator (IHK) Weiterbildung. Linux, Windows, Serversysteme — hands-on und praxisnah.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Start</a></li>
+      <li><a href="linux/index.html">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="hero">
+    <div class="hero-eyebrow">IT-Administrator (IHK) · Lernplattform</div>
+    <h1 class="hero-title">
+      Werde zum <span class="hero-highlight">IT-Administrator</span>
+    </h1>
+    <p class="hero-subtitle">
+      Die zentrale Lernplattform für deine IHK-Weiterbildung.
+      Linux, Windows und Serversysteme — hands-on, praxisnah, mit echten Szenarien.
+    </p>
+
+    <div class="hero-terminal">
+      <div class="hero-terminal-header">
+        <span class="code-dot code-dot-red"></span>
+        <span class="code-dot code-dot-yellow"></span>
+        <span class="code-dot code-dot-green"></span>
+        <span class="hero-terminal-title">trainee@hanovatech: ~</span>
+      </div>
+      <div class="hero-terminal-body">
+        <span class="line"><span class="prompt">$</span> ./start-lernen.sh</span>
+        <span class="line"><span class="output">Initialisiere ITADM Academy ...</span></span>
+        <span class="line"><span class="output">[✓] Linux-Modul geladen</span></span>
+        <span class="line"><span class="output">[⏳] Windows-Modul folgt</span></span>
+        <span class="line"><span class="output">[⏳] Server-Modul folgt</span></span>
+        <span class="line"><span class="prompt">$</span> echo "Los geht's!"</span>
+        <span class="line"><span class="output">Los geht's! <span class="brand-cursor"></span></span></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Module</h2>
+    <p class="section-subtitle">
+      Wähle dein Modul. Jeder Bereich ist in mehrere Tage gegliedert und baut praxisnah aufeinander auf.
+    </p>
+
+    <div class="module-grid">
+
+      <a href="linux/index.html" class="module-card">
+        <div class="module-card-content">
+          <span class="module-icon">🐧</span>
+          <span class="module-tag">VERFÜGBAR</span>
+          <h3 class="module-card-title">Linux</h3>
+          <p class="module-card-desc">
+            Drei volle Tage Rocky Linux. Von der ersten VM-Installation bis zum eigenen Bash-Skript.
+            Inkl. Berechtigungen, systemd, Paketverwaltung.
+          </p>
+          <ul class="module-card-topics">
+            <li>Rocky Linux 9</li>
+            <li>Shell</li>
+            <li>chmod</li>
+            <li>systemctl</li>
+            <li>dnf</li>
+            <li>Bash</li>
+          </ul>
+          <span class="module-card-arrow">→</span>
+        </div>
+      </a>
+
+      <div class="module-card locked">
+        <div class="module-card-content">
+          <span class="module-icon">🪟</span>
+          <span class="module-tag" style="opacity: 0.5;">GEPLANT</span>
+          <h3 class="module-card-title">Windows</h3>
+          <p class="module-card-desc">
+            Windows Server und Client. Active Directory, Gruppenrichtlinien, PowerShell.
+            Inkl. Troubleshooting und Best Practices für den Admin-Alltag.
+          </p>
+          <ul class="module-card-topics">
+            <li>Windows Server</li>
+            <li>Active Directory</li>
+            <li>GPO</li>
+            <li>PowerShell</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card locked">
+        <div class="module-card-content">
+          <span class="module-icon">🏢</span>
+          <span class="module-tag" style="opacity: 0.5;">GEPLANT</span>
+          <h3 class="module-card-title">Serversysteme</h3>
+          <p class="module-card-desc">
+            Virtualisierung, Netzwerk-Services, DNS, DHCP, Web- und Mailserver.
+            Hochverfügbarkeit und Monitoring für Profis.
+          </p>
+          <ul class="module-card-topics">
+            <li>VMware</li>
+            <li>DNS / DHCP</li>
+            <li>Web</li>
+            <li>Monitoring</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="margin: 5rem 0;">
+    <h2 class="section-title">So lernen wir</h2>
+    <p class="section-subtitle">
+      Schluss mit langweiligen PowerPoint-Marathons. Hier arbeitest du selber — vom ersten Befehl an.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-card-icon">🎯</div>
+        <h3>Story-basiert</h3>
+        <p>Du bist Junior-Admin bei einer fiktiven Firma. Jeder Befehl löst ein echtes Problem.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon">⌨️</div>
+        <h3>70 % Hands-On</h3>
+        <p>Kurze Inputs, viele Labs. Du tippst, klickst, machst — nicht nur zuhören.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon">🧪</div>
+        <h3>Eigene VMs</h3>
+        <p>Du arbeitest auf deiner eigenen virtuellen Maschine. Risikofrei und realistisch.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon">🧩</div>
+        <h3>Pair-Debugging</h3>
+        <p>Wer steckt fest, fragt zuerst den Sitznachbarn. Erklären ist die beste Methode zu lernen.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · IT-Administrator (IHK) Lernplattform</p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

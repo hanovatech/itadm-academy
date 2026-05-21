@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux-Modul · ITADM Academy</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Start</a></li>
+      <li><a href="index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux-Modul · 3 Tage · Hands-On</div>
+    <h1 class="page-title">
+      Linux mit <span class="highlight">Rocky Linux 9</span>
+    </h1>
+    <p class="page-subtitle">
+      Drei volle Tage Hands-On Linux. Du bist Junior-Admin bei der HanovaTech GmbH —
+      und musst die Server am Laufen halten. Vom ersten Login bis zum eigenen Bash-Skript.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📅</span> 3 Tage</span>
+      <span class="meta-item"><span class="meta-item-icon">⏰</span> 08:00 – 16:45</span>
+      <span class="meta-item"><span class="meta-item-icon">🐧</span> Rocky Linux 9</span>
+      <span class="meta-item"><span class="meta-item-icon">💻</span> VMware Workstation</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> 9 Labs · 3 Quizzes</span>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Kursplan</h2>
+    <p class="section-subtitle">
+      Jeder Tag baut auf dem vorherigen auf. Vom Hello-World bis zum eigenen Bash-Skript.
+    </p>
+
+    <div class="day-grid">
+
+      <a href="tag1.html" class="day-card">
+        <div class="day-card-content">
+          <div class="day-number">[ TAG 01 ]</div>
+          <h3 class="day-card-title">Setup &amp; erste Schritte</h3>
+          <p class="day-card-desc">
+            VMware-Installation, Rocky Linux aufsetzen, Navigation im Terminal,
+            Dateien &amp; Ordner verwalten, Wildcards und Umleitung.
+          </p>
+          <ul class="day-card-topics">
+            <li>VMware</li>
+            <li>Rocky 9</li>
+            <li>cd / ls</li>
+            <li>mkdir</li>
+            <li>nano</li>
+            <li>Wildcards</li>
+            <li>Redirection</li>
+          </ul>
+          <span class="day-card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="tag2.html" class="day-card day-locked">
+        <div class="day-card-content">
+          <div class="day-number">[ TAG 02 ]</div>
+          <h3 class="day-card-title">Sicherheit &amp; Daten</h3>
+          <p class="day-card-desc">
+            Berechtigungen verstehen und setzen, Hard- und Softlinks,
+            Archivieren mit tar, Dateien gezielt suchen.
+          </p>
+          <ul class="day-card-topics">
+            <li>chmod</li>
+            <li>chown</li>
+            <li>Hard/Soft-Links</li>
+            <li>tar / gzip</li>
+            <li>find</li>
+            <li>grep</li>
+          </ul>
+          <span class="day-card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="tag3.html" class="day-card day-locked">
+        <div class="day-card-content">
+          <div class="day-number">[ TAG 03 ]</div>
+          <h3 class="day-card-title">System &amp; Services</h3>
+          <p class="day-card-desc">
+            systemd-Targets, Services verwalten, Prozesse, Paketverwaltung mit dnf,
+            erstes Bash-Skript schreiben.
+          </p>
+          <ul class="day-card-topics">
+            <li>systemctl</li>
+            <li>Targets</li>
+            <li>ps / top / kill</li>
+            <li>dnf</li>
+            <li>GRUB</li>
+            <li>Bash-Skript</li>
+          </ul>
+          <span class="day-card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section style="margin: 5rem 0;">
+    <h2 class="section-title">Voraussetzungen</h2>
+    <p class="section-subtitle">Was du vor dem Kurs brauchst (Hardware + Software):</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-card-icon">💻</div>
+        <h3>Eigener Laptop</h3>
+        <p>Mindestens 8 GB RAM (besser 16 GB), 30 GB freier Festplattenplatz.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon">🔌</div>
+        <h3>Virtualisierung aktiv</h3>
+        <p>VT-x oder AMD-V im BIOS aktiviert. Bei den meisten PCs schon an.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon">📶</div>
+        <h3>Internet</h3>
+        <p>Wir laden VMware und Rocky Linux zu Beginn herunter (~2,5 GB).</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon">🧠</div>
+        <h3>Keine Vorkenntnisse</h3>
+        <p>Wir starten bei Null. Selbst wenn du noch nie ein Terminal gesehen hast.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux-Modul</p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../script.js"></script>
+</body>
+</html>
