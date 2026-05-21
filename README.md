@@ -1,6 +1,6 @@
 # 🎓 ITADM Academy
 
-Lernplattform für die **IT-Administrator (IHK)** Weiterbildung.
+Lernplattform für die **IT-Administrator**-Weiterbildung.
 Linux, Windows, Serversysteme — hands-on und praxisnah.
 
 powered by **HanovaTech GmbH** · [hanovatech.de](https://hanovatech.de)
