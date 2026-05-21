@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 02 · Unix &amp; Linux-Geschichte — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 02 von 12</div>
+    <h1 class="page-title">
+      Unix &amp; Linux — die <span class="highlight">Geschichte</span> dahinter
+    </h1>
+    <p class="page-subtitle">
+      Wie aus einem Forschungsprojekt in den Bell Labs (1969) das Betriebssystem
+      wurde, das heute 90 % des Internets antreibt. Eine Geschichte aus Idealismus,
+      Lizenzkrieg und einem finnischen Studenten mit zu viel Freizeit.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 02</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 30 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Theorie</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 1969 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1969</span>
+        <h2 class="timeblock-title">Bell Labs — die Geburt von Unix</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Es ist Sommer <strong>1969</strong>. Die Menschheit landet auf dem Mond,
+        Woodstock findet statt — und in einem unscheinbaren Forschungslabor von
+        <strong>AT&amp;T Bell Labs</strong> in New Jersey hat ein Mann namens
+        <strong>Ken Thompson</strong> Langeweile.</p>
+
+        <p>Bell Labs war gerade aus einem gescheiterten Großprojekt namens
+        <strong>Multics</strong> ausgestiegen — einem hochkomplexen Time-Sharing-Betriebssystem,
+        das eher unter dem Gewicht seiner eigenen Features zusammenbrach als zu funktionieren.
+        Thompson und sein Kollege <strong>Dennis Ritchie</strong> fanden das Konzept gut,
+        die Umsetzung furchtbar.</p>
+
+        <p>Thompson wollte das Spiel <em>Space Travel</em> auf einem ausrangierten
+        <strong>PDP-7</strong>-Rechner zum Laufen bringen. Dafür schrieb er
+        kurzerhand ein kleines, schlankes Betriebssystem — als eine Art Bastel-Wochenendprojekt.
+        Sein Kollege <strong>Brian Kernighan</strong> nannte es spöttisch
+        <em>"Uni-cs"</em> als Wortspiel zu Multics. So entstand der Name:</p>
+
+        <div class="ascii-box">  Multics  →  "viele"  (komplex, überladen)
+  Unics    →  "einer" (einfach, fokussiert)
+  Unix     →  endgültige Schreibweise ab ca. 1970</div>
+
+        <p>Die Designphilosophie von Unix war damals revolutionär und ist es bis heute:</p>
+
+        <ul>
+          <li><strong>Schreibe Programme, die EINE Sache gut machen.</strong></li>
+          <li><strong>Schreibe Programme, die zusammenarbeiten.</strong></li>
+          <li><strong>Behandle alles wie eine Textdatei</strong> — Geräte, Konfigurationen, Prozesse.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Diese drei Sätze sind die Bibel der Unix-Welt</div>
+            <p>Wenn du heute <code>cat datei.log | grep ERROR | sort | uniq -c</code> tippst,
+            nutzt du genau dieses Prinzip: vier winzige Programme, die jeweils EINE
+            Sache machen — verbunden mit Pipes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1973 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1973</span>
+        <h2 class="timeblock-title">Unix wird in C umgeschrieben</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Das erste Unix war in <strong>Assembler</strong> geschrieben — also direkt
+        in der Maschinensprache der PDP-7. Das bedeutete: Wer Unix auf einen anderen
+        Computer portieren wollte, musste praktisch alles neu schreiben. Das ist, als
+        müsstest du dein Lieblingsbuch jedes Mal komplett neu in einer anderen Sprache
+        verfassen, sobald du den Leser wechselst.</p>
+
+        <p>Dennis Ritchie hatte parallel eine neue Programmiersprache entwickelt:
+        <strong>C</strong>. C war nah an der Hardware (schnell), aber portabel (kompilierbar
+        auf vielen Architekturen). 1973 nahmen Thompson und Ritchie eine mutige Entscheidung:</p>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🚀</div>
+          <div class="callout-content">
+            <div class="callout-title">Die wichtigste Entscheidung der BS-Geschichte</div>
+            <p>Sie schrieben den <strong>kompletten Unix-Kernel in C neu</strong>.
+            Damit war Unix das erste Betriebssystem, das durch einfaches Neukompilieren
+            auf andere Hardware übertragbar war.</p>
+          </div>
+        </div>
+
+        <p>Heute klingt das selbstverständlich. Damals war es Magie. Universitäten,
+        Forschungseinrichtungen und große Firmen konnten Unix plötzlich auf ihrer
+        eigenen Hardware nutzen — egal ob PDP-11, VAX oder später Intel-x86.</p>
+
+        <p>AT&amp;T war als Telekommunikationsmonopolist per Gesetz daran gehindert,
+        außerhalb der Telekom-Branche Software zu verkaufen. Deshalb gaben sie Unix
+        praktisch kostenlos an Universitäten ab — inklusive Quellcode. Studenten und
+        Professoren konnten den Kernel lesen, verändern und unterrichten.</p>
+
+        <p>Das wurde die Saat für eine ganze Generation von Informatikern, die mit
+        Unix groß wurden.</p>
+      </div>
+    </section>
+
+    <!-- ============ 1979 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1979</span>
+        <h2 class="timeblock-title">Die Kommerzialisierung — Folgen für die Universitäten</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Ende der 1970er erkennt AT&amp;T, dass Unix in der Industrie unglaublich
+        beliebt geworden ist. 1979 erscheint <strong>Unix Version 7</strong> — und
+        damit ändert sich der Ton:</p>
+
+        <ul>
+          <li>Lizenzen werden plötzlich <strong>teuer</strong> (mehrere zehntausend Dollar pro Maschine)</li>
+          <li>Der <strong>Quellcode</strong> ist nicht mehr frei zugänglich</li>
+          <li>Universitäten dürfen Unix nicht mehr im Unterricht „auseinandernehmen“</li>
+        </ul>
+
+        <p>An der <strong>UC Berkeley</strong> reagieren die Studenten und Professoren
+        kreativ: Sie nehmen die letzten frei verfügbaren Unix-Quellen und schreiben
+        ihre eigene Version, die später als <strong>BSD</strong> (Berkeley Software
+        Distribution) bekannt wird. BSD wird der akademisch-elitäre Zweig der Unix-Welt
+        und ist bis heute aktiv (FreeBSD, OpenBSD, NetBSD — und der Kern von <strong>macOS</strong>).</p>
+
+        <p>Auch <strong>Sun Microsystems</strong> (später von Oracle gekauft) baut auf
+        BSD auf und macht Unix-Workstations zur Standardausrüstung in Forschung und
+        Engineering.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📜</div>
+          <div class="callout-content">
+            <div class="callout-title">Der berühmte „Unix-Krieg“</div>
+            <p>In den 1980er-Jahren gab es einen erbitterten Streit zwischen
+            <strong>System V</strong> (AT&amp;T-Linie) und <strong>BSD</strong>
+            (Berkeley-Linie). Es ging um Lizenzen, Patente, sogar Gerichtsprozesse.
+            Genau dieser Streit lähmte beide Seiten — und schuf den Raum, in dem
+            Linux später groß werden konnte.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1984 — GNU ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1984</span>
+        <h2 class="timeblock-title">Richard Stallman startet das GNU-Projekt</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Am <strong>MIT in Boston</strong> arbeitet ein eigenwilliger Hacker namens
+        <strong>Richard Matthew Stallman</strong> (kurz: <strong>RMS</strong>) am
+        AI Lab. Er erlebt die Kommerzialisierung von Unix aus erster Hand — und
+        ihn macht das wütend. Ein konkretes Erlebnis prägt ihn besonders:</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🖨️</div>
+          <div class="callout-content">
+            <em>"Wir hatten einen Drucker, der ständig Papierstau hatte. Früher konnten wir
+            den Treiber selbst anpassen — der Drucker meldete dann, wenn jemand handeln
+            musste. Beim neuen Drucker bekamen wir nur die Binärdatei. Wir durften den
+            Quellcode nicht mehr sehen. Das fühlte sich an wie ein Verrat."</em>
+          </div>
+        </div>
+
+        <p>Stallman beschließt: <strong>Wenn die Industrie keine freie Software mehr
+        will, dann mache ich meine eigene.</strong> Im September 1983 verkündet er
+        per E-Mail an die Newsgroup <code>net.unix-wizards</code> das <strong>GNU-Projekt</strong>:
+        ein vollständig freies Unix-kompatibles Betriebssystem.</p>
+
+        <p>Der Name ist ein rekursives Akronym, das typisch für Hacker-Humor ist:</p>
+
+        <div class="ascii-box">  GNU  =  GNU's Not Unix
+                ↑
+                └── ruft sich selbst auf 😉</div>
+
+        <p>1984 gründet Stallman die <strong>Free Software Foundation (FSF)</strong>.
+        Bis Ende der 1980er ist GNU bei den meisten Werkzeugen weiter als jedes
+        kommerzielle Unix: <strong>GCC</strong> (Compiler), <strong>Emacs</strong>
+        (Editor), <strong>Bash</strong> (Shell), <strong>Coreutils</strong>
+        (<code>ls</code>, <code>cp</code>, <code>mv</code>…), <strong>Make</strong>,
+        <strong>Awk</strong>. Alles frei. Alles offen.</p>
+
+        <p>Nur eines fehlt: <strong>der Kernel</strong>. Das Herzstück, das mit der
+        Hardware spricht. Das GNU-Kernel-Projekt heißt <em>Hurd</em> — und versinkt
+        in Designdiskussionen. Bis heute ist Hurd nicht wirklich fertig.</p>
+      </div>
+    </section>
+
+    <!-- ============ 1989 — GPL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1989</span>
+        <h2 class="timeblock-title">Die GPL — Stallmans rechtlicher Geniestreich</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Damit GNU-Software wirklich frei bleibt, braucht es eine besondere
+        Lizenz. Stallman erfindet 1989 mit Hilfe der Anwältin Eben Moglen die
+        <strong>GNU General Public License (GPL)</strong>.</p>
+
+        <p>Die GPL nutzt einen ungewöhnlichen Trick, das sogenannte <strong>Copyleft</strong>:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Klassisches Copyright</th><th>GPL / Copyleft</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"Du darfst nichts ohne meine Erlaubnis tun."</td>
+                <td>"Du darfst alles tun, <strong>solange du</strong>…"</td>
+              </tr>
+              <tr>
+                <td>Schützt den Autor vor Nutzern</td>
+                <td>Schützt die Nutzer vor späterer Einschränkung</td>
+              </tr>
+              <tr>
+                <td>Quellcode ist Geschäftsgeheimnis</td>
+                <td>Quellcode <strong>muss</strong> mitgeliefert werden</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Die vier Freiheiten der GPL</h4>
+        <ol>
+          <li><strong>Freiheit 0:</strong> Das Programm für jeden Zweck ausführen</li>
+          <li><strong>Freiheit 1:</strong> Den Code studieren und verstehen</li>
+          <li><strong>Freiheit 2:</strong> Kopien weitergeben</li>
+          <li><strong>Freiheit 3:</strong> Veränderte Versionen weitergeben</li>
+        </ol>
+
+        <p>Der entscheidende Punkt: Wer GPL-Code nutzt und weitergibt, muss das
+        Ergebnis <strong>ebenfalls unter GPL</strong> stellen. Das verhindert, dass
+        eine Firma freie Software nimmt, einbaut, schließt und proprietär weiterverkauft.</p>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p><strong>Frage in die Runde:</strong> „Ist freie Software das Gleiche wie
+            kostenlose Software?“ — Antwort: Nein! „Free“ meint <em>freedom</em>, nicht
+            <em>free of charge</em>. Stallman sagt dazu: „Think of free speech, not free beer.“</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1991 — Linus ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1991</span>
+        <h2 class="timeblock-title">Linus Torvalds und die berühmteste E-Mail der IT-Geschichte</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Schauplatz wechselt nach <strong>Helsinki, Finnland</strong>. Ein 21-jähriger
+        Informatik-Student namens <strong>Linus Benedict Torvalds</strong> hat sich gerade
+        einen 386er-PC gekauft und ist von <em>Minix</em> (einem Lehr-Unix von Prof. Andrew
+        Tanenbaum) enttäuscht: zu eingeschränkt, zu langsam, Quellcode nur teilweise frei.</p>
+
+        <p>Linus beschließt im Frühjahr 1991: <em>"Ich schreibe meinen eigenen Kernel."</em>
+        Nicht weil er die Welt verändern will, sondern weil er <strong>verstehen</strong>
+        will, wie ein moderner x86-Kernel funktioniert. Am <strong>25. August 1991</strong>
+        postet er in der Newsgroup <code>comp.os.minix</code> die heute legendäre E-Mail:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">comp.os.minix · 25. Aug 1991</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>From: torvalds@klaava.Helsinki.FI (Linus Benedict Torvalds)
+Newsgroups: comp.os.minix
+Subject: What would you like to see most in minix?
+Date: 25 Aug 91 20:57:08 GMT
+
+Hello everybody out there using minix —
+
+I'm doing a (free) operating system (just a hobby, won't be big and
+professional like gnu) for 386(486) AT clones. This has been brewing
+since april, and is starting to get ready. I'd like any feedback on
+things people like/dislike in minix, as my OS resembles it somewhat
+(same physical layout of the file-system (due to practical reasons)
+among other things).
+
+I've currently ported bash(1.08) and gcc(1.40), and things seem to work.
+This implies that I'll get something practical within a few months, and
+I'd like to know what features most people would want. Any suggestions
+are welcome, but I won't promise I'll implement them :-)
+
+                Linus (torvalds@kruuna.helsinki.fi)</code></pre>
+        </div>
+
+        <p>Drei Dinge sind an dieser E-Mail bemerkenswert:</p>
+
+        <ol>
+          <li>Linus selbst beschreibt sein Projekt als <strong>"won't be big and professional like gnu"</strong>
+            — er hält GNU für die seriösen Profis und sich selbst für den Hobby-Bastler.</li>
+          <li>Er hat bereits <strong>Bash und GCC portiert</strong>, also genau die GNU-Werkzeuge,
+            die er später mit seinem Kernel kombinieren wird. Die Symbiose deutet sich an.</li>
+          <li>Er fragt um <strong>Feedback</strong>. Genau diese Offenheit macht aus dem
+            Hobby ein Weltprojekt: Tausende Entwickler senden Code ein.</li>
+        </ol>
+
+        <p>Im September 1991 stellt Linus <strong>Linux 0.01</strong> auf einen FTP-Server.
+        Der Administrator des Servers nennt das Verzeichnis spaßeshalber <code>linux</code>
+        (statt Linus' Wunschnamen <em>"Freax"</em>). Der Name bleibt. Linux war geboren.</p>
+      </div>
+    </section>
+
+    <!-- ============ 1992 — GPL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1992</span>
+        <h2 class="timeblock-title">Linux unter GPL — die perfekte Symbiose mit GNU</h2>
+        <span class="timeblock-badge badge-vortrag">Vortrag</span>
+      </div>
+
+      <div class="subblock">
+        <p>Anfang 1992 trifft Linus eine Entscheidung, die alles ändert:
+        Er stellt den Linux-Kernel <strong>unter die GPL</strong>.</p>
+
+        <p>Damit klickt das letzte Puzzleteil ein: GNU hatte alle Userspace-Werkzeuge,
+        aber keinen Kernel. Linus hatte den Kernel, aber keine Werkzeuge. Beide unter
+        derselben Lizenz — und plötzlich existiert ein komplettes freies Betriebssystem.</p>
+
+        <div class="ascii-box">  GNU (1984+)              Linux-Kernel (1991+)
+  ┌────────────────┐      ┌────────────────┐
+  │ bash · gcc     │      │  Scheduler     │
+  │ coreutils      │  +   │  Speicherverw. │  =  GNU/Linux
+  │ make · awk     │      │  Gerätetreiber │
+  │ emacs · grep   │      │  Dateisysteme  │
+  └────────────────┘      └────────────────┘
+       Werkzeuge              Herzstück</div>
+
+        <p>1992/1993 entstehen die ersten <strong>Distributionen</strong>: Slackware
+        (1993), Debian (1993), Red Hat (1994). Sie kombinieren den Linux-Kernel mit
+        GNU-Tools und einem Paketmanager zu einem nutzbaren System.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🌍</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon? — Warum heißt es eigentlich „GNU/Linux“?</div>
+            <p>Streng genommen ist „Linux“ nur der <strong>Kernel</strong>. Was du auf
+            deinem Server als „Linux“ benutzt, ist zu etwa 70 % GNU-Software (Shell,
+            Compiler, Coreutils, libc) und zu etwa 30 % Linux-Kernel plus restliche
+            Open-Source-Projekte (X.org, systemd, etc.).</p>
+            <p style="margin-top: 0.6rem;">Stallman besteht aus historischen Gründen
+            auf der Bezeichnung <strong>„GNU/Linux“</strong>. Die meisten Anwender sagen
+            kurz „Linux“. Beides ist verbreitet — wissen sollte man aber den Unterschied,
+            besonders im Bewerbungsgespräch bei FSF-affinen Firmen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STAMMBAUM ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Stammbaum</span>
+        <h2 class="timeblock-title">BSD, System V, GNU/Linux &amp; macOS — die große Familie</h2>
+        <span class="timeblock-badge badge-vortrag">Übersicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Heute leben drei große Unix-Familien parallel weiter. Sie alle stammen
+        aus dem 1969er-Original — sind aber lizenz- und kulturell sehr verschieden:</p>
+
+        <div class="ascii-box">                       Unix (1969, Bell Labs)
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+   System V (AT&T)        BSD (Berkeley)       Minix (Lehrunix)
+        │                     │                     │
+   - AIX (IBM)           - FreeBSD             - inspirierte Linus
+   - Solaris (Oracle)    - OpenBSD                  │
+   - HP-UX (HP)          - NetBSD            ┌──────┴──────┐
+                         - Darwin/macOS      │             │
+                              │           GNU (1984)   Linux-Kernel (1991)
+                          - iOS, iPadOS,        │             │
+                            watchOS, tvOS       └──────┬──────┘
+                                                       │
+                                                  GNU/Linux
+                                                       │
+                                      ┌────────────────┼────────────────┐
+                                      │                │                │
+                                 Debian-Familie   Red Hat-Familie  Arch-Familie
+                                 Ubuntu, Mint     RHEL, Rocky,     Arch, Manjaro
+                                 Kali, Tails      AlmaLinux, Fedora EndeavourOS</div>
+
+        <h4>Drei wichtige Erkenntnisse aus dem Stammbaum</h4>
+        <ol>
+          <li><strong>macOS ist ein Unix</strong> — basiert auf Darwin (BSD-Linie).
+            Wer im Terminal von macOS tippt, nutzt also echtes Unix.</li>
+          <li><strong>Linux ist KEIN Unix</strong> — es ist „Unix-like“. Es teilt keinen
+            Quellcode mit den AT&amp;T-Originalen, sondern wurde von Grund auf neu
+            geschrieben (clean-room implementation). Das war Linus' Schutz gegen Klagen.</li>
+          <li><strong>Android läuft auf einem Linux-Kernel</strong>, ist aber kein GNU/Linux —
+            es nutzt eine andere Userspace-Schicht (Bionic statt glibc).</li>
+        </ol>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p>Wer macOS, FreeBSD und Linux unterscheiden kann, sammelt im Interview
+            sofort Punkte. Lerne diese Aussage auswendig: <em>„Linux ist Unix-like, BSD und
+            macOS sind echte Unix-Nachfahren, Windows ist keine Unix-Linie.“</em></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HEUTE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Heute</span>
+        <h2 class="timeblock-title">Wo Linux überall läuft (und du es nicht merkst)</h2>
+        <span class="timeblock-badge badge-vortrag">Realität</span>
+      </div>
+
+      <div class="subblock">
+        <p>Linus' „Hobby“ läuft heute auf praktisch jedem Server der Welt — und auf
+        vielen Geräten, von denen du es nicht erwartest:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Bereich</th><th>Linux-Anteil</th><th>Beispiele</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Supercomputer (Top500)</td><td><strong>100 %</strong></td><td>jeder einzelne der schnellsten Rechner der Welt</td></tr>
+              <tr><td>Webserver</td><td>~70–90 %</td><td>nginx, Apache laufen primär auf Linux</td></tr>
+              <tr><td>Cloud (AWS, Azure, GCP)</td><td>&gt; 90 %</td><td>EC2-Instanzen, Container-Hosts</td></tr>
+              <tr><td>Smartphones</td><td>~ 70 %</td><td>jedes Android-Gerät</td></tr>
+              <tr><td>Smart-TVs &amp; Streaming</td><td>~ 80 %</td><td>Samsung Tizen, LG webOS, Sony Bravia</td></tr>
+              <tr><td>Router &amp; Embedded</td><td>~ 90 %</td><td>FritzBox, Speedport, OpenWRT</td></tr>
+              <tr><td>Autos (Infotainment)</td><td>steigend</td><td>Tesla, Mercedes MBUX, BMW</td></tr>
+              <tr><td>ISS &amp; Raumfahrt</td><td>100 %</td><td>NASA hat 2013 von Windows auf Debian gewechselt</td></tr>
+              <tr><td>Desktop</td><td>~ 3–4 %</td><td>der einzige Bereich, in dem Linux klein bleibt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🛰️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon?</div>
+            <p>Auf der <strong>Internationalen Raumstation (ISS)</strong> wurde 2013
+            das Bordsystem komplett von Windows XP auf <strong>Debian Linux</strong>
+            umgestellt. Begründung der NASA: <em>"Wir brauchen ein Betriebssystem, das
+            stabil, deterministisch und voll kontrollierbar ist."</em></p>
+          </div>
+        </div>
+
+        <p>Wer Linux beherrscht, beherrscht das Internet. Wer es nicht versteht,
+        wird in der IT-Administration langfristig nicht weit kommen.</p>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <p>Beantworte die Fragen schriftlich oder im Kopf — Lösungen darunter.</p>
+
+        <ol class="lab-tasks">
+          <li>In welchem Jahr und an welchem Ort entstand Unix?</li>
+          <li>Warum war das Umschreiben von Unix in C 1973 so revolutionär?</li>
+          <li>Was bedeutet das Akronym <strong>GNU</strong>?</li>
+          <li>Welche Lizenz hat Stallman erfunden und was bedeutet <em>Copyleft</em>?</li>
+          <li>Wer schrieb 1991 die berühmte Newsgroup-E-Mail — und auf welcher Hardware lief sein erstes Linux?</li>
+          <li>Warum ist die Bezeichnung „GNU/Linux“ technisch korrekter als nur „Linux“?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>1969</strong>, in den <strong>AT&amp;T Bell Labs</strong> (New Jersey, USA)
+                  durch Ken Thompson und Dennis Ritchie auf einer ausrangierten PDP-7.</li>
+              <li>Weil C eine portable Hochsprache ist. Ein einmal in C geschriebener
+                  Kernel konnte durch Neukompilierung auf andere Architekturen übertragen
+                  werden — vorher musste jeder neue Computer komplett neu in Assembler
+                  programmiert werden.</li>
+              <li><strong>GNU = GNU's Not Unix</strong> — ein rekursives Akronym
+                  (typischer Hacker-Humor). Es betont, dass GNU keinen Unix-Code übernimmt,
+                  aber Unix-kompatibel ist.</li>
+              <li>Die <strong>GPL (GNU General Public License)</strong>. <em>Copyleft</em>
+                  bedeutet: Wer GPL-Software verändert und weitergibt, MUSS das Ergebnis
+                  wieder unter GPL stellen — die Freiheit ist „ansteckend“ und kann nicht
+                  weggeschlossen werden.</li>
+              <li><strong>Linus Torvalds</strong>, finnischer Informatik-Student. Sein erster
+                  Linux-Kernel lief auf einem <strong>Intel 80386 PC</strong> (sein eigener neuer
+                  Heim-PC).</li>
+              <li>Der <strong>Kernel</strong> heißt Linux. Der Großteil der Werkzeuge eines
+                  „Linux-Systems“ (Shell, Compiler, Coreutils, glibc) stammt aus dem
+                  <strong>GNU-Projekt</strong>. „GNU/Linux“ macht diese Doppel-Herkunft sichtbar.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="01-betriebssystem.html">
+        <span class="nav-eyebrow">← Kapitel 01</span>
+        <span class="nav-title">Was ist ein Betriebssystem?</span>
+      </a>
+      <a href="03-distributionen.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 03 →</span>
+        <span class="nav-title">Distributionen</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 02 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

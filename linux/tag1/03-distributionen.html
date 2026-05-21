@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 03 · Linux-Distributionen — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 03 von 12</div>
+    <h1 class="page-title">
+      Linux-<span class="highlight">Distributionen</span> verstehen
+    </h1>
+    <p class="page-subtitle">
+      Es gibt nicht <em>ein</em> Linux. Es gibt <strong>hunderte</strong>. Distributionen
+      sind die fertig geschnürten Pakete aus Kernel, Tools und Paketmanager. Wir
+      sehen uns die wichtigsten Familien an — und begründen, warum Rocky Linux unsere Wahl ist.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 03</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Theorie + Recherche</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ WAS IST EINE DISTRIBUTION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.1</span>
+        <h2 class="timeblock-title">Was ist eine Distribution überhaupt?</h2>
+        <span class="timeblock-badge badge-vortrag">Theorie</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine <strong>Distribution</strong> (kurz: „Distro“) ist ein <strong>fertig
+        geschnürtes Komplettpaket</strong>, das du installieren kannst und das sofort
+        nutzbar ist. Stell dir vor, jemand hat dir einen Kuchen gebacken statt dir nur
+        Mehl, Zucker, Eier und ein Rezept hinzulegen.</p>
+
+        <h4>Bestandteile einer Distribution</h4>
+        <div class="ascii-box">  ┌──────────────────────────────────────────┐
+  │  Optional: Support / SLA / Patches       │  ← bei Enterprise-Distros
+  ├──────────────────────────────────────────┤
+  │  Desktop-Umgebung (GNOME, KDE, XFCE…)    │  ← optional
+  ├──────────────────────────────────────────┤
+  │  Anwendungen (Firefox, LibreOffice…)     │
+  ├──────────────────────────────────────────┤
+  │  GNU-Tools  (bash, coreutils, gcc…)      │
+  ├──────────────────────────────────────────┤
+  │  Init-System (systemd, OpenRC…)          │
+  ├──────────────────────────────────────────┤
+  │  Paketmanager (dnf, apt, pacman, apk…)   │  ← Markenzeichen der Familie
+  ├──────────────────────────────────────────┤
+  │  Linux-Kernel (modular monolithisch)     │  ← überall fast identisch
+  └──────────────────────────────────────────┘</div>
+
+        <p>Der <strong>Kernel</strong> ist bei allen Distributionen praktisch derselbe
+        Quellcode (kleine Anpassungen ausgenommen). Was sie unterscheidet, sind:</p>
+
+        <ul>
+          <li>der <strong>Paketmanager</strong> (das wichtigste Unterscheidungsmerkmal!)</li>
+          <li>die <strong>Standard-Software</strong> und Konfigurationen</li>
+          <li>die <strong>Release-Philosophie</strong> (siehe nächster Abschnitt)</li>
+          <li>der <strong>Support</strong> (kommerziell? Community? Lebenszyklus?)</li>
+          <li>die <strong>Zielgruppe</strong> (Server, Desktop, Embedded, Security, …)</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🍞</div>
+          <div class="callout-content">
+            <div class="callout-title">Distro = Bäckerei-Analogie</div>
+            <p>Stell dir Mehl als <em>Linux-Kernel</em> vor. Jede Bäckerei nimmt das gleiche
+            Grundmehl, aber die einen backen rustikales Vollkornbrot (Slackware), die
+            anderen weiche Brötchen für Anfänger (Ubuntu), wieder andere ofenfrische
+            Pizza für Spezialanlässe (Kali, Tails). Selbes Mehl, völlig verschiedene
+            Endprodukte.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">Kurz erklärt: „Modular monolithischer Kernel“</h3>
+        <p>Der Linux-Kernel ist technisch ein <strong>monolithischer Kernel</strong> —
+        das heißt: alles läuft in einem großen privilegierten Adressraum (im Gegensatz
+        zu Microkernels wie Hurd oder Minix). ABER: Linux ist <strong>modular</strong>,
+        d.h. Komponenten wie Treiber können dynamisch als Module (<code>.ko</code>-Dateien)
+        zur Laufzeit nachgeladen oder entfernt werden.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Architektur</th><th>Beispiele</th><th>Vorteil</th><th>Nachteil</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Monolithisch</td><td>Linux, BSD, Windows NT</td><td>schnell, alles im Kernel</td><td>ein Treiber-Fehler crasht das System</td></tr>
+              <tr><td>Microkernel</td><td>Minix, QNX, GNU Hurd</td><td>sehr stabil, modular</td><td>langsamer durch viele Context-Switches</td></tr>
+              <tr><td>Hybrid</td><td>macOS (XNU)</td><td>Mittelweg</td><td>komplex zu pflegen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RELEASE MODELLE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.2</span>
+        <h2 class="timeblock-title">Release-Modelle: Stabilität vs. Aktualität</h2>
+        <span class="timeblock-badge badge-vortrag">Theorie</span>
+      </div>
+
+      <div class="subblock">
+        <p>Distributionen entscheiden sich für eines von zwei Lebenszyklus-Modellen
+        — oder mischen beides:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Modell</th><th>Wie es funktioniert</th><th>Beispiele</th><th>Wofür gut?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Versions-basiert</strong><br>(Point Release)</td>
+                <td>Alle 6 Monate / 2 Jahre / 10 Jahre eine neue Version. Software wird eingefroren und nur Sicherheits-Patches kommen rein.</td>
+                <td>RHEL, Rocky, Debian, Ubuntu LTS, openSUSE Leap</td>
+                <td>Server, Produktion, Enterprise — wo Vorhersagbarkeit zählt</td>
+              </tr>
+              <tr>
+                <td><strong>Rolling Release</strong></td>
+                <td>Es gibt keine Versionen. Jedes Paket bekommt täglich Updates — du bist immer "an der Spitze".</td>
+                <td>Arch, Manjaro, openSUSE Tumbleweed, EndeavourOS, Gentoo</td>
+                <td>Desktop von Enthusiasten, Entwicklungs-Workstations</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>LTS-Versionen — der goldene Mittelweg</h4>
+        <p>Viele versions-basierte Distros bieten <strong>LTS (Long-Term Support)</strong>-Releases an:</p>
+        <ul>
+          <li><strong>Ubuntu LTS</strong>: alle 2 Jahre, 5 Jahre Support (10 mit Pro)</li>
+          <li><strong>RHEL/Rocky/Alma</strong>: ca. alle 3 Jahre, <strong>10 Jahre Support</strong></li>
+          <li><strong>Debian Stable</strong>: alle ~2 Jahre, 5 Jahre Support (mit LTS-Team)</li>
+        </ul>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel für Admins</div>
+            <p>Auf einem <strong>Produktiv-Server</strong> nie Rolling Release! Du willst
+            am Sonntag um 03:00 Uhr nicht von einem überraschenden Major-Update geweckt
+            werden, weil sich die OpenSSL-API geändert hat.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EDITIONEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.3</span>
+        <h2 class="timeblock-title">Editionen — Server, Desktop, Minimal, Cloud, Embedded</h2>
+        <span class="timeblock-badge badge-vortrag">Theorie</span>
+      </div>
+
+      <div class="subblock">
+        <p>Die meisten großen Distributionen bieten <strong>mehrere Editionen</strong> an,
+        die auf bestimmte Einsatzzwecke zugeschnitten sind. Eine Edition unterscheidet sich
+        hauptsächlich darin, was <em>vorinstalliert</em> und <em>standardmäßig aktiviert</em>
+        ist — der Kern bleibt gleich.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Edition</th><th>Was drin?</th><th>Wofür?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Desktop / Workstation</strong></td><td>Grafische Oberfläche, Office, Browser, Multimedia</td><td>Laptop, Bürorechner, Daily Driver</td></tr>
+              <tr><td><strong>Server</strong></td><td>Keine GUI, dafür SSH, Webserver-Stack, ggf. Virtualisierungs-Tools</td><td>Rechenzentrum, Hosting</td></tr>
+              <tr><td><strong>Minimal / Net-Install</strong></td><td>Nur Kernel, Paketmanager, ssh. Du baust dir den Rest selbst</td><td>Lehrumgebung, schlanke VMs, Container-Hosts ← <strong>nutzen wir!</strong></td></tr>
+              <tr><td><strong>Cloud / Container</strong></td><td>Optimiert für AWS/Azure/GCP/Docker, oft &lt; 200 MB</td><td>Cloud-Workloads, Docker-Images</td></tr>
+              <tr><td><strong>Embedded / IoT</strong></td><td>Kleine RAM- und Storage-Anforderungen</td><td>Router, Industriesteuerung, Raspberry Pi</td></tr>
+              <tr><td><strong>Spin / Flavor</strong></td><td>Variante mit alternativer Desktop-Umgebung</td><td>z.B. Ubuntu mit KDE = „Kubuntu“</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAMILIEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.4</span>
+        <h2 class="timeblock-title">Die großen Familien</h2>
+        <span class="timeblock-badge badge-vortrag">Übersicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Auch wenn es hunderte Distros gibt, lassen sich fast alle einer Familie zuordnen.
+        Die Familie definiert sich über den <strong>Paketmanager</strong>:</p>
+
+        <div class="ascii-box">                       Linux-Kernel
+                              │
+        ┌──────────┬──────────┼──────────┬──────────┐
+        │          │          │          │          │
+   Debian-Fam.  RHEL-Fam.  Arch-Fam.   SUSE-Fam.   Sonstige
+    (.deb)      (.rpm)     (pacman)    (.rpm)       (z.B.
+    apt/dpkg    dnf/yum     -          zypper       Alpine
+                                                     apk)
+
+   Debian       RHEL       Arch        openSUSE     Alpine
+   Ubuntu       Fedora     Manjaro     SLES         Gentoo
+   Linux Mint   CentOS✝    EndeavourOS              NixOS
+   Kali         Rocky ✅                            Slackware
+   Tails        AlmaLinux
+   Raspberry Pi OS</div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Familie</th><th>Paketmanager</th><th>Format</th><th>Typischer Vertreter</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Debian</strong></td><td><code>apt</code> / <code>dpkg</code></td><td><code>.deb</code></td><td>Ubuntu, Debian, Mint</td></tr>
+              <tr><td><strong>Red Hat</strong></td><td><code>dnf</code> / <code>yum</code></td><td><code>.rpm</code></td><td>RHEL, Rocky, Fedora</td></tr>
+              <tr><td><strong>Arch</strong></td><td><code>pacman</code></td><td><code>.pkg.tar.zst</code></td><td>Arch, Manjaro</td></tr>
+              <tr><td><strong>SUSE</strong></td><td><code>zypper</code></td><td><code>.rpm</code></td><td>openSUSE, SLES</td></tr>
+              <tr><td><strong>Alpine</strong></td><td><code>apk</code></td><td><code>.apk</code></td><td>Alpine Linux</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp für Admins</div>
+            <p>Du musst nicht alle Paketmanager auswendig können — aber lerne mindestens
+            <code>dnf</code> (Red Hat) und <code>apt</code> (Debian). Mit diesen beiden
+            deckst du ca. 95 % aller Linux-Server in Deutschland ab.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DETAIL-PROFILE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.5</span>
+        <h2 class="timeblock-title">Detail-Profile der wichtigsten Distros</h2>
+        <span class="timeblock-badge badge-vortrag">Steckbriefe</span>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🪨 Rocky Linux</h3>
+        <p><strong>Familie:</strong> Red Hat · <strong>Paketmanager:</strong> <code>dnf</code> ·
+        <strong>Release:</strong> versions-basiert, ~3 Jahre · <strong>Support:</strong> 10 Jahre</p>
+        <p>Rocky Linux ist ein <strong>Bug-für-Bug-kompatibler Klon</strong> von Red Hat
+        Enterprise Linux (RHEL). Entstanden 2021, als Red Hat überraschend CentOS – den
+        bisherigen freien RHEL-Klon – einstellte. Gründer ist <strong>Gregory Kurtzer</strong>,
+        der ursprüngliche CentOS-Gründer. Der Name ist eine Hommage an seinen verstorbenen
+        Co-Gründer Rocky McGaugh. Rocky wird von der gemeinnützigen <em>Rocky Enterprise Software
+        Foundation</em> entwickelt. Ideal für Server, in denen Stabilität und langer Support
+        wichtiger sind als die neuesten Features. <strong>Unsere Wahl für diesen Kurs.</strong></p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🎩 Red Hat Enterprise Linux (RHEL)</h3>
+        <p><strong>Familie:</strong> Red Hat · <strong>Paketmanager:</strong> <code>dnf</code> ·
+        <strong>Release:</strong> versions-basiert · <strong>Support:</strong> 10 Jahre</p>
+        <p>Das kommerzielle Flaggschiff von Red Hat (heute IBM). Kostet ab ca.
+        <strong>800 € pro Server und Jahr</strong>, dafür gibt es Hersteller-Support,
+        Zertifizierungen (Hardware, Software), Sicherheits-Patches und vorbereitete
+        Schulungspfade (RHCSA, RHCE). Praktisch jede deutsche Bank, jede Versicherung,
+        jeder DAX-Konzern fährt RHEL. Wer Rocky/AlmaLinux kann, kann auch RHEL — die
+        sind <strong>1:1 kompatibel</strong>.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🌀 Debian</h3>
+        <p><strong>Familie:</strong> Debian · <strong>Paketmanager:</strong> <code>apt</code> ·
+        <strong>Release:</strong> versions-basiert, ~2 Jahre · <strong>Support:</strong> 5 Jahre (mit LTS-Team)</p>
+        <p>Die <strong>universelle Distribution</strong>. Existiert seit 1993, getragen von
+        einer großen weltweiten Community ohne Firma im Hintergrund (Debian Project). Bekannt für
+        extreme Stabilität, riesige Paketauswahl (&gt; 60.000 Pakete) und kompromisslose
+        Open-Source-Philosophie (Debian Free Software Guidelines). Basis vieler bekannter
+        Distros: Ubuntu, Kali, Raspberry Pi OS, Proxmox. Lieblings-Distro vieler Sysadmins.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🟠 Ubuntu</h3>
+        <p><strong>Familie:</strong> Debian (downstream) · <strong>Paketmanager:</strong> <code>apt</code> ·
+        <strong>Release:</strong> alle 6 Monate, LTS alle 2 Jahre · <strong>Support:</strong> 5–10 Jahre (LTS)</p>
+        <p>Wahrscheinlich die bekannteste Linux-Distro überhaupt. Wird seit 2004 von der
+        Firma <strong>Canonical</strong> (Mark Shuttleworth) entwickelt. Ubuntu setzte
+        den Standard für „benutzerfreundliches Linux“ und ist in der Cloud allgegenwärtig
+        (jede AWS- oder Azure-Instanz hat ein Ubuntu-Image). LTS-Versionen wie 22.04 oder
+        24.04 sind unter Sysadmins extrem beliebt.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">⛰️ AlmaLinux</h3>
+        <p><strong>Familie:</strong> Red Hat · <strong>Paketmanager:</strong> <code>dnf</code> ·
+        <strong>Release:</strong> versions-basiert · <strong>Support:</strong> 10 Jahre</p>
+        <p>Der zweite große RHEL-Klon (neben Rocky), ebenfalls 2021 entstanden als Antwort
+        auf das CentOS-Aus. Wird von <strong>CloudLinux</strong> finanziert und der
+        AlmaLinux OS Foundation entwickelt. Funktional sehr ähnlich zu Rocky — beide sind
+        kompatibel mit RHEL. AlmaLinux gilt als etwas pragmatischer (verfolgt seit 2024
+        bewusst eine <em>ABI-Kompatibilität</em> statt <em>Bug-für-Bug-Kompatibilität</em>).</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🎩 Fedora</h3>
+        <p><strong>Familie:</strong> Red Hat (upstream) · <strong>Paketmanager:</strong> <code>dnf</code> ·
+        <strong>Release:</strong> alle 6 Monate · <strong>Support:</strong> nur ~13 Monate</p>
+        <p>Das <strong>Testlabor von Red Hat</strong>. Was heute in Fedora kommt, ist in
+        2–3 Jahren in RHEL und damit auch in Rocky. Sehr aktuelle Software, modernste
+        Technologien (z.B. Wayland, BTRFS, GNOME). Aber kurzer Support — nicht für
+        Produktionsserver geeignet, dafür perfekt als Developer-Workstation.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🅰️ Arch Linux</h3>
+        <p><strong>Familie:</strong> Arch · <strong>Paketmanager:</strong> <code>pacman</code> ·
+        <strong>Release:</strong> Rolling · <strong>Support:</strong> dauerhaft (so lange du updates)</p>
+        <p>Die DIY-Distro für Enthusiasten. „<em>I use Arch, btw.</em>“ ist ein eigener
+        Internet-Witz geworden. Du installierst Arch von einer Kommandozeile aus,
+        Stück für Stück. Belohnung: extrem schlankes, exakt auf dich zugeschnittenes
+        System mit der frischesten Software. Das berühmte <strong>Arch Wiki</strong> ist
+        eine der besten Linux-Doku-Quellen überhaupt — auch wer Arch nicht nutzt,
+        sollte es bookmarken.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🦎 openSUSE</h3>
+        <p><strong>Familie:</strong> SUSE · <strong>Paketmanager:</strong> <code>zypper</code> ·
+        <strong>Release:</strong> Leap (versions-basiert) ODER Tumbleweed (Rolling)</p>
+        <p>Die starke deutsche Distro (SUSE = Software- und System-Entwicklung, Nürnberg).
+        Bietet als einzige Großdistro <strong>beide Release-Modelle parallel</strong>:
+        Tumbleweed für Rolling-Fans, Leap für Server. Das Konfigurationswerkzeug
+        <strong>YaST</strong> ist legendär — eine zentrale GUI-Konsole für fast alle
+        System-Einstellungen.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">⛰️ Alpine Linux</h3>
+        <p><strong>Familie:</strong> eigen · <strong>Paketmanager:</strong> <code>apk</code> ·
+        <strong>Release:</strong> versions-basiert · <strong>Support:</strong> ~2 Jahre</p>
+        <p>Eine winzige (unter 200 MB!), <strong>sicherheits-fokussierte</strong> Distro.
+        Nutzt <code>musl libc</code> statt <code>glibc</code> und <code>busybox</code>
+        statt der GNU-Coreutils. Dadurch viel kleiner und schneller, aber nicht 100 %
+        glibc-kompatibel. <strong>Quasi-Standard für Docker-Container</strong>: das offizielle
+        Alpine-Image ist nur ~5 MB groß — perfekt für Microservices.</p>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title">🕵️ Tails</h3>
+        <p><strong>Familie:</strong> Debian (downstream) · <strong>Paketmanager:</strong> <code>apt</code> ·
+        <strong>Release:</strong> bootbares Live-System</p>
+        <p>Tails = „<strong>The Amnesic Incognito Live System</strong>“. Wird ausschließlich
+        von USB-Stick oder DVD gebootet. Beim Herunterfahren wird alles vergessen — keine
+        Spuren auf der Festplatte. Sämtlicher Netzverkehr läuft zwangsweise durch
+        <strong>Tor</strong>. Wurde berühmt durch Edward Snowden, der Tails für seine
+        sicheren Kommunikationen nutzte. Einsatz: Journalismus, politische Aktivisten,
+        Datenschutz-Profis. Auch zum simplen Bank-Browsen am Hotel-PC nutzbar.</p>
+      </div>
+    </section>
+
+    <!-- ============ WARUM ROCKY ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.6</span>
+        <h2 class="timeblock-title">Warum ausgerechnet Rocky Linux für unseren Kurs?</h2>
+        <span class="timeblock-badge badge-vortrag">Begründung</span>
+      </div>
+
+      <div class="subblock">
+        <p>Aus 100+ Distributionen <strong>genau eine</strong> auszuwählen ist eine
+        Entscheidung mit Konsequenzen. Hier ist unsere Begründung – mit drei harten
+        Argumenten für den Job:</p>
+
+        <ol>
+          <li><strong>RHEL-Kompatibilität gleich Praxis-Realität.</strong>
+            Im deutschen Mittelstand und Konzernumfeld dominieren RHEL und Klone (Rocky,
+            AlmaLinux). Wer Rocky beherrscht, kann am ersten Arbeitstag eine RHEL-Maschine
+            administrieren — Kommandos, Dateipfade, Service-Namen sind identisch.</li>
+
+          <li><strong>Kostenlos, ohne Auflagen.</strong>
+            RHEL kostet pro Server ab ca. 800 €/Jahr. Rocky ist 1:1 kompatibel, aber
+            völlig kostenlos und ohne Abo-Zwang. Du kannst zu Hause beliebig viele VMs
+            aufsetzen, ohne dass dich nach 30 Tagen eine Lizenz-Mauer stoppt.</li>
+
+          <li><strong>Im Bewerbungsgespräch ein Bonus.</strong>
+            „Erfahrung mit Red Hat / Rocky / AlmaLinux?“ steht in fast jeder Stellenanzeige
+            für Linux-Administratoren. Wer das ehrlich mit Ja beantworten kann, wird
+            häufiger zum Gespräch eingeladen.</li>
+        </ol>
+
+        <h4>Zusätzliche Pluspunkte für die Lehre</h4>
+        <ul>
+          <li><strong>10 Jahre Support</strong> — dein Kursrechner bleibt bis weit nach Kursende relevant.</li>
+          <li><strong>Stabiles Ökosystem</strong> — Anleitungen, die du für Rocky findest, funktionieren auch in 3 Jahren noch.</li>
+          <li><strong>Aktiver Community-Mailing-Verkehr</strong> auf Englisch und Deutsch.</li>
+          <li><strong>Default-Werkzeuge</strong> wie <code>dnf</code>, <code>firewalld</code>, <code>systemd</code>,
+            <code>SELinux</code> sind in jedem Enterprise-Umfeld Standard.</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p>Lege auf deinem privaten Rechner später <strong>zwei VMs</strong> an: eine
+            Rocky (für deinen Job) und eine Debian/Ubuntu (für alles, was du privat baust).
+            Damit deckst du beide großen Welten ab und siehst die Unterschiede in der
+            Praxis.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARKTANTEILE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.7</span>
+        <h2 class="timeblock-title">Marktanteile im Server-Bereich</h2>
+        <span class="timeblock-badge badge-vortrag">Zahlen</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese Zahlen sind grobe Schätzungen aus mehreren Studien (W3Techs,
+        StatCounter, IDC, Stand 2024/2025). Wichtig: <em>nicht den Cent suchen
+        — die Größenordnung zählt</em>.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Distro / Familie</th><th>Anteil Webserver</th><th>Anteil generelle Linux-Server</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Ubuntu</td><td>~ 33 %</td><td>~ 30 %</td></tr>
+              <tr><td>Debian</td><td>~ 16 %</td><td>~ 14 %</td></tr>
+              <tr><td>CentOS (Legacy) + Rocky + AlmaLinux + RHEL</td><td>~ 22 %</td><td>~ 35 %</td></tr>
+              <tr><td>SUSE / openSUSE</td><td>~ 1–2 %</td><td>~ 5 %</td></tr>
+              <tr><td>Alpine (v.a. Container)</td><td>~ 2 %</td><td>schnell wachsend</td></tr>
+              <tr><td>Andere</td><td>Rest</td><td>Rest</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ascii-box">  Wer Rocky/RHEL/Alma kann (~ 35 % aller Linux-Server) und
+  zusätzlich apt-Grundlagen (~ 44 % über Ubuntu+Debian),
+  deckt damit ~ 80 % des deutschen Linux-Server-Marktes ab.</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon?</div>
+            <p>Auf dem <strong>Desktop</strong> hat Linux insgesamt nur etwa
+            <strong>3–4 % Marktanteil</strong>. Auf dem <strong>Server</strong> dagegen
+            über 90 %, in der <strong>Cloud</strong> über 90 %, und auf
+            <strong>Smartphones</strong> (Android ist ein Linux-Kernel) etwa 70 %. Linux
+            ist also das mit Abstand erfolgreichste Betriebssystem — nur eben fast nie
+            das, was du auf deinem Schreibtisch siehst.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RECHERCHE-ÜBUNG ============ -->
+    <section class="lab">
+      <div class="lab-header">
+        <span class="lab-icon">🔍</span>
+        <span class="lab-label">Recherche-Übung</span>
+        <span class="lab-title">Distros vorstellen</span>
+        <span class="lab-duration">45 min</span>
+      </div>
+      <div class="lab-body">
+        <div class="lab-scenario">
+          <strong>📧 E-Mail vom Senior-Admin (HanovaTech GmbH):</strong><br>
+          „Wir wollen dass du nicht nur Rocky kennst, sondern dich auch in
+          fremden Linux-Welten orientieren kannst. Bildet 3er-Gruppen, jede Gruppe
+          übernimmt eine Distribution und stellt sie in 5 Minuten der Gesamtgruppe vor.“
+        </div>
+
+        <div class="lab-section-title">Aufgaben für jede Gruppe</div>
+        <ol class="lab-tasks">
+          <li>Wählt eine der folgenden Distributionen:
+            <strong>RHEL</strong>, <strong>Tails</strong>, <strong>Alpine</strong>,
+            <strong>Pop!_OS</strong>, <strong>Kali</strong>, <strong>NixOS</strong>.</li>
+          <li>Recherchiert auf der offiziellen Webseite und in der Wikipedia:
+            <ul>
+              <li>Familie / Paketmanager</li>
+              <li>Release-Modell und Support-Dauer</li>
+              <li>Typische Zielgruppe / Einsatzzweck</li>
+              <li>Eine spannende Eigenheit oder Geschichte</li>
+              <li>Beispiel-Befehl: wie installiert man dort das Paket <code>htop</code>?</li>
+            </ul>
+          </li>
+          <li>Bereitet eine 5-Minuten-Mini-Präsentation vor.</li>
+          <li>Stellt euch in der Gesamtgruppe vor. Fragen sind erwünscht!</li>
+        </ol>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p>Zur Auflockerung: Lass jede Gruppe am Ende eine <strong>fiktive Headline</strong>
+            erfinden, die die Distro beschreibt. Beispiele: „Tails — das Linux, das Schäuble fürchtet“
+            oder „Alpine — das Linux, das in deine Hosentasche passt“.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Welche drei Kernbestandteile machen eine Distribution aus (mindestens)?</li>
+          <li>Was unterscheidet ein <strong>Rolling Release</strong> von einem
+            <strong>versions-basierten Release</strong>?</li>
+          <li>Welcher Paketmanager gehört zu welcher Familie:
+            <code>apt</code>, <code>dnf</code>, <code>pacman</code>, <code>zypper</code>, <code>apk</code>?</li>
+          <li>Nenne mindestens zwei Gründe, warum Rocky Linux für unseren Kurs gewählt wurde.</li>
+          <li>Welche Distro wird gerne in Docker-Containern eingesetzt — und warum?</li>
+          <li>Wofür steht das Akronym <strong>RHEL</strong> und wer steckt heute dahinter?</li>
+          <li>Was ist der Unterschied zwischen <strong>Fedora</strong> und <strong>Rocky</strong>,
+            obwohl beide zur Red-Hat-Familie gehören?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>Linux-Kernel</strong>, <strong>Paketmanager</strong>, <strong>GNU-Tools</strong>
+                  (Shell, Coreutils, …). Optional: Desktop, Anwendungen, Support.</li>
+              <li>Rolling = kontinuierliche Updates ohne feste Versionen. Versions-basiert =
+                  alle X Monate/Jahre eine eingefrorene Version, die nur Security-Patches bekommt.</li>
+              <li><code>apt</code> → Debian-Familie · <code>dnf</code> → Red Hat-Familie ·
+                  <code>pacman</code> → Arch · <code>zypper</code> → SUSE · <code>apk</code> → Alpine.</li>
+              <li>RHEL-kompatibel + kostenlos + 10 Jahre Support + im Bewerbungsmarkt gefragt
+                  (zwei davon reichen).</li>
+              <li><strong>Alpine</strong> — wegen extrem geringer Größe (&lt; 5 MB Basis-Image),
+                  guter Sicherheits-Patches und schnellem Bootverhalten.</li>
+              <li><strong>Red Hat Enterprise Linux</strong>, herausgegeben von <strong>Red Hat</strong>
+                  (gehört seit 2019 zu IBM).</li>
+              <li>Fedora ist die <strong>Vorhut</strong> — sehr neue Pakete, kurzer Support
+                  (~13 Monate). Rocky ist die <strong>Enterprise-Linie</strong> — stabile, eingefrorene
+                  Pakete, 10 Jahre Support. Was in Fedora getestet wurde, landet 2–3 Jahre später in RHEL/Rocky.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="02-unix-geschichte.html">
+        <span class="nav-eyebrow">← Kapitel 02</span>
+        <span class="nav-title">Unix &amp; Linux-Geschichte</span>
+      </a>
+      <a href="04-virtualisierung.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 04 →</span>
+        <span class="nav-title">Virtualisierung</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 03 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

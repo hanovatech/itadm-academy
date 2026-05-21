@@ -1387,3 +1387,167 @@ hr {
   .code-block { border: 1px solid #ccc; background: #f6f8fa; }
   .code-block pre, .code-block pre code { color: #000; }
 }
+
+/* ========================================================================
+   CHAPTER NAVIGATION (zurück / weiter zwischen Kapitelseiten)
+   ======================================================================== */
+
+.chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 1rem;
+  margin: 3rem 0 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.chapter-nav a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.25rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chapter-nav a:hover {
+  border-color: var(--accent);
+  background: var(--bg-medium);
+  text-decoration: none;
+}
+
+.chapter-nav .nav-eyebrow {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+
+.chapter-nav .nav-title {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.chapter-nav .nav-next { text-align: right; }
+
+.chapter-nav .nav-spacer {
+  flex: 1;
+  visibility: hidden;
+}
+
+/* ========================================================================
+   CHAPTER GRID (Kachel-Übersicht auf der Tag-Indexseite)
+   ======================================================================== */
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.chapter-card {
+  display: block;
+  padding: 1.25rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+
+.chapter-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-medium);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.chapter-card-number {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.chapter-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+.chapter-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.chapter-card-badge {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-dim);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+}
+
+/* ========================================================================
+   SCHEDULE LIST (Tagesplan auf der Tag-Indexseite)
+   ======================================================================== */
+
+.schedule-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.schedule-list li {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.schedule-list li:last-child { border-bottom: none; }
+
+.schedule-time {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  width: 7.5rem;
+}
+
+.schedule-label {
+  color: var(--text-primary);
+}
+
+.schedule-label small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 0.1rem;
+}
+
+@media (max-width: 600px) {
+  .chapter-nav { flex-direction: column; }
+  .chapter-nav .nav-next { text-align: left; }
+  .schedule-list li { flex-direction: column; gap: 0.2rem; }
+  .schedule-time { width: auto; }
+}

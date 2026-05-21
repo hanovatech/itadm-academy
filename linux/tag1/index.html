@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux · Tag 1 · Übersicht — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 von 3 · Übersicht</div>
+    <h1 class="page-title">
+      Tag 1 — Erste Schritte mit <span class="highlight">Linux</span>
+    </h1>
+    <p class="page-subtitle">
+      Heute lernst du, was ein Betriebssystem ist, wie Linux entstand und
+      wie du es in einer virtuellen Maschine sicher aufsetzt. Anschließend
+      arbeitest du dich Schritt für Schritt ins Terminal ein.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📅</span> Tag 1 von 3</span>
+      <span class="meta-item"><span class="meta-item-icon">⏰</span> 08:00 – 16:45</span>
+      <span class="meta-item"><span class="meta-item-icon">📚</span> 12 Kapitel</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> 3 Labs · 1 Quiz</span>
+      <span class="meta-item"><span class="meta-item-icon">🐧</span> Rocky Linux 9</span>
+    </div>
+  </section>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-content">
+      <div class="callout-title">Am Ende des Tages kannst du …</div>
+      <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+        <li>erklären, was ein Betriebssystem ist und welche Aufgaben es übernimmt</li>
+        <li>die Geschichte von Unix, GNU und Linux in eigenen Worten erzählen</li>
+        <li>die wichtigsten Linux-Distributionen einordnen und Rocky Linux begründen</li>
+        <li>eine virtuelle Maschine aufsetzen und Rocky Linux installieren</li>
+        <li>dich im Terminal orientieren (<code>cd</code>, <code>ls</code>, <code>pwd</code>)</li>
+        <li>Dateien und Ordner anlegen, kopieren, verschieben, löschen</li>
+        <li>Textdateien mit <code>nano</code> bearbeiten</li>
+        <li>Wildcards und Ausgabeumleitung gezielt einsetzen</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TAGESPLAN ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Tagesplan</h2>
+    <p class="section-subtitle">
+      5 Blöcke à 90 Minuten, mit Pausen und Mittag. Theorie und Praxis
+      wechseln sich bewusst ab, damit ihr nicht einschlaft.
+    </p>
+
+    <ul class="schedule-list">
+      <li><span class="schedule-time">08:00 – 09:30</span>
+          <span class="schedule-label">Block 1 · Theorie I — Was ist Linux?
+            <small>Betriebssystem-Grundlagen, Unix-/Linux-Geschichte, Distributionen</small></span></li>
+      <li><span class="schedule-time">09:30 – 09:45</span>
+          <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
+      <li><span class="schedule-time">09:45 – 11:15</span>
+          <span class="schedule-label">Block 2 · Virtualisierung &amp; Installation
+            <small>Hypervisor verstehen, VM erstellen, Rocky Linux installieren</small></span></li>
+      <li><span class="schedule-time">11:15 – 11:30</span>
+          <span class="schedule-label">☕ Kurze Pause (15 min)</span></li>
+      <li><span class="schedule-time">11:30 – 12:45</span>
+          <span class="schedule-label">Block 3 · Terminal-Basics + 🧪 Lab 1.1
+            <small>Shell &amp; Bash, Dateisystem, Navigation, Pfade</small></span></li>
+      <li><span class="schedule-time">12:45 – 13:30</span>
+          <span class="schedule-label">🍽️ Mittagspause (45 min)</span></li>
+      <li><span class="schedule-time">13:30 – 15:00</span>
+          <span class="schedule-label">Block 4 · Dateien, Ordner &amp; nano + 🧪 Lab 1.2
+            <small>touch, mkdir, cp, mv, rm, Editor nano</small></span></li>
+      <li><span class="schedule-time">15:00 – 15:15</span>
+          <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
+      <li><span class="schedule-time">15:15 – 16:45</span>
+          <span class="schedule-label">Block 5 · Wildcards, Redirection + 🧪 Lab 1.3 + 🎯 Quiz
+            <small>echo, Platzhalter, Ausgabeumleitung, Cheat-Sheet</small></span></li>
+    </ul>
+
+    <div class="callout callout-trainer">
+      <div class="callout-icon">🎓</div>
+      <div class="callout-content">
+        <div class="callout-title">Trainer-Hinweis</div>
+        <p>Beim Eintreffen die Downloads (VMware + Rocky-ISO) starten lassen — die laufen
+        im Hintergrund, während Block 1 läuft. So sind sie pünktlich zu Block 2 fertig.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL-KACHELN ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">12 Kapitel</h2>
+    <p class="section-subtitle">
+      Jedes Kapitel ist eine eigene Seite (5–40 min Lesezeit). Arbeite sie in
+      Reihenfolge durch — sie bauen aufeinander auf.
+    </p>
+
+    <div class="chapter-grid">
+
+      <a href="01-betriebssystem.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 01 ]</div>
+        <div class="chapter-card-title">Was ist ein Betriebssystem?</div>
+        <p class="chapter-card-desc">
+          Kernel, Schichtenmodell und die vier Aufgaben eines BS — vom Hausmeister
+          im Hochhaus bis zum Supercomputer.
+        </p>
+        <span class="chapter-card-badge">Theorie</span>
+      </a>
+
+      <a href="02-unix-geschichte.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 02 ]</div>
+        <div class="chapter-card-title">Unix &amp; Linux-Geschichte</div>
+        <p class="chapter-card-desc">
+          Von Bell Labs 1969 über GNU 1984 bis zu Linus' berühmter Hobby-E-Mail von 1991
+          — die Story hinter dem freien Betriebssystem.
+        </p>
+        <span class="chapter-card-badge">Theorie</span>
+      </a>
+
+      <a href="03-distributionen.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 03 ]</div>
+        <div class="chapter-card-title">Distributionen</div>
+        <p class="chapter-card-desc">
+          Rocky, Debian, Ubuntu, Tails, Alpine &amp; Co. — Familien, Release-Modelle
+          und warum wir Rocky Linux nehmen.
+        </p>
+        <span class="chapter-card-badge">Theorie</span>
+      </a>
+
+      <a href="04-virtualisierung.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 04 ]</div>
+        <div class="chapter-card-title">Virtualisierung</div>
+        <p class="chapter-card-desc">
+          Host, Guest, Hypervisor (Type-1 vs. Type-2), Netzwerkmodi, Snapshots —
+          alles, was du vor der Installation wissen musst.
+        </p>
+        <span class="chapter-card-badge">Theorie</span>
+      </a>
+
+      <a href="05-rocky-installation.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 05 ]</div>
+        <div class="chapter-card-title">Rocky Linux Installation</div>
+        <p class="chapter-card-desc">
+          VM in VMware erstellen, Anaconda-Installer durchklicken, ersten Login
+          und die Klassiker-Fallen umgehen.
+        </p>
+        <span class="chapter-card-badge">Aktion</span>
+      </a>
+
+      <a href="06-terminal-shell.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 06 ]</div>
+        <div class="chapter-card-title">Terminal, Shell &amp; Bash</div>
+        <p class="chapter-card-desc">
+          Prompt-Anatomie, was Bash eigentlich ist, <code>$</code> vs. <code>#</code> und
+          die ersten produktiven Sofort-Befehle.
+        </p>
+        <span class="chapter-card-badge">Theorie</span>
+      </a>
+
+      <a href="07-dateisystem-fhs.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 07 ]</div>
+        <div class="chapter-card-title">Dateisystem &amp; FHS</div>
+        <p class="chapter-card-desc">
+          Der Linux-Verzeichnisbaum, FHS (Filesystem Hierarchy Standard) und
+          warum Linux anders tickt als Windows.
+        </p>
+        <span class="chapter-card-badge">Theorie</span>
+      </a>
+
+      <a href="08-navigation.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 08 ]</div>
+        <div class="chapter-card-title">Navigation (cd, ls, pwd)</div>
+        <p class="chapter-card-desc">
+          Absolute vs. relative Pfade, Sonderzeichen <code>~ . .. -</code> und das
+          erste richtige Lab des Tages.
+        </p>
+        <span class="chapter-card-badge">Lab 1.1</span>
+      </a>
+
+      <a href="09-dateien-ordner.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 09 ]</div>
+        <div class="chapter-card-title">Dateien &amp; Ordner</div>
+        <p class="chapter-card-desc">
+          <code>touch</code>, <code>mkdir</code>, <code>cp</code>, <code>mv</code>,
+          <code>rm</code> — und die gefährlichste Linux-Zeile der Welt.
+        </p>
+        <span class="chapter-card-badge">Praxis</span>
+      </a>
+
+      <a href="10-editoren.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 10 ]</div>
+        <div class="chapter-card-title">Editoren (nano, vi/vim)</div>
+        <p class="chapter-card-desc">
+          Warum es zwei Editor-Religionen gibt, nano in 5 Minuten, vi-Überlebenstipps
+          und Lab 1.2: die HanovaTech-Ordnerstruktur.
+        </p>
+        <span class="chapter-card-badge">Lab 1.2</span>
+      </a>
+
+      <a href="11-echo-wildcards.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 11 ]</div>
+        <div class="chapter-card-title">Echo, Wildcards &amp; Redirection</div>
+        <p class="chapter-card-desc">
+          Platzhalter <code>* ? [ ]</code>, Ausgabeumleitung <code>&gt; &gt;&gt; 2&gt;</code>
+          und Lab 1.3: Ordnung im Log-Chaos.
+        </p>
+        <span class="chapter-card-badge">Lab 1.3</span>
+      </a>
+
+      <a href="12-quiz-cheatsheet.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 12 ]</div>
+        <div class="chapter-card-title">Tages-Quiz &amp; Cheat-Sheet</div>
+        <p class="chapter-card-desc">
+          12 Fragen zum Tag plus eine druckbare Befehls-Referenz für die nächsten Tage.
+        </p>
+        <span class="chapter-card-badge">Quiz</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ LERNZIELE ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Tageslernziele im Detail</h2>
+    <p class="section-subtitle">
+      Was wir am Ende von Tag 1 gemeinsam abhaken wollen — die Messlatte für das
+      Quiz und die Selbsteinschätzung.
+    </p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Bereich</th><th>Konkretes Ziel</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Theorie</strong></td><td>Du kannst die Begriffe BS, Kernel, Distribution, Hypervisor und VM in eigenen Worten erklären.</td></tr>
+          <tr><td><strong>Geschichte</strong></td><td>Du kennst die wichtigsten Jahre 1969, 1984, 1991 und kannst erklären, warum „GNU/Linux“ korrekt ist.</td></tr>
+          <tr><td><strong>Setup</strong></td><td>Du hast eine funktionierende Rocky-9-VM mit Netzwerk und kannst dich als <code>admin</code> einloggen.</td></tr>
+          <tr><td><strong>Navigation</strong></td><td>Du kannst dich blind mit <code>cd</code>, <code>ls</code> und <code>pwd</code> durch den FHS bewegen.</td></tr>
+          <tr><td><strong>Dateien</strong></td><td>Du legst Strukturen mit <code>mkdir -p</code> an, verschiebst, kopierst und löschst sicher.</td></tr>
+          <tr><td><strong>Editor</strong></td><td>Du kannst eine Textdatei in nano öffnen, ändern, speichern und beenden — ohne Spickzettel.</td></tr>
+          <tr><td><strong>Wildcards</strong></td><td>Du nutzt <code>*</code>, <code>?</code>, <code>[ ]</code> bewusst und weißt, was sie unterscheidet.</td></tr>
+          <tr><td><strong>Redirection</strong></td><td>Du kannst stdout und stderr gezielt in Dateien umleiten und an Dateien anhängen.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top: 1.5rem;">
+      <div class="callout-icon">💡</div>
+      <div class="callout-content">
+        <div class="callout-title">Lerntipp</div>
+        <p>Tippe jeden Befehl, den du heute siehst, mindestens einmal selbst ab. Lesen
+        allein bringt 30 %, Tippen bringt 70 %. Muscle Memory schlägt Theorie.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 — <a href="01-betriebssystem.html">Start mit Kapitel 01 →</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>

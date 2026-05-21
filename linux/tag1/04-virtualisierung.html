@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 04 · Virtualisierung — ITADM Academy</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 1 · Kapitel 04 von 12</div>
+    <h1 class="page-title">
+      Virtualisierung — vom <span class="highlight">Hypervisor</span> zur VM
+    </h1>
+    <p class="page-subtitle">
+      Bevor wir Rocky Linux installieren, müssen wir verstehen, wo es überhaupt
+      laufen soll. Was ist eine VM? Was ist ein Hypervisor? Warum ist
+      Virtualisierung das Rückgrat der modernen IT — und welche Stolperfallen
+      lauern, bevor du klickst?
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 04</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Lesezeit</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Theorie + Praxis-Tipps</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ WAS IST EINE VM ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.1</span>
+        <h2 class="timeblock-title">Was ist eine virtuelle Maschine?</h2>
+        <span class="timeblock-badge badge-vortrag">Theorie</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine <strong>virtuelle Maschine (VM)</strong> ist ein vollständiger Computer
+        — Prozessor, Arbeitsspeicher, Festplatte, Netzwerkkarte — der nur in <strong>Software</strong>
+        existiert. Sie läuft als Prozess auf deinem echten Rechner und glaubt selbst,
+        sie sei ein echter, physischer PC.</p>
+
+        <p>Eine VM hat ihr eigenes <strong>BIOS</strong>, bootet ihr eigenes
+        <strong>Betriebssystem</strong> und ist von deinem Host-System so weit getrennt,
+        dass du sie crashen, neu starten oder löschen kannst, ohne dass dein Hauptsystem
+        davon etwas merkt.</p>
+
+        <h4>Die drei Schlüsselbegriffe</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Begriff</th><th>Bedeutung</th><th>In unserem Kurs</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Host</strong></td>
+                <td>Der echte, physische Computer, auf dem alles läuft</td>
+                <td>Dein Laptop mit Windows 11</td>
+              </tr>
+              <tr>
+                <td><strong>Guest / Gast</strong></td>
+                <td>Das Betriebssystem, das innerhalb der VM läuft</td>
+                <td>Rocky Linux 9</td>
+              </tr>
+              <tr>
+                <td><strong>Hypervisor</strong></td>
+                <td>Die Software, die VMs verwaltet und der Hardware zuteilt</td>
+                <td>VMware Workstation Pro</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ascii-box">  ┌─────────────────────────────────────────┐
+  │  HOST — dein echter Rechner             │
+  │  Windows 11, 16 GB RAM, 512 GB SSD      │
+  │  ┌─────────────────────────────────┐    │
+  │  │  HYPERVISOR                     │    │
+  │  │  VMware Workstation Pro         │    │
+  │  │  ┌──────────────────────┐       │    │
+  │  │  │  VM (GUEST)          │       │    │
+  │  │  │  Rocky Linux 9       │       │    │
+  │  │  │   - 2 vCPU           │       │    │
+  │  │  │   - 2 GB vRAM        │       │    │
+  │  │  │   - 20 GB vDisk      │       │    │
+  │  │  │   - virt. NIC (NAT)  │       │    │
+  │  │  └──────────────────────┘       │    │
+  │  └─────────────────────────────────┘    │
+  └─────────────────────────────────────────┘</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📦</div>
+          <div class="callout-content">
+            <div class="callout-title">Mentales Modell</div>
+            <p>Stell dir eine VM wie eine <strong>App in einem Fenster</strong> vor.
+            Nur dass diese „App“ eben ein komplettes Betriebssystem ist. Du kannst sie
+            starten, schließen, einfrieren, klonen und kopieren — wie jede andere
+            Datei auch.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HYPERVISOR-TYPEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.2</span>
+        <h2 class="timeblock-title">Type-1 vs. Type-2 Hypervisor</h2>
+        <span class="timeblock-badge badge-vortrag">Architektur</span>
+      </div>
+
+      <div class="subblock">
+        <p>Es gibt zwei grundsätzlich verschiedene Bauweisen von Hypervisoren —
+        sie unterscheiden sich darin, <strong>was zwischen Hardware und VM liegt</strong>:</p>
+
+        <h4>Type-1 (Bare-Metal) Hypervisor</h4>
+        <div class="ascii-box">  ┌────────────────────────────────┐
+  │   VM   │   VM   │   VM   │      │   ← Mehrere VMs gleichzeitig
+  ├────────┴────────┴────────┴──────┤
+  │   Hypervisor (z.B. ESXi)        │   ← läuft DIREKT auf Hardware
+  ├─────────────────────────────────┤
+  │   Hardware (CPU, RAM, Disks)    │
+  └─────────────────────────────────┘</div>
+
+        <p>Der Hypervisor IST quasi das Betriebssystem. Es gibt kein Windows oder
+        Linux darunter — der Hypervisor spricht selbst direkt mit der Hardware. Das
+        ist <strong>extrem schnell</strong> und sicher, aber unbequem als Arbeitsumgebung
+        (du kannst auf so einem Server nicht Word starten).</p>
+
+        <p><strong>Vertreter:</strong> VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM (Linux-Kernel-basiert), Citrix Hypervisor (XenServer).</p>
+
+        <h4>Type-2 (Hosted) Hypervisor</h4>
+        <div class="ascii-box">  ┌────────────────────────────────┐
+  │   VM   │   VM   │              │
+  ├────────┴────────┴────────────┬─┤
+  │   Hypervisor (z.B. VMware    │ │
+  │   Workstation)               │ │
+  ├──────────────────────────────┘ │
+  │   Host-OS (Windows / macOS / Linux)
+  ├─────────────────────────────────┤
+  │   Hardware                      │
+  └─────────────────────────────────┘</div>
+
+        <p>Der Hypervisor läuft als <strong>normales Programm</strong> auf einem ganz
+        gewöhnlichen Betriebssystem. Das ist langsamer (eine Schicht mehr Overhead),
+        aber sehr bequem: du klickst die VM auf, sie öffnet sich in einem Fenster
+        neben deinem Browser.</p>
+
+        <p><strong>Vertreter:</strong> VMware Workstation Pro / Player, Oracle VirtualBox,
+        Parallels Desktop (macOS), QEMU.</p>
+
+        <h4>Vergleich auf einen Blick</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Kriterium</th><th>Type-1 (Bare-Metal)</th><th>Type-2 (Hosted)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Läuft auf …</td><td>direkt Hardware</td><td>Host-OS</td></tr>
+              <tr><td>Performance</td><td>nahe nativ</td><td>~5–15 % Overhead</td></tr>
+              <tr><td>Boot-Zeit</td><td>sofort startbereit</td><td>Host-OS muss erst booten</td></tr>
+              <tr><td>Einsatz</td><td>Produktion, Rechenzentrum</td><td>Test, Entwicklung, Lehre</td></tr>
+              <tr><td>Beispiele</td><td>ESXi, Hyper-V, Proxmox, KVM</td><td>VMware Workstation, VirtualBox</td></tr>
+              <tr><td>Sicherheit</td><td>höher (kleine Angriffsfläche)</td><td>geringer (Host-OS als Risiko)</td></tr>
+              <tr><td>Bedienung</td><td>Web-GUI / SSH / vCenter</td><td>lokale GUI auf dem Host</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧪</div>
+          <div class="callout-content">
+            <div class="callout-title">Wussten Sie schon?</div>
+            <p><strong>KVM</strong> (Kernel-based Virtual Machine) macht Linux selbst zum
+            Type-1 Hypervisor. Wenn du Proxmox VE oder Red Hat Virtualization nutzt,
+            steckt KVM darunter. KVM ist Open-Source und der Standard-Hypervisor der
+            großen Cloud-Anbieter (AWS, Google Cloud nutzen KVM-Varianten).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WANN WAS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.3</span>
+        <h2 class="timeblock-title">Wann nutzt man was?</h2>
+        <span class="timeblock-badge badge-vortrag">Entscheidungshilfe</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Szenario</th><th>Empfehlung</th><th>Warum?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Privater Lern-PC mit Windows</td>
+                <td><strong>Type-2</strong> (VMware Workstation, VirtualBox)</td>
+                <td>Du willst Linux nur „nebenher“, ohne dein System umzustellen</td>
+              </tr>
+              <tr>
+                <td>Entwickler-Laptop</td>
+                <td><strong>Type-2</strong> + Docker</td>
+                <td>Schnell starten, schließen, ausprobieren</td>
+              </tr>
+              <tr>
+                <td>Mittelständischer Webserver-Cluster</td>
+                <td><strong>Type-1</strong> (Proxmox, ESXi)</td>
+                <td>Mehrere VMs auf einer Hardware, 24/7-Betrieb, Web-Verwaltung</td>
+              </tr>
+              <tr>
+                <td>Großes Rechenzentrum / Cloud</td>
+                <td><strong>Type-1</strong> (VMware ESXi mit vCenter, KVM)</td>
+                <td>Tausende VMs, Hochverfügbarkeit, Live-Migration</td>
+              </tr>
+              <tr>
+                <td>Schulungsraum / IHK-Kurs ← <strong>wir!</strong></td>
+                <td><strong>Type-2</strong> (VMware Workstation Pro)</td>
+                <td>Teilnehmer haben Windows-Laptops, brauchen sicheren Sandkasten</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VORTEILE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.4</span>
+        <h2 class="timeblock-title">Vier große Vorteile von Virtualisierung</h2>
+        <span class="timeblock-badge badge-vortrag">Vorteile</span>
+      </div>
+
+      <div class="subblock">
+        <h4>1. Konsolidierung — viele Server auf einer Hardware</h4>
+        <p>Früher: 1 physischer Server pro Dienst (1× Webserver, 1× Mailserver,
+        1× Fileserver, …). Jeder zu 5–15 % ausgelastet. Stromfressend, teuer.</p>
+        <p>Heute: 1 leistungsstarker Server hostet 20+ VMs. Auslastung 60–80 %.
+        <strong>Faktor 10 bei Stromverbrauch und Hardwarekosten.</strong> Genau das ist
+        der wirtschaftliche Grund, warum Virtualisierung sich durchgesetzt hat.</p>
+
+        <h4>2. Snapshots — Zeitreise auf Knopfdruck</h4>
+        <p>Ein <strong>Snapshot</strong> ist ein eingefrorenes Abbild des VM-Zustands
+        zu einem Zeitpunkt. Du kannst beliebig oft zurückspringen.</p>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wichtige Unterscheidung</div>
+            <p><strong>Snapshot ≠ Backup!</strong> Ein Snapshot liegt im selben Storage
+            wie die VM. Wenn das Storage stirbt, sind Snapshot und VM gleichzeitig weg.
+            Ein echtes Backup liegt <em>außerhalb</em> der VM-Plattform — auf einem
+            anderen Storage, Cloud-Speicher oder Bandlaufwerk.</p>
+            <p style="margin-top:0.6rem;">Snapshots sind für „<em>ich probiere mal was
+            aus, will aber zurückkönnen</em>“. Backups sind für „<em>der Hypervisor
+            brennt</em>“.</p>
+          </div>
+        </div>
+
+        <h4>3. Isolation — Sandkasten ohne Risiko</h4>
+        <p>Was in der VM passiert, bleibt in der VM. Du kannst dort:</p>
+        <ul>
+          <li>Schadsoftware analysieren (Malware-Sandbox)</li>
+          <li>Verdächtige Mailanhänge öffnen</li>
+          <li>Neue Betriebssysteme testen</li>
+          <li>Mit <code>rm -rf /</code> experimentieren — Snapshot zurück, weiter geht's</li>
+        </ul>
+
+        <h4>4. Portabilität — VMs sind Dateien</h4>
+        <p>Eine VM besteht physisch aus einer Handvoll Dateien (Disk-Image
+        <code>.vmdk</code>/<code>.qcow2</code>, Konfigurations-XML, Metadaten).
+        Du kannst sie:</p>
+        <ul>
+          <li>per USB-Stick mitnehmen</li>
+          <li>in die Cloud schieben</li>
+          <li>auf einem anderen Hypervisor importieren (oft mit Konvertierung)</li>
+          <li>kopieren wie jede andere Datei</li>
+        </ul>
+
+        <p>Das Standardformat zwischen Herstellern heißt <strong>OVF / OVA</strong>
+        (Open Virtualization Format / Appliance). Damit lassen sich VMs zwischen VMware,
+        VirtualBox und Hyper-V relativ schmerzlos austauschen.</p>
+      </div>
+    </section>
+
+    <!-- ============ VM-KOMPONENTEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.5</span>
+        <h2 class="timeblock-title">Was steckt in einer VM? — Komponenten</h2>
+        <span class="timeblock-badge badge-vortrag">Hardware (virtuell)</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Komponente</th><th>Was ist das?</th><th>Empfehlung für unsere VM</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>vCPU</strong></td>
+                <td>Virtuelle CPU-Kerne. Werden vom Hypervisor auf echte Kerne abgebildet.</td>
+                <td>2 vCPUs (von 4–8 echten)</td>
+              </tr>
+              <tr>
+                <td><strong>vRAM</strong></td>
+                <td>Virtueller Arbeitsspeicher. Wird vom Host reserviert.</td>
+                <td>2 GB (von 16 GB)</td>
+              </tr>
+              <tr>
+                <td><strong>vDisk</strong></td>
+                <td>Datei auf dem Host (<code>.vmdk</code>), erscheint in der VM als Festplatte</td>
+                <td>20 GB, „thin provisioned“ — wächst nur, wenn nötig</td>
+              </tr>
+              <tr>
+                <td><strong>vNIC</strong></td>
+                <td>Virtuelle Netzwerkkarte. Wird einem Netzwerk-Modus zugeordnet.</td>
+                <td>1 vNIC im NAT-Modus</td>
+              </tr>
+              <tr>
+                <td><strong>vGPU / Display</strong></td>
+                <td>Virtuelle Grafikkarte (für GUI)</td>
+                <td>Standard (wir nutzen Konsole)</td>
+              </tr>
+              <tr>
+                <td><strong>USB-Controller / Sound / Drucker</strong></td>
+                <td>Optionale Geräte</td>
+                <td>Brauchen wir nicht — vor Installation entfernen</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel: vRAM</div>
+            <p>Weise einer VM <strong>nie mehr als 50 %</strong> des Host-RAM zu, sonst
+            würgst du dein Host-System ab. Bei 8 GB Host-RAM → maximal 4 GB an die VM,
+            besser 2 GB. Linux-Minimal läuft problemlos in 1–2 GB.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel: vCPU</div>
+            <p>Weniger vCPU ist oft besser als mehr. Wenn du 4 vCPU zuweist, muss der
+            Hypervisor 4 echte Kerne gleichzeitig frei haben, um die VM zu rechnen
+            (<em>co-scheduling</em>). Lieber 2 vCPU vergeben — dann läuft die VM
+            geschmeidiger.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NETZWERKMODI ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.6</span>
+        <h2 class="timeblock-title">Netzwerkmodi: NAT, Bridged, Host-Only</h2>
+        <span class="timeblock-badge badge-vortrag">Wichtig!</span>
+      </div>
+
+      <div class="subblock">
+        <p>Die <strong>häufigste Quelle für Frust</strong> beim VM-Setup ist das Netzwerk.
+        Wir gehen die drei wichtigsten Modi gemeinsam durch.</p>
+
+        <h4>NAT — Network Address Translation</h4>
+        <div class="ascii-box">  Internet
+     │
+     │
+  ┌──┴──────────────────────────────────┐
+  │     Host-PC (z.B. 192.168.0.42)     │
+  │                                     │
+  │     ┌──────── NAT-Router ─────────┐ │
+  │     │  (vom Hypervisor erzeugt)   │ │
+  │     │  z.B. 192.168.211.1         │ │
+  │     │                             │ │
+  │     │   ┌─────────────────┐       │ │
+  │     │   │   VM            │       │ │
+  │     │   │ 192.168.211.128 │       │ │
+  │     │   └─────────────────┘       │ │
+  │     └─────────────────────────────┘ │
+  └─────────────────────────────────────┘</div>
+
+        <ul>
+          <li>Die VM hat eine eigene private IP, vergeben vom Hypervisor</li>
+          <li>Kommunikation nach außen läuft <strong>über den Host</strong> wie durch einen Router</li>
+          <li>Die VM kann ins Internet, andere Geräte im LAN sehen die VM aber <strong>nicht</strong></li>
+          <li><strong>Vorteil:</strong> Funktioniert immer (auch in fremden WLANs), ohne Konfiguration</li>
+          <li><strong>Standard für unseren Kurs!</strong></li>
+        </ul>
+
+        <h4>Bridged — direkter LAN-Zugang</h4>
+        <div class="ascii-box">          ┌───── LAN / Router ─────┐
+          │  192.168.0.0/24        │
+          │                        │
+   ┌──────┴───────┐         ┌──────┴───────┐
+   │ Host         │         │  VM (Bridged)│
+   │ 192.168.0.42 │         │ 192.168.0.55 │   ← eigene IP im LAN!
+   └──────────────┘         └──────────────┘</div>
+
+        <ul>
+          <li>Die VM hängt direkt am physischen Netzwerk, als wäre sie ein eigener PC</li>
+          <li>Bekommt eine IP vom <strong>DHCP-Server deines LANs</strong> (z.B. der Fritzbox)</li>
+          <li>Andere Geräte im LAN können die VM sehen</li>
+          <li><strong>Vorteil:</strong> realistisches Setup, andere Rechner können auf VM-Services zugreifen</li>
+          <li><strong>Nachteil:</strong> braucht funktionierendes DHCP im LAN — in fremden Netzwerken oft Probleme</li>
+        </ul>
+
+        <h4>Host-Only — privates Mini-Netz nur zum Host</h4>
+        <div class="ascii-box">  ┌─────────────────────────┐
+  │  Host                   │
+  │   192.168.56.1          │
+  │       │                 │
+  │       │ (kein Internet) │
+  │       │                 │
+  │   ┌───┴────────┐        │
+  │   │  VM        │        │
+  │   │ 192.168.56.10        │
+  │   └────────────┘        │
+  └─────────────────────────┘</div>
+
+        <ul>
+          <li>Privates Netzwerk nur zwischen Host und VM</li>
+          <li><strong>Kein Internet-Zugang</strong>!</li>
+          <li>Nützlich für isolierte Labore: mehrere VMs in einem virtuellen Netz, das niemand von außen sieht</li>
+        </ul>
+
+        <h4>Vergleichstabelle</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Modus</th><th>Internet?</th><th>Sichtbar im LAN?</th><th>IP-Quelle</th><th>Stabil in fremdem WLAN?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>NAT</td><td>✅</td><td>❌</td><td>Hypervisor (DHCP)</td><td>✅</td></tr>
+              <tr><td>Bridged</td><td>✅</td><td>✅</td><td>echter LAN-DHCP</td><td>⚠️</td></tr>
+              <tr><td>Host-Only</td><td>❌</td><td>❌</td><td>Hypervisor (DHCP)</td><td>✅</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Falle: Bridged ohne DHCP</div>
+            <p>Bridged setzt voraus, dass im LAN ein DHCP-Server läuft, der freie IPs
+            vergibt. In manchen Firmennetzen ist das nicht der Fall — dort bekommst du
+            in der VM gar keine IP und wunderst dich. Wenn unsicher: bleibe bei NAT.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SNAPSHOTS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.7</span>
+        <h2 class="timeblock-title">Snapshots — Theorie und Praxis</h2>
+        <span class="timeblock-badge badge-vortrag">Lifesaver</span>
+      </div>
+
+      <div class="subblock">
+        <h4>Was ist ein Snapshot technisch?</h4>
+        <p>Wenn du einen Snapshot erstellst, friert der Hypervisor die bisherige
+        Disk ein und schreibt alle neuen Änderungen in eine <strong>Delta-Datei</strong>.
+        Beim „Zurückspringen“ verwirft er einfach die Delta-Datei.</p>
+
+        <div class="ascii-box">  Vor Snapshot:        VM ─→ disk.vmdk
+                                  (alles drin)
+
+  Nach Snapshot:       VM ─→ disk.vmdk (read-only, base)
+                            ↓
+                            delta_001.vmdk  (alle neuen Schreibvorgänge)</div>
+
+        <h4>Wann setzt man Snapshots ein?</h4>
+        <ul>
+          <li><strong>Vor riskanten Änderungen</strong> (Kernel-Update, neue Software, Migrations-Skript)</li>
+          <li><strong>Als Test-Anker</strong> beim Experimentieren („zurück zum frischen System“)</li>
+          <li><strong>Vor Sicherheits-Patches</strong>, falls etwas auf Anhieb nicht startet</li>
+        </ul>
+
+        <h4>Wie setzt man Snapshots ein? (VMware Workstation)</h4>
+        <ol>
+          <li><strong>VM → Snapshot → Take Snapshot</strong> (oder Strg+M)</li>
+          <li>Aussagekräftigen Namen geben, z.B. <code>vor-dnf-update</code></li>
+          <li>Beschreibung mit Datum und Grund hinzufügen</li>
+          <li>Snapshot Manager öffnen (<code>VM → Snapshot → Snapshot Manager</code>) — du siehst einen Baum aller Snapshots</li>
+          <li>Zum Zurückspringen: gewünschten Snapshot auswählen → <strong>Go To</strong></li>
+        </ol>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">SNAPSHOT IST KEIN BACKUP</div>
+            <p>Sag das in 6 Monaten noch dreimal: <strong>Ein Snapshot ist kein
+            Backup.</strong> Wenn der Host stirbt, sind Snapshot und VM gleichzeitig
+            weg. Snapshots leben für Stunden bis Tage — Backups für Wochen bis Jahre.
+            Backups gehören auf ein anderes Storage, idealerweise mit der
+            <strong>3-2-1-Regel</strong>: 3 Kopien, auf 2 verschiedenen Medien, 1 davon
+            extern.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p>Mehr als <strong>3 Snapshots</strong> pro VM solltest du nicht stapeln,
+            sonst wird die Disk-Performance spürbar langsamer (jeder Schreibzugriff
+            geht durch alle Delta-Schichten). Alte Snapshots regelmäßig löschen
+            („committen“ heißt das in der VMware-Sprache).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HARDWARE-VORAUSSETZUNGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.8</span>
+        <h2 class="timeblock-title">Hardware-Mindestanforderungen für Virtualisierung</h2>
+        <span class="timeblock-badge badge-vortrag">Profi-Tipp</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Komponente</th><th>Minimum</th><th>Empfehlung</th><th>Warum?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>CPU</strong></td>
+                <td>2 Kerne mit VT-x / AMD-V</td>
+                <td>4+ Kerne, möglichst mit Hyper-Threading</td>
+                <td>VMs brauchen echte Kerne, kein Trick funktioniert ohne Hardware-Virtualisierung</td>
+              </tr>
+              <tr>
+                <td><strong>RAM</strong></td>
+                <td>8 GB</td>
+                <td>16 GB+</td>
+                <td>Host braucht 4–6 GB, je VM mindestens 1–2 GB extra</td>
+              </tr>
+              <tr>
+                <td><strong>Disk</strong></td>
+                <td>30 GB frei</td>
+                <td>SSD mit 100+ GB frei</td>
+                <td>HDDs sind quälend langsam für VMs — SSD verzehnfacht das Bootverhalten</td>
+              </tr>
+              <tr>
+                <td><strong>BIOS/UEFI</strong></td>
+                <td>VT-x / AMD-V aktiv</td>
+                <td>plus VT-d (für Passthrough)</td>
+                <td>Ohne VT-x lädt VMware Workstation gar keine VM</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>VT-x / AMD-V prüfen unter Windows</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">PowerShell</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Im PowerShell-Fenster:
+systeminfo | findstr /C:"Hyper-V"
+
+# Erwartet (Auszug):
+# Hyper-V-Anforderungen:
+#   VM-Überwachungsmodus-Erweiterungen: Ja
+#   Virtualisierung in Firmware aktiviert: Ja      ← muss "Ja" sein!
+#   Adressübersetzung der zweiten Ebene: Ja
+#   Datenausführungsverhinderung verfügbar: Ja</code></pre>
+        </div>
+
+        <p>Falls dort „<em>Nein</em>“ steht: Im BIOS/UEFI nach den Einträgen
+        <strong>„Intel Virtualization Technology“</strong>, <strong>„VT-x“</strong>
+        oder <strong>„SVM Mode“</strong> (AMD) suchen und aktivieren.</p>
+      </div>
+    </section>
+
+    <!-- ============ HÄUFIGE FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.9</span>
+        <h2 class="timeblock-title">Häufige Fehler — und wie du sie vermeidest</h2>
+        <span class="timeblock-badge badge-warn">Stolperfallen</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — „VT-x ist deaktiviert“</div>
+            <p><strong>Symptom:</strong> VMware oder VirtualBox startet die VM nicht und
+            meldet „This host does not support Intel VT-x / no hardware virtualization“.</p>
+            <p><strong>Ursache:</strong> Im BIOS/UEFI ist die Hardware-Virtualisierung
+            abgeschaltet. Bei vielen Business-Laptops ist sie ab Werk aus.</p>
+            <p><strong>Lösung:</strong> BIOS aufrufen (meist <code>F2</code>, <code>F10</code>
+            oder <code>Entf</code> beim Boot), Option <strong>Intel VT-x</strong> oder
+            <strong>SVM Mode</strong> aktivieren, speichern, neu starten. Zusätzlich
+            unter Windows: <strong>Hyper-V deaktivieren</strong> (über „Windows-Features
+            aktivieren oder deaktivieren“), sonst blockt es VMware Workstation.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Zu wenig RAM zugewiesen</div>
+            <p><strong>Symptom:</strong> Rocky bootet ewig, hängt bei „Loading initial
+            ramdisk“ oder stürzt mitten in der Installation ab.</p>
+            <p><strong>Ursache:</strong> Du hast der VM nur 512 MB oder 1 GB gegeben.
+            Selbst die Minimal-Installation braucht ~1.5 GB.</p>
+            <p><strong>Lösung:</strong> VM herunterfahren, in den Settings auf
+            <strong>2048 MB</strong> erhöhen, neu starten.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — Bridge ohne DHCP / kein Netzwerk</div>
+            <p><strong>Symptom:</strong> In der VM funktioniert <code>ping 8.8.8.8</code>
+            nicht. <code>ip a</code> zeigt keine IP-Adresse.</p>
+            <p><strong>Ursache:</strong> Du nutzt Bridged-Mode, aber der LAN-DHCP-Server
+            ist nicht erreichbar (z.B. WLAN-Roaming, Firmennetz mit MAC-Filter).</p>
+            <p><strong>Lösung:</strong> Netzwerkadapter auf <strong>NAT</strong> umstellen.
+            NAT funktioniert immer, ohne externes DHCP.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Ethernet im Installer ausgeschaltet</div>
+            <p><strong>Symptom:</strong> Rocky-Installation erfolgreich, aber nach dem
+            Boot kein Netzwerk, <code>dnf update</code> findet keinen Server.</p>
+            <p><strong>Ursache:</strong> Im Anaconda-Installer war der Ethernet-Schalter
+            auf <em>AUS</em>. Damit ist die Netzwerkverbindung deaktiviert konfiguriert.</p>
+            <p><strong>Lösung:</strong> Entweder neu installieren mit aktivem Ethernet,
+            oder als root <code>nmcli connection up ens160</code> (Interface-Name ggf.
+            mit <code>ip a</code> nachsehen). Behandeln wir morgen ausführlicher.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 5 — Snapshot-Spaghetti</div>
+            <p><strong>Symptom:</strong> VM startet sehr langsam, Disk-I/O ist quälend lahm.</p>
+            <p><strong>Ursache:</strong> Du hast über Wochen 8+ Snapshots gestapelt.
+            Jeder Schreibzugriff geht durch alle Delta-Dateien.</p>
+            <p><strong>Lösung:</strong> Im Snapshot Manager alte Snapshots löschen
+            („Commit“). Faustregel: nicht mehr als 3 aktive Snapshots gleichzeitig.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p>Geht diese fünf Fehler vor der praktischen Installation einmal kurz mündlich
+            durch — die meisten Teilnehmer rennen sonst in genau diese Fallen. Besonders
+            VT-x ist bei Business-Laptops oft ab Werk aus.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Definiere in eigenen Worten die Begriffe <strong>Host</strong>,
+            <strong>Guest</strong> und <strong>Hypervisor</strong>.</li>
+          <li>Was ist der zentrale Unterschied zwischen einem <strong>Type-1</strong>
+            und einem <strong>Type-2</strong> Hypervisor?</li>
+          <li>Nenne jeweils zwei Vertreter von Type-1 und Type-2 Hypervisoren.</li>
+          <li>Warum ist <strong>NAT</strong> der sicherere Standard für Lern-VMs in
+            wechselnden WLANs gegenüber <strong>Bridged</strong>?</li>
+          <li>Was bedeutet die Aussage <em>„Snapshot ≠ Backup“</em> konkret?</li>
+          <li>Was muss im BIOS/UEFI aktiviert sein, damit überhaupt VMs starten können?</li>
+          <li>Welche vier großen Vorteile bietet Virtualisierung?</li>
+          <li>Warum ist es eine schlechte Idee, einer VM auf einem 8-GB-Host 6 GB RAM zuzuweisen?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>Host</strong> = physischer PC + dessen OS. <strong>Guest</strong> = das
+                Betriebssystem, das in der VM läuft. <strong>Hypervisor</strong> = die Software,
+                die VMs erzeugt und verwaltet (z.B. VMware Workstation).</li>
+              <li>Type-1 läuft <strong>direkt auf der Hardware</strong> (kein Wirts-OS
+                darunter). Type-2 läuft als normales <strong>Programm auf einem Wirts-OS</strong>
+                (Windows, macOS, Linux).</li>
+              <li>Type-1: VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM,
+                Citrix Hypervisor. Type-2: VMware Workstation/Player, Oracle VirtualBox,
+                Parallels Desktop, QEMU.</li>
+              <li>Weil NAT keinen externen DHCP-Server braucht — die Adressvergabe macht
+                der Hypervisor selbst. Bridged scheitert in Netzen ohne (oder mit
+                restriktivem) DHCP.</li>
+              <li>Ein Snapshot liegt im selben Storage wie die VM. Stirbt das Storage,
+                sind Snapshot und VM gleichzeitig weg. Ein Backup liegt extern, idealerweise
+                nach der 3-2-1-Regel.</li>
+              <li>Hardware-Virtualisierung: <strong>Intel VT-x</strong> bzw.
+                <strong>AMD-V (SVM Mode)</strong>. Bonus für Passthrough: VT-d / IOMMU.</li>
+              <li>(1) Konsolidierung, (2) Snapshots, (3) Isolation, (4) Portabilität
+                (VMs sind Dateien).</li>
+              <li>Weil das Host-OS selbst 3–4 GB braucht. Bei 6 GB an die VM bleiben dem
+                Host nur 2 GB — er muss massiv auf die Auslagerungsdatei (Swap) zugreifen
+                und wird langsam. Faustregel: VM bekommt maximal 50 % des Host-RAM.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="03-distributionen.html">
+        <span class="nav-eyebrow">← Kapitel 03</span>
+        <span class="nav-title">Distributionen</span>
+      </a>
+      <a href="05-rocky-installation.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 05 →</span>
+        <span class="nav-title">Rocky Linux Installation</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-main">ITADM Academy · Linux · Tag 1 · Kapitel 04 — <a href="index.html">zur Tag-Übersicht</a></p>
+  <p class="footer-sub">Made with ❤️ &amp; bash</p>
+  <p class="footer-powered">
+    powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+  </p>
+</footer>
+
+<script src="../../script.js"></script>
+</body>
+</html>
