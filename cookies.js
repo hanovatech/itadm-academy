@@ -49,7 +49,7 @@
         <div class="cookie-banner-content">
           <p class="cookie-banner-text">
             <strong>🍪 Cookies &amp; externe Inhalte</strong><br>
-            itadm-academy verwendet ausschließlich technisch notwendige
+            ITADM Academy verwendet ausschließlich technisch notwendige
             Cookies. Für die Code-Darstellung kann zusätzlich eine
             externe Bibliothek (Prism.js via CDN) geladen werden,
             wobei eine Verbindung zu einem externen Server aufgebaut wird.
