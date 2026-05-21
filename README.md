@@ -1,7 +1,11 @@
-# 🎓 ITADM Academy
+# 🎓 Lernwerkstatt für IT-Administration
 
-Lernplattform für die **IT-Administrator**-Weiterbildung.
-Linux, Windows, Serversysteme — hands-on und praxisnah.
+Lernwerkstatt für IT-Administration — begleitende Materialien zu
+Linux, Windows und Serversystemen. Praxisnah, hands-on.
+
+> Hinweis: Diese Plattform stellt **begleitende Lernmaterialien** bereit.
+> Sie ist **kein zertifizierter Lehrgang** und ersetzt keine offizielle
+> Weiterbildung oder Prüfung.
 
 powered by **HanovaTech GmbH** · [hanovatech.de](https://hanovatech.de)
 
