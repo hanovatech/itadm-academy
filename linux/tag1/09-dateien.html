@@ -322,16 +322,13 @@ mv ~/Downloads/datei.txt ~/projekte/neuer-name.txt</code></pre>
           </table>
         </div>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">⚡</div>
-          <div class="callout-content">
-            <div class="callout-title">Schneller als <code>cp</code> + <code>rm</code></div>
-            <p>Wenn Quelle und Ziel auf demselben Dateisystem liegen, ist <code>mv</code>
-            blitzschnell — nur ein Eintrag im Inode-Index wird geändert, die Daten selbst
-            bleiben auf der Disk. Über Dateisystem-Grenzen hinweg (z.B. von Disk auf
-            USB-Stick) muss es real kopieren und kann lange dauern.</p>
-          </div>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Warum mv blitzschnell ist (Inode-Index)</summary>
+          <p>Wenn Quelle und Ziel auf demselben Dateisystem liegen, ist <code>mv</code>
+          blitzschnell — nur ein Eintrag im Inode-Index wird geändert, die Daten selbst
+          bleiben auf der Disk. Über Dateisystem-Grenzen hinweg (z.B. von Disk auf
+          USB-Stick) muss es real kopieren und kann lange dauern.</p>
+        </details>
       </div>
     </section>
 
@@ -437,7 +434,7 @@ rm -rf /tmp /cache
           </table>
         </div>
 
-        <div class="callout callout-tip">
+        <div class="callout callout-recommendation">
           <div class="callout-icon">🛡️</div>
           <div class="callout-content">
             <div class="callout-title">Sicherheits-Trick: Alias <code>rm='rm -i'</code></div>
@@ -466,26 +463,23 @@ alias mv='mv -i'</code></pre>
           </div>
         </div>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">🕰️</div>
-          <div class="callout-content">
-            <div class="callout-title">Wussten Sie schon? — Versteckte Dateien sind ein Versehen</div>
-            <p>Dateien, die mit <code>.</code> beginnen (Dotfiles), sind in Linux
-            „versteckt“ — <code>ls</code> zeigt sie nicht ohne <code>-a</code>.
-            Wenig bekannt: das war ein <strong>Bug</strong>!</p>
-            <p style="margin-top: 0.6rem;">In den 1970er Bell Labs wollten die Entwickler,
-            dass <code>ls</code> die Einträge <code>.</code> und <code>..</code>
-            (aktuelles und übergeordnetes Verzeichnis) ausblendet. Sie schrieben ein
-            kleines if-Statement: „<em>überspringe alles, was mit Punkt anfängt</em>“.
-            Damit waren versehentlich <strong>alle</strong> Dotfiles unsichtbar.</p>
-            <p style="margin-top: 0.6rem;">Das war zwar nicht so geplant, aber praktisch:
-            User-Konfigurationen wie <code>.bashrc</code> stören jetzt nicht beim
-            normalen <code>ls</code>. So wurde aus einem Bug ein Standard, der bis
-            heute existiert.</p>
-            <p style="margin-top: 0.6rem;"><em>Quelle: Rob Pike (Bell Labs / Plan 9
-            / Go), 2012, „Dotfiles: a brief history“.</em></p>
-          </div>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Die Bug-Geschichte hinter Dotfiles</summary>
+          <p>Dateien, die mit <code>.</code> beginnen (Dotfiles), sind in Linux
+          „versteckt“ — <code>ls</code> zeigt sie nicht ohne <code>-a</code>.
+          Wenig bekannt: das war ein <strong>Bug</strong>!</p>
+          <p>In den 1970er Bell Labs wollten die Entwickler,
+          dass <code>ls</code> die Einträge <code>.</code> und <code>..</code>
+          (aktuelles und übergeordnetes Verzeichnis) ausblendet. Sie schrieben ein
+          kleines if-Statement: „<em>überspringe alles, was mit Punkt anfängt</em>“.
+          Damit waren versehentlich <strong>alle</strong> Dotfiles unsichtbar.</p>
+          <p>Das war zwar nicht so geplant, aber praktisch:
+          User-Konfigurationen wie <code>.bashrc</code> stören jetzt nicht beim
+          normalen <code>ls</code>. So wurde aus einem Bug ein Standard, der bis
+          heute existiert.</p>
+          <p><em>Quelle: Rob Pike (Bell Labs / Plan 9 / Go), 2012, „Dotfiles:
+          a brief history“.</em></p>
+        </details>
       </div>
     </section>
 
@@ -643,12 +637,12 @@ sudo tail -f /var/log/secure
     <section class="timeblock">
       <div class="timeblock-header">
         <span class="timeblock-time">🛠️</span>
-        <h2 class="timeblock-title">Mini-Übungen — gleich mitmachen</h2>
+        <h2 class="timeblock-title">Mini-Übungen — gleich mitmachen (15 Min)</h2>
         <span class="timeblock-badge badge-action">Praxis</span>
       </div>
 
       <div class="subblock">
-        <p>Drei kurze Aufgaben zum direkt eintippen. Im großen Lab in Kapitel 10
+        <p>Fünf kurze Aufgaben zum direkt eintippen. Im großen Lab in Kapitel 10
         wird's dann ernst.</p>
 
         <ol class="lab-tasks">
@@ -662,6 +656,13 @@ sudo tail -f /var/log/secure
             (Die geschweiften Klammern heißen <em>Brace Expansion</em> — die schauen
             wir uns in Kapitel 11 systematisch an. Hier nur als Vorgriff: die Shell
             macht daraus <code>q1</code>, <code>q2</code>, <code>q3</code>, <code>q4</code>.)</li>
+          <li>Erstelle in deinem Home eine Datei <code>wichtig.txt</code> und schreibe
+            mit <code>echo</code> den Text „Diese Datei darf NICHT gelöscht werden" hinein.
+            Mache eine Sicherheitskopie <code>wichtig.txt.bak</code>. Liste beide Dateien
+            mit <code>ls -lh</code>.</li>
+          <li>Schaue dir mit <code>file</code> und <code>stat</code> die Datei
+            <code>/etc/hostname</code> an. Welcher Dateityp wird gemeldet? Was ist die
+            letzte Änderungszeit?</li>
         </ol>
 
         <div class="solution">
@@ -691,7 +692,19 @@ mv b.txt notizen.txt
 
 # 3)
 mkdir -p archiv/2024/{q1,q2,q3,q4}
-ls -R archiv/</code></pre>
+ls -R archiv/
+
+# 4)
+cd ~
+echo "Diese Datei darf NICHT gelöscht werden" &gt; wichtig.txt
+cp wichtig.txt wichtig.txt.bak
+ls -lh wichtig.txt*
+
+# 5)
+file /etc/hostname
+# /etc/hostname: ASCII text
+stat /etc/hostname
+# zeigt Modify-Zeit, Größe, Rechte etc.</code></pre>
             </div>
           </div>
         </div>
@@ -725,9 +738,6 @@ ls -R archiv/</code></pre>
           <li>Was unterscheidet <code>cp -r src dst/</code> von <code>cp -r src/ dst/</code>?</li>
           <li>Linux kennt keinen eigenen „rename“-Befehl. Wie benennt man trotzdem um?</li>
           <li>Was passiert bei <code>rm -rf /tmp /cache</code> (mit dem fatalen Leerzeichen)?</li>
-          <li>Was bewirken die Aliase <code>rm='rm -i'</code> und <code>cp='cp -i'</code>?</li>
-          <li>Welcher Befehl zeigt dir, ob eine Datei eine Textdatei, ein Binary oder
-            ein Bild ist — unabhängig von der Endung?</li>
           <li>Wofür benutzt man <code>tail -f</code>?</li>
         </ol>
 
@@ -751,10 +761,6 @@ ls -R archiv/</code></pre>
               <li>Das löscht <strong>zwei separate Pfade</strong>: <code>/tmp</code> und
                 <code>/cache</code>. <code>/tmp</code> existiert und wird komplett geleert
                 — sehr schmerzhaft, vor allem für laufende Dienste.</li>
-              <li>Beide Aliase machen die Befehle interaktiv — sie fragen vor jeder
-                Löschung bzw. Überschreibung nach. Klassischer Sicherheitsnetz-Trick.</li>
-              <li><code>file</code> (z.B. <code>file /bin/ls</code>) — er liest die Magic
-                Number am Datei-Anfang.</li>
               <li>Eine Datei <strong>live</strong> mitzulesen — neue Zeilen erscheinen sofort
                 am Bildschirm. Klassiker für Log-Überwachung in Echtzeit.</li>
             </ol>

@@ -40,8 +40,8 @@
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📅</span> Tag 1 von 3</span>
       <span class="meta-item"><span class="meta-item-icon">⏰</span> 08:00 – 16:45</span>
-      <span class="meta-item"><span class="meta-item-icon">📚</span> 12 Kapitel</span>
-      <span class="meta-item"><span class="meta-item-icon">🧪</span> 3 Labs · 1 Quiz</span>
+      <span class="meta-item"><span class="meta-item-icon">📚</span> 10 Kapitel</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> 2 Labs · 1 Cheat-Sheet</span>
       <span class="meta-item"><span class="meta-item-icon">🐧</span> Rocky Linux 9</span>
     </div>
   </section>
@@ -58,7 +58,6 @@
         <li>dich im Terminal orientieren (<code>cd</code>, <code>ls</code>, <code>pwd</code>)</li>
         <li>Dateien und Ordner anlegen, kopieren, verschieben, löschen</li>
         <li>Textdateien mit <code>nano</code> bearbeiten</li>
-        <li>Wildcards und Ausgabeumleitung gezielt einsetzen</li>
       </ul>
     </div>
   </div>
@@ -67,36 +66,41 @@
   <section style="margin-top: 4rem;">
     <h2 class="section-title">Tagesplan</h2>
     <p class="section-subtitle">
-      5 Blöcke à 90 Minuten, mit Pausen und Mittag. Theorie und Praxis
-      wechseln sich bewusst ab, damit ihr nicht einschlaft.
+      5 Blöcke à 75–90 Minuten, mit Pausen und Mittag. Theorie und Praxis
+      wechseln sich bewusst ab. Tag 1 ist auf gemischte Einsteiger-Gruppen
+      optimiert: schlanker Pflicht-Pfad, optionale Vertiefungen in Klappboxen
+      für Neugierige.
     </p>
 
     <ul class="schedule-list">
       <li><span class="schedule-time">08:00 – 09:30</span>
-          <span class="schedule-label">Block 1 · Theorie I — Was ist Linux?
-            <small>Betriebssystem-Grundlagen, Unix-/Linux-Geschichte
-            (Kapitel 03 Distributionen wird angeschnitten und am Ende des Tages
-            als Selbst-Lese-Auftrag vertieft)</small></span></li>
+          <span class="schedule-label">Block 1 · Was ist Linux + Geschichte
+            <small>Betriebssystem-Grundlagen, Unix-/Linux-Geschichte,
+            Mini-Übung „Spüre Linux auf"</small></span></li>
       <li><span class="schedule-time">09:30 – 09:45</span>
           <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
       <li><span class="schedule-time">09:45 – 11:15</span>
-          <span class="schedule-label">Block 2 · Virtualisierung &amp; Installation
-            <small>Hypervisor verstehen, VM erstellen, Rocky Linux installieren</small></span></li>
+          <span class="schedule-label">Block 2 · Distributionen + Blitz-Recherche
+            <small>Distro-Familien, Paketmanager, Rocky-Wahl,
+            Blitz-Recherche (15 Min)</small></span></li>
       <li><span class="schedule-time">11:15 – 11:30</span>
           <span class="schedule-label">☕ Kurze Pause (15 min)</span></li>
       <li><span class="schedule-time">11:30 – 12:45</span>
-          <span class="schedule-label">Block 3 · Terminal-Basics + 🧪 Lab 1.1
-            <small>Shell &amp; Bash, Dateisystem, Navigation, Pfade</small></span></li>
+          <span class="schedule-label">Block 3 · Rocky in der VM aufsetzen
+            <small>Virtualisierungs-Grundlagen kompakt + Anaconda-Installation
+            + Snapshot + sauber herunterfahren</small></span></li>
       <li><span class="schedule-time">12:45 – 13:30</span>
           <span class="schedule-label">🍽️ Mittagspause (45 min)</span></li>
       <li><span class="schedule-time">13:30 – 15:00</span>
-          <span class="schedule-label">Block 4 · Dateien, Ordner &amp; nano + 🧪 Lab 1.2
-            <small>touch, mkdir, cp, mv, rm, Editor nano</small></span></li>
+          <span class="schedule-label">Block 4 · Terminal, Dateisystem &amp; Navigation
+            <small>Shell-Basics + FHS + Mini-Lab „Verzeichnisbaum"
+            + Lab 1.1 (Navigation)</small></span></li>
       <li><span class="schedule-time">15:00 – 15:15</span>
           <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
       <li><span class="schedule-time">15:15 – 16:45</span>
-          <span class="schedule-label">Block 5 · Wildcards, Redirection + 🧪 Lab 1.3 + 🎯 Quiz
-            <small>echo, Platzhalter, Ausgabeumleitung, Cheat-Sheet</small></span></li>
+          <span class="schedule-label">Block 5 · Dateien &amp; Editoren
+            <small>touch/mkdir/cp/mv/rm + nano + vim-Survival + Lab 1.2
+            + Cheat-Sheet-Bingo</small></span></li>
     </ul>
 
     <div class="callout callout-trainer">
@@ -105,6 +109,9 @@
         <div class="callout-title">Trainer-Hinweis</div>
         <p>Beim Eintreffen die Downloads (VMware + Rocky-ISO) starten lassen — die laufen
         im Hintergrund, während Block 1 läuft. So sind sie pünktlich zu Block 2 fertig.</p>
+        <p>Tag 1 ist auf gemischte Einsteiger-Gruppen optimiert: 🟢 Pflicht-Pfad
+        ist sichtbar, 🟡-Empfehlungen kurz erwähnen, 🔵-Klappboxen lassen wir
+        standardmäßig zu. Wer schneller fertig ist, kann die Klappboxen lesen.</p>
       </div>
     </div>
   </section>
@@ -165,10 +172,11 @@
 
   <!-- ============ KAPITEL-KACHELN ============ -->
   <section style="margin-top: 4rem;">
-    <h2 class="section-title">12 Kapitel</h2>
+    <h2 class="section-title">10 Kapitel</h2>
     <p class="section-subtitle">
-      Jedes Kapitel ist eine eigene Seite (5–40 min Lesezeit). Arbeite sie in
-      Reihenfolge durch — sie bauen aufeinander auf.
+      Jedes Kapitel ist eine eigene Seite (5–40 min Lesezeit). Tag 1 hat
+      10 Kapitel; die ursprünglichen Kapitel 11 (Wildcards) und 12 (Quiz) sind
+      auf Tag 2 verschoben.
     </p>
 
     <div class="chapter-grid">
@@ -273,23 +281,13 @@
         <span class="chapter-card-badge">Lab 1.2</span>
       </a>
 
-      <a href="11-wildcards.html" class="chapter-card">
-        <div class="chapter-card-number">[ KAPITEL 11 ]</div>
-        <div class="chapter-card-title">Echo, Wildcards &amp; Redirection</div>
-        <p class="chapter-card-desc">
-          Platzhalter <code>* ? [ ]</code>, Ausgabeumleitung <code>&gt; &gt;&gt; 2&gt;</code>
-          und Lab 1.3: Ordnung im Log-Chaos.
-        </p>
-        <span class="chapter-card-badge">Lab 1.3</span>
-      </a>
-
       <a href="12-quiz.html" class="chapter-card">
-        <div class="chapter-card-number">[ KAPITEL 12 ]</div>
-        <div class="chapter-card-title">Tages-Quiz &amp; Cheat-Sheet</div>
+        <div class="chapter-card-number">[ KAPITEL 11 ]</div>
+        <div class="chapter-card-title">Cheat-Sheet (Tag 1)</div>
         <p class="chapter-card-desc">
-          12 Fragen zum Tag plus eine druckbare Befehls-Referenz für die nächsten Tage.
+          Druckbare Befehls-Referenz für die nächsten Tage. Das Tages-Quiz öffnet Tag 2.
         </p>
-        <span class="chapter-card-badge">Quiz</span>
+        <span class="chapter-card-badge">Cheat-Sheet</span>
       </a>
 
     </div>
@@ -315,8 +313,6 @@
           <tr><td><strong>Navigation</strong></td><td>Du kannst dich blind mit <code>cd</code>, <code>ls</code> und <code>pwd</code> durch den FHS bewegen.</td></tr>
           <tr><td><strong>Dateien</strong></td><td>Du legst Strukturen mit <code>mkdir -p</code> an, verschiebst, kopierst und löschst sicher.</td></tr>
           <tr><td><strong>Editor</strong></td><td>Du kannst eine Textdatei in nano öffnen, ändern, speichern und beenden — ohne Spickzettel.</td></tr>
-          <tr><td><strong>Wildcards</strong></td><td>Du nutzt <code>*</code>, <code>?</code>, <code>[ ]</code> bewusst und weißt, was sie unterscheidet.</td></tr>
-          <tr><td><strong>Redirection</strong></td><td>Du kannst stdout und stderr gezielt in Dateien umleiten und an Dateien anhängen.</td></tr>
         </tbody>
       </table>
     </div>

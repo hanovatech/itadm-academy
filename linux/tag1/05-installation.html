@@ -82,17 +82,14 @@
           <li>Unterstützt <strong>LVM</strong>, <strong>RAID</strong>, <strong>Verschlüsselung</strong> und mehr</li>
         </ul>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">🐍</div>
-          <div class="callout-content">
-            <div class="callout-title">Wussten Sie schon?</div>
-            <p>Der Installer heißt Anaconda — wie die Schlange. Den Namen hat er nicht
-            zufällig: Er ist komplett in <strong>Python</strong> geschrieben (und Python
-            wiederum heißt nach der Komikertruppe Monty Python). Die Python-Distribution
-            für Data Science <em>"Anaconda"</em> hat damit übrigens nichts zu tun — beide
-            haben den Namen unabhängig voneinander gewählt.</p>
-          </div>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Warum heißt der Installer Anaconda?</summary>
+          <p>Der Installer heißt Anaconda — wie die Schlange. Den Namen hat er nicht
+          zufällig: Er ist komplett in <strong>Python</strong> geschrieben (und Python
+          wiederum heißt nach der Komikertruppe Monty Python). Die Python-Distribution
+          für Data Science <em>"Anaconda"</em> hat damit übrigens nichts zu tun — beide
+          haben den Namen unabhängig voneinander gewählt.</p>
+        </details>
       </div>
     </section>
 
@@ -241,32 +238,35 @@
         ├─ rl-root    /          ~16 GB
         └─ rl-swap    swap       ~2 GB</div>
 
-        <h4>Option B — Manuell (für Fortgeschrittene)</h4>
-        <p>Du legst jede Partition selbst an. Das ist sinnvoll, wenn du:</p>
-        <ul>
-          <li>Verschiedene Mountpoints auf verschiedene Disks legen willst</li>
-          <li>LVM, RAID, Verschlüsselung oder Quotas anders konfigurieren musst</li>
-          <li>einen sehr großen <code>/var</code>-Bereich brauchst (z.B. Mailserver)</li>
-        </ul>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Manuelle Partitionierung mit LVM</summary>
+          <h4>Option B — Manuell (für Fortgeschrittene)</h4>
+          <p>Du legst jede Partition selbst an. Das ist sinnvoll, wenn du:</p>
+          <ul>
+            <li>Verschiedene Mountpoints auf verschiedene Disks legen willst</li>
+            <li>LVM, RAID, Verschlüsselung oder Quotas anders konfigurieren musst</li>
+            <li>einen sehr großen <code>/var</code>-Bereich brauchst (z.B. Mailserver)</li>
+          </ul>
 
-        <h4>Die wichtigsten Mountpoints erklärt</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Mountpoint</th><th>Was liegt da?</th><th>Empfohlene Größe (Server)</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>/</code></td><td>Wurzel des Systems, alles was nicht eigene Partition ist</td><td>Rest der Disk</td></tr>
-              <tr><td><code>/boot</code></td><td>Kernel, initramfs, GRUB-Dateien</td><td>1 GB</td></tr>
-              <tr><td><code>/boot/efi</code></td><td>EFI System Partition (FAT, nur UEFI)</td><td>500–600 MB</td></tr>
-              <tr><td><code>/home</code></td><td>User-Daten — eigene Partition macht Re-Installs leicht</td><td>variabel, bei Workstation groß</td></tr>
-              <tr><td><code>/var</code></td><td>Logs, Datenbanken, Webserver-Daten</td><td>5–20 GB+ je nach Last</td></tr>
-              <tr><td><code>swap</code></td><td>Auslagerungsspeicher (kein Mountpoint im klassischen Sinn)</td><td>1–2× RAM, max 8 GB</td></tr>
-            </tbody>
-          </table>
-        </div>
+          <h4>Die wichtigsten Mountpoints erklärt</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Mountpoint</th><th>Was liegt da?</th><th>Empfohlene Größe (Server)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>/</code></td><td>Wurzel des Systems, alles was nicht eigene Partition ist</td><td>Rest der Disk</td></tr>
+                <tr><td><code>/boot</code></td><td>Kernel, initramfs, GRUB-Dateien</td><td>1 GB</td></tr>
+                <tr><td><code>/boot/efi</code></td><td>EFI System Partition (FAT, nur UEFI)</td><td>500–600 MB</td></tr>
+                <tr><td><code>/home</code></td><td>User-Daten — eigene Partition macht Re-Installs leicht</td><td>variabel, bei Workstation groß</td></tr>
+                <tr><td><code>/var</code></td><td>Logs, Datenbanken, Webserver-Daten</td><td>5–20 GB+ je nach Last</td></tr>
+                <tr><td><code>swap</code></td><td>Auslagerungsspeicher (kein Mountpoint im klassischen Sinn)</td><td>1–2× RAM, max 8 GB</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
 
-        <div class="callout callout-info">
+        <div class="callout callout-recommendation">
           <div class="callout-icon">💾</div>
           <div class="callout-content">
             <div class="callout-title">Was ist Swap?</div>
@@ -594,13 +594,16 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
 ...</code></pre>
         </div>
 
-        <p>Vorteile von sudo:</p>
-        <ul>
-          <li><strong>Granular</strong> — root-Rechte nur für genau diesen Befehl, dann wieder zurück</li>
-          <li><strong>Auditierbar</strong> — jeder sudo-Aufruf landet in <code>/var/log/secure</code> mit Username und Befehl</li>
-          <li><strong>Konfigurierbar</strong> — in <code>/etc/sudoers</code> lässt sich genau festlegen, wer welche Befehle nutzen darf</li>
-          <li><strong>15-Minuten-Cache</strong> — danach noch mal Passwort, gut gegen weglaufenden Admin am offenen Terminal</li>
-        </ul>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: sudo im Detail (sudoers, Cache, Audit-Log)</summary>
+          <p>Vorteile von sudo:</p>
+          <ul>
+            <li><strong>Granular</strong> — root-Rechte nur für genau diesen Befehl, dann wieder zurück</li>
+            <li><strong>Auditierbar</strong> — jeder sudo-Aufruf landet in <code>/var/log/secure</code> mit Username und Befehl</li>
+            <li><strong>Konfigurierbar</strong> — in <code>/etc/sudoers</code> lässt sich genau festlegen, wer welche Befehle nutzen darf</li>
+            <li><strong>15-Minuten-Cache</strong> — danach noch mal Passwort, gut gegen weglaufenden Admin am offenen Terminal</li>
+          </ul>
+        </details>
 
         <div class="callout callout-info">
           <div class="callout-icon">👥</div>
@@ -613,7 +616,7 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
           </div>
         </div>
 
-        <div class="callout callout-tip">
+        <div class="callout callout-recommendation">
           <div class="callout-icon">💡</div>
           <div class="callout-content">
             <div class="callout-title">Praxis-Tipp</div>
@@ -635,11 +638,13 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
       </div>
 
       <div class="subblock">
-        <p>Wenn du die VM startest und das Login erscheint, sind im Hintergrund
-        fünf Phasen abgelaufen. Du musst nicht jede Phase auswendig können, aber
-        die Reihenfolge im Kopf haben — das hilft bei jedem späteren Bootproblem.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Was passiert beim Linux-Boot? (Tag-3-Vorgriff)</summary>
+          <p>Wenn du die VM startest und das Login erscheint, sind im Hintergrund
+          fünf Phasen abgelaufen. Du musst nicht jede Phase auswendig können, aber
+          die Reihenfolge im Kopf haben — das hilft bei jedem späteren Bootproblem.</p>
 
-        <div class="ascii-box">  1. BIOS / UEFI         "Welche Disk soll booten?"
+          <div class="ascii-box">  1. BIOS / UEFI         "Welche Disk soll booten?"
          │
          ▼
   2. Bootloader (GRUB)   "Welcher Kernel soll laden?"
@@ -653,35 +658,36 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
          ▼
   5. Login-Prompt         "Wer bist du?"</div>
 
-        <h4>Die fünf Phasen im Detail</h4>
-        <ol>
-          <li><strong>BIOS/UEFI</strong> — die Firmware auf deinem Mainboard erkennt
-            die Hardware (CPU, RAM, Disks) und sucht eine bootfähige Disk. UEFI ist
-            die moderne Variante mit grafischer Oberfläche, BIOS die klassische.</li>
-          <li><strong>GRUB (GRand Unified Bootloader)</strong> — wird vom UEFI von
-            <code>/boot/efi</code> geladen und zeigt das Boot-Menü. Erlaubt dir, einen
-            bestimmten Kernel zu wählen (auch ältere bei Bootproblemen).</li>
-          <li><strong>Linux-Kernel</strong> — wird von <code>/boot</code> in den RAM
-            geladen, initialisiert Geräte-Treiber, lädt das <code>initramfs</code>
-            (eine kleine RAM-Disk mit den essentiellen Treibern), mountet die
-            echte Root-Partition.</li>
-          <li><strong>systemd</strong> (PID 1) — der Init-Prozess. Startet alle
-            Dienste parallel und in der richtigen Reihenfolge (Netzwerk vor SSH,
-            SSH vor Login, etc.). Mehr dazu an Tag 3.</li>
-          <li><strong>Login-Prompt</strong> — getty zeigt den Login-Prompt, du tippst
-            User und Passwort, PAM prüft die Credentials, Shell startet.</li>
-        </ol>
+          <h4>Die fünf Phasen im Detail</h4>
+          <ol>
+            <li><strong>BIOS/UEFI</strong> — die Firmware auf deinem Mainboard erkennt
+              die Hardware (CPU, RAM, Disks) und sucht eine bootfähige Disk. UEFI ist
+              die moderne Variante mit grafischer Oberfläche, BIOS die klassische.</li>
+            <li><strong>GRUB (GRand Unified Bootloader)</strong> — wird vom UEFI von
+              <code>/boot/efi</code> geladen und zeigt das Boot-Menü. Erlaubt dir, einen
+              bestimmten Kernel zu wählen (auch ältere bei Bootproblemen).</li>
+            <li><strong>Linux-Kernel</strong> — wird von <code>/boot</code> in den RAM
+              geladen, initialisiert Geräte-Treiber, lädt das <code>initramfs</code>
+              (eine kleine RAM-Disk mit den essentiellen Treibern), mountet die
+              echte Root-Partition.</li>
+            <li><strong>systemd</strong> (PID 1) — der Init-Prozess. Startet alle
+              Dienste parallel und in der richtigen Reihenfolge (Netzwerk vor SSH,
+              SSH vor Login, etc.). Mehr dazu an Tag 3.</li>
+            <li><strong>Login-Prompt</strong> — getty zeigt den Login-Prompt, du tippst
+              User und Passwort, PAM prüft die Credentials, Shell startet.</li>
+          </ol>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">⏱️</div>
-          <div class="callout-content">
-            <div class="callout-title">Wie lange dauert das alles?</div>
-            <p>Auf einer VM mit SSD: 5–15 Sekunden. Auf einem alten Server mit HDDs
-            und vielen Diensten: bis zu 2 Minuten. Mit <code>systemd-analyze</code>
-            kannst du dir genau anzeigen lassen, welcher Dienst wie lange beim Booten
-            gebraucht hat — gehört in jeden Optimierer-Werkzeugkasten.</p>
+          <div class="callout callout-info">
+            <div class="callout-icon">⏱️</div>
+            <div class="callout-content">
+              <div class="callout-title">Wie lange dauert das alles?</div>
+              <p>Auf einer VM mit SSD: 5–15 Sekunden. Auf einem alten Server mit HDDs
+              und vielen Diensten: bis zu 2 Minuten. Mit <code>systemd-analyze</code>
+              kannst du dir genau anzeigen lassen, welcher Dienst wie lange beim Booten
+              gebraucht hat — gehört in jeden Optimierer-Werkzeugkasten.</p>
+            </div>
           </div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -798,21 +804,24 @@ systemctl status vmtoolsd</code></pre>
           </div>
         </div>
 
-        <div class="callout callout-danger">
-          <div class="callout-icon">❌</div>
-          <div class="callout-content">
-            <div class="callout-title">Fehler 3 — root-Passwort vergessen</div>
-            <p><strong>Symptom:</strong> Du kannst dich nicht als root einloggen, weißt
-            das Passwort nicht mehr.</p>
-            <p><strong>Lösung (bei VMs!):</strong> Beim GRUB-Menü <code>e</code> drücken,
-            in der Kernel-Zeile <code>rd.break</code> ans Ende anhängen, Strg+X, dann in der
-            Notfall-Shell:
-            <code>mount -o remount,rw /sysroot</code> → <code>chroot /sysroot</code>
-            → <code>passwd</code> → neues PW setzen → SELinux-Relabel mit
-            <code>touch /.autorelabel</code> → 2× <code>exit</code> → Reboot.</p>
-            <p>Anfangs lieber: Snapshot „00-frisch-installiert“ zurückspielen.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Notfall — Passwort-Reset über GRUB</summary>
+          <div class="callout callout-danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Fehler 3 — root-Passwort vergessen</div>
+              <p><strong>Symptom:</strong> Du kannst dich nicht als root einloggen, weißt
+              das Passwort nicht mehr.</p>
+              <p><strong>Lösung (bei VMs!):</strong> Beim GRUB-Menü <code>e</code> drücken,
+              in der Kernel-Zeile <code>rd.break</code> ans Ende anhängen, Strg+X, dann in der
+              Notfall-Shell:
+              <code>mount -o remount,rw /sysroot</code> → <code>chroot /sysroot</code>
+              → <code>passwd</code> → neues PW setzen → SELinux-Relabel mit
+              <code>touch /.autorelabel</code> → 2× <code>exit</code> → Reboot.</p>
+              <p>Anfangs lieber: Snapshot „00-frisch-installiert“ zurückspielen.</p>
+            </div>
           </div>
-        </div>
+        </details>
 
         <div class="callout callout-danger">
           <div class="callout-icon">❌</div>
@@ -973,8 +982,6 @@ sudo reboot</code></pre>
           <li>Welches ist die wichtigste Einstellung, die TN im Installer oft vergessen?</li>
           <li>Was bedeutet das Häkchen <em>„Diesen Benutzer zum Administrator machen“</em> technisch?</li>
           <li>Warum sollte man NIE direkt als root arbeiten? Nenne mindestens zwei Gründe.</li>
-          <li>Wofür steht <code>sudo</code> und wie funktioniert es prinzipiell?</li>
-          <li>Nenne die fünf Phasen des Linux-Boot-Prozesses in der richtigen Reihenfolge.</li>
           <li>Wann ist der ideale Zeitpunkt für den ersten Snapshot — und warum gerade dann?</li>
           <li>Welcher Befehl fährt die VM korrekt herunter, und warum nicht einfach das VMware-Fenster schließen?</li>
         </ol>
@@ -994,11 +1001,6 @@ sudo reboot</code></pre>
                 standardmäßig <code>sudo</code> nutzen.</li>
               <li>(1) Kein Sicherheitsnetz — root fragt nicht zurück; (2) Tippfehler werden
                 katastrophal; (3) Keine Audit-Spur, wenn mehrere Admins root teilen.</li>
-              <li><code>sudo</code> = „substitute do“ (oder „superuser do“). Es lässt einen
-                normalen User einen einzelnen Befehl mit root-Rechten ausführen, fragt nach
-                dem <em>eigenen</em> Passwort, cached die Berechtigung 15 Minuten und schreibt
-                jeden Aufruf nach <code>/var/log/secure</code>.</li>
-              <li>BIOS/UEFI → GRUB → Linux-Kernel → systemd (init) → Login-Prompt (getty + PAM + Shell).</li>
               <li>Direkt nach erfolgreicher Installation mit Updates und vm-tools. Weil
                 das System dann sauber und vollständig ist und du in den nächsten Stunden
                 viel ausprobieren wirst — Snapshot zurück = Reset auf bekannten guten Stand.</li>

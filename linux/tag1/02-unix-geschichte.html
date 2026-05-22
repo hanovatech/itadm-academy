@@ -148,37 +148,40 @@
       </div>
 
       <div class="subblock">
-        <p>Ende der 1970er erkennt AT&amp;T, dass Unix in der Industrie unglaublich
-        beliebt geworden ist. 1979 erscheint <strong>Unix Version 7</strong> — und
-        damit ändert sich der Ton:</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Die Kommerzialisierung und der Unix-Krieg</summary>
+          <p>Ende der 1970er erkennt AT&amp;T, dass Unix in der Industrie unglaublich
+          beliebt geworden ist. 1979 erscheint <strong>Unix Version 7</strong> — und
+          damit ändert sich der Ton:</p>
 
-        <ul>
-          <li>Lizenzen werden plötzlich <strong>teuer</strong> (mehrere zehntausend Dollar pro Maschine)</li>
-          <li>Der <strong>Quellcode</strong> ist nicht mehr frei zugänglich</li>
-          <li>Universitäten dürfen Unix nicht mehr im Unterricht „auseinandernehmen“</li>
-        </ul>
+          <ul>
+            <li>Lizenzen werden plötzlich <strong>teuer</strong> (mehrere zehntausend Dollar pro Maschine)</li>
+            <li>Der <strong>Quellcode</strong> ist nicht mehr frei zugänglich</li>
+            <li>Universitäten dürfen Unix nicht mehr im Unterricht „auseinandernehmen“</li>
+          </ul>
 
-        <p>An der <strong>UC Berkeley</strong> reagieren die Studenten und Professoren
-        kreativ: Sie nehmen die letzten frei verfügbaren Unix-Quellen und schreiben
-        ihre eigene Version, die später als <strong>BSD</strong> (Berkeley Software
-        Distribution) bekannt wird. BSD wird der akademisch-elitäre Zweig der Unix-Welt
-        und ist bis heute aktiv (FreeBSD, OpenBSD, NetBSD — und der Kern von <strong>macOS</strong>).</p>
+          <p>An der <strong>UC Berkeley</strong> reagieren die Studenten und Professoren
+          kreativ: Sie nehmen die letzten frei verfügbaren Unix-Quellen und schreiben
+          ihre eigene Version, die später als <strong>BSD</strong> (Berkeley Software
+          Distribution) bekannt wird. BSD wird der akademisch-elitäre Zweig der Unix-Welt
+          und ist bis heute aktiv (FreeBSD, OpenBSD, NetBSD — und der Kern von <strong>macOS</strong>).</p>
 
-        <p>Auch <strong>Sun Microsystems</strong> (später von Oracle gekauft) baut auf
-        BSD auf und macht Unix-Workstations zur Standardausrüstung in Forschung und
-        Engineering.</p>
+          <p>Auch <strong>Sun Microsystems</strong> (später von Oracle gekauft) baut auf
+          BSD auf und macht Unix-Workstations zur Standardausrüstung in Forschung und
+          Engineering.</p>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">📜</div>
-          <div class="callout-content">
-            <div class="callout-title">Der berühmte „Unix-Krieg“</div>
-            <p>In den 1980er-Jahren gab es einen erbitterten Streit zwischen
-            <strong>System V</strong> (AT&amp;T-Linie) und <strong>BSD</strong>
-            (Berkeley-Linie). Es ging um Lizenzen, Patente, sogar Gerichtsprozesse.
-            Genau dieser Streit lähmte beide Seiten — und schuf den Raum, in dem
-            Linux später groß werden konnte.</p>
+          <div class="callout callout-info">
+            <div class="callout-icon">📜</div>
+            <div class="callout-content">
+              <div class="callout-title">Der berühmte „Unix-Krieg“</div>
+              <p>In den 1980er-Jahren gab es einen erbitterten Streit zwischen
+              <strong>System V</strong> (AT&amp;T-Linie) und <strong>BSD</strong>
+              (Berkeley-Linie). Es ging um Lizenzen, Patente, sogar Gerichtsprozesse.
+              Genau dieser Streit lähmte beide Seiten — und schuf den Raum, in dem
+              Linux später groß werden konnte.</p>
+            </div>
           </div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -239,55 +242,58 @@
       </div>
 
       <div class="subblock">
-        <p>Damit GNU-Software wirklich frei bleibt, braucht es eine besondere
-        Lizenz. Stallman erfindet 1989 mit Hilfe der Anwältin Eben Moglen die
-        <strong>GNU General Public License (GPL)</strong>.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Die GPL und das Copyleft-Prinzip</summary>
+          <p>Damit GNU-Software wirklich frei bleibt, braucht es eine besondere
+          Lizenz. Stallman erfindet 1989 mit Hilfe der Anwältin Eben Moglen die
+          <strong>GNU General Public License (GPL)</strong>.</p>
 
-        <p>Die GPL nutzt einen ungewöhnlichen Trick, das sogenannte <strong>Copyleft</strong>:</p>
+          <p>Die GPL nutzt einen ungewöhnlichen Trick, das sogenannte <strong>Copyleft</strong>:</p>
 
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Klassisches Copyright</th><th>GPL / Copyleft</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>"Du darfst nichts ohne meine Erlaubnis tun."</td>
-                <td>"Du darfst alles tun, <strong>solange du</strong>…"</td>
-              </tr>
-              <tr>
-                <td>Schützt den Autor vor Nutzern</td>
-                <td>Schützt die Nutzer vor späterer Einschränkung</td>
-              </tr>
-              <tr>
-                <td>Quellcode ist Geschäftsgeheimnis</td>
-                <td>Quellcode <strong>muss</strong> mitgeliefert werden</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h4>Die vier Freiheiten der GPL</h4>
-        <ol>
-          <li><strong>Freiheit 0:</strong> Das Programm für jeden Zweck ausführen</li>
-          <li><strong>Freiheit 1:</strong> Den Code studieren und verstehen</li>
-          <li><strong>Freiheit 2:</strong> Kopien weitergeben</li>
-          <li><strong>Freiheit 3:</strong> Veränderte Versionen weitergeben</li>
-        </ol>
-
-        <p>Der entscheidende Punkt: Wer GPL-Code nutzt und weitergibt, muss das
-        Ergebnis <strong>ebenfalls unter GPL</strong> stellen. Das verhindert, dass
-        eine Firma freie Software nimmt, einbaut, schließt und proprietär weiterverkauft.</p>
-
-        <div class="callout callout-trainer">
-          <div class="callout-icon">🎓</div>
-          <div class="callout-content">
-            <div class="callout-title">Trainer-Hinweis</div>
-            <p><strong>Frage in die Runde:</strong> „Ist freie Software das Gleiche wie
-            kostenlose Software?“ — Antwort: Nein! „Free“ meint <em>freedom</em>, nicht
-            <em>free of charge</em>. Stallman sagt dazu: „Think of free speech, not free beer.“</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Klassisches Copyright</th><th>GPL / Copyleft</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>"Du darfst nichts ohne meine Erlaubnis tun."</td>
+                  <td>"Du darfst alles tun, <strong>solange du</strong>…"</td>
+                </tr>
+                <tr>
+                  <td>Schützt den Autor vor Nutzern</td>
+                  <td>Schützt die Nutzer vor späterer Einschränkung</td>
+                </tr>
+                <tr>
+                  <td>Quellcode ist Geschäftsgeheimnis</td>
+                  <td>Quellcode <strong>muss</strong> mitgeliefert werden</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+
+          <h4>Die vier Freiheiten der GPL</h4>
+          <ol>
+            <li><strong>Freiheit 0:</strong> Das Programm für jeden Zweck ausführen</li>
+            <li><strong>Freiheit 1:</strong> Den Code studieren und verstehen</li>
+            <li><strong>Freiheit 2:</strong> Kopien weitergeben</li>
+            <li><strong>Freiheit 3:</strong> Veränderte Versionen weitergeben</li>
+          </ol>
+
+          <p>Der entscheidende Punkt: Wer GPL-Code nutzt und weitergibt, muss das
+          Ergebnis <strong>ebenfalls unter GPL</strong> stellen. Das verhindert, dass
+          eine Firma freie Software nimmt, einbaut, schließt und proprietär weiterverkauft.</p>
+
+          <div class="callout callout-trainer">
+            <div class="callout-icon">🎓</div>
+            <div class="callout-content">
+              <div class="callout-title">Trainer-Hinweis</div>
+              <p><strong>Frage in die Runde:</strong> „Ist freie Software das Gleiche wie
+              kostenlose Software?“ — Antwort: Nein! „Free“ meint <em>freedom</em>, nicht
+              <em>free of charge</em>. Stallman sagt dazu: „Think of free speech, not free beer.“</p>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -388,20 +394,17 @@ are welcome, but I won't promise I'll implement them :-)
         (1993), Debian (1993), Red Hat (1994). Sie kombinieren den Linux-Kernel mit
         GNU-Tools und einem Paketmanager zu einem nutzbaren System.</p>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">🌍</div>
-          <div class="callout-content">
-            <div class="callout-title">Wussten Sie schon? — Warum heißt es eigentlich „GNU/Linux“?</div>
-            <p>Streng genommen ist „Linux“ nur der <strong>Kernel</strong>. Was du auf
-            deinem Server als „Linux“ benutzt, ist zu etwa 70 % GNU-Software (Shell,
-            Compiler, Coreutils, libc) und zu etwa 30 % Linux-Kernel plus restliche
-            Open-Source-Projekte (X.org, systemd, etc.).</p>
-            <p style="margin-top: 0.6rem;">Stallman besteht aus historischen Gründen
-            auf der Bezeichnung <strong>„GNU/Linux“</strong>. Die meisten Anwender sagen
-            kurz „Linux“. Beides ist verbreitet — wissen sollte man aber den Unterschied,
-            besonders im Bewerbungsgespräch bei FSF-affinen Firmen.</p>
-          </div>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Warum heißt es GNU/Linux statt nur Linux?</summary>
+          <p>Streng genommen ist „Linux“ nur der <strong>Kernel</strong>. Was du auf
+          deinem Server als „Linux“ benutzt, ist zu etwa 70 % GNU-Software (Shell,
+          Compiler, Coreutils, libc) und zu etwa 30 % Linux-Kernel plus restliche
+          Open-Source-Projekte (X.org, systemd, etc.).</p>
+          <p>Stallman besteht aus historischen Gründen
+          auf der Bezeichnung <strong>„GNU/Linux“</strong>. Die meisten Anwender sagen
+          kurz „Linux“. Beides ist verbreitet — wissen sollte man aber den Unterschied,
+          besonders im Bewerbungsgespräch bei FSF-affinen Firmen.</p>
+        </details>
       </div>
     </section>
 
@@ -414,10 +417,14 @@ are welcome, but I won't promise I'll implement them :-)
       </div>
 
       <div class="subblock">
-        <p>Heute leben drei große Unix-Familien parallel weiter. Sie alle stammen
-        aus dem 1969er-Original — sind aber lizenz- und kulturell sehr verschieden:</p>
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Übersicht – das ist die Unix-Familie</div>
+            <p>Heute leben drei große Unix-Familien parallel weiter. Sie alle stammen
+            aus dem 1969er-Original — sind aber lizenz- und kulturell sehr verschieden:</p>
 
-        <div class="ascii-box">                       Unix (1969, Bell Labs)
+            <div class="ascii-box">                       Unix (1969, Bell Labs)
                               │
         ┌─────────────────────┼─────────────────────┐
         │                     │                     │
@@ -439,73 +446,28 @@ are welcome, but I won't promise I'll implement them :-)
                                  Ubuntu, Mint     RHEL, Rocky,     Arch, Manjaro
                                  Kali, Tails      AlmaLinux, Fedora EndeavourOS</div>
 
-        <h4>Drei wichtige Erkenntnisse aus dem Stammbaum</h4>
-        <ol>
-          <li><strong>macOS ist ein Unix</strong> — basiert auf Darwin (BSD-Linie).
-            Wer im Terminal von macOS tippt, nutzt also echtes Unix.</li>
-          <li><strong>Linux ist KEIN Unix</strong> — es ist „Unix-like“. Es teilt keinen
-            Quellcode mit den AT&amp;T-Originalen, sondern wurde von Grund auf neu
-            geschrieben (clean-room implementation). Das war Linus' Schutz gegen Klagen.</li>
-          <li><strong>Android läuft auf einem Linux-Kernel</strong>, ist aber kein GNU/Linux —
-            es nutzt eine andere Userspace-Schicht (Bionic statt glibc).</li>
-        </ol>
+            <h4>Drei wichtige Erkenntnisse aus dem Stammbaum</h4>
+            <ol>
+              <li><strong>macOS ist ein Unix</strong> — basiert auf Darwin (BSD-Linie).
+                Wer im Terminal von macOS tippt, nutzt also echtes Unix.</li>
+              <li><strong>Linux ist KEIN Unix</strong> — es ist „Unix-like“. Es teilt keinen
+                Quellcode mit den AT&amp;T-Originalen, sondern wurde von Grund auf neu
+                geschrieben (clean-room implementation). Das war Linus' Schutz gegen Klagen.</li>
+              <li><strong>Android läuft auf einem Linux-Kernel</strong>, ist aber kein GNU/Linux —
+                es nutzt eine andere Userspace-Schicht (Bionic statt glibc).</li>
+            </ol>
 
-        <div class="callout callout-tip">
-          <div class="callout-icon">💡</div>
-          <div class="callout-content">
-            <div class="callout-title">Praxis-Tipp</div>
-            <p>Wer macOS, FreeBSD und Linux unterscheiden kann, sammelt im Interview
-            sofort Punkte. Lerne diese Aussage auswendig: <em>„Linux ist Unix-like, BSD und
-            macOS sind echte Unix-Nachfahren, Windows ist keine Unix-Linie.“</em></p>
+            <div class="callout callout-tip">
+              <div class="callout-icon">💡</div>
+              <div class="callout-content">
+                <div class="callout-title">Praxis-Tipp</div>
+                <p>Wer macOS, FreeBSD und Linux unterscheiden kann, sammelt im Interview
+                sofort Punkte. Lerne diese Aussage auswendig: <em>„Linux ist Unix-like, BSD und
+                macOS sind echte Unix-Nachfahren, Windows ist keine Unix-Linie.“</em></p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ============ HEUTE ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Heute</span>
-        <h2 class="timeblock-title">Wo Linux überall läuft (und du es nicht merkst)</h2>
-        <span class="timeblock-badge badge-vortrag">Realität</span>
-      </div>
-
-      <div class="subblock">
-        <p>Linus' „Hobby“ läuft heute auf praktisch jedem Server der Welt — und auf
-        vielen Geräten, von denen du es nicht erwartest:</p>
-
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Bereich</th><th>Linux-Anteil</th><th>Beispiele</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Supercomputer (Top500)</td><td><strong>100 %</strong></td><td>jeder einzelne der schnellsten Rechner der Welt</td></tr>
-              <tr><td>Webserver</td><td>~70–90 %</td><td>nginx, Apache laufen primär auf Linux</td></tr>
-              <tr><td>Cloud (AWS, Azure, GCP)</td><td>&gt; 90 %</td><td>EC2-Instanzen, Container-Hosts</td></tr>
-              <tr><td>Smartphones</td><td>~ 70 %</td><td>jedes Android-Gerät</td></tr>
-              <tr><td>Smart-TVs &amp; Streaming</td><td>~ 80 %</td><td>Samsung Tizen, LG webOS, Sony Bravia</td></tr>
-              <tr><td>Router &amp; Embedded</td><td>~ 90 %</td><td>FritzBox, Speedport, OpenWRT</td></tr>
-              <tr><td>Autos (Infotainment)</td><td>steigend</td><td>Tesla, Mercedes MBUX, BMW</td></tr>
-              <tr><td>ISS &amp; Raumfahrt</td><td>100 %</td><td>NASA hat 2013 von Windows auf Debian gewechselt</td></tr>
-              <tr><td>Desktop</td><td>~ 3–4 %</td><td>der einzige Bereich, in dem Linux klein bleibt</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="callout callout-info">
-          <div class="callout-icon">🛰️</div>
-          <div class="callout-content">
-            <div class="callout-title">Wussten Sie schon?</div>
-            <p>Auf der <strong>Internationalen Raumstation (ISS)</strong> wurde 2013
-            das Bordsystem komplett von Windows XP auf <strong>Debian Linux</strong>
-            umgestellt. Begründung der NASA: <em>"Wir brauchen ein Betriebssystem, das
-            stabil, deterministisch und voll kontrollierbar ist."</em></p>
-          </div>
-        </div>
-
-        <p>Wer Linux beherrscht, beherrscht das Internet. Wer es nicht versteht,
-        wird in der IT-Administration langfristig nicht weit kommen.</p>
       </div>
     </section>
 
@@ -522,11 +484,10 @@ are welcome, but I won't promise I'll implement them :-)
 
         <ol class="lab-tasks">
           <li>In welchem Jahr und an welchem Ort entstand Unix?</li>
-          <li>Warum war das Umschreiben von Unix in C 1973 so revolutionär?</li>
           <li>Was bedeutet das Akronym <strong>GNU</strong>?</li>
-          <li>Welche Lizenz hat Stallman erfunden und was bedeutet <em>Copyleft</em>?</li>
           <li>Wer schrieb 1991 die berühmte Newsgroup-E-Mail — und auf welcher Hardware lief sein erstes Linux?</li>
           <li>Warum ist die Bezeichnung „GNU/Linux“ technisch korrekter als nur „Linux“?</li>
+          <li>Was war die zentrale Designphilosophie von Unix in den 1970ern?</li>
         </ol>
 
         <div class="solution">
@@ -538,23 +499,17 @@ are welcome, but I won't promise I'll implement them :-)
             <ol>
               <li><strong>1969</strong>, in den <strong>AT&amp;T Bell Labs</strong> (New Jersey, USA)
                   durch Ken Thompson und Dennis Ritchie auf einer ausrangierten PDP-7.</li>
-              <li>Weil C eine portable Hochsprache ist. Ein einmal in C geschriebener
-                  Kernel konnte durch Neukompilierung auf andere Architekturen übertragen
-                  werden — vorher musste jeder neue Computer komplett neu in Assembler
-                  programmiert werden.</li>
               <li><strong>GNU = GNU's Not Unix</strong> — ein rekursives Akronym
                   (typischer Hacker-Humor). Es betont, dass GNU keinen Unix-Code übernimmt,
                   aber Unix-kompatibel ist.</li>
-              <li>Die <strong>GPL (GNU General Public License)</strong>. <em>Copyleft</em>
-                  bedeutet: Wer GPL-Software verändert und weitergibt, MUSS das Ergebnis
-                  wieder unter GPL stellen — die Freiheit ist „ansteckend“ und kann nicht
-                  weggeschlossen werden.</li>
               <li><strong>Linus Torvalds</strong>, finnischer Informatik-Student. Sein erster
                   Linux-Kernel lief auf einem <strong>Intel 80386 PC</strong> (sein eigener neuer
                   Heim-PC).</li>
               <li>Der <strong>Kernel</strong> heißt Linux. Der Großteil der Werkzeuge eines
                   „Linux-Systems“ (Shell, Compiler, Coreutils, glibc) stammt aus dem
                   <strong>GNU-Projekt</strong>. „GNU/Linux“ macht diese Doppel-Herkunft sichtbar.</li>
+              <li>Schreibe Programme, die EINE Sache gut machen. Schreibe Programme,
+                  die zusammenarbeiten. Behandle alles wie eine Textdatei.</li>
             </ol>
           </div>
         </div>

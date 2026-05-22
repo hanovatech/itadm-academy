@@ -160,12 +160,14 @@
         CPU-Modus läuft („Kernel Mode“ oder „Ring 0“) und damit direkten Zugriff auf
         die Hardware hat.</p>
 
-        <p>Alle anderen Programme — auch deine Shell und alle Anwendungen — laufen im
-        <strong>User Mode</strong> („Ring 3“). Sie müssen den Kernel bitten, wenn sie
-        etwas Hardware-nahes tun wollen, z.B. eine Datei lesen oder einen Netzwerkpakte
-        verschicken. Diese Bitte heißt <strong>System Call</strong>.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Kernel Mode, User Mode und System Calls</summary>
+          <p>Alle anderen Programme — auch deine Shell und alle Anwendungen — laufen im
+          <strong>User Mode</strong> („Ring 3“). Sie müssen den Kernel bitten, wenn sie
+          etwas Hardware-nahes tun wollen, z.B. eine Datei lesen oder einen Netzwerkpakte
+          verschicken. Diese Bitte heißt <strong>System Call</strong>.</p>
 
-        <div class="ascii-box">  User-Programm:  fprintf(file, "Hallo");
+          <div class="ascii-box">  User-Programm:  fprintf(file, "Hallo");
                       │
                       ▼
   glibc (Library):  open(), write()
@@ -175,38 +177,42 @@
                       │
                       ▼ Kernel Mode
   Kernel:         tatsächliches Schreiben auf die Disk</div>
+        </details>
 
-        <h4>Kernel-Architekturen im Vergleich</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Architektur</th><th>Idee</th><th>Beispiele</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Monolithisch</strong></td>
-                <td>Alles (Treiber, Netzwerk, Dateisystem) im Kernel-Adressraum</td>
-                <td>Linux (modular monolithisch), BSD</td>
-              </tr>
-              <tr>
-                <td><strong>Microkernel</strong></td>
-                <td>Kernel klein halten, fast alles als User-Programm</td>
-                <td>Minix, QNX, GNU Hurd</td>
-              </tr>
-              <tr>
-                <td><strong>Hybrid</strong></td>
-                <td>Mischform aus monolithisch und Micro</td>
-                <td>Windows NT, macOS (XNU)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Kernel-Architekturen (Monolithisch, Microkernel, Hybrid)</summary>
+          <h4>Kernel-Architekturen im Vergleich</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Architektur</th><th>Idee</th><th>Beispiele</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Monolithisch</strong></td>
+                  <td>Alles (Treiber, Netzwerk, Dateisystem) im Kernel-Adressraum</td>
+                  <td>Linux (modular monolithisch), BSD</td>
+                </tr>
+                <tr>
+                  <td><strong>Microkernel</strong></td>
+                  <td>Kernel klein halten, fast alles als User-Programm</td>
+                  <td>Minix, QNX, GNU Hurd</td>
+                </tr>
+                <tr>
+                  <td><strong>Hybrid</strong></td>
+                  <td>Mischform aus monolithisch und Micro</td>
+                  <td>Windows NT, macOS (XNU)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <p>Linux ist <em>monolithisch</em>, aber mit dem wichtigen Zusatz
-        <strong>modular</strong>: Treiber und Dateisysteme können als Kernel-Module
-        (<code>.ko</code>-Dateien) zur Laufzeit nachgeladen werden. So ist Linux
-        schnell wie ein klassischer monolithischer Kernel und flexibel wie ein
-        Microkernel.</p>
+          <p>Linux ist <em>monolithisch</em>, aber mit dem wichtigen Zusatz
+          <strong>modular</strong>: Treiber und Dateisysteme können als Kernel-Module
+          (<code>.ko</code>-Dateien) zur Laufzeit nachgeladen werden. So ist Linux
+          schnell wie ein klassischer monolithischer Kernel und flexibel wie ein
+          Microkernel.</p>
+        </details>
       </div>
     </section>
 
@@ -264,6 +270,19 @@
       </div>
     </section>
 
+    <!-- ============ MINI-ÜBUNG (Praxis-Insel zwischen 1.4 und 1.5) ============ -->
+    <div class="callout callout-practice">
+      <div class="callout-icon">🛠️</div>
+      <div class="callout-content">
+        <div class="callout-title">Mini-Übung: Spüre Linux in deinem Alltag auf (5 Minuten)</div>
+        <p>Sammelt im Plenum: Wo nutzt jeder von euch täglich Linux, ohne es zu
+        wissen? Tipps zum Nachdenken: Smartphone, Smart-TV, Router,
+        Auto-Infotainment, Bankautomat, Streaming-Box, Smart-Speaker.</p>
+        <p>Trainer sammelt die Antworten an der Flipchart. Ziel: Aha-Effekt zum
+        Tagesabschluss von Block 1.</p>
+      </div>
+    </div>
+
     <!-- ============ BS-FAMILIEN ============ -->
     <section class="timeblock">
       <div class="timeblock-header">
@@ -273,6 +292,11 @@
       </div>
 
       <div class="subblock">
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Übersicht – kurzer Blick genügt</div>
+
         <div class="table-wrapper">
           <table>
             <thead>
@@ -316,6 +340,8 @@
         <p>Wer einmal verstanden hat, was ein Betriebssystem tut und welche Schichten
         es hat, kann sich in jede dieser Familien einarbeiten. Die Konzepte sind
         überall ähnlich — nur die Details und Tools unterscheiden sich.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -331,9 +357,7 @@
         <ol class="lab-tasks">
           <li>Was ist die zentrale Aufgabe eines Betriebssystems in einem Satz?</li>
           <li>Nenne die vier Hauptaufgaben eines BS — und gib jeweils ein Beispiel.</li>
-          <li>Was ist der Unterschied zwischen Kernel Mode und User Mode?</li>
           <li>Was ist ein Systemaufruf (System Call)?</li>
-          <li>Welche drei Kernel-Architekturen gibt es, und wo liegt Linux darin?</li>
           <li>Auf welchen Geräteklassen läuft Linux mit fast 100 % Anteil — und wo dagegen kaum?</li>
           <li>Welche Betriebssystem-Familie steckt hinter macOS?</li>
         </ol>
@@ -350,14 +374,8 @@
               <li><strong>P</strong>rozesse (Scheduler), <strong>S</strong>peicher (RAM
                 + Swap), <strong>G</strong>eräte (Treiber), <strong>D</strong>ateisystem
                 (Festplatten-Organisation).</li>
-              <li>Kernel Mode (Ring 0) hat direkten Hardware-Zugriff; nur der Kernel läuft
-                dort. User Mode (Ring 3) ist abgeschottet — Programme müssen den Kernel um
-                Hardware-Operationen bitten.</li>
               <li>Eine Anfrage eines User-Programms an den Kernel, etwas Privilegiertes zu
                 tun (z.B. eine Datei öffnen, ins Netzwerk schreiben).</li>
-              <li>Monolithisch, Microkernel, Hybrid. Linux ist <strong>monolithisch
-                modular</strong> — alles im Kernel-Adressraum, Treiber aber als ladbare
-                Module.</li>
               <li>~ 100 %: Supercomputer, ISS. Sehr hoch: Webserver, Cloud, Smartphones
                 (Android), Router. Gering (~3–4 %): Desktop-PCs.</li>
               <li><strong>BSD-Linie</strong> — macOS basiert auf Darwin, das wiederum

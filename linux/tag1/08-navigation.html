@@ -40,7 +40,7 @@
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 08</span>
-      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 35 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 25 min Lab</span>
       <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 1.1</span>
     </div>
   </section>
@@ -70,15 +70,21 @@
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code>$ pwd
-/home/admin
+/home/admin</code></pre>
+        </div>
 
-# Mit -P folgt es symbolischen Links zum echten Pfad
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: pwd -P (Symlinks auflösen)</summary>
+          <div class="code-block">
+            <div class="code-header"><div class="code-header-dots"><span class="code-dot code-dot-red"></span><span class="code-dot code-dot-yellow"></span><span class="code-dot code-dot-green"></span></div><span class="code-lang">bash</span><button class="copy-btn">📋 Kopieren</button></div>
+<pre><code># Mit -P folgt es symbolischen Links zum echten Pfad
 $ cd /bin           # auf modernen Distros ist /bin ein Symlink
 $ pwd
 /bin
 $ pwd -P
 /usr/bin            # so heißt das Verzeichnis "wirklich"</code></pre>
-        </div>
+          </div>
+        </details>
 
         <div class="callout callout-tip">
           <div class="callout-icon">💡</div>
@@ -527,7 +533,7 @@ hostname  hosts  hosts.allow  hosts.deny</code></pre>
         <span class="lab-icon">🧪</span>
         <span class="lab-label">Lab 1.1</span>
         <span class="lab-title">HanovaTech-Verzeichnis erkunden</span>
-        <span class="lab-duration">35 min</span>
+        <span class="lab-duration">25 min</span>
       </div>
       <div class="lab-body">
         <div class="lab-scenario">
@@ -635,13 +641,10 @@ cd -
           <li>Wechsle in dein Home-Verzeichnis — <strong>drei verschiedene Schreibweisen</strong>
             sollst du aufschreiben.</li>
           <li>Liste den Inhalt deines Homes inklusive versteckter Dateien.</li>
-          <li>Welche versteckten Konfigurationsdateien (Dotfiles) findest du? Nenne drei.</li>
           <li>Zeige nur die größten Dateien in <code>/var/log</code> (nach Größe sortiert,
             human-readable, Long-Listing).</li>
           <li>Zeige in <code>/var/log</code> die <strong>neuesten</strong> 5 Dateien.
             Tipp: nach Zeit sortieren, dann <code>| head -5</code>.</li>
-          <li>Liste alle Verzeichnisse in <code>/etc</code>, die mit „<code>s</code>“ anfangen.
-            Tipp: <code>ls -d /etc/s*/</code>.</li>
         </ol>
 
         <div class="solution">
@@ -686,57 +689,57 @@ ls -d /etc/s*/</code></pre>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil D — Detektivarbeit (10 min)</div>
-        <ol class="lab-tasks" start="17">
-          <li>Wo liegt das Binary von <code>ls</code> selbst? Tipp: <code>which ls</code>
-            oder <code>type ls</code>.</li>
-          <li>Folge dem Symlink von <code>/bin</code> mit <code>ls -l /</code>. Wohin zeigt
-            <code>/bin</code> auf Rocky 9?</li>
-          <li>Wechsle nach <code>/proc/1/</code>. Wer oder was ist Prozess 1?
-            (Tipp: <code>cat cmdline</code> — die Ausgabe hat keine Zeilenumbrüche,
-            das ist normal).</li>
-          <li>Wie viele CPUs hat dein System? Schau in <code>/proc/cpuinfo</code> und
-            zähle die Zeilen mit „processor“. Tipp: <code>grep -c processor /proc/cpuinfo</code>.</li>
-        </ol>
+        <details class="callout-deepdive">
+          <summary>▶ Bonus B: Detektivarbeit (Symlinks, /proc/1, CPU-Count)</summary>
+          <ol class="lab-tasks" start="15">
+            <li>Wo liegt das Binary von <code>ls</code> selbst? Tipp: <code>which ls</code>
+              oder <code>type ls</code>.</li>
+            <li>Folge dem Symlink von <code>/bin</code> mit <code>ls -l /</code>. Wohin zeigt
+              <code>/bin</code> auf Rocky 9?</li>
+            <li>Wechsle nach <code>/proc/1/</code>. Wer oder was ist Prozess 1?
+              (Tipp: <code>cat cmdline</code> — die Ausgabe hat keine Zeilenumbrüche,
+              das ist normal).</li>
+            <li>Wie viele CPUs hat dein System? Schau in <code>/proc/cpuinfo</code> und
+              zähle die Zeilen mit „processor“. Tipp: <code>grep -c processor /proc/cpuinfo</code>.</li>
+          </ol>
 
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil D zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
+          <div class="solution">
+            <button class="solution-toggle">
+              <span>Lösung Bonus B zeigen</span>
+              <span class="toggle-arrow">▼</span>
+            </button>
+            <div class="solution-content">
+              <div class="code-block">
+                <div class="code-header">
+                  <div class="code-header-dots">
+                    <span class="code-dot code-dot-red"></span>
+                    <span class="code-dot code-dot-yellow"></span>
+                    <span class="code-dot code-dot-green"></span>
+                  </div>
+                  <span class="code-lang">bash</span>
+                  <button class="copy-btn">📋 Kopieren</button>
                 </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 17) Wo liegt ls?
+<pre><code># 15) Wo liegt ls?
 which ls
 # /usr/bin/ls
 type ls
-# ls is aliased to `ls --color=auto'   (Rocky-Default)
 
-# 18) Symlink-Ziel von /bin
+# 16) Symlink-Ziel von /bin
 ls -l /
 # u.a.: bin -&gt; usr/bin
 
-# 19) Prozess 1
+# 17) Prozess 1
 cd /proc/1
 cat cmdline
-# /usr/lib/systemd/systemd ... (alles in einer Zeile)
+# /usr/lib/systemd/systemd ...
 # Prozess 1 = systemd, der Init-Prozess
 
-# 20) Anzahl CPUs
-grep -c processor /proc/cpuinfo
-# 2  (so viele vCPUs hast du der VM gegeben)</code></pre>
+# 18) Anzahl CPUs
+grep -c processor /proc/cpuinfo</code></pre>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
 
         <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer (5–10 min)</div>
         <ol class="lab-tasks" start="21">
@@ -817,8 +820,6 @@ ls -d ~/*/
           <li>Was unterscheidet einen absoluten von einem relativen Pfad?</li>
           <li>Welche fünf häufigsten <code>ls</code>-Optionen gibt es und was bedeuten sie?</li>
           <li>Was sagt das erste Zeichen einer <code>ls -l</code>-Ausgabezeile aus?</li>
-          <li>Wie zeigst du nur Verzeichnisse, keine Dateien?</li>
-          <li>Warum ist Tab-Completion so wichtig?</li>
           <li>Nenne drei typische Anfänger-Fehler beim Navigieren.</li>
         </ol>
 
@@ -841,9 +842,6 @@ ls -d ~/*/
                 <code>-d</code> nur Verzeichnis selbst (mind. fünf nennen).</li>
               <li>Den Dateityp: <code>-</code> = reguläre Datei, <code>d</code> = Verzeichnis,
                 <code>l</code> = Symlink, <code>b</code>/<code>c</code> = Block-/Chardevice, …</li>
-              <li><code>ls -d */</code> oder kombiniert <code>ls -ld */</code>.</li>
-              <li>Spart Tipparbeit, vermeidet Tippfehler, beweist sofort wenn ein Pfad falsch ist
-                (kein Tab-Treffer = nichts existiert).</li>
               <li>Case-Sensitivity vergessen, fehlendes <code>/</code> vor absolutem Pfad, Leerzeichen
                 in Dateinamen nicht escaped, Tippfehler bei langen Pfaden.</li>
             </ol>

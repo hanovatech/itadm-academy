@@ -55,53 +55,56 @@
       </div>
 
       <div class="subblock">
-        <p>Wir tippen heute auf einem Laptop und nennen das Fenster „Terminal“ — der
-        Name ist aber 80 Jahre alt und hat ursprünglich mit Linux nichts zu tun.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Wo kommt der Begriff „Terminal“ her?</summary>
+          <p>Wir tippen heute auf einem Laptop und nennen das Fenster „Terminal“ — der
+          Name ist aber 80 Jahre alt und hat ursprünglich mit Linux nichts zu tun.</p>
 
-        <h4>1837 — Telegrafenstationen</h4>
-        <p>Der Begriff stammt aus der Welt der <strong>Telegrafen</strong>. Ein
-        Telegrafen-Terminal war das <em>Endgerät</em> einer langen Leitung — der Punkt,
-        an dem ein Mensch Nachrichten eintippte und empfing. Das Wort ist
-        lateinisch <em>terminus</em> = „Ende, Grenze“.</p>
+          <h4>1837 — Telegrafenstationen</h4>
+          <p>Der Begriff stammt aus der Welt der <strong>Telegrafen</strong>. Ein
+          Telegrafen-Terminal war das <em>Endgerät</em> einer langen Leitung — der Punkt,
+          an dem ein Mensch Nachrichten eintippte und empfing. Das Wort ist
+          lateinisch <em>terminus</em> = „Ende, Grenze“.</p>
 
-        <h4>1873 — Der Teletype</h4>
-        <p>Aus dem Telegrafen wurde der <strong>Teletype</strong> (TTY) — ein Gerät, das
-        Buchstaben statt Morsezeichen übertrug. Eine Tastatur tippte, ein Drucker
-        druckte. Diese Geräte waren laut, langsam, gigantisch — und sie waren das
-        erste, was Programmierer als „Eingabe-Ausgabe-Gerät“ an Computer anschlossen.</p>
+          <h4>1873 — Der Teletype</h4>
+          <p>Aus dem Telegrafen wurde der <strong>Teletype</strong> (TTY) — ein Gerät, das
+          Buchstaben statt Morsezeichen übertrug. Eine Tastatur tippte, ein Drucker
+          druckte. Diese Geräte waren laut, langsam, gigantisch — und sie waren das
+          erste, was Programmierer als „Eingabe-Ausgabe-Gerät“ an Computer anschlossen.</p>
 
-        <h4>1950er — TTY am Großrechner</h4>
-        <p>Die ersten Computer hatten keine Bildschirme. Programmierer saßen vor
-        Teletypes und kommunizierten mit dem Mainframe über genau diesen Schreib-Druck-Apparat.</p>
+          <h4>1950er — TTY am Großrechner</h4>
+          <p>Die ersten Computer hatten keine Bildschirme. Programmierer saßen vor
+          Teletypes und kommunizierten mit dem Mainframe über genau diesen Schreib-Druck-Apparat.</p>
 
-        <div class="ascii-box">  Großrechner (gigantisch)
+          <div class="ascii-box">  Großrechner (gigantisch)
         ↓ Kabel
    ┌────TTY────┐
    │ Tastatur  │ ← tippt Befehle
    │ Drucker   │ ← druckt Antworten auf Endlospapier
    └───────────┘</div>
 
-        <h4>1970 — Glas-Terminals</h4>
-        <p>Mit Aufkommen von Bildschirmen ersetzte das <strong>Video-Terminal</strong>
-        (DEC VT100 ist DAS Modell) den Teletype. Plötzlich war die Ausgabe nicht
-        mehr Papier, sondern grünes Glühen auf schwarzem Glas.</p>
+          <h4>1970 — Glas-Terminals</h4>
+          <p>Mit Aufkommen von Bildschirmen ersetzte das <strong>Video-Terminal</strong>
+          (DEC VT100 ist DAS Modell) den Teletype. Plötzlich war die Ausgabe nicht
+          mehr Papier, sondern grünes Glühen auf schwarzem Glas.</p>
 
-        <h4>Heute — Terminal-Emulator</h4>
-        <p>Auf modernen Computern gibt es keinen echten TTY mehr. Was du nutzt, ist ein
-        <strong>Terminal-Emulator</strong>: ein Programm, das das Verhalten eines
-        alten VT100 nachstellt. Beispiele: <em>gnome-terminal</em>, <em>konsole</em>,
-        <em>xterm</em>, <em>Windows Terminal</em>, <em>iTerm2</em>, <em>PuTTY</em>.</p>
+          <h4>Heute — Terminal-Emulator</h4>
+          <p>Auf modernen Computern gibt es keinen echten TTY mehr. Was du nutzt, ist ein
+          <strong>Terminal-Emulator</strong>: ein Programm, das das Verhalten eines
+          alten VT100 nachstellt. Beispiele: <em>gnome-terminal</em>, <em>konsole</em>,
+          <em>xterm</em>, <em>Windows Terminal</em>, <em>iTerm2</em>, <em>PuTTY</em>.</p>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">📜</div>
-          <div class="callout-content">
-            <div class="callout-title">Wussten Sie schon?</div>
-            <p>In Linux heißen die virtuellen Konsolen bis heute <strong>/dev/tty1</strong>
-            bis <strong>/dev/tty6</strong>. Mit Strg+Alt+F2 wechselst du auf einer Linux-Maschine
-            mit GUI tatsächlich auf <em>"Teletype 2"</em> — ein Begriff aus den 1950ern,
-            der die Zeit überlebt hat.</p>
+          <div class="callout callout-info">
+            <div class="callout-icon">📜</div>
+            <div class="callout-content">
+              <div class="callout-title">Wussten Sie schon?</div>
+              <p>In Linux heißen die virtuellen Konsolen bis heute <strong>/dev/tty1</strong>
+              bis <strong>/dev/tty6</strong>. Mit Strg+Alt+F2 wechselst du auf einer Linux-Maschine
+              mit GUI tatsächlich auf <em>"Teletype 2"</em> — ein Begriff aus den 1950ern,
+              der die Zeit überlebt hat.</p>
+            </div>
           </div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -185,21 +188,27 @@
         Implementierungen. Sie unterscheiden sich in Syntax-Details, Komfort-Features
         und Skript-Kompatibilität.</p>
 
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Shell</th><th>Voller Name</th><th>Typische Rolle</th><th>Verbreitet auf</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>sh</code></td><td>Bourne Shell (1977)</td><td>Ur-Shell, POSIX-Standard, sehr minimal</td><td>fast jedes Unix-System</td></tr>
-              <tr><td><code>bash</code> ⭐</td><td>Bourne Again Shell (1989)</td><td>De-facto-Standard auf Linux</td><td>Rocky, Debian, Ubuntu — überall</td></tr>
-              <tr><td><code>dash</code></td><td>Debian Almquist Shell</td><td>schlank, schnell, POSIX-rein</td><td>Debian/Ubuntu (<code>/bin/sh</code> → <code>dash</code>)</td></tr>
-              <tr><td><code>zsh</code></td><td>Z Shell</td><td>komfortabel, viele Features (Oh-My-Zsh)</td><td>macOS-Default seit 2019</td></tr>
-              <tr><td><code>fish</code></td><td>Friendly Interactive Shell</td><td>moderne Defaults, eigene (nicht-POSIX) Syntax</td><td>Linux-Enthusiasten</td></tr>
-              <tr><td><code>ksh</code></td><td>Korn Shell</td><td>klassische Wahl auf kommerziellen Unixe</td><td>AIX, Solaris</td></tr>
-              <tr><td><code>tcsh</code></td><td>Tenex C Shell</td><td>Skript-Syntax wie die Sprache C</td><td>BSD, älteres Unix</td></tr>
-            </tbody>
-          </table>
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Übersicht – die wichtigsten Shells</div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr><th>Shell</th><th>Voller Name</th><th>Typische Rolle</th><th>Verbreitet auf</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>sh</code></td><td>Bourne Shell (1977)</td><td>Ur-Shell, POSIX-Standard, sehr minimal</td><td>fast jedes Unix-System</td></tr>
+                  <tr><td><code>bash</code> ⭐</td><td>Bourne Again Shell (1989)</td><td>De-facto-Standard auf Linux</td><td>Rocky, Debian, Ubuntu — überall</td></tr>
+                  <tr><td><code>dash</code></td><td>Debian Almquist Shell</td><td>schlank, schnell, POSIX-rein</td><td>Debian/Ubuntu (<code>/bin/sh</code> → <code>dash</code>)</td></tr>
+                  <tr><td><code>zsh</code></td><td>Z Shell</td><td>komfortabel, viele Features (Oh-My-Zsh)</td><td>macOS-Default seit 2019</td></tr>
+                  <tr><td><code>fish</code></td><td>Friendly Interactive Shell</td><td>moderne Defaults, eigene (nicht-POSIX) Syntax</td><td>Linux-Enthusiasten</td></tr>
+                  <tr><td><code>ksh</code></td><td>Korn Shell</td><td>klassische Wahl auf kommerziellen Unixe</td><td>AIX, Solaris</td></tr>
+                  <tr><td><code>tcsh</code></td><td>Tenex C Shell</td><td>Skript-Syntax wie die Sprache C</td><td>BSD, älteres Unix</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <h4>Welche Shell läuft bei mir gerade?</h4>
@@ -221,16 +230,13 @@ echo $0              # zeigt die aktuell laufende Shell
 cat /etc/shells      # listet alle erlaubten Shells auf dem System</code></pre>
         </div>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">💡</div>
-          <div class="callout-content">
-            <div class="callout-title">Anekdote: „Bourne Again“</div>
-            <p>Der Name <strong>Bash</strong> = „Bourne Again SHell“ ist ein dreifaches
-            Wortspiel: Sie ist eine <em>Wiedergeburt</em> der ursprünglichen Bourne Shell
-            (born again), sie ist <em>besser geworden</em> (bourne → born), und sie ist
-            tatsächlich frei nutzbar (von Brian Fox 1989 unter GPL geschrieben).</p>
-          </div>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Bash-Namensherkunft</summary>
+          <p>Der Name <strong>Bash</strong> = „Bourne Again SHell“ ist ein dreifaches
+          Wortspiel: Sie ist eine <em>Wiedergeburt</em> der ursprünglichen Bourne Shell
+          (born again), sie ist <em>besser geworden</em> (bourne → born), und sie ist
+          tatsächlich frei nutzbar (von Brian Fox 1989 unter GPL geschrieben).</p>
+        </details>
       </div>
     </section>
 
@@ -243,33 +249,33 @@ cat /etc/shells      # listet alle erlaubten Shells auf dem System</code></pre>
       </div>
 
       <div class="subblock">
-        <p>Wir lernen <strong>Bash</strong>. Nicht weil es die schickste Shell wäre —
-        sondern aus drei sehr praktischen Gründen:</p>
-
-        <ol>
-          <li><strong>POSIX-kompatibel.</strong> Bash spricht POSIX, den IEEE-Standard für
-            Unix-Shells. Skripte, die du in Bash schreibst, laufen mit minimalen
-            Anpassungen überall.</li>
-          <li><strong>Überall installiert.</strong> Praktisch jedes Linux liefert Bash
-            mit. Auf Rocky/RHEL ist <code>/bin/bash</code> die Default-Login-Shell für
-            alle User. Du musst nichts extra installieren.</li>
-          <li><strong>Skripting-Tauglich.</strong> Bash ist genug Programmiersprache, um
-            ganze Admin-Workflows abzubilden — von Backup-Skripten bis zu CI/CD-Pipelines.</li>
-        </ol>
-
-        <p>Was Bash <em>nicht</em> ist: schön zu lesen. Erfahrene Admins fluchen über
-        Bash-Syntax mindestens einmal pro Woche. Aber: sie ist universell. Wer Bash
-        kann, kann sich auf jedem Linux-System bewegen — von Embedded-Router bis
-        Cloud-VM.</p>
-
-        <div class="callout callout-info">
-          <div class="callout-icon">📊</div>
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
           <div class="callout-content">
-            <div class="callout-title">Marktstellung</div>
-            <p>Auf etwa <strong>98 % aller Linux-Server</strong> ist Bash die Standard-Shell.
-            macOS hat sie 2019 als Default auf zsh getauscht — aber Bash ist auf macOS
-            weiterhin installiert. Im professionellen Admin-Alltag wirst du also mit
-            sehr hoher Wahrscheinlichkeit Bash benutzen.</p>
+            <div class="callout-title">Empfehlung – sinnvoll zu wissen</div>
+            <p>Wir lernen <strong>Bash</strong>. Nicht weil es die schickste Shell wäre —
+            sondern aus drei sehr praktischen Gründen:</p>
+
+            <ol>
+              <li><strong>POSIX-kompatibel.</strong> Bash spricht POSIX, den IEEE-Standard für
+                Unix-Shells. Skripte, die du in Bash schreibst, laufen mit minimalen
+                Anpassungen überall.</li>
+              <li><strong>Überall installiert.</strong> Praktisch jedes Linux liefert Bash
+                mit. Auf Rocky/RHEL ist <code>/bin/bash</code> die Default-Login-Shell für
+                alle User. Du musst nichts extra installieren.</li>
+              <li><strong>Skripting-Tauglich.</strong> Bash ist genug Programmiersprache, um
+                ganze Admin-Workflows abzubilden — von Backup-Skripten bis zu CI/CD-Pipelines.</li>
+            </ol>
+
+            <p>Was Bash <em>nicht</em> ist: schön zu lesen. Erfahrene Admins fluchen über
+            Bash-Syntax mindestens einmal pro Woche. Aber: sie ist universell. Wer Bash
+            kann, kann sich auf jedem Linux-System bewegen — von Embedded-Router bis
+            Cloud-VM.</p>
+
+            <p><strong>Marktstellung:</strong> Auf etwa <strong>98 % aller Linux-Server</strong>
+            ist Bash die Standard-Shell. macOS hat sie 2019 als Default auf zsh getauscht —
+            aber Bash ist auf macOS weiterhin installiert. Im professionellen Admin-Alltag
+            wirst du also mit sehr hoher Wahrscheinlichkeit Bash benutzen.</p>
           </div>
         </div>
       </div>
@@ -324,20 +330,22 @@ cat /etc/shells      # listet alle erlaubten Shells auf dem System</code></pre>
           </div>
         </div>
 
-        <h4>Den Prompt anpassen: <code>$PS1</code></h4>
-        <p>Wie der Prompt aussieht, steuert die Umgebungsvariable <code>$PS1</code>
-        (Prompt String 1). Du kannst sie temporär ändern:</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Prompt anpassen mit PS1</summary>
+          <h4>Den Prompt anpassen: <code>$PS1</code></h4>
+          <p>Wie der Prompt aussieht, steuert die Umgebungsvariable <code>$PS1</code>
+          (Prompt String 1). Du kannst sie temporär ändern:</p>
 
-        <div class="code-block">
-          <div class="code-header">
-            <div class="code-header-dots">
-              <span class="code-dot code-dot-red"></span>
-              <span class="code-dot code-dot-yellow"></span>
-              <span class="code-dot code-dot-green"></span>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
             </div>
-            <span class="code-lang">bash</span>
-            <button class="copy-btn">📋 Kopieren</button>
-          </div>
 <pre><code># Aktuelles PS1 anzeigen
 echo "$PS1"
 
@@ -348,26 +356,27 @@ PS1="&gt; "
 PS1='[\u@\h \W]\$ '
 
 # Dauerhaft? Eintrag in ~/.bashrc</code></pre>
-        </div>
+          </div>
 
-        <h4>Häufige Platzhalter in PS1</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Platzhalter</th><th>Bedeutet</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>\u</code></td><td>Username</td></tr>
-              <tr><td><code>\h</code></td><td>Hostname (kurz)</td></tr>
-              <tr><td><code>\H</code></td><td>Hostname (vollständig)</td></tr>
-              <tr><td><code>\w</code></td><td>volles aktuelles Verzeichnis</td></tr>
-              <tr><td><code>\W</code></td><td>nur das letzte Verzeichnis (~)</td></tr>
-              <tr><td><code>\$</code></td><td><code>$</code> bei User, <code>#</code> bei root</td></tr>
-              <tr><td><code>\t</code></td><td>aktuelle Uhrzeit (HH:MM:SS)</td></tr>
-              <tr><td><code>\d</code></td><td>Datum</td></tr>
-            </tbody>
-          </table>
-        </div>
+          <h4>Häufige Platzhalter in PS1</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Platzhalter</th><th>Bedeutet</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>\u</code></td><td>Username</td></tr>
+                <tr><td><code>\h</code></td><td>Hostname (kurz)</td></tr>
+                <tr><td><code>\H</code></td><td>Hostname (vollständig)</td></tr>
+                <tr><td><code>\w</code></td><td>volles aktuelles Verzeichnis</td></tr>
+                <tr><td><code>\W</code></td><td>nur das letzte Verzeichnis (~)</td></tr>
+                <tr><td><code>\$</code></td><td><code>$</code> bei User, <code>#</code> bei root</td></tr>
+                <tr><td><code>\t</code></td><td>aktuelle Uhrzeit (HH:MM:SS)</td></tr>
+                <tr><td><code>\d</code></td><td>Datum</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -606,41 +615,44 @@ whatis ls                  # einzeilige Beschreibung</code></pre>
           </table>
         </div>
 
-        <h4>Manpage-Sektionen verstehen</h4>
-        <p>Manpages sind in <strong>9 Sektionen</strong> aufgeteilt. Steht in der
-        Kopfzeile, z.B. <code>LS(1)</code> bedeutet „ls aus Sektion 1“.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Manpage-Sektionen und „man 5 passwd“</summary>
+          <h4>Manpage-Sektionen verstehen</h4>
+          <p>Manpages sind in <strong>9 Sektionen</strong> aufgeteilt. Steht in der
+          Kopfzeile, z.B. <code>LS(1)</code> bedeutet „ls aus Sektion 1“.</p>
 
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Sektion</th><th>Bedeutung</th><th>Beispiel</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>1</td><td>User-Befehle (ausführbare Programme)</td><td><code>ls</code>, <code>cp</code></td></tr>
-              <tr><td>2</td><td>System-Aufrufe (Kernel-API)</td><td><code>open</code>, <code>read</code></td></tr>
-              <tr><td>3</td><td>Bibliotheksfunktionen (C-Lib)</td><td><code>printf</code>, <code>malloc</code></td></tr>
-              <tr><td>4</td><td>Spezialdateien (/dev)</td><td><code>tty</code>, <code>null</code></td></tr>
-              <tr><td>5</td><td>Dateiformate</td><td><code>passwd</code>, <code>fstab</code></td></tr>
-              <tr><td>6</td><td>Spiele</td><td><code>nethack</code></td></tr>
-              <tr><td>7</td><td>Konventionen, Misc</td><td><code>signal</code>, <code>regex</code></td></tr>
-              <tr><td>8</td><td>Admin-Befehle</td><td><code>mount</code>, <code>shutdown</code></td></tr>
-              <tr><td>9</td><td>Kernel-interne</td><td><em>selten</em></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p>Wichtig: Manche Wörter haben mehrere Manpages! <code>passwd</code> ist sowohl
-        ein Befehl (Sektion 1) als auch ein Dateiformat (Sektion 5). Mit
-        <code>man 5 passwd</code> sprichst du gezielt das Dateiformat an.</p>
-
-        <div class="callout callout-tip">
-          <div class="callout-icon">💡</div>
-          <div class="callout-content">
-            <div class="callout-title">Praxis-Tipp</div>
-            <p><code>man man</code> — die Manpage über das Manpage-System. Klingt
-            albern, ist aber tatsächlich eine der besten Erklärungen für die Sektionen.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Sektion</th><th>Bedeutung</th><th>Beispiel</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>User-Befehle (ausführbare Programme)</td><td><code>ls</code>, <code>cp</code></td></tr>
+                <tr><td>2</td><td>System-Aufrufe (Kernel-API)</td><td><code>open</code>, <code>read</code></td></tr>
+                <tr><td>3</td><td>Bibliotheksfunktionen (C-Lib)</td><td><code>printf</code>, <code>malloc</code></td></tr>
+                <tr><td>4</td><td>Spezialdateien (/dev)</td><td><code>tty</code>, <code>null</code></td></tr>
+                <tr><td>5</td><td>Dateiformate</td><td><code>passwd</code>, <code>fstab</code></td></tr>
+                <tr><td>6</td><td>Spiele</td><td><code>nethack</code></td></tr>
+                <tr><td>7</td><td>Konventionen, Misc</td><td><code>signal</code>, <code>regex</code></td></tr>
+                <tr><td>8</td><td>Admin-Befehle</td><td><code>mount</code>, <code>shutdown</code></td></tr>
+                <tr><td>9</td><td>Kernel-interne</td><td><em>selten</em></td></tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+
+          <p>Wichtig: Manche Wörter haben mehrere Manpages! <code>passwd</code> ist sowohl
+          ein Befehl (Sektion 1) als auch ein Dateiformat (Sektion 5). Mit
+          <code>man 5 passwd</code> sprichst du gezielt das Dateiformat an.</p>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">Praxis-Tipp</div>
+              <p><code>man man</code> — die Manpage über das Manpage-System. Klingt
+              albern, ist aber tatsächlich eine der besten Erklärungen für die Sektionen.</p>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -706,13 +718,12 @@ whatis ls                  # einzeilige Beschreibung</code></pre>
       <div class="subblock">
         <ol class="lab-tasks">
           <li>Erkläre in eigenen Worten den Unterschied zwischen Terminal, Konsole und Shell.</li>
-          <li>Welche Shell ist auf Rocky Linux der Standard? Wofür steht ihr Name?</li>
+          <li>Welche Shell ist auf Rocky Linux der Standard?</li>
           <li>Was unterscheidet das Prompt-Zeichen <code>$</code> von <code>#</code>?</li>
           <li>Wie zeigst du an, welche Shell gerade läuft?</li>
           <li>Nenne mindestens fünf Tastenkürzel, die du beherrschen solltest.</li>
           <li>Welcher Befehl wiederholt den letzten Befehl, diesmal mit sudo?</li>
           <li>Wie findest du heraus, welche Optionen <code>ls</code> hat?</li>
-          <li>Was bedeutet die <code>5</code> in <code>man 5 passwd</code>?</li>
         </ol>
 
         <div class="solution">
@@ -726,17 +737,13 @@ whatis ls                  # einzeilige Beschreibung</code></pre>
                 (Fenster). <strong>Konsole</strong> = der physische TTY-Bildschirm direkt am
                 Rechner. <strong>Shell</strong> = das Programm, das Befehle interpretiert
                 (Bash, Zsh, …).</li>
-              <li><strong>Bash</strong> — „Bourne Again SHell“. Wortspiel auf die ursprüngliche
-                Bourne Shell von 1977.</li>
+              <li><strong>Bash</strong> — „Bourne Again SHell“.</li>
               <li><code>$</code> = normaler User · <code>#</code> = root. Bei # ist äußerste
                 Vorsicht geboten, jeder Befehl wirkt sofort und ohne Schutz.</li>
               <li><code>echo $SHELL</code> (Login-Shell) oder <code>echo $0</code> (aktuelle Shell).</li>
               <li>Beispiele: Tab, Strg+R, Strg+C, Strg+D, Strg+L, Strg+A, Strg+E, Strg+U.</li>
               <li><code>sudo !!</code></li>
               <li><code>ls --help</code> (kurze Übersicht) oder <code>man ls</code> (vollständig).</li>
-              <li>Die Sektions-Nummer der Manpage — hier <strong>5</strong> = Dateiformate.
-                <code>man 5 passwd</code> zeigt also das Format der <code>/etc/passwd</code>-Datei,
-                nicht den Befehl <code>passwd</code>.</li>
             </ol>
           </div>
         </div>

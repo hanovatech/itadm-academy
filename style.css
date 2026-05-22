@@ -1784,3 +1784,54 @@ hr {
   }
   .cookie-btn { width: 100%; }
 }
+
+/* ========================================================================
+   DREI-EBENEN-ARCHITEKTUR: Empfehlung / Vertiefung / Praxis
+   ======================================================================== */
+
+/* 🟡 Empfehlung — gelb-orange Akzent */
+.callout.callout-recommendation {
+  border-left: 4px solid #f5a623;
+  background: rgba(245, 166, 35, 0.06);
+}
+.callout-recommendation .callout-title { color: #f5a623; }
+
+/* 🟢 Praxis — grüner Akzent */
+.callout.callout-practice {
+  border-left: 4px solid #4caf50;
+  background: rgba(76, 175, 80, 0.06);
+}
+.callout-practice .callout-title { color: #4caf50; }
+
+/* 🔵 Vertiefung (Deepdive) — Klappbox mit blauem Akzent */
+details.callout-deepdive {
+  display: block;
+  border-left: 4px solid #3a7bd5;
+  background: rgba(58, 123, 213, 0.06);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.25rem;
+  margin: 1.5rem 0;
+}
+details.callout-deepdive > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #3a7bd5;
+  padding: 0.25rem 0;
+  list-style: none;
+  user-select: none;
+}
+details.callout-deepdive > summary::-webkit-details-marker { display: none; }
+details.callout-deepdive > summary::marker { content: ""; }
+details.callout-deepdive[open] > summary {
+  margin-bottom: 0.75rem;
+  border-bottom: 1px dashed rgba(58, 123, 213, 0.3);
+  padding-bottom: 0.5rem;
+}
+details.callout-deepdive > summary:hover { text-decoration: underline; }
+
+/* Falls Deepdive in einer Warn-Box steht (z.B. 04-H 3-2-1-Backup),
+   etwas weniger Padding/Margin */
+.callout details.callout-deepdive {
+  margin: 0.75rem 0 0 0;
+  background: rgba(58, 123, 213, 0.08);
+}

@@ -134,8 +134,10 @@
         <p>Es gibt zwei grundsätzlich verschiedene Bauweisen von Hypervisoren —
         sie unterscheiden sich darin, <strong>was zwischen Hardware und VM liegt</strong>:</p>
 
-        <h4>Type-1 (Bare-Metal) Hypervisor</h4>
-        <div class="ascii-box">  ┌────────────────────────────────┐
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Type-1 Hypervisoren (Bare-Metal)</summary>
+          <h4>Type-1 (Bare-Metal) Hypervisor</h4>
+          <div class="ascii-box">  ┌────────────────────────────────┐
   │   VM   │   VM   │   VM   │      │   ← Mehrere VMs gleichzeitig
   ├────────┴────────┴────────┴──────┤
   │   Hypervisor (z.B. ESXi)        │   ← läuft DIREKT auf Hardware
@@ -143,12 +145,13 @@
   │   Hardware (CPU, RAM, Disks)    │
   └─────────────────────────────────┘</div>
 
-        <p>Der Hypervisor IST quasi das Betriebssystem. Es gibt kein Windows oder
-        Linux darunter — der Hypervisor spricht selbst direkt mit der Hardware. Das
-        ist <strong>extrem schnell</strong> und sicher, aber unbequem als Arbeitsumgebung
-        (du kannst auf so einem Server nicht Word starten).</p>
+          <p>Der Hypervisor IST quasi das Betriebssystem. Es gibt kein Windows oder
+          Linux darunter — der Hypervisor spricht selbst direkt mit der Hardware. Das
+          ist <strong>extrem schnell</strong> und sicher, aber unbequem als Arbeitsumgebung
+          (du kannst auf so einem Server nicht Word starten).</p>
 
-        <p><strong>Vertreter:</strong> VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM (Linux-Kernel-basiert), XenServer (ehemals Citrix Hypervisor), XCP-ng (Community-Fork).</p>
+          <p><strong>Vertreter:</strong> VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM (Linux-Kernel-basiert), XenServer (ehemals Citrix Hypervisor), XCP-ng (Community-Fork).</p>
+        </details>
 
         <h4>Type-2 (Hosted) Hypervisor</h4>
         <div class="ascii-box">  ┌────────────────────────────────┐
@@ -170,80 +173,37 @@
         <p><strong>Vertreter:</strong> VMware Workstation Pro / Player, Oracle VirtualBox,
         Parallels Desktop (macOS), QEMU.</p>
 
-        <h4>Vergleich auf einen Blick</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Kriterium</th><th>Type-1 (Bare-Metal)</th><th>Type-2 (Hosted)</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Läuft auf …</td><td>direkt Hardware</td><td>Host-OS</td></tr>
-              <tr><td>Performance</td><td>nahe nativ</td><td>~5–15 % Overhead</td></tr>
-              <tr><td>Boot-Zeit</td><td>sofort startbereit</td><td>Host-OS muss erst booten</td></tr>
-              <tr><td>Einsatz</td><td>Produktion, Rechenzentrum</td><td>Test, Entwicklung, Lehre</td></tr>
-              <tr><td>Beispiele</td><td>ESXi, Hyper-V, Proxmox VE, KVM, XenServer/XCP-ng</td><td>VMware Workstation, VirtualBox</td></tr>
-              <tr><td>Sicherheit</td><td>höher (kleine Angriffsfläche)</td><td>geringer (Host-OS als Risiko)</td></tr>
-              <tr><td>Bedienung</td><td>Web-GUI / SSH / vCenter</td><td>lokale GUI auf dem Host</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="callout callout-info">
-          <div class="callout-icon">🧪</div>
-          <div class="callout-content">
-            <div class="callout-title">Wussten Sie schon?</div>
-            <p><strong>KVM</strong> (Kernel-based Virtual Machine) macht Linux selbst zum
-            Type-1 Hypervisor. Wenn du Proxmox VE oder Red Hat Virtualization nutzt,
-            steckt KVM darunter. KVM ist Open-Source und der Standard-Hypervisor der
-            großen Cloud-Anbieter (AWS, Google Cloud nutzen KVM-Varianten).</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Vergleichstabelle Type-1 vs. Type-2</summary>
+          <h4>Vergleich auf einen Blick</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Kriterium</th><th>Type-1 (Bare-Metal)</th><th>Type-2 (Hosted)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Läuft auf …</td><td>direkt Hardware</td><td>Host-OS</td></tr>
+                <tr><td>Performance</td><td>nahe nativ</td><td>~5–15 % Overhead</td></tr>
+                <tr><td>Boot-Zeit</td><td>sofort startbereit</td><td>Host-OS muss erst booten</td></tr>
+                <tr><td>Einsatz</td><td>Produktion, Rechenzentrum</td><td>Test, Entwicklung, Lehre</td></tr>
+                <tr><td>Beispiele</td><td>ESXi, Hyper-V, Proxmox VE, KVM, XenServer/XCP-ng</td><td>VMware Workstation, VirtualBox</td></tr>
+                <tr><td>Sicherheit</td><td>höher (kleine Angriffsfläche)</td><td>geringer (Host-OS als Risiko)</td></tr>
+                <tr><td>Bedienung</td><td>Web-GUI / SSH / vCenter</td><td>lokale GUI auf dem Host</td></tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ============ WANN WAS ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">4.3</span>
-        <h2 class="timeblock-title">Wann nutzt man was?</h2>
-        <span class="timeblock-badge badge-vortrag">Entscheidungshilfe</span>
-      </div>
-
-      <div class="subblock">
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Szenario</th><th>Empfehlung</th><th>Warum?</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Privater Lern-PC mit Windows</td>
-                <td><strong>Type-2</strong> (VMware Workstation, VirtualBox)</td>
-                <td>Du willst Linux nur „nebenher“, ohne dein System umzustellen</td>
-              </tr>
-              <tr>
-                <td>Entwickler-Laptop</td>
-                <td><strong>Type-2</strong> + Docker</td>
-                <td>Schnell starten, schließen, ausprobieren</td>
-              </tr>
-              <tr>
-                <td>Mittelständischer Webserver-Cluster</td>
-                <td><strong>Type-1</strong> (Proxmox, ESXi)</td>
-                <td>Mehrere VMs auf einer Hardware, 24/7-Betrieb, Web-Verwaltung</td>
-              </tr>
-              <tr>
-                <td>Großes Rechenzentrum / Cloud</td>
-                <td><strong>Type-1</strong> (VMware ESXi mit vCenter, KVM)</td>
-                <td>Tausende VMs, Hochverfügbarkeit, Live-Migration</td>
-              </tr>
-              <tr>
-                <td>Schulungsraum / Kursumgebung ← <strong>wir!</strong></td>
-                <td><strong>Type-2</strong> (VMware Workstation Pro)</td>
-                <td>Teilnehmer haben Windows-Laptops, brauchen sicheren Sandkasten</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+          <div class="callout callout-info">
+            <div class="callout-icon">🧪</div>
+            <div class="callout-content">
+              <div class="callout-title">Wussten Sie schon?</div>
+              <p><strong>KVM</strong> (Kernel-based Virtual Machine) macht Linux selbst zum
+              Type-1 Hypervisor. Wenn du Proxmox VE oder Red Hat Virtualization nutzt,
+              steckt KVM darunter. KVM ist Open-Source und der Standard-Hypervisor der
+              großen Cloud-Anbieter (AWS, Google Cloud nutzen KVM-Varianten).</p>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -251,19 +211,21 @@
     <section class="timeblock">
       <div class="timeblock-header">
         <span class="timeblock-time">4.4</span>
-        <h2 class="timeblock-title">Vier große Vorteile von Virtualisierung</h2>
+        <h2 class="timeblock-title">Wichtige Konzepte: Snapshots und Isolation</h2>
         <span class="timeblock-badge badge-vortrag">Vorteile</span>
       </div>
 
       <div class="subblock">
-        <h4>1. Konsolidierung — viele Server auf einer Hardware</h4>
-        <p>Früher: 1 physischer Server pro Dienst (1× Webserver, 1× Mailserver,
-        1× Fileserver, …). Jeder zu 5–15 % ausgelastet. Stromfressend, teuer.</p>
-        <p>Heute: 1 leistungsstarker Server hostet 20+ VMs. Auslastung 60–80 %.
-        <strong>Faktor 10 bei Stromverbrauch und Hardwarekosten.</strong> Genau das ist
-        der wirtschaftliche Grund, warum Virtualisierung sich durchgesetzt hat.</p>
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Worum geht es</div>
+            <p>Virtualisierung bringt zwei für die tägliche Praxis besonders wichtige
+            Vorteile mit: Snapshots als Sicherheitsnetz und Isolation als Sandkasten.</p>
+          </div>
+        </div>
 
-        <h4>2. Snapshots — Zeitreise auf Knopfdruck</h4>
+        <h4>Snapshots — Zeitreise auf Knopfdruck</h4>
         <p>Ein <strong>Snapshot</strong> ist ein eingefrorenes Abbild des VM-Zustands
         zu einem Zeitpunkt. Du kannst beliebig oft zurückspringen.</p>
 
@@ -281,29 +243,19 @@
           </div>
         </div>
 
-        <h4>3. Isolation — Sandkasten ohne Risiko</h4>
-        <p>Was in der VM passiert, bleibt in der VM. Du kannst dort:</p>
-        <ul>
-          <li>Schadsoftware analysieren (Malware-Sandbox)</li>
-          <li>Verdächtige Mailanhänge öffnen</li>
-          <li>Neue Betriebssysteme testen</li>
-          <li>Mit <code>rm -rf /</code> experimentieren — Snapshot zurück, weiter geht's</li>
-        </ul>
-
-        <h4>4. Portabilität — VMs sind Dateien</h4>
-        <p>Eine VM besteht physisch aus einer Handvoll Dateien (Disk-Image
-        <code>.vmdk</code>/<code>.qcow2</code>, Konfigurations-XML, Metadaten).
-        Du kannst sie:</p>
-        <ul>
-          <li>per USB-Stick mitnehmen</li>
-          <li>in die Cloud schieben</li>
-          <li>auf einem anderen Hypervisor importieren (oft mit Konvertierung)</li>
-          <li>kopieren wie jede andere Datei</li>
-        </ul>
-
-        <p>Das Standardformat zwischen Herstellern heißt <strong>OVF / OVA</strong>
-        (Open Virtualization Format / Appliance). Damit lassen sich VMs zwischen VMware,
-        VirtualBox und Hyper-V relativ schmerzlos austauschen.</p>
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Wichtig zu wissen: Isolation — Sandkasten ohne Risiko</div>
+            <p>Was in der VM passiert, bleibt in der VM. Du kannst dort:</p>
+            <ul>
+              <li>Schadsoftware analysieren (Malware-Sandbox)</li>
+              <li>Verdächtige Mailanhänge öffnen</li>
+              <li>Neue Betriebssysteme testen</li>
+              <li>Mit <code>rm -rf /</code> experimentieren — Snapshot zurück, weiter geht's</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -370,10 +322,18 @@
           <div class="callout-icon">💡</div>
           <div class="callout-content">
             <div class="callout-title">Faustregel: vCPU</div>
-            <p>Weniger vCPU ist oft besser als mehr. Wenn du 4 vCPU zuweist, muss der
-            Hypervisor 4 echte Kerne gleichzeitig frei haben, um die VM zu rechnen
-            (<em>co-scheduling</em>). Lieber 2 vCPU vergeben — dann läuft die VM
-            geschmeidiger.</p>
+            <p>Weniger vCPU ist oft besser als mehr. Lieber 2 vCPU vergeben — dann
+            läuft die VM geschmeidiger.</p>
+            <details class="callout-deepdive">
+              <summary>▶ Tiefer einsteigen: Was ist Co-Scheduling?</summary>
+              <p>Wenn du 4 vCPU zuweist, muss der Hypervisor 4 echte Kerne
+              gleichzeitig frei haben, um die VM zu rechnen
+              (<em>co-scheduling</em>). Sind nur 2 Kerne frei, muss er warten,
+              bis weitere 2 frei werden — die VM bekommt also weniger CPU-Zeit,
+              je mehr vCPUs sie eigentlich „besitzt". Deshalb kann eine
+              4-vCPU-VM auf einem stark belegten Host langsamer laufen als
+              dieselbe VM mit 2 vCPUs.</p>
+            </details>
           </div>
         </div>
       </div>
@@ -417,8 +377,11 @@
           <li><strong>Standard für unseren Kurs!</strong></li>
         </ul>
 
-        <h4>Bridged — direkter LAN-Zugang</h4>
-        <div class="ascii-box">          ┌───── LAN / Router ─────┐
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Andere Netzwerkmodi (Bridged, Host-Only)</summary>
+
+          <h4>Bridged — direkter LAN-Zugang</h4>
+          <div class="ascii-box">          ┌───── LAN / Router ─────┐
           │  192.168.0.0/24        │
           │                        │
    ┌──────┴───────┐         ┌──────┴───────┐
@@ -426,16 +389,16 @@
    │ 192.168.0.42 │         │ 192.168.0.55 │   ← eigene IP im LAN!
    └──────────────┘         └──────────────┘</div>
 
-        <ul>
-          <li>Die VM hängt direkt am physischen Netzwerk, als wäre sie ein eigener PC</li>
-          <li>Bekommt eine IP vom <strong>DHCP-Server deines LANs</strong> (z.B. der Fritzbox)</li>
-          <li>Andere Geräte im LAN können die VM sehen</li>
-          <li><strong>Vorteil:</strong> realistisches Setup, andere Rechner können auf VM-Services zugreifen</li>
-          <li><strong>Nachteil:</strong> braucht funktionierendes DHCP im LAN — in fremden Netzwerken oft Probleme</li>
-        </ul>
+          <ul>
+            <li>Die VM hängt direkt am physischen Netzwerk, als wäre sie ein eigener PC</li>
+            <li>Bekommt eine IP vom <strong>DHCP-Server deines LANs</strong> (z.B. der Fritzbox)</li>
+            <li>Andere Geräte im LAN können die VM sehen</li>
+            <li><strong>Vorteil:</strong> realistisches Setup, andere Rechner können auf VM-Services zugreifen</li>
+            <li><strong>Nachteil:</strong> braucht funktionierendes DHCP im LAN — in fremden Netzwerken oft Probleme</li>
+          </ul>
 
-        <h4>Host-Only — privates Mini-Netz nur zum Host</h4>
-        <div class="ascii-box">  ┌─────────────────────────┐
+          <h4>Host-Only — privates Mini-Netz nur zum Host</h4>
+          <div class="ascii-box">  ┌─────────────────────────┐
   │  Host                   │
   │   192.168.56.1          │
   │       │                 │
@@ -447,35 +410,36 @@
   │   └────────────┘        │
   └─────────────────────────┘</div>
 
-        <ul>
-          <li>Privates Netzwerk nur zwischen Host und VM</li>
-          <li><strong>Kein Internet-Zugang</strong>!</li>
-          <li>Nützlich für isolierte Labore: mehrere VMs in einem virtuellen Netz, das niemand von außen sieht</li>
-        </ul>
+          <ul>
+            <li>Privates Netzwerk nur zwischen Host und VM</li>
+            <li><strong>Kein Internet-Zugang</strong>!</li>
+            <li>Nützlich für isolierte Labore: mehrere VMs in einem virtuellen Netz, das niemand von außen sieht</li>
+          </ul>
 
-        <h4>Vergleichstabelle</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Modus</th><th>Internet?</th><th>Sichtbar im LAN?</th><th>IP-Quelle</th><th>Stabil in fremdem WLAN?</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>NAT</td><td>✅</td><td>❌</td><td>Hypervisor (DHCP)</td><td>✅</td></tr>
-              <tr><td>Bridged</td><td>✅</td><td>✅</td><td>echter LAN-DHCP</td><td>⚠️</td></tr>
-              <tr><td>Host-Only</td><td>❌</td><td>❌</td><td>Hypervisor (DHCP)</td><td>✅</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="callout callout-warn">
-          <div class="callout-icon">⚠️</div>
-          <div class="callout-content">
-            <div class="callout-title">Falle: Bridged ohne DHCP</div>
-            <p>Bridged setzt voraus, dass im LAN ein DHCP-Server läuft, der freie IPs
-            vergibt. In manchen Firmennetzen ist das nicht der Fall — dort bekommst du
-            in der VM gar keine IP und wunderst dich. Wenn unsicher: bleibe bei NAT.</p>
+          <h4>Vergleichstabelle</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Modus</th><th>Internet?</th><th>Sichtbar im LAN?</th><th>IP-Quelle</th><th>Stabil in fremdem WLAN?</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>NAT</td><td>✅</td><td>❌</td><td>Hypervisor (DHCP)</td><td>✅</td></tr>
+                <tr><td>Bridged</td><td>✅</td><td>✅</td><td>echter LAN-DHCP</td><td>⚠️</td></tr>
+                <tr><td>Host-Only</td><td>❌</td><td>❌</td><td>Hypervisor (DHCP)</td><td>✅</td></tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+
+          <div class="callout callout-warn">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Falle: Bridged ohne DHCP</div>
+              <p>Bridged setzt voraus, dass im LAN ein DHCP-Server läuft, der freie IPs
+              vergibt. In manchen Firmennetzen ist das nicht der Fall — dort bekommst du
+              in der VM gar keine IP und wunderst dich. Wenn unsicher: bleibe bei NAT.</p>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -488,17 +452,20 @@
       </div>
 
       <div class="subblock">
-        <h4>Was ist ein Snapshot technisch?</h4>
-        <p>Wenn du einen Snapshot erstellst, friert der Hypervisor die bisherige
-        Disk ein und schreibt alle neuen Änderungen in eine <strong>Delta-Datei</strong>.
-        Beim „Zurückspringen“ verwirft er einfach die Delta-Datei.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Wie Snapshots technisch funktionieren (Delta-Dateien)</summary>
+          <h4>Was ist ein Snapshot technisch?</h4>
+          <p>Wenn du einen Snapshot erstellst, friert der Hypervisor die bisherige
+          Disk ein und schreibt alle neuen Änderungen in eine <strong>Delta-Datei</strong>.
+          Beim „Zurückspringen“ verwirft er einfach die Delta-Datei.</p>
 
-        <div class="ascii-box">  Vor Snapshot:        VM ─→ disk.vmdk
+          <div class="ascii-box">  Vor Snapshot:        VM ─→ disk.vmdk
                                   (alles drin)
 
   Nach Snapshot:       VM ─→ disk.vmdk (read-only, base)
                             ↓
                             delta_001.vmdk  (alle neuen Schreibvorgänge)</div>
+        </details>
 
         <h4>Wann setzt man Snapshots ein?</h4>
         <ul>
@@ -522,14 +489,17 @@
             <div class="callout-title">SNAPSHOT IST KEIN BACKUP</div>
             <p>Sag das in 6 Monaten noch dreimal: <strong>Ein Snapshot ist kein
             Backup.</strong> Wenn der Host stirbt, sind Snapshot und VM gleichzeitig
-            weg. Snapshots leben für Stunden bis Tage — Backups für Wochen bis Jahre.
-            Backups gehören auf ein anderes Storage, idealerweise mit der
-            <strong>3-2-1-Regel</strong>: 3 Kopien, auf 2 verschiedenen Medien, 1 davon
-            extern.</p>
+            weg. Snapshots leben für Stunden bis Tage — Backups für Wochen bis Jahre.</p>
+            <details class="callout-deepdive">
+              <summary>▶ Tiefer einsteigen: Die 3-2-1-Backup-Regel</summary>
+              <p>Backups gehören auf ein anderes Storage, idealerweise mit der
+              <strong>3-2-1-Regel</strong>: 3 Kopien, auf 2 verschiedenen Medien,
+              1 davon extern.</p>
+            </details>
           </div>
         </div>
 
-        <div class="callout callout-tip">
+        <div class="callout callout-recommendation">
           <div class="callout-icon">💡</div>
           <div class="callout-content">
             <div class="callout-title">Praxis-Tipp</div>
@@ -677,19 +647,6 @@ systeminfo | findstr /C:"Hyper-V"
         <div class="callout callout-danger">
           <div class="callout-icon">❌</div>
           <div class="callout-content">
-            <div class="callout-title">Fehler 3 — Bridge ohne DHCP / kein Netzwerk</div>
-            <p><strong>Symptom:</strong> In der VM funktioniert <code>ping 8.8.8.8</code>
-            nicht. <code>ip a</code> zeigt keine IP-Adresse.</p>
-            <p><strong>Ursache:</strong> Du nutzt Bridged-Mode, aber der LAN-DHCP-Server
-            ist nicht erreichbar (z.B. WLAN-Roaming, Firmennetz mit MAC-Filter).</p>
-            <p><strong>Lösung:</strong> Netzwerkadapter auf <strong>NAT</strong> umstellen.
-            NAT funktioniert immer, ohne externes DHCP.</p>
-          </div>
-        </div>
-
-        <div class="callout callout-danger">
-          <div class="callout-icon">❌</div>
-          <div class="callout-content">
             <div class="callout-title">Fehler 4 — Ethernet im Installer ausgeschaltet</div>
             <p><strong>Symptom:</strong> Rocky-Installation erfolgreich, aber nach dem
             Boot kein Netzwerk, <code>dnf update</code> findet keinen Server.</p>
@@ -701,17 +658,34 @@ systeminfo | findstr /C:"Hyper-V"
           </div>
         </div>
 
-        <div class="callout callout-danger">
-          <div class="callout-icon">❌</div>
-          <div class="callout-content">
-            <div class="callout-title">Fehler 5 — Snapshot-Spaghetti</div>
-            <p><strong>Symptom:</strong> VM startet sehr langsam, Disk-I/O ist quälend lahm.</p>
-            <p><strong>Ursache:</strong> Du hast über Wochen 8+ Snapshots gestapelt.
-            Jeder Schreibzugriff geht durch alle Delta-Dateien.</p>
-            <p><strong>Lösung:</strong> Im Snapshot Manager alte Snapshots löschen
-            („Commit“). Faustregel: nicht mehr als 3 aktive Snapshots gleichzeitig.</p>
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Weitere VM-Fehler</summary>
+
+          <div class="callout callout-danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Fehler 3 — Bridge ohne DHCP / kein Netzwerk</div>
+              <p><strong>Symptom:</strong> In der VM funktioniert <code>ping 8.8.8.8</code>
+              nicht. <code>ip a</code> zeigt keine IP-Adresse.</p>
+              <p><strong>Ursache:</strong> Du nutzt Bridged-Mode, aber der LAN-DHCP-Server
+              ist nicht erreichbar (z.B. WLAN-Roaming, Firmennetz mit MAC-Filter).</p>
+              <p><strong>Lösung:</strong> Netzwerkadapter auf <strong>NAT</strong> umstellen.
+              NAT funktioniert immer, ohne externes DHCP.</p>
+            </div>
           </div>
-        </div>
+
+          <div class="callout callout-danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Fehler 5 — Snapshot-Spaghetti</div>
+              <p><strong>Symptom:</strong> VM startet sehr langsam, Disk-I/O ist quälend lahm.</p>
+              <p><strong>Ursache:</strong> Du hast über Wochen 8+ Snapshots gestapelt.
+              Jeder Schreibzugriff geht durch alle Delta-Dateien.</p>
+              <p><strong>Lösung:</strong> Im Snapshot Manager alte Snapshots löschen
+              („Commit“). Faustregel: nicht mehr als 3 aktive Snapshots gleichzeitig.</p>
+            </div>
+          </div>
+        </details>
 
         <div class="callout callout-trainer">
           <div class="callout-icon">🎓</div>
@@ -737,14 +711,10 @@ systeminfo | findstr /C:"Hyper-V"
         <ol class="lab-tasks">
           <li>Definiere in eigenen Worten die Begriffe <strong>Host</strong>,
             <strong>Guest</strong> und <strong>Hypervisor</strong>.</li>
-          <li>Was ist der zentrale Unterschied zwischen einem <strong>Type-1</strong>
-            und einem <strong>Type-2</strong> Hypervisor?</li>
-          <li>Nenne jeweils zwei Vertreter von Type-1 und Type-2 Hypervisoren.</li>
           <li>Warum ist <strong>NAT</strong> der sicherere Standard für Lern-VMs in
             wechselnden WLANs gegenüber <strong>Bridged</strong>?</li>
           <li>Was bedeutet die Aussage <em>„Snapshot ≠ Backup“</em> konkret?</li>
           <li>Was muss im BIOS/UEFI aktiviert sein, damit überhaupt VMs starten können?</li>
-          <li>Welche vier großen Vorteile bietet Virtualisierung?</li>
           <li>Warum ist es eine schlechte Idee, einer VM auf einem 8-GB-Host 6 GB RAM zuzuweisen?</li>
         </ol>
 
@@ -758,12 +728,6 @@ systeminfo | findstr /C:"Hyper-V"
               <li><strong>Host</strong> = physischer PC + dessen OS. <strong>Guest</strong> = das
                 Betriebssystem, das in der VM läuft. <strong>Hypervisor</strong> = die Software,
                 die VMs erzeugt und verwaltet (z.B. VMware Workstation).</li>
-              <li>Type-1 läuft <strong>direkt auf der Hardware</strong> (kein Wirts-OS
-                darunter). Type-2 läuft als normales <strong>Programm auf einem Wirts-OS</strong>
-                (Windows, macOS, Linux).</li>
-              <li>Type-1: VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM,
-                XenServer (ehemals Citrix Hypervisor), XCP-ng. Type-2: VMware
-                Workstation/Player, Oracle VirtualBox, Parallels Desktop, QEMU.</li>
               <li>Weil NAT keinen externen DHCP-Server braucht — die Adressvergabe macht
                 der Hypervisor selbst. Bridged scheitert in Netzen ohne (oder mit
                 restriktivem) DHCP.</li>
@@ -772,8 +736,6 @@ systeminfo | findstr /C:"Hyper-V"
                 nach der 3-2-1-Regel.</li>
               <li>Hardware-Virtualisierung: <strong>Intel VT-x</strong> bzw.
                 <strong>AMD-V (SVM Mode)</strong>. Bonus für Passthrough: VT-d / IOMMU.</li>
-              <li>(1) Konsolidierung, (2) Snapshots, (3) Isolation, (4) Portabilität
-                (VMs sind Dateien).</li>
               <li>Weil das Host-OS selbst 3–4 GB braucht. Bei 6 GB an die VM bleiben dem
                 Host nur 2 GB — er muss massiv auf die Auslagerungsdatei (Swap) zugreifen
                 und wird langsam. Faustregel: VM bekommt maximal 50 % des Host-RAM.</li>
