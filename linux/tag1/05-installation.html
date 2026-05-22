@@ -162,20 +162,47 @@
         Ausrufezeichen ⚠️ <strong>müssen</strong> noch konfiguriert werden, bevor du
         installieren kannst.</p>
 
-        <div class="ascii-box">  ┌─────────────────────────────────────────────────┐
-  │  INSTALLATIONSÜBERSICHT                         │
-  ├─────────────────────────────────────────────────┤
-  │  ⏰ Zeit & Datum        ⌨ Tastatur               │
-  │  🌐 Sprache             🅰 Sprachunterstützung    │
-  ├─────────────────────────────────────────────────┤
-  │  💿 Installationsquelle 📦 Software-Auswahl      │
-  │  🗄 Installationsziel ⚠ 🔐 KDUMP                  │
-  ├─────────────────────────────────────────────────┤
-  │  🌐 Netzwerk & Hostname ⚠  🔒 Sicherheitsrichtlinie│
-  ├─────────────────────────────────────────────────┤
-  │  🔑 Root-Passwort ⚠    👤 Benutzer-Erstellung ⚠   │
-  └─────────────────────────────────────────────────┘
-       Beenden                    Installation beginnen (grau)</div>
+        <div class="table-wrapper">
+          <table>
+            <caption style="text-align: left; font-weight: 700; padding: 0.5rem 0; color: var(--accent);">
+              Anaconda · Installationsübersicht
+            </caption>
+            <thead>
+              <tr><th>Kachel</th><th>Pflichtfeld?</th><th>Kachel</th><th>Pflichtfeld?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>⏰ Zeit &amp; Datum</td><td></td>
+                <td>⌨️ Tastatur</td><td></td>
+              </tr>
+              <tr>
+                <td>🌐 Sprache</td><td></td>
+                <td>🅰️ Sprachunterstützung</td><td></td>
+              </tr>
+              <tr>
+                <td>💿 Installationsquelle</td><td></td>
+                <td>📦 Software-Auswahl</td><td></td>
+              </tr>
+              <tr>
+                <td>🗄️ Installationsziel</td><td>⚠️</td>
+                <td>🔐 KDUMP</td><td></td>
+              </tr>
+              <tr>
+                <td>🌐 Netzwerk &amp; Hostname</td><td>⚠️</td>
+                <td>🔒 Sicherheitsrichtlinie</td><td></td>
+              </tr>
+              <tr>
+                <td>🔑 Root-Passwort</td><td>⚠️</td>
+                <td>👤 Benutzer-Erstellung</td><td>⚠️</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+          Unten rechts: <strong>[ Installation beginnen ]</strong> — der Button bleibt
+          ausgegraut, solange noch ein ⚠️-Pflichtfeld offen ist. Daneben <strong>[ Beenden ]</strong>
+          zum Abbrechen.
+        </p>
 
         <div class="callout callout-warn">
           <div class="callout-icon">⌨️</div>
