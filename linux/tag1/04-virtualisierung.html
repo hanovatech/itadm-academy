@@ -148,7 +148,7 @@
         ist <strong>extrem schnell</strong> und sicher, aber unbequem als Arbeitsumgebung
         (du kannst auf so einem Server nicht Word starten).</p>
 
-        <p><strong>Vertreter:</strong> VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM (Linux-Kernel-basiert), Citrix Hypervisor (XenServer).</p>
+        <p><strong>Vertreter:</strong> VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM (Linux-Kernel-basiert), XenServer (ehemals Citrix Hypervisor), XCP-ng (Community-Fork).</p>
 
         <h4>Type-2 (Hosted) Hypervisor</h4>
         <div class="ascii-box">  ┌────────────────────────────────┐
@@ -181,7 +181,7 @@
               <tr><td>Performance</td><td>nahe nativ</td><td>~5–15 % Overhead</td></tr>
               <tr><td>Boot-Zeit</td><td>sofort startbereit</td><td>Host-OS muss erst booten</td></tr>
               <tr><td>Einsatz</td><td>Produktion, Rechenzentrum</td><td>Test, Entwicklung, Lehre</td></tr>
-              <tr><td>Beispiele</td><td>ESXi, Hyper-V, Proxmox, KVM</td><td>VMware Workstation, VirtualBox</td></tr>
+              <tr><td>Beispiele</td><td>ESXi, Hyper-V, Proxmox VE, KVM, XenServer/XCP-ng</td><td>VMware Workstation, VirtualBox</td></tr>
               <tr><td>Sicherheit</td><td>höher (kleine Angriffsfläche)</td><td>geringer (Host-OS als Risiko)</td></tr>
               <tr><td>Bedienung</td><td>Web-GUI / SSH / vCenter</td><td>lokale GUI auf dem Host</td></tr>
             </tbody>
@@ -596,6 +596,18 @@
           </div>
         </div>
 
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Lizenz-Hinweis VMware</div>
+            <p>Seit Mai 2024 ist VMware Workstation Pro / Fusion Pro für die
+            private Nutzung kostenlos. Für die kommerzielle Nutzung (auch in
+            Firmen-Schulungsräumen) ist weiterhin eine Lizenz erforderlich. Bei
+            der Installation <em>"Use for Personal Use"</em> wählen, wenn der
+            Kurs privat absolviert wird; sonst die Firmen-Lizenz hinterlegen.</p>
+          </div>
+        </div>
+
         <h4>VT-x / AMD-V prüfen unter Windows</h4>
         <div class="code-block">
           <div class="code-header">
@@ -750,8 +762,8 @@ systeminfo | findstr /C:"Hyper-V"
                 darunter). Type-2 läuft als normales <strong>Programm auf einem Wirts-OS</strong>
                 (Windows, macOS, Linux).</li>
               <li>Type-1: VMware ESXi, Microsoft Hyper-V Server, Proxmox VE, KVM,
-                Citrix Hypervisor. Type-2: VMware Workstation/Player, Oracle VirtualBox,
-                Parallels Desktop, QEMU.</li>
+                XenServer (ehemals Citrix Hypervisor), XCP-ng. Type-2: VMware
+                Workstation/Player, Oracle VirtualBox, Parallels Desktop, QEMU.</li>
               <li>Weil NAT keinen externen DHCP-Server braucht — die Adressvergabe macht
                 der Hypervisor selbst. Bridged scheitert in Netzen ohne (oder mit
                 restriktivem) DHCP.</li>

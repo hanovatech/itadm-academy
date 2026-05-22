@@ -844,6 +844,120 @@ systemctl status vmtoolsd</code></pre>
       </div>
     </section>
 
+    <!-- ============ POWEROFF / SHUTDOWN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.14</span>
+        <h2 class="timeblock-title">VM sauber herunterfahren — Logout vs. Shutdown</h2>
+        <span class="timeblock-badge badge-action">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Bevor du die VM zuklappst, lerne den Unterschied zwischen „ich verlasse
+        meine Session" und „ich fahre die Maschine aus". Das ist auf Servern später
+        existenziell — ein versehentliches <code>poweroff</code> auf der falschen
+        SSH-Session legt Produktion lahm.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Was passiert?</th><th>Wann nutzen?</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>exit</code> oder <code>Strg+D</code></td>
+                <td>Beendet die aktuelle Shell-Session. Die VM läuft weiter.</td>
+                <td>Nach Arbeit, wenn die VM weiterlaufen soll</td>
+              </tr>
+              <tr>
+                <td><code>logout</code></td>
+                <td>Wie <code>exit</code>, aber nur in Login-Shells</td>
+                <td>Selten — <code>exit</code> reicht meistens</td>
+              </tr>
+              <tr>
+                <td><code>sudo poweroff</code></td>
+                <td>Fährt das System sauber herunter (Dienste stoppen, Dateisysteme syncen)</td>
+                <td>Ende des Arbeitstags, vor Snapshot</td>
+              </tr>
+              <tr>
+                <td><code>sudo systemctl poweroff</code></td>
+                <td>Identisch zu <code>poweroff</code>, modernerer Weg</td>
+                <td>Wie oben</td>
+              </tr>
+              <tr>
+                <td><code>sudo reboot</code></td>
+                <td>Startet das System neu</td>
+                <td>Nach Kernel-Updates, bei Problemen</td>
+              </tr>
+              <tr>
+                <td><code>sudo shutdown -h now</code></td>
+                <td>Sofort herunterfahren</td>
+                <td>Wie <code>poweroff</code></td>
+              </tr>
+              <tr>
+                <td><code>sudo shutdown -h +5</code></td>
+                <td>In 5 Minuten herunterfahren (mit Warnung an alle User)</td>
+                <td>Server mit aktiven Usern</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Aktuelle Session beenden, VM läuft weiter
+exit
+
+# VM komplett ausschalten
+sudo poweroff
+
+# Neustart
+sudo reboot</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Niemals hart über das VMware-Fenster ausschalten</div>
+            <p>Niemals die VM einfach über den VMware-Schließen-Button „hart"
+            ausschalten („Power Off"). Das entspricht einem Stromkabel ziehen —
+            Dateisysteme können beschädigt werden. Immer erst sauber per
+            <code>poweroff</code> aus dem Gast heraus, dann das VMware-Fenster
+            schließen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Praxis-Tipp</div>
+            <p>Vor dem Herunterfahren: kurz mit <code>history | tail -20</code>
+            prüfen, was du heute gemacht hast — gute Selbstkontrolle und nützlich,
+            wenn morgen etwas nicht mehr funktioniert.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis</div>
+            <p>Genau hier ist der ideale Zeitpunkt für den Tagesabschluss-Snapshot
+            <code>tag1-abschluss</code>. Erst sauber herunterfahren, dann in VMware
+            den Snapshot ziehen. Reihenfolge ist wichtig: Snapshots einer laufenden
+            VM sind größer und langsamer als von einer ausgeschalteten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ KONTROLLFRAGEN ============ -->
     <section class="timeblock">
       <div class="timeblock-header">
@@ -862,6 +976,7 @@ systemctl status vmtoolsd</code></pre>
           <li>Wofür steht <code>sudo</code> und wie funktioniert es prinzipiell?</li>
           <li>Nenne die fünf Phasen des Linux-Boot-Prozesses in der richtigen Reihenfolge.</li>
           <li>Wann ist der ideale Zeitpunkt für den ersten Snapshot — und warum gerade dann?</li>
+          <li>Welcher Befehl fährt die VM korrekt herunter, und warum nicht einfach das VMware-Fenster schließen?</li>
         </ol>
 
         <div class="solution">
@@ -887,6 +1002,11 @@ systemctl status vmtoolsd</code></pre>
               <li>Direkt nach erfolgreicher Installation mit Updates und vm-tools. Weil
                 das System dann sauber und vollständig ist und du in den nächsten Stunden
                 viel ausprobieren wirst — Snapshot zurück = Reset auf bekannten guten Stand.</li>
+              <li><code>sudo poweroff</code> (oder <code>sudo systemctl poweroff</code> /
+                <code>sudo shutdown -h now</code>). Das saubere Herunterfahren stoppt
+                Dienste geordnet und schreibt Disk-Caches zurück. Das harte Schließen des
+                VMware-Fensters entspricht einem Stromausfall und kann das Dateisystem
+                beschädigen.</li>
             </ol>
           </div>
         </div>

@@ -557,7 +557,21 @@ file /etc/*</code></pre>
         </div>
 
         <p><code>stat</code> zeigt <em>alles</em>: Größe, Block-Layout, Inode-Nummer,
-        UID/GID, Rechte (numerisch und symbolisch) und alle vier Zeitstempel.</p>
+        UID/GID, Rechte (numerisch und symbolisch) und die Zeitstempel.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-content">
+            <div class="callout-title">Birth-Time je nach Dateisystem</div>
+            <p>Der „Birth"-Zeitstempel (Erstellungszeit) ist nicht überall verfügbar.
+            Auf <code>ext4</code> wird er meist angezeigt, auf <code>XFS</code>
+            (Standard bei Rocky 9!) zeigt <code>stat</code> oft „-" oder gar keine
+            Birth-Zeile. Das ist kein Fehler — XFS speichert diese Information
+            traditionell nicht. Mit
+            <code>stat --printf='%w\n' datei</code> kannst du explizit nur die
+            Birth-Zeit abfragen.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -644,7 +658,10 @@ sudo tail -f /var/log/secure
           <li>Kopiere <code>a.txt</code> zu <code>a.bak</code>, benenne <code>b.txt</code>
             in <code>notizen.txt</code> um.</li>
           <li>Lege mit <code>mkdir -p</code> die Struktur <code>archiv/2024/{q1,q2,q3,q4}</code>
-            an. Prüfe das Ergebnis mit <code>ls -R archiv/</code>.</li>
+            an. Prüfe das Ergebnis mit <code>ls -R archiv/</code>.
+            (Die geschweiften Klammern heißen <em>Brace Expansion</em> — die schauen
+            wir uns in Kapitel 11 systematisch an. Hier nur als Vorgriff: die Shell
+            macht daraus <code>q1</code>, <code>q2</code>, <code>q3</code>, <code>q4</code>.)</li>
         </ol>
 
         <div class="solution">
