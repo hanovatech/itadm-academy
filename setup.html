@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup &amp; Downloads · ITADM Academy</title>
+  <meta name="description" content="Alle Downloads, die du für die ITADM-Academy-Kurse brauchst: VMware, Rocky Linux, Ubuntu Server, Windows Server.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="/index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Start</a></li>
+      <li><a href="/linux/index.html">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Setup &amp; Downloads</div>
+    <h1 class="page-title">
+      Alles, was du vor dem <span class="highlight">Start</span> brauchst
+    </h1>
+    <p class="page-subtitle">
+      Die Downloads sind zusammen mehrere Gigabyte groß — am besten startest du
+      sie früh, dann laufen sie im Hintergrund, während du dich durch die ersten
+      Kapitel arbeitest.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">⏬</span> 4 Tools</span>
+      <span class="meta-item"><span class="meta-item-icon">💾</span> ca. 5–10 GB gesamt</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> Download-Zeit variabel</span>
+    </div>
+  </section>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">📋</div>
+    <div class="callout-content">
+      <div class="callout-title">Schnell-Übersicht</div>
+      <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+        <li><strong>Linux-Kurs</strong> (verfügbar): VMware + Rocky Linux</li>
+        <li><strong>Server-Modul</strong> (geplant): zusätzlich Ubuntu Server</li>
+        <li><strong>Windows-Modul</strong> (geplant): zusätzlich Windows Server</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ VMWARE ============ -->
+  <section class="timeblock">
+    <div class="timeblock-header">
+      <span class="timeblock-time">1</span>
+      <h2 class="timeblock-title">VMware Workstation Pro / Fusion</h2>
+      <span class="timeblock-badge badge-action">Pflicht</span>
+    </div>
+
+    <div class="subblock">
+      <p><strong>Wofür?</strong> Hypervisor (Type-2), in dem du deine Linux- und
+      später Server-VMs laufen lässt. <strong>Seit 2024 kostenlos</strong> für die
+      Privat- und Schulungsnutzung.</p>
+
+      <p>
+        <strong>Plattform:</strong> Windows / Linux (Workstation Pro) ·
+        macOS (Fusion Pro)<br>
+        <strong>Größe:</strong> ca. 600 MB
+      </p>
+
+      <p style="margin-top: 1rem;">
+        <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion"
+           target="_blank" rel="noopener"
+           style="display: inline-block; padding: 0.6rem 1.2rem; background: var(--accent); color: var(--bg-deep); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-family: var(--font-mono);">
+          ⬇ Download VMware Workstation / Fusion
+        </a>
+      </p>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <div class="callout-title">Tipp zur Installation</div>
+          <p>Bei der Installation „<em>Use for Personal Use</em>" wählen. Falls die
+          Site einen Broadcom-Account verlangt: kostenlos registrieren — Broadcom
+          hat VMware 2023 übernommen, der Login ist Voraussetzung.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROCKY LINUX ============ -->
+  <section class="timeblock">
+    <div class="timeblock-header">
+      <span class="timeblock-time">2</span>
+      <h2 class="timeblock-title">Rocky Linux 9 — Minimal ISO</h2>
+      <span class="timeblock-badge badge-action">Pflicht</span>
+    </div>
+
+    <div class="subblock">
+      <p><strong>Wofür?</strong> Unser Linux-Betriebssystem für Tag 1–3. Rocky ist
+      1:1 kompatibel mit Red Hat Enterprise Linux (RHEL) und im Enterprise-Markt
+      verbreitet.</p>
+
+      <p>
+        <strong>Version:</strong> Rocky Linux 9 (Latest, „Blue Onyx") ·
+        <strong>Edition:</strong> Minimal ISO ·
+        <strong>Größe:</strong> ca. 2 GB
+      </p>
+
+      <h4>Auswahlseite (für alle Architekturen)</h4>
+      <p>
+        <a href="https://rockylinux.org/download"
+           target="_blank" rel="noopener"
+           style="display: inline-block; padding: 0.6rem 1.2rem; background: var(--accent); color: var(--bg-deep); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-family: var(--font-mono);">
+          ⬇ rockylinux.org/download
+        </a>
+        <span style="display: block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+          Auf der Seite: „Rocky Linux 9" → eigene Architektur → „Minimal".
+        </span>
+      </p>
+
+      <h4>Direkte Links (Version 9.7) — empfohlen für diesen Kurs</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Architektur</th><th>Typischer Rechner</th><th>Direkter Download</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>x86_64</code></td>
+              <td>Windows-Laptops, Intel- &amp; AMD-PCs, ältere Macs</td>
+              <td>
+                <a href="https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.7-x86_64-minimal.iso"
+                   target="_blank" rel="noopener">Rocky-9.7-x86_64-minimal.iso</a>
+              </td>
+            </tr>
+            <tr>
+              <td><code>aarch64</code></td>
+              <td>Apple Silicon Macs (M1/M2/M3/M4), ARM-Server</td>
+              <td>
+                <a href="https://download.rockylinux.org/pub/rocky/9/isos/aarch64/Rocky-9.7-aarch64-minimal.iso"
+                   target="_blank" rel="noopener">Rocky-9.7-aarch64-minimal.iso</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Alternative: neueste Major-Version (10.1)</h4>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Falls du die <em>aktuellste</em> Major-Version testen möchtest. Die Kursinhalte
+        sind auf Rocky 9 abgestimmt — die meisten Befehle funktionieren in 10 identisch,
+        einzelne Pfade und Versionsangaben können abweichen.
+      </p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Architektur</th><th>Direkter Download</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>x86_64</code></td>
+              <td>
+                <a href="https://download.rockylinux.org/pub/rocky/10/isos/x86_64/Rocky-10.1-x86_64-minimal.iso"
+                   target="_blank" rel="noopener">Rocky-10.1-x86_64-minimal.iso</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <div class="callout-title">Welche Architektur ist meine?</div>
+          <p>Unter Windows: Win+R → <code>msinfo32</code> → „System Type" prüfen
+          (meist „x64-based PC" → <code>x86_64</code>).<br>
+          Auf macOS: Apple-Menü → „Über diesen Mac" → bei „Chip" steht
+          z.B. „Apple M2" (→ <code>aarch64</code>) oder „Intel" (→ <code>x86_64</code>).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ UBUNTU SERVER ============ -->
+  <section class="timeblock">
+    <div class="timeblock-header">
+      <span class="timeblock-time">3</span>
+      <h2 class="timeblock-title">Ubuntu Server LTS</h2>
+      <span class="timeblock-badge badge-vortrag">Geplant · Server-Modul</span>
+    </div>
+
+    <div class="subblock">
+      <p><strong>Wofür?</strong> Wird im kommenden Server-Modul für den Vergleich
+      Debian-Familie vs. Red-Hat-Familie eingesetzt.</p>
+
+      <p>
+        <strong>Version:</strong> 24.04 LTS (oder neuere LTS, falls verfügbar) ·
+        <strong>Größe:</strong> ca. 2,5 GB
+      </p>
+
+      <p style="margin-top: 1rem;">
+        <a href="https://ubuntu.com/download/server"
+           target="_blank" rel="noopener"
+           style="display: inline-block; padding: 0.6rem 1.2rem; background: var(--bg-medium); color: var(--accent); border: 1px solid var(--accent-dim); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-family: var(--font-mono);">
+          ⬇ ubuntu.com/download/server
+        </a>
+      </p>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">⏳</div>
+        <div class="callout-content">
+          <div class="callout-title">Noch nicht zwingend nötig</div>
+          <p>Für den Linux-Kurs (Tag 1–3) brauchst du Ubuntu noch nicht. Lade es
+          bei Gelegenheit, wenn das Server-Modul ansteht.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WINDOWS SERVER ============ -->
+  <section class="timeblock">
+    <div class="timeblock-header">
+      <span class="timeblock-time">4</span>
+      <h2 class="timeblock-title">Windows Server (Evaluation)</h2>
+      <span class="timeblock-badge badge-vortrag">Geplant · Windows-Modul</span>
+    </div>
+
+    <div class="subblock">
+      <p><strong>Wofür?</strong> Wird im kommenden Windows-Modul für Active Directory,
+      Gruppenrichtlinien und PowerShell-Administration eingesetzt.</p>
+
+      <p>
+        <strong>Edition:</strong> Windows Server 2025 Evaluation (180 Tage Test) ·
+        <strong>Größe:</strong> ca. 5 GB
+      </p>
+
+      <p style="margin-top: 1rem;">
+        <a href="https://go.microsoft.com/fwlink/?linkid=2345827&amp;clcid=0x407&amp;culture=de-de&amp;country=de"
+           target="_blank" rel="noopener"
+           style="display: inline-block; padding: 0.6rem 1.2rem; background: var(--bg-medium); color: var(--accent); border: 1px solid var(--accent-dim); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-family: var(--font-mono);">
+          ⬇ Windows Server 2025 Evaluation
+        </a>
+        <span style="display: block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+          Microsoft verlangt vor dem Download ggf. eine Anmeldung mit Microsoft-Konto.
+        </span>
+      </p>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">⏳</div>
+        <div class="callout-content">
+          <div class="callout-title">Noch nicht zwingend nötig</div>
+          <p>Für den Linux-Kurs nicht erforderlich. Erst herunterladen, wenn das
+          Windows-Modul startet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HARDWARE-ANFORDERUNGEN ============ -->
+  <section class="timeblock">
+    <div class="timeblock-header">
+      <span class="timeblock-time">⚙️</span>
+      <h2 class="timeblock-title">Hardware-Voraussetzungen</h2>
+      <span class="timeblock-badge badge-vortrag">Pre-Check</span>
+    </div>
+
+    <div class="subblock">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Komponente</th><th>Minimum</th><th>Empfehlung</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>CPU</strong></td><td>2 Kerne mit VT-x / AMD-V</td><td>4+ Kerne, Hyper-Threading</td></tr>
+            <tr><td><strong>RAM</strong></td><td>8 GB</td><td>16 GB+</td></tr>
+            <tr><td><strong>Festplatte</strong></td><td>30 GB frei</td><td>SSD mit 100+ GB frei</td></tr>
+            <tr><td><strong>BIOS/UEFI</strong></td><td>VT-x / AMD-V aktiv</td><td>+ VT-d / IOMMU</td></tr>
+            <tr><td><strong>Internet</strong></td><td>für Downloads + dnf install</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top: 1rem;">
+        Mehr zu Hypervisoren und Virtualisierung im
+        <a href="/linux/tag1/04-virtualisierung.html">Linux-Kapitel 04</a>,
+        zur Installation im
+        <a href="/linux/tag1/05-installation.html">Linux-Kapitel 05</a>.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
