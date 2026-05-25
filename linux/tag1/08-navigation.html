@@ -744,7 +744,7 @@ cat /proc/cpuinfo
         </details>
 
         <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer (5–10 min)</div>
-        <ol class="lab-tasks" start="21">
+        <ol class="lab-tasks" start="19">
           <li>Installiere mit sudo das Paket <code>tree</code>. Zeige damit dein
             Home-Verzeichnis bis Tiefe 2 — auch versteckte Dateien.</li>
           <li>Welches sind die <strong>drei größten</strong> Dateien in
@@ -770,20 +770,20 @@ cat /proc/cpuinfo
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 21) tree installieren und Home anzeigen
+<pre><code># 19) tree installieren und Home anzeigen
 sudo dnf install tree -y
 tree -L 2 -a ~
 
-# 22) drei größte Dateien in /usr/bin
+# 20) drei größte Dateien in /usr/bin
 ls -lhS /usr/bin/
 # Die ersten drei Einträge nach der "total"-Zeile sind die größten.
 
-# 23) nur Verzeichnisse im Home
+# 21) nur Verzeichnisse im Home
 ls -ld ~/*/
 # oder
 ls -d ~/*/
 
-# 24) Erklärung
+# 22) Erklärung
 # cd     → ins Home des aktuellen Users (Kurzform von cd ~)
 # cd ~   → ins Home des aktuellen Users (explizit)
 # cd /   → zur Wurzel des Dateisystems
