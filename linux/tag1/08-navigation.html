@@ -589,7 +589,9 @@ cat /etc/os-release</code></pre>
             einschließlich versteckter.</li>
           <li>Zeige den Inhalt der Datei <code>/etc/hostname</code> an. Was steht drin?</li>
           <li>Wechsle direkt nach <code>/var/log</code> — mit einem einzigen Befehl.</li>
-          <li>Wie viele Einträge hat dieses Verzeichnis ungefähr? (Tipp: <code>ls | wc -l</code>)</li>
+          <li>Schau dir den Inhalt von <code>/var/log</code> mit <code>ls</code> an. Sind es
+            ungefähr 10, 50 oder eher über 100 Einträge? (Bei langer Ausgabe Terminal
+            nach oben scrollen.)</li>
           <li>Gehe ein Verzeichnis hoch. Wo bist du jetzt? Prüfe mit pwd.</li>
           <li>Wechsle zurück ins vorherige Verzeichnis — <strong>mit nur zwei Zeichen</strong>.</li>
         </ol>
@@ -621,8 +623,9 @@ cat /etc/hostname
 # 7) direkt nach /var/log
 cd /var/log
 
-# 8) Anzahl Einträge
-ls | wc -l
+# 8) Anzahl Einträge grob einschätzen
+ls /var/log
+# Augenmaß genügt — es sind typischerweise 20-40 Einträge auf Rocky 9
 
 # 9) ein Verzeichnis hoch
 cd ..
@@ -643,8 +646,8 @@ cd -
           <li>Liste den Inhalt deines Homes inklusive versteckter Dateien.</li>
           <li>Zeige nur die größten Dateien in <code>/var/log</code> (nach Größe sortiert,
             human-readable, Long-Listing).</li>
-          <li>Zeige in <code>/var/log</code> die <strong>neuesten</strong> 5 Dateien.
-            Tipp: nach Zeit sortieren, dann <code>| head -5</code>.</li>
+          <li>Zeige <code>/var/log</code> nach Zeit sortiert an (neueste oben). Welche drei
+            Dateien wurden zuletzt geändert? Tipp: <code>ls -lt</code>.</li>
         </ol>
 
         <div class="solution">
@@ -676,15 +679,13 @@ ls -la ~
 # .bashrc, .bash_profile, .bash_history, .bash_logout
 # .ssh/, .config/ (falls vorhanden)
 
-# 14) /var/log nach Größe
-ls -lhS /var/log | head -10
+# 14) /var/log nach Größe sortiert (größte oben)
+ls -lhS /var/log
+# Die ersten Zeilen nach "total" sind die größten Dateien.
 
-# 15) /var/log neueste 5
-ls -lt /var/log | head -6
-# (head -6, weil erste Zeile "total ..." ist)
-
-# 16) /etc-Verzeichnisse mit s am Anfang
-ls -d /etc/s*/</code></pre>
+# 15) /var/log nach Zeit (neueste oben)
+ls -lt /var/log
+# Die ersten Einträge nach "total" sind die jüngsten.</code></pre>
             </div>
           </div>
         </div>
@@ -699,8 +700,8 @@ ls -d /etc/s*/</code></pre>
             <li>Wechsle nach <code>/proc/1/</code>. Wer oder was ist Prozess 1?
               (Tipp: <code>cat cmdline</code> — die Ausgabe hat keine Zeilenumbrüche,
               das ist normal).</li>
-            <li>Wie viele CPUs hat dein System? Schau in <code>/proc/cpuinfo</code> und
-              zähle die Zeilen mit „processor“. Tipp: <code>grep -c processor /proc/cpuinfo</code>.</li>
+            <li>Wie viele CPU-Kerne hat dein System? Schau dir <code>/proc/cpuinfo</code> mit
+              <code>cat</code> an und zähle die <code>processor</code>-Einträge ab.</li>
           </ol>
 
           <div class="solution">
@@ -734,8 +735,10 @@ cat cmdline
 # /usr/lib/systemd/systemd ...
 # Prozess 1 = systemd, der Init-Prozess
 
-# 18) Anzahl CPUs
-grep -c processor /proc/cpuinfo</code></pre>
+# 18) Anzahl CPU-Kerne
+cat /proc/cpuinfo
+# Jeder "processor: N"-Block ist ein Kern — auf einer typischen Schulungs-VM
+# meist 1 oder 2 Einträge.</code></pre>
               </div>
             </div>
           </div>
@@ -746,7 +749,7 @@ grep -c processor /proc/cpuinfo</code></pre>
           <li>Installiere mit sudo das Paket <code>tree</code>. Zeige damit dein
             Home-Verzeichnis bis Tiefe 2 — auch versteckte Dateien.</li>
           <li>Welches sind die <strong>drei größten</strong> Dateien in
-            <code>/usr/bin/</code>? Tipp: <code>ls -lhS</code> + <code>head</code>.</li>
+            <code>/usr/bin/</code>? Tipp: <code>ls -lhS /usr/bin/</code> — die größten stehen ganz oben.</li>
           <li>Zeige nur die Verzeichnisse in deinem Home — kein File darf in der Ausgabe sein.</li>
           <li>Erkläre kurz in eigenen Worten: Was ist der Unterschied zwischen
             <code>cd</code>, <code>cd ~</code> und <code>cd /</code>?</li>
@@ -773,8 +776,8 @@ sudo dnf install tree -y
 tree -L 2 -a ~
 
 # 22) drei größte Dateien in /usr/bin
-ls -lhS /usr/bin/ | head -4
-# head -4 weil erste Zeile "total ..." ist
+ls -lhS /usr/bin/
+# Die ersten drei Einträge nach der "total"-Zeile sind die größten.
 
 # 23) nur Verzeichnisse im Home
 ls -ld ~/*/

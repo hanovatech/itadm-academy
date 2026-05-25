@@ -656,10 +656,9 @@ sudo tail -f /var/log/secure
             (Die geschweiften Klammern heißen <em>Brace Expansion</em> — die schauen
             wir uns in Kapitel 11 systematisch an. Hier nur als Vorgriff: die Shell
             macht daraus <code>q1</code>, <code>q2</code>, <code>q3</code>, <code>q4</code>.)</li>
-          <li>Erstelle in deinem Home eine Datei <code>wichtig.txt</code> und schreibe
-            mit <code>echo</code> den Text „Diese Datei darf NICHT gelöscht werden" hinein.
+          <li>Erstelle in deinem Home eine leere Datei <code>wichtig.txt</code> mit <code>touch</code>.
             Mache eine Sicherheitskopie <code>wichtig.txt.bak</code>. Liste beide Dateien
-            mit <code>ls -lh</code>.</li>
+            mit <code>ls -lh</code>. (Inhalt schreiben wir in Kapitel 10 mit nano hinein.)</li>
           <li>Schaue dir mit <code>file</code> und <code>stat</code> die Datei
             <code>/etc/hostname</code> an. Welcher Dateityp wird gemeldet? Was ist die
             letzte Änderungszeit?</li>
@@ -696,9 +695,9 @@ ls -R archiv/
 
 # 4)
 cd ~
-echo "Diese Datei darf NICHT gelöscht werden" &gt; wichtig.txt
+touch wichtig.txt
 cp wichtig.txt wichtig.txt.bak
-ls -lh wichtig.txt*
+ls -lh wichtig.txt wichtig.txt.bak
 
 # 5)
 file /etc/hostname

@@ -722,9 +722,11 @@ ls -l /</code></pre>
             <p><em>Frage:</em> Welche Rocky-Version läuft hier?</p>
 
             <p><strong>Schritt 3 — System-Konfiguration (3 Min)</strong></p>
+            <p>Die Ausgabe von <code>ls /etc/</code> ist lang — falls sie nach oben rausläuft:
+            Scrollbalken im Terminal oder <code>clear</code> zum Aufräumen.</p>
             <div class="code-block">
               <div class="code-header"><div class="code-header-dots"><span class="code-dot code-dot-red"></span><span class="code-dot code-dot-yellow"></span><span class="code-dot code-dot-green"></span></div><span class="code-lang">bash</span><button class="copy-btn">📋 Kopieren</button></div>
-<pre><code>ls /etc/ | head -20
+<pre><code>ls /etc/
 cat /etc/hostname
 cat /etc/hosts</code></pre>
             </div>
@@ -733,8 +735,7 @@ cat /etc/hosts</code></pre>
             <p><strong>Schritt 4 — User-Informationen (3 Min)</strong></p>
             <div class="code-block">
               <div class="code-header"><div class="code-header-dots"><span class="code-dot code-dot-red"></span><span class="code-dot code-dot-yellow"></span><span class="code-dot code-dot-green"></span></div><span class="code-lang">bash</span><button class="copy-btn">📋 Kopieren</button></div>
-<pre><code>cat /etc/passwd | head -5
-cat /etc/passwd | tail -5</code></pre>
+<pre><code>cat /etc/passwd</code></pre>
             </div>
             <p><em>Frage:</em> Welche User haben <code>/bin/bash</code> als Shell, welche
             <code>/sbin/nologin</code>?</p>
@@ -742,12 +743,14 @@ cat /etc/passwd | tail -5</code></pre>
             <p><strong>Schritt 5 — System-Hardware (5 Min)</strong></p>
             <div class="code-block">
               <div class="code-header"><div class="code-header-dots"><span class="code-dot code-dot-red"></span><span class="code-dot code-dot-yellow"></span><span class="code-dot code-dot-green"></span></div><span class="code-lang">bash</span><button class="copy-btn">📋 Kopieren</button></div>
-<pre><code>cat /proc/meminfo | head -5
-cat /proc/cpuinfo | grep "model name" | head -1
-ls /dev/sd* 2&gt;/dev/null
-ls /dev/nvme* 2&gt;/dev/null</code></pre>
+<pre><code>cat /proc/meminfo
+cat /proc/cpuinfo
+ls /dev/</code></pre>
             </div>
-            <p><em>Frage:</em> Wie viel RAM hat dein System? Welche Disks sind angeschlossen?</p>
+            <p><em>Frage:</em> Suche in der Ausgabe von <code>cat /proc/meminfo</code> die Zeile
+            <code>MemTotal</code> — wie viel RAM hat dein System? In <code>/dev/</code> siehst
+            du alle Geräte — findest du Einträge, die mit <code>sd</code> oder <code>nvme</code>
+            anfangen? Das sind deine Festplatten.</p>
 
             <p><strong>Trainer-Hinweis:</strong> TN, die schnell durch sind, helfen ihren
             Nachbarn. Niemand fliegt allein, niemand fliegt nach 15 Minuten alleine.</p>
