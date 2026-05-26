@@ -1506,6 +1506,22 @@ hr {
   color: var(--accent);
 }
 
+.chapter-card-disabled,
+.chapter-card-disabled:hover {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: not-allowed;
+  border-color: var(--border-default);
+  background: var(--bg-dark);
+  transform: none;
+}
+
+.chapter-card-disabled .chapter-card-badge {
+  background: var(--bg-medium);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
 /* ========================================================================
    SCHEDULE LIST (Tagesplan auf der Tag-Indexseite)
    ======================================================================== */

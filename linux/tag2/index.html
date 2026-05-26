@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux · Tag 2 · Übersicht · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 2 von 3 · Übersicht</div>
+    <h1 class="page-title">
+      Tag 2 — Dateien <span class="highlight">beherrschen</span> &amp; schützen
+    </h1>
+    <p class="page-subtitle">
+      Heute hebst du deine Shell-Skills aufs nächste Level: Wildcards und Pipes
+      machen aus einzelnen Befehlen kleine Werkzeugketten. Du archivierst und
+      komprimierst mit tar/gzip, verstehst Inodes und Links, und lernst das
+      mächtigste Linux-Konzept überhaupt — Datei-Berechtigungen.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📅</span> Tag 2 von 3</span>
+      <span class="meta-item"><span class="meta-item-icon">⏰</span> 08:00 – 16:45</span>
+      <span class="meta-item"><span class="meta-item-icon">📚</span> 8 Kapitel</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> 5 Labs · 1 Cheat-Sheet</span>
+      <span class="meta-item"><span class="meta-item-icon">🐧</span> Rocky Linux 9</span>
+    </div>
+  </section>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-content">
+      <div class="callout-title">Am Ende des Tages kannst du …</div>
+      <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+        <li>mit Wildcards (<code>*</code>, <code>?</code>, <code>[ ]</code>) gezielt Dateigruppen ansprechen</li>
+        <li>Ein- und Ausgaben mit <code>&gt;</code>, <code>&gt;&gt;</code>, <code>2&gt;</code>, <code>&amp;&gt;</code> umleiten</li>
+        <li>Befehle mit <code>|</code> (Pipe) zu Werkzeugketten verbinden</li>
+        <li>mit <code>grep</code> Textmuster in Dateien und Streams finden</li>
+        <li>Verzeichnisse mit <code>tar</code> archivieren und mit <code>gzip</code> komprimieren</li>
+        <li>den Unterschied zwischen Hard- und Soft-Links erklären — inkl. Inode-Konzept</li>
+        <li>Dateirechte aus <code>ls -l</code> lesen (die 10 Zeichen)</li>
+        <li>mit <code>chmod</code> (symbolisch &amp; numerisch), <code>chown</code> und <code>chgrp</code> Rechte setzen</li>
+        <li>mit <code>find</code> und <code>locate</code> gezielt nach Dateien suchen</li>
+        <li>Dateien mit <code>diff</code> und <code>cmp</code> vergleichen</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TAGESPLAN ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Tagesplan</h2>
+    <p class="section-subtitle">
+      5 Blöcke à 75–90 Minuten, mit Pausen und Mittag. Tag 2 ist praxis-lastig:
+      jeder Block endet mit einem Lab. Die Reihenfolge ist bewusst so gewählt,
+      dass Tipp-Erfolge früh kommen — die Theorie der Berechtigungen schiebt
+      sich an den Nachmittag, wenn ihr schon im Flow seid.
+    </p>
+
+    <ul class="schedule-list">
+      <li><span class="schedule-time">08:00 – 09:30</span>
+          <span class="schedule-label">Block 1 · Rückblick + Wildcards/Redirection/Pipes
+            <small>Mini-Quiz vom Vortag, Wildcards <code>* ? [ ]</code>,
+            Brace Expansion, Redirection <code>&gt; &gt;&gt; 2&gt;</code>,
+            Pipes <code>|</code>, <code>tee</code>, <code>grep</code>
+            (Mini-Einstieg) + Lab 2.1</small></span></li>
+      <li><span class="schedule-time">09:30 – 09:45</span>
+          <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
+      <li><span class="schedule-time">09:45 – 11:15</span>
+          <span class="schedule-label">Block 2 · tar &amp; gzip
+            <small>„E-Mail vom IT-Leiter": Backup vorm Release. tar-Optionen
+            (c/x/t/v/f), gzip-Kombination + Lab 2.2</small></span></li>
+      <li><span class="schedule-time">11:15 – 11:30</span>
+          <span class="schedule-label">☕ Kurze Pause (15 min)</span></li>
+      <li><span class="schedule-time">11:30 – 12:45</span>
+          <span class="schedule-label">Block 3 · Inodes &amp; Links
+            <small>Inode-Konzept mit Visualisierung, Hard- vs. Soft-Links,
+            Verhalten beim Löschen + Lab 2.3</small></span></li>
+      <li><span class="schedule-time">12:45 – 13:30</span>
+          <span class="schedule-label">🍽️ Mittagspause (45 min)</span></li>
+      <li><span class="schedule-time">13:30 – 15:00</span>
+          <span class="schedule-label">Block 4 · Berechtigungen
+            <small><code>ls -l</code> zerlegen (10 Zeichen), <code>chmod</code>
+            symbolisch &amp; numerisch (0–7), <code>chown</code>,
+            <code>chgrp</code> + Lab 2.4</small></span></li>
+      <li><span class="schedule-time">15:00 – 15:15</span>
+          <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
+      <li><span class="schedule-time">15:15 – 16:45</span>
+          <span class="schedule-label">Block 5 · Suchen + Vergleichen + Wrap-Up
+            <small><code>find</code> (-name/-type/-size/-mtime),
+            <code>locate</code>, <code>which</code>/<code>whereis</code>,
+            <code>diff</code>, <code>cmp</code> + Lab 2.5 (Schnitzeljagd)
+            + Tages-Quiz + Cheat-Sheet</small></span></li>
+    </ul>
+  </section>
+
+  <!-- ============ KAPITEL-KACHELN ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Die Kapitel</h2>
+    <p class="section-subtitle">
+      8 Kapitel + Cheat-Sheet, jeweils mit Theorie, Lab und Kontrollfragen.
+      Die Kacheln werden im Laufe des Aufbaus freigeschaltet — was noch
+      „kommt bald" zeigt, ist Stand <em>in Bearbeitung</em>.
+    </p>
+
+    <div class="chapter-grid">
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 01 ]</div>
+        <div class="chapter-card-title">Wildcards, Redirection &amp; Pipes</div>
+        <p class="chapter-card-desc">
+          Mit <code>*</code> und <code>?</code> ganze Datei-Gruppen ansprechen,
+          mit <code>&gt;</code> und <code>|</code> Werkzeugketten bauen — und
+          <code>grep</code> zum Mitfiltern.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 02 ]</div>
+        <div class="chapter-card-title">Archivieren mit tar &amp; gzip</div>
+        <p class="chapter-card-desc">
+          Warum heißt tar eigentlich tar? Die Truhe-Analogie, c/x/t/v/f und
+          das erste Backup-Lab im HanovaTech-Stil.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 03 ]</div>
+        <div class="chapter-card-title">Inodes &amp; Links</div>
+        <p class="chapter-card-desc">
+          Was ist ein Inode? Hard-Link, Soft-Link — und was passiert, wenn
+          das Original gelöscht wird.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 04 ]</div>
+        <div class="chapter-card-title">Berechtigungen lesen</div>
+        <p class="chapter-card-desc">
+          Die 10 Zeichen aus <code>ls -l</code> zerlegen — User, Group, Other
+          und das <code>rwx</code>-Muster sicher entschlüsseln.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 05 ]</div>
+        <div class="chapter-card-title">Berechtigungen setzen</div>
+        <p class="chapter-card-desc">
+          <code>chmod</code> symbolisch und numerisch (0–7), <code>chown</code>
+          und <code>chgrp</code> — Rechte sauber im HanovaTech-Lab vergeben.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 06 ]</div>
+        <div class="chapter-card-title">Suchen &amp; Vergleichen</div>
+        <p class="chapter-card-desc">
+          Mit <code>find</code> und <code>locate</code> Dateien aufstöbern,
+          mit <code>diff</code> und <code>cmp</code> Versionen vergleichen.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ KAPITEL 07 ]</div>
+        <div class="chapter-card-title">Tages-Quiz Tag 2</div>
+        <p class="chapter-card-desc">
+          12 Fragen quer durch den Tag — von Pipes über Inodes bis chmod 755.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+      <a href="#" class="chapter-card chapter-card-disabled" aria-disabled="true">
+        <div class="chapter-card-number">[ FINALE ]</div>
+        <div class="chapter-card-title">Cheat-Sheet (Tag 2)</div>
+        <p class="chapter-card-desc">
+          Druckbare Befehls-Referenz für Wildcards, tar, chmod und find — für
+          Tag 3 und den Admin-Alltag.
+        </p>
+        <span class="chapter-card-badge">kommt bald</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ LERNZIELE ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Tageslernziele im Detail</h2>
+    <p class="section-subtitle">
+      Was wir am Ende von Tag 2 gemeinsam abhaken wollen — die Messlatte für das
+      Quiz und die Selbsteinschätzung.
+    </p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Bereich</th><th>Konkretes Ziel</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Shell-Power</strong></td><td>Du kombinierst Wildcards, Redirection und Pipes zu nützlichen Einzeilern.</td></tr>
+          <tr><td><strong>Filtern</strong></td><td>Du findest Textmuster mit <code>grep</code> und nutzt es im Pipe-Chain.</td></tr>
+          <tr><td><strong>Archivieren</strong></td><td>Du erzeugst und entpackst <code>.tar</code>- und <code>.tar.gz</code>-Archive selbstständig.</td></tr>
+          <tr><td><strong>Inodes</strong></td><td>Du erklärst, was ein Inode ist und wie sich Hard- und Soft-Links unterscheiden.</td></tr>
+          <tr><td><strong>Rechte lesen</strong></td><td>Du liest und erklärst jede <code>ls -l</code>-Zeile zu 100 %.</td></tr>
+          <tr><td><strong>Rechte setzen</strong></td><td>Du setzt Rechte symbolisch (<code>u+x</code>) und numerisch (<code>755</code>) zielsicher.</td></tr>
+          <tr><td><strong>Suchen</strong></td><td>Du nutzt <code>find</code> mit <code>-name</code>, <code>-type</code>, <code>-size</code>, <code>-mtime</code> produktiv.</td></tr>
+          <tr><td><strong>Vergleichen</strong></td><td>Du vergleichst zwei Dateien mit <code>diff</code> und kennst den Unterschied zu <code>cmp</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top: 1.5rem;">
+      <div class="callout-icon">💡</div>
+      <div class="callout-content">
+        <div class="callout-title">Lerntipp</div>
+        <p>Wildcards, Pipes und <code>chmod</code> sind die Werkzeuge, die du
+        als Admin <strong>täglich</strong> benutzt. Investiere die zwei Minuten
+        pro Befehl: einmal richtig getippt &gt; zehnmal kopiert. Wer heute jedes
+        Beispiel mindestens einmal abtippt, kommt am Abend mit Muscle Memory raus.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
