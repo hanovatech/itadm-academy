@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 04 · Berechtigungen lesen · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 2 · Kapitel 04 von 6</div>
+    <h1 class="page-title">
+      <span class="highlight">Berechtigungen</span> lesen
+    </h1>
+    <p class="page-subtitle">
+      Jede Datei in Linux trägt eine kleine 10-Zeichen-Botschaft mit sich
+      herum, die genau sagt: wer darf was. Heute lernst du, diese Botschaft
+      fließend zu lesen. Nächstes Kapitel lernst du, sie zu schreiben.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 04</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 15 min Lese-Übung</span>
+      <span class="meta-item"><span class="meta-item-icon">🔍</span> Lese-Übung 2.4a</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 4.1 WARUM BERECHTIGUNGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.1</span>
+        <h2 class="timeblock-title">Wer darf was? Warum es Berechtigungen gibt</h2>
+        <span class="timeblock-badge badge-vortrag">Einstieg</span>
+      </div>
+
+      <div class="subblock">
+        <p>Linux ist von Anfang an als <strong>Multi-User-System</strong>
+        gedacht. Auf einem Server arbeiten dutzende User gleichzeitig — du
+        willst aber nicht, dass jeder die Passwort-Datei lesen oder die
+        Konfiguration des Webservers ändern kann. Deswegen trägt jede Datei
+        drei Informationen mit sich:</p>
+        <ul>
+          <li><strong>Wem</strong> gehört sie? (Owner)</li>
+          <li><strong>Welche Gruppe</strong> darf damit arbeiten? (Group)</li>
+          <li><strong>Was dürfen alle anderen?</strong> (Others)</li>
+        </ul>
+        <p>Und für jede dieser drei Kategorien gibt es drei Rechte:
+        <strong>lesen, schreiben, ausführen</strong>.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum das wichtig ist</div>
+            <p>Das Berechtigungs-System ist das <strong>älteste
+            Sicherheits-Konzept</strong> in Unix — von 1971. Es ist so einfach,
+            dass es seit über 50 Jahren funktioniert, und so robust, dass auch
+            moderne Container-Technologien wie Docker darauf aufbauen. Wer
+            Linux-Berechtigungen versteht, versteht ~80 % aller
+            Linux-Sicherheits-Themen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.2 LS -L ZERLEGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.2</span>
+        <h2 class="timeblock-title"><code>ls -l</code> zerlegen — die 10 Zeichen im Überblick</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>$ ls -l bericht.txt
+-rw-r--r-- 1 admin team 245 Mai 26 14:22 bericht.txt</code></pre>
+        </div>
+
+        <div class="ascii-box">   -  rw-  r--  r--   1   admin  team   245  Mai 26 14:22  bericht.txt
+   ↑   ↑    ↑    ↑    ↑     ↑     ↑      ↑        ↑              ↑
+   │   │    │    │    │     │     │      │        │              │
+   │   │    │    │    │     │     │      │        │              Dateiname
+   │   │    │    │    │     │     │      │        Zeitstempel
+   │   │    │    │    │     │     │      Größe (Bytes)
+   │   │    │    │    │     │     Gruppe
+   │   │    │    │    │     Eigentümer (Owner)
+   │   │    │    │    Link-Count
+   │   │    │    Rechte für ANDERE  (Others, "o")
+   │   │    Rechte für die GRUPPE   (Group, "g")
+   │   Rechte für den EIGENTÜMER    (User, "u")
+   Typ (- = Datei, d = Dir, l = Symlink)</div>
+
+        <p>Die ersten <strong>10 Zeichen</strong> ganz links sind das, worum es
+        heute geht — der Rest ist Metadaten (Owner-Name, Gruppe, Größe, Datum,
+        Name).</p>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Lerne, von links nach rechts zu lesen</div>
+            <p>Die 10 Zeichen liest man in <strong>vier Blöcken</strong>:</p>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr><th>Block</th><th>Position</th><th>Bedeutung</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Zeichen 1</td><td><strong>Datei-Typ</strong></td></tr>
+                  <tr><td>2</td><td>Zeichen 2–4</td><td>Rechte für <strong>User</strong> (Eigentümer)</td></tr>
+                  <tr><td>3</td><td>Zeichen 5–7</td><td>Rechte für <strong>Group</strong></td></tr>
+                  <tr><td>4</td><td>Zeichen 8–10</td><td>Rechte für <strong>Others</strong> (alle anderen)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Diese Reihenfolge ist immer gleich. Wenn du sie einmal
+            verinnerlicht hast, liest du jede <code>ls -l</code>-Zeile in
+            Sekunden.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.3 DATEI-TYP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.3</span>
+        <h2 class="timeblock-title">Position 1: Der Datei-Typ</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Zeichen</th><th>Bedeutung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>-</code></td><td>normale Datei</td><td><code>-rw-r--r--</code> (<code>bericht.txt</code>)</td></tr>
+              <tr><td><code>d</code></td><td>Verzeichnis (<strong>d</strong>irectory)</td><td><code>drwxr-xr-x</code> (<code>Documents</code>)</td></tr>
+              <tr><td><code>l</code></td><td>Symbolischer Link (<strong>l</strong>ink)</td><td><code>lrwxrwxrwx</code> (<code>aktuelles-log</code>)</td></tr>
+              <tr><td><code>c</code></td><td><strong>c</strong>haracter device (z. B. <code>/dev/null</code>, Tastatur)</td><td><code>crw-rw-rw-</code></td></tr>
+              <tr><td><code>b</code></td><td><strong>b</strong>lock device (z. B. Festplatte <code>/dev/sda</code>)</td><td><code>brw-rw----</code></td></tr>
+              <tr><td><code>p</code></td><td>named <strong>p</strong>ipe (FIFO)</td><td><code>prw-r--r--</code></td></tr>
+              <tr><td><code>s</code></td><td><strong>s</strong>ocket (Inter-Prozess-Kommunikation)</td><td><code>srwxr-xr-x</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Was im Alltag wichtig ist</div>
+            <p>In 95 % aller Admin-Aufgaben siehst du nur drei Typen:
+            <strong><code>-</code></strong> (Datei),
+            <strong><code>d</code></strong> (Verzeichnis) und
+            <strong><code>l</code></strong> (Symlink, kennst du aus Kapitel
+            03!). Die anderen vier — <code>c</code>, <code>b</code>,
+            <code>p</code>, <code>s</code> — gibt es vor allem in
+            <code>/dev/</code>, <code>/proc/</code> und <code>/run/</code>.
+            Gut zu wissen, dass es sie gibt, aber selten zu setzen.</p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Verschiedene Typen sehen — Listing von /dev/
+ls -l /dev/ | head -10</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.4 USER GROUP OTHERS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.4</span>
+        <h2 class="timeblock-title">Positionen 2–10: User, Group, Others</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Block</th><th>Kürzel</th><th>Wer ist gemeint?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Positionen 2–4</td><td><code>u</code> (User)</td><td>Der <strong>Eigentümer</strong> der Datei — meistens der, der sie erstellt hat</td></tr>
+              <tr><td>Positionen 5–7</td><td><code>g</code> (Group)</td><td>Alle Mitglieder der <strong>Gruppe</strong>, die der Datei zugewiesen ist</td></tr>
+              <tr><td>Positionen 8–10</td><td><code>o</code> (Others)</td><td><strong>Alle anderen</strong> User auf dem System</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ascii-box">-rw-r--r--
+ \_/\_/\_/
+  ↑  ↑  ↑
+  │  │  │
+  │  │  Others:  r--  (nur lesen)
+  │  Group:      r--  (nur lesen)
+  User:          rw-  (lesen + schreiben)</div>
+
+        <h4>Wer gehört zu welcher Gruppe?</h4>
+        <p>Wenn du eine Datei erstellst, ist:</p>
+        <ul>
+          <li><strong>User</strong> = du selbst (z. B. <code>admin</code>)</li>
+          <li><strong>Group</strong> = deine <strong>primäre Gruppe</strong>
+            (z. B. <code>admin</code> oder <code>users</code>)</li>
+          <li><strong>Others</strong> = alle, die nicht User und nicht in der
+            Group sind</li>
+        </ul>
+        <p>Das gilt, bis jemand mit <code>chown</code> oder <code>chgrp</code>
+        etwas ändert (kommt in Kap. 05).</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Datei anlegen — du bist Owner, deine Gruppe ist Group
+touch test.txt
+ls -l test.txt
+# → -rw-r--r-- 1 admin admin 0 Mai 26 14:30 test.txt
+#                ^^^^^ ^^^^^
+#                Owner Group</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>whoami</code> und <code>groups</code></div>
+            <p>Mit dem Befehl <strong><code>whoami</code></strong> zeigst du dir
+            an, welcher User du bist. Mit <strong><code>groups</code></strong>
+            siehst du, welchen Gruppen du angehörst — du kannst in mehreren
+            gleichzeitig sein!</p>
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code>whoami        # → admin
+groups        # → admin wheel developers</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.5 R W X ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.5</span>
+        <h2 class="timeblock-title">Die drei Rechte: r, w, x</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Buchstabe</th><th>Steht für</th><th>Bei einer Datei</th><th>Bei einem Verzeichnis</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>r</code></td><td><strong>r</strong>ead (lesen)</td><td>Inhalt der Datei anzeigen</td><td>Inhalt des Verzeichnisses listen (<code>ls</code>)</td></tr>
+              <tr><td><code>w</code></td><td><strong>w</strong>rite (schreiben)</td><td>Datei ändern oder löschen</td><td>Dateien im Verzeichnis anlegen/löschen/umbenennen</td></tr>
+              <tr><td><code>x</code></td><td>e<strong>x</strong>ecute (ausführen)</td><td>Datei als Programm/Skript starten</td><td>Ins Verzeichnis hineingehen (<code>cd</code>)</td></tr>
+              <tr><td><code>-</code></td><td>(kein Recht)</td><td>–</td><td>–</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>⚠️ Wichtigster Aha-Moment: Die Bedeutung von <code>r</code>,
+        <code>w</code>, <code>x</code> ist bei <strong>Verzeichnissen
+        anders</strong> als bei Dateien!</p>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Verzeichnis-Rechte sind tückisch</div>
+            <p>Bei Verzeichnissen heißt:</p>
+            <ul>
+              <li><strong><code>r</code></strong> = ich darf die Liste der
+                Dateien sehen (<code>ls</code>), aber nichts öffnen</li>
+              <li><strong><code>w</code></strong> = ich darf <strong>Dateien im
+                Verzeichnis</strong> löschen, <strong>auch wenn sie mir nicht
+                gehören!</strong> (Solange ich <code>w</code>+<code>x</code> am
+                Verzeichnis habe.)</li>
+              <li><strong><code>x</code></strong> = ich darf reingehen
+                (<code>cd</code>) und Dateien öffnen, wenn ich deren Namen kenne
+                — aber nicht zwingend listen</li>
+            </ul>
+            <p>Klassisches Missverständnis: „Ich habe doch keine Schreibrechte
+            an der Datei — wieso konnte sie jemand löschen?" — Antwort: Wer
+            Schreibrechte am <strong>Verzeichnis</strong> hat, kann darin
+            Dateien löschen, <strong>egal wem sie gehören.</strong></p>
+          </div>
+        </div>
+
+        <h4>Beispiele zum Lesen</h4>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>-rw-r--r--   bericht.txt</code></pre>
+        </div>
+        <p>Datei, Owner darf lesen + schreiben, Group darf nur lesen, Others
+        dürfen nur lesen. Das ist die typische Default-Berechtigung für eine
+        neu erstellte Datei.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>drwxr-xr-x   Documents</code></pre>
+        </div>
+        <p>Verzeichnis, Owner darf alles, Group und Others dürfen rein und
+        listen, aber nichts anlegen oder löschen. Das ist die typische
+        Default-Berechtigung für ein neu erstelltes Verzeichnis.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>-rwx------   geheim.sh</code></pre>
+        </div>
+        <p>Datei (Skript), Owner darf alles, niemand sonst darf irgendwas.
+        Klassisch für ein privates Skript.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>-rw-rw-r--   team-notiz.txt</code></pre>
+        </div>
+        <p>Datei, Owner und Group dürfen lesen + schreiben, Others dürfen nur
+        lesen. Klassisch für Team-Dokumente.</p>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du Berechtigungen lesen?</div>
+            <ul>
+              <li><strong>Sicherheits-Audit:</strong> <code>ls -la</code> auf
+                einem Server und sofort sehen, welche Dateien für andere
+                lesbar/schreibbar sind, die es nicht sein sollten.</li>
+              <li><strong>Fehler-Diagnose:</strong> „Wieso kann der Webserver
+                die Datei nicht lesen?" → erste Antwort: <code>ls -l</code> und
+                schauen.</li>
+              <li><strong>Übergabe:</strong> Ein Kollege fragt „Darf ich da
+                reinschauen?" — du liest schnell <code>ls -l</code> und kannst
+                es ihm sagen.</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Use Cases — Berechtigungen lesen im Alltag</summary>
+          <ul>
+            <li><strong>Logfile-Zugriff prüfen:</strong> Bevor du als normaler
+              User in <code>/var/log/</code> rumfummelst — kurz
+              <code>ls -l</code>, ob du überhaupt darfst.</li>
+            <li><strong>SSH-Key-Diagnose:</strong> SSH lehnt deinen Key ab?
+              <code>ls -l ~/.ssh/id_rsa</code> — wenn da <code>r--</code> für
+              Others steht, hat SSH zurecht abgelehnt (zu offen).</li>
+            <li><strong>Web-Server-Probleme:</strong> „404 obwohl die Datei da
+              ist" — meistens fehlt dem Webserver-User <code>r</code> oder dem
+              Verzeichnis <code>x</code>.</li>
+            <li><strong>Skript funktioniert nicht:</strong> „Permission denied"
+              beim Ausführen → <code>ls -l</code> zeigt: <code>x</code>
+              fehlt.</li>
+          </ul>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Spezial-Rechte (SUID, SGID, Sticky)</summary>
+          <p>Manchmal siehst du in <code>ls -l</code> Buchstaben wie
+          <code>s</code> oder <code>t</code> statt <code>x</code>:</p>
+          <ul>
+            <li><strong><code>s</code> an User-Position</strong> (z. B.
+              <code>-rwsr-xr-x</code>) = <strong>SUID</strong> — Programm läuft
+              mit Rechten des Eigentümers, egal wer es startet. Klassisches
+              Beispiel: <code>passwd</code> (jeder User darf sein Passwort
+              ändern, das Programm aber muss als root auf <code>/etc/shadow</code>
+              zugreifen).</li>
+            <li><strong><code>s</code> an Group-Position</strong> =
+              <strong>SGID</strong> — bei Verzeichnissen: neue Dateien erben die
+              Gruppe des Verzeichnisses.</li>
+            <li><strong><code>t</code> an Others-Position</strong> (z. B.
+              <code>drwxrwxrwt</code>) = <strong>Sticky Bit</strong> — nur der
+              Eigentümer einer Datei darf sie löschen, auch wenn das Verzeichnis
+              für alle schreibbar ist. Klassisch: <code>/tmp</code>.</li>
+          </ul>
+          <p>Diese Spezial-Rechte sind fortgeschrittenes Wissen — du wirst sie
+          im Admin-Alltag sehen, aber selten selbst setzen müssen.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ LESE-ÜBUNG 2.4a ============ -->
+    <section class="lab" id="lab-2-4a">
+      <div class="lab-header">
+        <span class="lab-icon">🔍</span>
+        <span class="lab-label">Lese-Übung 2.4a</span>
+        <span class="lab-title">Berechtigungs-Detektiv — <code>ls -l</code> entschlüsseln</span>
+        <span class="lab-duration">15 min</span>
+      </div>
+      <div class="lab-body">
+        <div class="lab-scenario">
+          <p style="margin: 0 0 0.5rem 0;"><strong>📧 Von:</strong> Markus Becker · IT-Leitung<br>
+          <strong>An:</strong> Tim Schulz (du)<br>
+          <strong>Betreff:</strong> Schnell-Check vor dem Audit — kannst du die Rechte lesen?</p>
+          <hr style="border: 0; border-top: 1px solid var(--border-default); margin: 0.6rem 0;">
+          <p>Hi Tim,</p>
+          <p>kurz vor der Mittagspause noch was Schnelles: ich hab gleich eine
+          Vorbesprechung mit den Auditoren und brauch von dir, dass du folgende
+          <code>ls -l</code>-Outputs für mich entschlüsselst. <strong>Nur lesen,
+          nichts ändern!</strong> Setzen üben wir nachher in Kapitel 05.</p>
+          <p>Ich brauch von dir zu jeder Zeile drei Antworten:</p>
+          <ol style="margin: 0.5rem 0 0.5rem 1.2rem;">
+            <li>Was für ein Typ ist das? (Datei, Verzeichnis, Symlink, …)</li>
+            <li>Was darf der Owner, die Group, Others?</li>
+            <li>Fällt dir was auf, was sicherheitstechnisch nicht passt?</li>
+          </ol>
+          <p>Schick mir die Antworten gerne als Notiz — bei den auffälligen
+          Sachen besprechen wir nach der Mittagspause, wie wir das fixen.</p>
+          <p style="margin-bottom: 0;">Danke!<br>
+          — Markus</p>
+        </div>
+
+        <div class="lab-section-title">Deine Aufgabe</div>
+        <p>Beantworte für jede der 6 Zeilen unten: <strong>(a)</strong> Welcher
+        Typ? <strong>(b)</strong> Was dürfen Owner / Group / Others?
+        <strong>(c)</strong> Fällt dir sicherheitstechnisch etwas auf?</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">text</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>1)  -rw-r--r--   1 admin  admin   1024  Mai 20 09:15  notizen.txt
+
+2)  drwxr-xr-x   3 admin  admin   4096  Mai 22 14:30  projekte
+
+3)  -rwxrwxrwx   1 admin  admin    256  Mai 25 11:00  install.sh
+
+4)  -rw-------   1 admin  admin   2048  Mai 25 12:42  passwords.txt
+
+5)  lrwxrwxrwx   1 admin  admin     11  Mai 26 08:00  log -&gt; /var/log
+
+6)  -rw-rw-r--   1 sandra dev      512  Mai 24 16:20  team-config.conf</code></pre>
+        </div>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">text</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code>1) -rw-r--r-- notizen.txt
+   (a) Typ:    normale Datei (-)
+   (b) Owner:  rw-  (lesen + schreiben)
+       Group:  r--  (nur lesen)
+       Others: r--  (nur lesen)
+   (c) Auffällig: Nichts — Standard-Berechtigung für eine Notiz-Datei.
+
+2) drwxr-xr-x projekte
+   (a) Typ:    Verzeichnis (d)
+   (b) Owner:  rwx  (alles)
+       Group:  r-x  (listen + reingehen, nicht ändern)
+       Others: r-x  (listen + reingehen, nicht ändern)
+   (c) Auffällig: Nichts — Standard für ein Projekt-Verzeichnis.
+
+3) -rwxrwxrwx install.sh
+   (a) Typ:    normale Datei (Skript)
+   (b) Owner:  rwx
+       Group:  rwx
+       Others: rwx
+   (c) ⚠️ AUFFÄLLIG: 777 — JEDER darf alles!
+       Jeder kann das Skript ändern und ausführen.
+       SICHERHEITSRISIKO! Sollte z. B. -rwxr-x--- werden.
+
+4) -rw------- passwords.txt
+   (a) Typ:    normale Datei
+   (b) Owner:  rw-  (lesen + schreiben)
+       Group:  ---
+       Others: ---
+   (c) Sehr restriktiv — nur Owner hat Zugriff.
+       Genau richtig für eine Passwort-Datei! ✅
+
+5) lrwxrwxrwx log -&gt; /var/log
+   (a) Typ:    Symlink (l)
+   (b) Rechte: lrwxrwxrwx ist NORMAL für Symlinks —
+       die echten Rechte stehen am Ziel /var/log.
+   (c) Nichts Ungewöhnliches.
+
+6) -rw-rw-r-- team-config.conf
+   (a) Typ:    normale Datei
+   (b) Owner:  rw-  (lesen + schreiben), Owner = sandra
+       Group:  rw-  (lesen + schreiben), Group = dev
+       Others: r--  (nur lesen)
+   (c) Typische Team-Datei: sandra und alle in "dev"
+       können bearbeiten, der Rest darf nur lesen.
+       ✅ Passt für eine Team-Config.</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Berechtigungs-Cheat</div>
+            <p>Wer beim Lesen unsicher ist: <strong>schreib die 10 Zeichen
+            einfach untereinander auf und labele sie.</strong> Mit der Zeit
+            wirst du sie auf einen Blick lesen — am Anfang ist „Position für
+            Position abklopfen" der sicherste Weg.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.7 ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.7</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler beim Lesen</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — „Owner sind alle Admins"</div>
+            <p>Nein, <strong>Owner</strong> ist genau <strong>ein</strong> User
+            pro Datei. Wer mehrere Admins braucht, packt sie in eine
+            <strong>Gruppe</strong> (z. B. <code>wheel</code> oder
+            <code>admin</code>).</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Verzeichnis-<code>x</code> vergessen</div>
+            <p>Wer einem User <code>r</code> auf ein Verzeichnis gibt, aber kein
+            <code>x</code>, der hat ein Verzeichnis erzeugt, das man
+            <strong>listen</strong> kann (<code>ls</code>), aber <strong>nicht
+            betreten</strong> (<code>cd</code>). Klassischer Frustfehler.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — „Symlink-Rechte zählen"</div>
+            <p>Symlinks haben immer <code>lrwxrwxrwx</code> — das heißt
+            <strong>nicht</strong>, dass alle alles dürfen! Die echten Rechte
+            stehen an der <strong>Ziel-Datei</strong>, der Symlink zeigt nur
+            hin.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — „Es sind doch nur Buchstaben"</div>
+            <p><code>-rw-rw-rw-</code> sieht harmlos aus, ist aber
+            <strong>gefährlich</strong>: jeder auf dem System kann die Datei
+            ändern. Auf Servern mit vielen Usern ein No-Go.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wie viele Zeichen umfasst der Berechtigungs-Block in
+            <code>ls -l</code>, und wie sind sie aufgeteilt?</li>
+          <li>Was bedeutet das <strong>erste</strong> Zeichen — und nenne drei
+            mögliche Werte.</li>
+          <li>Wer ist mit <strong>User</strong>, wer mit <strong>Group</strong>,
+            wer mit <strong>Others</strong> gemeint?</li>
+          <li>Was bedeutet <strong><code>r</code></strong>,
+            <strong><code>w</code></strong>, <strong><code>x</code></strong> bei
+            einer <strong>Datei</strong>?</li>
+          <li>Was bedeuten dieselben Buchstaben bei einem
+            <strong>Verzeichnis</strong>?</li>
+          <li>Lies diese Zeile: <code>drwxr-x---</code> — was darf wer?</li>
+          <li>Wieso haben Symlinks immer <code>lrwxrwxrwx</code>, und sind sie
+            deswegen unsicher?</li>
+          <li>Du siehst <code>-rwxrwxrwx</code> an einer Datei — warum solltest
+            du nervös werden?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>10 Zeichen.</strong> Aufteilung: Zeichen 1 = Typ,
+                2–4 = User, 5–7 = Group, 8–10 = Others.</li>
+              <li>Der <strong>Typ</strong> der Datei. Mögliche Werte u. a.:
+                <code>-</code> (Datei), <code>d</code> (Verzeichnis),
+                <code>l</code> (Symlink), seltener <code>c</code>,
+                <code>b</code>, <code>p</code>, <code>s</code>.</li>
+              <li><strong>User</strong> = Eigentümer der Datei.
+                <strong>Group</strong> = Mitglieder der zugewiesenen Gruppe.
+                <strong>Others</strong> = alle übrigen User auf dem System.</li>
+              <li>Datei: <code>r</code> = Inhalt lesen, <code>w</code> = Datei
+                ändern/löschen, <code>x</code> = als Programm ausführen.</li>
+              <li>Verzeichnis: <code>r</code> = Inhalt auflisten, <code>w</code>
+                = Dateien darin anlegen/löschen, <code>x</code> = ins
+                Verzeichnis hineingehen / auf Dateien zugreifen.</li>
+              <li><strong>Verzeichnis</strong> (<code>d</code>).
+                <strong>Owner</strong> darf alles (<code>rwx</code>).
+                <strong>Group</strong> darf reingehen und listen, aber nichts
+                ändern (<code>r-x</code>). <strong>Others</strong> dürfen gar
+                nichts (<code>---</code>).</li>
+              <li>Symlinks haben immer <code>lrwxrwxrwx</code>, weil die
+                <strong>echten Rechte am Ziel</strong> der Verlinkung zählen.
+                Der Symlink selbst hat keine eigenen Rechte. Nicht unsicher —
+                das System ignoriert die Symlink-Rechte komplett.</li>
+              <li>Weil <code>-rwxrwxrwx</code> (in der nächsten Stunde lernst
+                du: das ist <code>777</code>) bedeutet: <strong>jeder darf
+                alles</strong> mit dieser Datei. Lesen, ändern, ausführen. Auf
+                Multi-User-Systemen ein klassisches Sicherheitsrisiko —
+                meistens unbeabsichtigt entstanden durch ein faules
+                <code>chmod 777</code>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="03-inodes-links.html">
+        <span class="nav-eyebrow">← Kapitel 03</span>
+        <span class="nav-title">Inodes &amp; Links</span>
+      </a>
+      <a href="05-berechtigungen-setzen.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 05 →</span>
+        <span class="nav-title">Berechtigungen setzen</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
