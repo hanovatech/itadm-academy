@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 02 · Archivieren mit tar &amp; gzip · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 2 · Kapitel 02 von 8</div>
+    <h1 class="page-title">
+      Archivieren mit <span class="highlight">tar</span> &amp; gzip
+    </h1>
+    <p class="page-subtitle">
+      Aus vielen Dateien wird eine — und die nimmt nur noch einen Bruchteil
+      des Platzes ein. <code>tar</code> packt, <code>gzip</code> komprimiert,
+      beide zusammen sind seit 50 Jahren der Standard für Backups,
+      Software-Releases und Umzüge unter Unix.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 02</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 45 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 2.2</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 2.1 ARCHIVIEREN VS KOMPRIMIEREN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.1</span>
+        <h2 class="timeblock-title">Worum geht's? Archivieren vs. Komprimieren</h2>
+        <span class="timeblock-badge badge-vortrag">Einstieg</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Archivieren = Truhe.</strong> Du wirfst 100 Dateien rein,
+        schließt den Deckel — jetzt ist es <strong>eine</strong> Datei. Aber die
+        Truhe ist genauso schwer wie alle Sachen zusammen. Die Truhe heißt
+        <code>archiv.tar</code>.</p>
+
+        <p><strong>Komprimieren = Vakuum.</strong> Du saugst die Luft aus der
+        Truhe. Jetzt ist sie <strong>kleiner</strong> — aber drinnen ist immer
+        noch das Gleiche. Die vakuum-verpackte Truhe heißt
+        <code>archiv.tar.gz</code>.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Frage</th><th>Archivieren</th><th>Komprimieren</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Was passiert?</td><td>Viele Dateien → eine Datei</td><td>Größe wird reduziert</td></tr>
+              <tr><td>Wird kleiner?</td><td>Nein (sogar minimal größer!)</td><td>Ja, oft 50–90 %</td></tr>
+              <tr><td>Wofür?</td><td>Mailen, kopieren, übertragen</td><td>Speicherplatz sparen, Bandbreite sparen</td></tr>
+              <tr><td>Werkzeug</td><td><code>tar</code></td><td><code>gzip</code>, <code>bzip2</code>, <code>xz</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum nicht zip?</div>
+            <p><code>zip</code> kann beides in einem Schritt — das ist
+            Windows-Standard. Unter Unix ist die Trennung historisch gewachsen:
+            jedes Tool macht eine Sache richtig (Unix-Philosophie). Außerdem
+            konnte <code>zip</code> ursprünglich keine Unix-Berechtigungen oder
+            Symlinks speichern — <code>tar</code> schon. Für Linux-Backups:
+            immer <code>tar</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.2 TAR ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.2</span>
+        <h2 class="timeblock-title"><code>tar</code> — die Truhe</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Der Name kommt von <strong>t</strong>ape <strong>ar</strong>chiver —
+        aus den 70ern, als Backups noch auf Magnetbänder geschrieben wurden.
+        Heute ist <code>tar</code> das wichtigste Backup- und
+        Transport-Werkzeug der Unix-Welt.</p>
+
+        <h4>Die wichtigsten Optionen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Option</th><th>Bedeutung</th><th>Merkhilfe</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>c</code></td><td><strong>c</strong>reate — neues Archiv erstellen</td><td>Create</td></tr>
+              <tr><td><code>x</code></td><td>e<strong>x</strong>tract — Archiv entpacken</td><td>eXtract</td></tr>
+              <tr><td><code>t</code></td><td>lis<strong>t</strong> — Inhalt zeigen (ohne entpacken)</td><td>lisT</td></tr>
+              <tr><td><code>v</code></td><td><strong>v</strong>erbose — anzeigen, was gerade passiert</td><td>Verbose</td></tr>
+              <tr><td><code>f</code></td><td><strong>f</strong>ile — Archivdatei-Name folgt</td><td>File</td></tr>
+              <tr><td><code>z</code></td><td><strong>z</strong>ip — gzip-Komprimierung ein/aus</td><td>gZip</td></tr>
+              <tr><td><code>-C</code></td><td><strong>C</strong>hange dir — Verzeichniswechsel vor Archivieren/Entpacken</td><td>Change</td></tr>
+              <tr><td><code>-r</code></td><td>append — Dateien an existierendes Archiv anhängen</td><td>Replace/Add</td></tr>
+              <tr><td><code>-u</code></td><td><strong>u</strong>pdate — nur neuere Dateien hinzufügen</td><td>Update</td></tr>
+              <tr><td><code>--occurrence=N</code></td><td>bei doppelten Einträgen: nur N-tes Vorkommen</td><td>(Spezialfall)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Die magische Kombi</div>
+            <p>Du wirst die Buchstaben fast immer in einer dieser drei
+            Kombinationen sehen:</p>
+            <ul>
+              <li><code>tar -cvf</code> → <strong>C</strong>reate <strong>V</strong>erbose <strong>F</strong>ile (archivieren)</li>
+              <li><code>tar -tvf</code> → <strong>T</strong>ype/list <strong>V</strong>erbose <strong>F</strong>ile (anzeigen)</li>
+              <li><code>tar -xvf</code> → e<strong>X</strong>tract <strong>V</strong>erbose <strong>F</strong>ile (entpacken)</li>
+            </ul>
+            <p><code>v</code> und <code>f</code> sind fast immer dabei.
+            <code>c</code>, <code>t</code>, <code>x</code> sind die drei
+            Aktionen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du tar im Admin-Alltag?</div>
+            <ul>
+              <li><strong>Backups:</strong> Verzeichnis komplett sichern, mit
+                Berechtigungen — <code>tar -cvf etc-backup.tar /etc</code></li>
+              <li><strong>Umzug:</strong> Projektordner auf anderen Server
+                bringen — packen, übertragen (<code>scp</code>), entpacken</li>
+              <li><strong>Lieferung:</strong> Software wird oft als
+                <code>.tar</code>-Archiv ausgeliefert (z. B. Kernel-Quellcodes)</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Use Cases — tar in der Praxis</summary>
+          <ul>
+            <li><strong>Selektives Archivieren:</strong> Nur
+              <code>.conf</code>-Dateien aus <code>/etc</code> (kombiniert mit
+              <code>find</code>, kommt in Kap. 06)</li>
+            <li><strong>Restore-Tests:</strong> Backup nach
+              <code>/tmp/test/</code> entpacken zum Prüfen — bevor's ernst wird</li>
+            <li><strong>Vor Updates:</strong> <code>/etc</code> sichern, bei
+              Problem zurückspielen</li>
+            <li><strong>Datei-Transfer mit Berechtigungen:</strong>
+              <code>scp</code> allein vergisst manchmal Eigentümer,
+              <code>tar</code> behält alles (User, Group, Mode, Timestamps)</li>
+          </ul>
+        </details>
+
+        <h4>Grundlagen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Archiv erstellen: drei Dateien in eine
+tar -cvf archiv.tar datei1.txt datei2.txt datei3.txt
+
+# Ganzes Verzeichnis archivieren
+tar -cvf projekt.tar projekt/
+
+# Inhalt anzeigen, ohne zu entpacken
+tar -tvf archiv.tar
+
+# Archiv entpacken (im aktuellen Verzeichnis!)
+tar -xvf archiv.tar
+
+# Archiv in bestimmtes Verzeichnis entpacken
+tar -xvf archiv.tar -C /tmp/zielordner</code></pre>
+        </div>
+
+        <h4>Fortgeschritten</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># -C: in Zielverzeichnis wechseln vor Entpacken
+tar -xvf archiv.tar -C /tmp/restore/
+
+# -C beim Archivieren: relative Pfade im Archiv
+tar -cvf etc-backup.tar -C / etc/
+# → drin steht "etc/..." statt "/etc/..."
+
+# -r: einzelne Datei nachträglich hinzufügen (nur UN-komprimiert!)
+tar -rvf archiv.tar neue_datei.txt
+
+# -u: nur geänderte/neuere Dateien hinzufügen
+tar -uvf backup.tar dokumente/
+
+# --occurrence: bei mehrfachen Versionen die N-te holen
+tar --occurrence=2 -xvf archiv.tar config.ini</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>-u</code> und <code>-r</code> brauchen UN-komprimierte Archive</div>
+            <p>Mit <code>.tar.gz</code>-Dateien funktionieren <code>-u</code>
+            und <code>-r</code> <strong>nicht</strong> (Fehler:
+            <em>„Cannot update compressed archives"</em>). Grund:
+            gzip-Streams lassen sich nicht in der Mitte ändern. Wer
+            inkrementelle Backups will, lässt entweder die Komprimierung weg
+            oder schreibt jeden Tag ein neues <code>.tar.gz</code>.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Die Geschichte von tar (1979)</summary>
+          <ul>
+            <li>1979 erstmals in Unix Version 7 veröffentlicht</li>
+            <li>Backups auf Tape Drives (Magnetbänder) — daher der Name</li>
+            <li>Auf Tapes kann man nicht springen — <code>tar</code> schreibt
+              <strong>sequenziell</strong> (das spürst du heute noch bei
+              langsamen <code>tar -t</code>-Operationen auf großen Archiven)</li>
+            <li>Deswegen die <code>-f</code>-Option: ohne <code>-f</code> würde
+              <code>tar</code> aufs Band schreiben (Default-Gerät
+              <code>/dev/tape</code>)</li>
+            <li>Format heute standardisiert als POSIX.1-2001 (<code>pax</code>)</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 2.3 GZIP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.3</span>
+        <h2 class="timeblock-title"><code>gzip</code> — die Vakuumpumpe</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Der Name kommt von <strong>G</strong>NU <strong>zip</strong>,
+        entwickelt 1992 als freier zip-Ersatz. <code>gzip</code> komprimiert
+        <strong>eine Datei</strong> — die wird durch die komprimierte Version
+        <strong>ersetzt</strong>. Standardendung: <code>.gz</code>.
+        <code>gunzip</code> macht's wieder auf.</p>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du gzip im Admin-Alltag?</div>
+            <ul>
+              <li><strong>Logfile-Rotation:</strong> Alte Logs werden gezippt,
+                sparen Platz
+                (<code>/var/log/messages-20260520.gz</code>)</li>
+              <li><strong>Backup-Verkleinerung:</strong> Vor dem Übertragen auf
+                Backup-Server: erst komprimieren</li>
+              <li><strong>Software-Lieferung:</strong> <code>.tar.gz</code> ist
+                De-facto-Standard für Linux-Source-Releases</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Use Cases — gzip in der Praxis</summary>
+          <ul>
+            <li><strong>Live-Logs anschauen ohne entpacken:</strong>
+              <code>zcat /var/log/messages-20260520.gz | grep error</code></li>
+            <li><strong>Datenbank-Dumps:</strong>
+              <code>mysqldump db | gzip &gt; backup.sql.gz</code> — direkt aus
+              Pipe, ohne Zwischendatei!</li>
+            <li><strong>Bandbreite sparen:</strong> Vor <code>scp</code> mit
+              <code>gzip</code> verkleinern</li>
+            <li><strong>Stream-Komprimierung:</strong> <code>tar -czf</code>
+              schreibt gzip-Stream direkt ins Archiv (siehe Abschnitt 2.4)</li>
+          </ul>
+        </details>
+
+        <h4>Praxis-Beispiele</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Datei komprimieren — Original wird durch .gz ersetzt!
+gzip grosses_log.txt
+# → grosses_log.txt.gz (Original ist weg)
+
+# Wieder entpacken
+gunzip grosses_log.txt.gz
+# → grosses_log.txt (wieder da, .gz ist weg)
+
+# Komprimieren UND Original behalten (-k = keep)
+gzip -k wichtig.log
+
+# Komprimierungsstufe wählen (1=schnell, 9=klein)
+gzip -9 grosse_datei.txt
+
+# Komprimierten Inhalt anschauen, ohne zu entpacken
+zcat geheim.txt.gz
+zless lang.txt.gz</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">gzip ersetzt das Original!</div>
+            <p><code>gzip log.txt</code> → die Datei <code>log.txt</code> ist
+            danach <strong>weg</strong>, es gibt nur noch
+            <code>log.txt.gz</code>. Das ist anders als bei <code>zip</code>
+            unter Windows. Mit <code>-k</code> (keep) bleibt das Original
+            erhalten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.4 TAR + GZIP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.4</span>
+        <h2 class="timeblock-title"><code>tar</code> + <code>gzip</code> kombiniert — der Klassiker</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>tar</code> kann <code>gzip</code> direkt aufrufen — mit der
+        Option <code>-z</code>. Ergebnis: <code>.tar.gz</code> (oder
+        <code>.tgz</code> — gleiche Sache, andere Schreibweise). Spart einen
+        Schritt: kein <code>tar</code> → dann <code>gzip</code>, sondern
+        alles in einem.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Was macht das?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>tar -czvf archiv.tar.gz ordner/</code></td><td>Archivieren UND komprimieren</td></tr>
+              <tr><td><code>tar -xzvf archiv.tar.gz</code></td><td>Entpacken (und entkomprimieren)</td></tr>
+              <tr><td><code>tar -tzvf archiv.tar.gz</code></td><td>Anzeigen, was drin ist</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Eselsbrücke für die Reihenfolge</div>
+            <p><code>czvf</code> klingt wie <em>„Create, Zip, Verbose, File"</em>
+            — in der Reihenfolge, in der du arbeitest:</p>
+            <ol>
+              <li><strong>C</strong>reate — neues Archiv</li>
+              <li><strong>Z</strong>ip — mit gzip komprimieren</li>
+              <li><strong>V</strong>erbose — zeig mir, was passiert</li>
+              <li><strong>F</strong>ile — gleich kommt der Dateiname</li>
+            </ol>
+          </div>
+        </div>
+
+        <h4>Praxis-Beispiele</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Klassiker: Verzeichnis archivieren und komprimieren in einem Schritt
+tar -czvf website-backup.tar.gz /var/www/
+
+# Inhalt prüfen (ohne entpacken)
+tar -tzvf website-backup.tar.gz
+
+# Entpacken
+tar -xzvf website-backup.tar.gz
+
+# Mit Datumsstempel im Namen
+tar -czvf backup-$(date +%Y%m%d).tar.gz /etc/
+# → backup-20260526.tar.gz</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.5 ANDERE KOMPRIMIERER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.5</span>
+        <h2 class="timeblock-title">Andere Komprimierer im Überblick</h2>
+        <span class="timeblock-badge badge-vortrag">Bonus</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>gzip</code> ist der Standard — aber es gibt Spezialisten für
+        andere Anforderungen.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Tool</th><th>Endung</th><th>Geschwindigkeit</th><th>Kompressionsrate</th><th>tar-Flag</th><th>Typischer Einsatz</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>gzip</code></td><td><code>.gz</code></td><td>⭐⭐⭐ schnell</td><td>⭐⭐ mittel</td><td><code>-z</code></td><td>Standard, überall verfügbar</td></tr>
+              <tr><td><code>bzip2</code></td><td><code>.bz2</code></td><td>⭐⭐ mittel</td><td>⭐⭐⭐ gut</td><td><code>-j</code></td><td>Wenn's wirklich klein sein muss</td></tr>
+              <tr><td><code>xz</code></td><td><code>.xz</code></td><td>⭐ langsam</td><td>⭐⭐⭐⭐ sehr gut</td><td><code>-J</code></td><td>Software-Releases, Kernel-Tarballs</td></tr>
+              <tr><td><code>zstd</code></td><td><code>.zst</code></td><td>⭐⭐⭐⭐ sehr schnell</td><td>⭐⭐⭐ gut</td><td><code>--zstd</code></td><td>Moderne Wahl (seit ~2018), Container-Welt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Praxis-Beispiele</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># bzip2-Variante (kleiner, aber langsamer)
+tar -cjvf backup.tar.bz2 ordner/
+tar -xjvf backup.tar.bz2
+
+# xz-Variante (am kleinsten, am langsamsten)
+tar -cJvf backup.tar.xz ordner/
+tar -xJvf backup.tar.xz
+
+# zstd-Variante (modern, schnell, gut)
+tar --zstd -cvf backup.tar.zst ordner/</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Welches Tool wann?</div>
+            <p><strong>Faustregel:</strong></p>
+            <ul>
+              <li><strong>Logs, schnelle Backups, Skripte</strong> →
+                <code>gzip</code> (Standard)</li>
+              <li><strong>Software-Distribution, Kernel-Quellen</strong> →
+                <code>xz</code> (kleinste Files)</li>
+              <li><strong>Container-Images, Cloud-Storage</strong> →
+                <code>zstd</code> (beste Balance Speed/Größe)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 2.2 ============ -->
+    <section class="lab" id="lab-2-2">
+      <div class="lab-header">
+        <span class="lab-icon">🧪</span>
+        <span class="lab-label">Lab 2.2</span>
+        <span class="lab-title">Backup vor dem Release</span>
+        <span class="lab-duration">45 min</span>
+      </div>
+      <div class="lab-body">
+        <div class="lab-scenario">
+          <p style="margin: 0 0 0.5rem 0;"><strong>📧 Von:</strong> Markus Becker · IT-Leitung<br>
+          <strong>An:</strong> Tim Schulz (du)<br>
+          <strong>Betreff:</strong> Backup vorm Release — bitte heute noch!</p>
+          <hr style="border: 0; border-top: 1px solid var(--border-default); margin: 0.6rem 0;">
+          <p>Hi Tim,</p>
+          <p>wir releasen morgen früh die neue Version unserer Website. Bevor
+          das passiert, brauche ich von dir ein <strong>vollständiges
+          Backup</strong> vom Projekt-Ordner — gepackt und komprimiert, damit
+          es auf den Backup-Share passt.</p>
+          <p>Konkret:</p>
+          <ol style="margin: 0.5rem 0 0.5rem 1.2rem;">
+            <li>Ein Test-Projekt aufbauen (so wie es bei uns aussieht —
+              <code>website/</code> mit <code>src/</code>, <code>configs/</code>,
+              <code>logs/</code>).</li>
+            <li>Davon ein <strong>unkomprimiertes</strong>
+              <code>tar</code>-Archiv erstellen — damit ich sehe, was du
+              archiviert hast.</li>
+            <li>Inhalt vom Archiv listen, damit ich's gegenchecken kann.</li>
+            <li>Dann das Ganze <strong>komprimieren</strong> und auf den
+              Backup-Share legen (in deinem Fall: <code>~/backups/</code>).</li>
+            <li><strong>Wichtig:</strong> Dateiname mit Datum, damit wir alte
+              Backups auseinanderhalten können (z. B.
+              <code>website-backup-20260526.tar.gz</code>).</li>
+            <li>Zur Übung: Lösch dein Test-Projekt und stell es aus dem Backup
+              wieder her — <strong>Restore-Test ist Pflicht!</strong></li>
+          </ol>
+          <p>Wenn Zeit bleibt: vergleich mal die Dateigröße zwischen
+          <code>.tar</code> und <code>.tar.gz</code> — Sandra fragt mich immer,
+          wie viel gzip eigentlich bringt. Ich brauch ein gutes Beispiel.</p>
+          <p style="margin-bottom: 0;">Danke!<br>
+          — Markus</p>
+        </div>
+
+        <div class="lab-section-title">Teil A — Projekt aufsetzen (8 min)</div>
+        <ol class="lab-tasks">
+          <li>Erstelle <code>~/website/</code> und die Unterordner
+            <code>src/</code>, <code>configs/</code>, <code>logs/</code> in
+            <strong>einem</strong> Befehl (Brace Expansion!).</li>
+          <li>Erstelle <code>~/backups/</code>.</li>
+          <li>Befülle die Ordner mit Beispielinhalten (HTML-Datei in
+            <code>src/</code>, Config in <code>configs/</code>, ein paar
+            Log-Zeilen in <code>logs/</code>). <em>Hinweis: Heredocs aus
+            Lab 2.1!</em></li>
+          <li>Schau dir mit <code>ls -la ~/website/</code> an, was du gebaut hast.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code>mkdir -p ~/website/{src,configs,logs}
+mkdir -p ~/backups
+
+cat &gt; ~/website/src/index.html &lt;&lt; 'EOF'
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+  &lt;h1&gt;HanovaTech&lt;/h1&gt;
+  &lt;p&gt;Willkommen auf der Website.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+EOF
+
+cat &gt; ~/website/configs/nginx.conf &lt;&lt; 'EOF'
+listen 80;
+server_name www.hanovatech.de;
+root /var/www/html;
+EOF
+
+cat &gt; ~/website/logs/access.log &lt;&lt; 'EOF'
+2026-05-26 09:00:00 GET / 200
+2026-05-26 09:01:23 GET /api/users 200
+2026-05-26 09:05:11 GET /favicon.ico 404
+EOF
+
+ls -la ~/website/</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Unkomprimiertes Archiv (10 min)</div>
+        <ol class="lab-tasks" start="5">
+          <li>Wechsle in dein Home-Verzeichnis.</li>
+          <li>Erstelle ein <strong>unkomprimiertes</strong>
+            <code>tar</code>-Archiv namens <code>website.tar</code> vom
+            kompletten <code>website/</code>-Ordner.</li>
+          <li>Liste den Inhalt des Archivs auf — ohne zu entpacken.</li>
+          <li>Schaue dir die Größe von <code>website.tar</code> an und
+            vergleiche mit der Gesamtgröße der Originaldateien
+            (<code>du -sh website/</code>).</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 5)
+cd ~
+
+# 6)
+tar -cvf website.tar website/
+
+# 7)
+tar -tvf website.tar
+
+# 8)
+ls -lh website.tar
+du -sh website/
+# → Archiv ist ungefähr gleich groß wie Original (nicht komprimiert!)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Komprimieren + Restore-Test (12 min)</div>
+        <ol class="lab-tasks" start="9">
+          <li>Erstelle jetzt ein <strong>komprimiertes</strong> Archiv mit
+            Datum im Namen: <code>website-backup-YYYYMMDD.tar.gz</code>
+            (Hinweis: <code>$(date +%Y%m%d)</code>).</li>
+          <li>Verschiebe das <code>.tar.gz</code>-Archiv in
+            <code>~/backups/</code>.</li>
+          <li><strong>Lösche</strong> das gesamte
+            <code>~/website/</code>-Verzeichnis (mutiger Schritt — vorher gut
+            nachdenken!).</li>
+          <li><strong>Stelle das Verzeichnis aus dem Backup wieder her</strong>
+            und prüfe, ob alle Dateien wieder da sind.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 9)
+tar -czvf website-backup-$(date +%Y%m%d).tar.gz website/
+
+# 10)
+mv website-*.tar.gz ~/backups/
+
+# 11)
+rm -r ~/website
+ls website 2&gt;/dev/null || echo "weg!"
+
+# 12) Restore
+cd ~
+tar -xzvf ~/backups/website-backup-*.tar.gz
+
+ls -la website/
+cat website/src/index.html</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Größenvergleich für Sandra (8 min)</div>
+        <ol class="lab-tasks" start="13">
+          <li>Vergleiche <code>ls -lh</code> von <code>website.tar</code> und
+            <code>~/backups/website-backup-*.tar.gz</code>.</li>
+          <li>Berechne grob: Wie viel Prozent hat gzip gespart?</li>
+          <li><strong>Probier dasselbe mit <code>bzip2</code></strong>
+            (<code>tar -cjvf website.tar.bz2 website/</code>) und vergleich
+            alle drei Größen.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 13)
+ls -lh website.tar ~/backups/website-backup-*.tar.gz
+
+# 14) Verhältnis (Schätzwerte)
+# Bei kleinen Test-Dateien ist der Unterschied klein, weil
+# der gzip-Header Overhead hat. Bei echten großen Logs spart
+# gzip oft 70-90%.
+
+# 15) Bonus: bzip2 für Vergleich
+tar -cjvf website.tar.bz2 website/
+ls -lh website.tar ~/backups/website-backup-*.tar.gz website.tar.bz2</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+        <ol class="lab-tasks" start="16">
+          <li>Schreibe einen einzeiligen Befehl, der alle drei Aktionen macht:
+            Archivieren + Komprimieren + Verschieben
+            (<code>&amp;&amp;</code>-Verkettung).</li>
+          <li>Erstelle ein Archiv, das <strong>nur</strong> die
+            <code>.log</code>-Dateien aus <code>~/website/logs/</code> enthält
+            (Tipp: Wildcards in tar).</li>
+        </ol>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Achtung — ab hier wird's <code>tar</code>-Profi-Wissen</div>
+            <p>Die nächsten Aufgaben testen Optionen, die du im Alltag selten
+            brauchst, aber wenn doch, kennst du jetzt den Weg. Wer 18–21
+            schafft, ist offiziell <code>tar</code>-Profi.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="18">
+          <li><strong><code>-C</code> clean nutzen:</strong> Erstelle ein neues,
+            <strong>unkomprimiertes</strong> Backup
+            <code>etc-backup.tar</code> von <code>/etc</code>, aber so, dass
+            im Archiv die Pfade <strong>relativ</strong> sind (also
+            <code>etc/hostname</code> statt <code>/etc/hostname</code>). Schau
+            dir die ersten 5 Einträge im Archiv mit
+            <code>tar -tvf etc-backup.tar | head -5</code> an — was siehst
+            du?</li>
+          <li><strong><code>-r</code> Anhängen:</strong> Lege im Home eine neue
+            Datei <code>notes.txt</code> mit beliebigem Inhalt an. Hänge sie
+            an dein <strong>unkomprimiertes</strong>
+            <code>website.tar</code>-Archiv aus Teil B an. Bestätige mit
+            <code>tar -tvf</code>, dass sie jetzt drin ist.
+            <strong>Versuche</strong> anschließend dasselbe mit
+            <code>website-backup-*.tar.gz</code> — was passiert?</li>
+          <li><strong><code>-u</code> Update:</strong> Ändere den Inhalt von
+            <code>~/website/src/index.html</code> (z. B. ergänze eine Zeile
+            mit <code>echo</code>). Versuche, die geänderte Datei mit
+            <code>tar -uvf website.tar website/</code> ins
+            <strong>unkomprimierte</strong> Archiv zu aktualisieren. Schau dir
+            das Archiv mit <code>tar -tvf</code> an — was fällt auf?</li>
+          <li><strong><code>--occurrence</code> benutzen:</strong> In deinem
+            aktualisierten <code>website.tar</code> ist <code>index.html</code>
+            jetzt <strong>zweimal</strong> drin (alte + neue Version). Entpacke
+            gezielt die <strong>zweite</strong> Version nach
+            <code>/tmp/test-restore/</code>. Tipp:
+            <code>tar --occurrence=2 -xvf website.tar website/src/index.html -C /tmp/test-restore/</code>.
+            Vergleiche mit dem aktuellen Original.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 16) Drei in einer Zeile
+tar -czvf website-$(date +%Y%m%d).tar.gz website/ &amp;&amp; \
+mv website-*.tar.gz ~/backups/ &amp;&amp; \
+echo "Backup fertig!"
+
+# 17) Nur .log-Dateien
+tar -czvf logs-backup.tar.gz website/logs/*.log
+
+# 18) -C beim Archivieren — relative Pfade
+cd ~
+tar -cvf etc-backup.tar -C / etc/
+tar -tvf etc-backup.tar | head -5
+# → "etc/hostname", "etc/passwd" usw. — kein führender /
+
+# 19) -r anhängen ans .tar
+echo "Notizen für später" &gt; notes.txt
+tar -rvf website.tar notes.txt
+tar -tvf website.tar | tail -3
+# → notes.txt ist jetzt drin
+
+# Mit .tar.gz scheitert es:
+tar -rvf ~/backups/website-backup-*.tar.gz notes.txt 2&gt;&amp;1 | head -3
+# → tar: Cannot update compressed archives
+# → tar: Error is not recoverable: exiting now
+
+# 20) -u Update
+echo "&lt;!-- Update vom $(date) --&gt;" &gt;&gt; ~/website/src/index.html
+tar -uvf website.tar website/
+tar -tvf website.tar | grep index.html
+# → index.html erscheint ZWEIMAL (alt + neu)
+
+# 21) --occurrence=2 — die neuere Version extrahieren
+mkdir -p /tmp/test-restore
+tar --occurrence=2 -xvf website.tar website/src/index.html -C /tmp/test-restore/
+cat /tmp/test-restore/website/src/index.html
+# → enthält den Update-Kommentar</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 2.2 geschafft?</div>
+            <p>Sehr gut! Du hast jetzt das wichtigste Backup-Werkzeug der
+            Unix-Welt verstanden. <strong>Restore-Test</strong> (Schritt 12)
+            ist übrigens ein Pflicht-Schritt im echten Admin-Alltag: Ein
+            Backup, das du nie zurückgespielt hast, ist <strong>kein</strong>
+            Backup.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.7 ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.7</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — <code>gzip</code> löscht das Original</div>
+            <p><code>gzip wichtig.log</code> → <code>wichtig.log</code> ist weg,
+            nur <code>wichtig.log.gz</code> da. Erwartung war „kopieren mit
+            Komprimierung". Lösung: <code>gzip -k</code> (keep) oder
+            <code>gzip -c wichtig.log &gt; wichtig.log.gz</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — <code>tar -xvf</code> im falschen Verzeichnis</div>
+            <p><code>tar -xvf archiv.tar</code> entpackt <strong>dorthin, wo du
+            gerade bist</strong>, NICHT in den Quellordner. Wer im Home
+            <code>tar -xvf grosses.tar</code> ausführt, kann sich das Home
+            zumüllen. Lösung: Erst <code>mkdir test &amp;&amp; cd test</code>,
+            dann entpacken. Oder mit <code>-C</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — Falsche Option-Reihenfolge bei <code>-f</code></div>
+            <p><code>-f</code> muss <strong>immer das letzte</strong> Flag
+            sein, weil danach der Dateiname kommt.
+            <code>tar -fxv archiv.tar</code> versucht <code>xv</code> als
+            Dateinamen zu öffnen und scheitert. Lösung:
+            <code>tar -xvf</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — <code>tar -xvzf</code> für eine <code>.tar</code>-Datei</div>
+            <p>Wenn die Datei nur <code>.tar</code> ist (nicht
+            <code>.tar.gz</code>), führt <code>-z</code> zu
+            <em>„gzip: stdin: not in gzip format"</em>. Lösung: bei
+            <code>.tar</code> kein <code>-z</code>, bei <code>.tar.gz</code>
+            mit <code>-z</code> (modernes <code>tar</code> erkennt es oft
+            automatisch).</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 5 — Backup-Pfad mit Slash am Anfang</div>
+            <p><code>tar -cvf backup.tar /etc/</code> archiviert mit
+            <strong>absolutem Pfad</strong> — beim Entpacken landet alles wieder
+            unter <code>/etc/</code>. Beim Restore von einem anderen Server ein
+            böses Problem. <strong>Wer <code>-C</code> kannte (siehe Lab Bonus
+            18), hat das Problem nicht.</strong> Lösung:
+            <code>tar -cvf backup.tar -C / etc/</code> oder in den Parent-Ordner
+            wechseln.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Was ist der Unterschied zwischen <strong>Archivieren</strong> und
+            <strong>Komprimieren</strong>?</li>
+          <li>Wofür steht <strong>tar</strong>?</li>
+          <li>Welche drei Aktionen unterscheidet <code>tar</code>
+            (Buchstaben)?</li>
+          <li>Was bedeutet die Option <code>-v</code>?</li>
+          <li>Was bedeutet die Option <code>-f</code>, und warum muss sie am
+            Ende stehen?</li>
+          <li>Womit komprimierst du eine Datei mit <code>gzip</code> — und was
+            passiert mit dem Original?</li>
+          <li>Wie kombinierst du <code>tar</code> und <code>gzip</code> in
+            einem Befehl? Nenne den klassischen Aufruf.</li>
+          <li>Welche Endung verwendet ein gzip-komprimiertes tar-Archiv?
+            (Zwei Schreibweisen.)</li>
+          <li>Welche zwei Befehle zeigen den Inhalt eines
+            <code>.tar.gz</code>-Archivs, ohne es zu entpacken?</li>
+          <li>Wann benutzt du <code>xz</code> statt <code>gzip</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li>Archivieren = viele Dateien zu einer machen (Truhe).
+                Komprimieren = Daten kleiner machen (Vakuum). <code>tar</code>
+                archiviert, <code>gzip</code> komprimiert.</li>
+              <li><strong>t</strong>ape <strong>ar</strong>chiver — kommt von
+                Backups auf Magnetbänder.</li>
+              <li><code>c</code> = create (erstellen), <code>x</code> = extract
+                (entpacken), <code>t</code> = list (anzeigen).</li>
+              <li><code>v</code> = verbose — zeigt während des Vorgangs an,
+                welche Dateien gerade verarbeitet werden.</li>
+              <li><code>f</code> = file — danach folgt der Dateiname des
+                Archivs. Deshalb am Ende, weil der Dateiname direkt dahinter
+                erwartet wird.</li>
+              <li><code>gzip datei.log</code> — das Original wird
+                <strong>durch</strong> die komprimierte Datei
+                <strong>ersetzt</strong> (<code>datei.log.gz</code>). Mit
+                <code>-k</code> (keep) bleibt das Original erhalten.</li>
+              <li><code>tar -czvf archiv.tar.gz ordner/</code> —
+                <code>c</code>reate, <code>z</code>ip, <code>v</code>erbose,
+                <code>f</code>ile.</li>
+              <li><code>.tar.gz</code> (ausführlich) oder <code>.tgz</code>
+                (kurz) — beides ist dieselbe Sache.</li>
+              <li><code>tar -tzvf archiv.tar.gz</code> (klassisch) oder
+                <code>tar -tvf archiv.tar.gz</code> (modernes <code>tar</code>
+                erkennt gzip automatisch).</li>
+              <li>Wenn die Datei <strong>so klein wie möglich</strong> sein
+                soll und Geschwindigkeit egal ist — typisch bei
+                Software-Releases, Linux-Kernel-Tarballs.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="01-wildcards-redirection.html">
+        <span class="nav-eyebrow">← Kapitel 01</span>
+        <span class="nav-title">Wildcards, Redirection &amp; Pipes</span>
+      </a>
+      <a href="03-inodes-links.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 03 →</span>
+        <span class="nav-title">Inodes &amp; Links</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
