@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 01 · Wildcards, Redirection &amp; Pipes · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 2 · Kapitel 01 von 8</div>
+    <h1 class="page-title">
+      <span class="highlight">Wildcards</span>, Redirection &amp; Pipes
+    </h1>
+    <p class="page-subtitle">
+      Vier Werkzeuge, die deine Shell vom „Befehl-für-Befehl-Tippen" zum
+      <strong>Werkzeug-Set</strong> erheben: Platzhalter für viele Dateien
+      gleichzeitig, Ausgabeumleitung in Dateien, Befehle in Ketten
+      zusammensetzen — und mit <code>grep</code> gezielt filtern.
+      Lab 2.1 setzt alles zusammen.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 01</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 45 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 2.1</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 1.1 RÜCKBLICK ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.1</span>
+        <h2 class="timeblock-title">Rückblick + Was kommt heute</h2>
+        <span class="timeblock-badge badge-vortrag">Einstieg</span>
+      </div>
+
+      <div class="subblock">
+        <p>Gestern hast du dich im Terminal eingelebt: Navigation mit
+        <code>cd</code>, <code>ls</code> und <code>pwd</code>, Dateien anlegen
+        mit <code>touch</code>, <code>mkdir</code>, <code>cp</code>,
+        <code>mv</code> und <code>rm</code>, Textdateien mit <code>nano</code>
+        und <code>vim</code> bearbeiten, einfache Ausgabe mit <code>echo</code>.
+        Heute kombinieren wir das alles zu <strong>Werkzeugketten</strong>.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Vom Einzelbefehl zur Werkzeugkette</div>
+            <p>Bis gestern: <code>ls</code> → in Datei speichern → öffnen →
+            durchsuchen. Heute: <code>ls /etc | grep conf &gt; meine_configs.txt</code>
+            — alles in einer Zeile. Wildcards, Redirection, Pipes und
+            <code>grep</code> sind die vier Bausteine, mit denen Admins ihren
+            Alltag erledigen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1.2 WILDCARDS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.2</span>
+        <h2 class="timeblock-title">Wildcards (Globbing) — viele Dateien auf einmal</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Wildcards</strong> (auch „Globs“ genannt) sind Platzhalter,
+        die die Shell durch <em>passende Dateinamen</em> ersetzt, BEVOR sie
+        den Befehl ausführt. Damit kannst du <code>ls *.txt</code> sagen — und
+        die Shell macht intern daraus <code>ls anna.txt bernd.txt clara.txt</code>.</p>
+
+        <h4>Die vier wichtigsten Wildcards</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Wildcard</th><th>Bedeutung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>*</code></td>
+                <td>beliebig viele beliebige Zeichen (auch null)</td>
+                <td><code>ls *.txt</code></td>
+              </tr>
+              <tr>
+                <td><code>?</code></td>
+                <td>GENAU EIN beliebiges Zeichen</td>
+                <td><code>ls test?.txt</code> → test1.txt bis testZ.txt</td>
+              </tr>
+              <tr>
+                <td><code>[abc]</code></td>
+                <td>EIN Zeichen aus der Liste</td>
+                <td><code>ls test[135].txt</code> → nur 1, 3, 5</td>
+              </tr>
+              <tr>
+                <td><code>[a-z]</code> / <code>[0-9]</code></td>
+                <td>EIN Zeichen aus einem Bereich</td>
+                <td><code>ls report-[a-c].txt</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du Wildcards im Admin-Alltag?</div>
+            <ul>
+              <li><strong>Backup-Skripte:</strong>
+                <code>tar -czf backup.tar.gz /var/log/*.log.1</code></li>
+              <li><strong>Aufräumen:</strong>
+                <code>rm /tmp/build_*.tmp</code></li>
+              <li><strong>Massen-Kopie:</strong>
+                <code>cp ~/Downloads/rechnung_Q1_*.pdf ~/buchhaltung/2026/</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Use Cases im Admin-Alltag</summary>
+          <ul>
+            <li><strong>Reporting:</strong>
+              <code>ls -la /etc/nginx/conf.d/*.conf</code> — welche Configs gibt's?</li>
+            <li><strong>Selektives Verschieben:</strong>
+              <code>mv *.jpg ~/bilder/</code></li>
+            <li><strong>Pattern-Statistik:</strong>
+              <code>ls /var/log/*.gz | wc -l</code> — wie viele rotierte Logs?</li>
+            <li><strong>User-Cleanup:</strong>
+              <code>userdel test_user{01..10}</code> (mit Brace Expansion)</li>
+          </ul>
+        </details>
+
+        <h4>Praxis-Beispiele</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Alle .txt-Dateien
+ls *.txt
+
+# Genau ein Zeichen
+ls test?.txt
+
+# Auswahl
+ls test[135].txt
+
+# Bereich
+ls report-[a-c].txt
+
+# Alle Dateien, die mit "m" beginnen
+ls /usr/bin/m*
+
+# Alle versteckten Dateien (mit Punkt am Anfang)
+ls -d .*</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">⚙️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wichtig zu verstehen</div>
+            <p>Wildcards werden <strong>von der Shell</strong> aufgelöst, nicht
+            vom Befehl selbst. <code>rm</code> sieht nie das Sternchen — es
+            bekommt schon die fertige Liste der Treffer übergeben. Konsequenz:
+            wenn nichts passt, wird das Sternchen <em>wörtlich</em>
+            übergeben — das gibt dann unerwartete Fehler.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Was ist Globbing?</summary>
+          <p>Der Begriff <em>Globbing</em> kommt vom alten Unix-Tool
+          <code>glob</code> (global command, 1969) — einem Hilfsprogramm in
+          frühen Unix-Versionen, das genau diese Aufgabe übernahm: Wildcards
+          in Dateinamen auflösen. Heute steckt das direkt in der Shell.</p>
+          <p>Wildcards sind <strong>nicht dasselbe</strong> wie reguläre
+          Ausdrücke (Regex). Wildcards arbeiten auf Dateinamen mit einer
+          kleinen Sprache (<code>* ? [ ]</code>). Regex ist mächtiger, aber
+          komplizierter — wir teasern das in <code>grep</code> kurz an.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 1.3 BRACE EXPANSION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.3</span>
+        <h2 class="timeblock-title">Brace Expansion <code>{ }</code></h2>
+        <span class="timeblock-badge badge-vortrag">Bonus</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wildcards matchen <strong>existierende</strong> Dateien — Brace
+        Expansion <em>generiert</em> Text-Listen, unabhängig davon, ob die
+        Dateien existieren. Damit baust du in einer Zeile, wofür sonst eine
+        Schleife nötig wäre.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Listen
+echo {rot,gelb,blau}
+# → rot gelb blau
+
+# Bereiche
+echo {1..10}
+# → 1 2 3 4 5 6 7 8 9 10
+
+# 10 Dateien auf einmal
+touch backup_2024-{01..10}.tar.gz
+
+# Verzeichnisstruktur in einem Rutsch
+mkdir -p projekt/{src,docs,tests}/{alt,neu}</code></pre>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du Brace Expansion?</div>
+            <ul>
+              <li><strong>Projektstruktur in 1 Zeile:</strong>
+                <code>mkdir -p projekt/{src,docs,tests,config}</code></li>
+              <li><strong>Schnell-Backup:</strong>
+                <code>cp config.ini{,.bak}</code> → erzeugt
+                <code>config.ini.bak</code></li>
+              <li><strong>Testdateien generieren:</strong>
+                <code>touch test_{001..100}.txt</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Brace-Tricks</summary>
+          <ul>
+            <li><strong>Datums-Loops:</strong>
+              <code>mkdir backup_2026-{01..12}</code></li>
+            <li><strong>Schnell umbenennen:</strong>
+              <code>mv datei.txt{,.alt}</code> → datei.txt.alt</li>
+            <li><strong>Mehrere Endungen:</strong>
+              <code>ls *.{txt,log,md}</code></li>
+            <li><strong>Testuser-Familie:</strong>
+              <code>useradd test_user_{a,b,c}</code></li>
+          </ul>
+        </details>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Brace Expansion ist kein Wildcard-Ersatz</div>
+            <p><code>ls {*.txt,*.log}</code> funktioniert technisch, aber
+            <code>ls *.txt *.log</code> ist klarer und verständlicher. Brace
+            Expansion glänzt da, wo du Listen <em>erzeugen</em> willst, nicht
+            beim Matchen existierender Dateien.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1.4 REDIRECTION ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.4</span>
+        <h2 class="timeblock-title">Redirection — stdin / stdout / stderr umleiten</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Jeder Linux-Prozess hat drei Standard-Datenkanäle. Mit Redirection
+        lenkst du diese um — das ist die Basis von <em>allem</em>, was die
+        Shell mächtig macht.</p>
+
+        <div class="ascii-box">       ┌─────────┐
+  0 →  │         │ → 1   (stdout: Normal-Ausgabe)
+       │ befehl  │
+       │         │ → 2   (stderr: Fehler)
+       └─────────┘
+
+       0 = stdin  (was reinkommt)
+       1 = stdout (was rauskommt)
+       2 = stderr (was schief geht)</div>
+
+        <h4>Die wichtigsten Operatoren</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Operator</th><th>Bedeutung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>&gt;</code></td><td>stdout in Datei (überschreibt!)</td><td><code>ls &gt; liste.txt</code></td></tr>
+              <tr><td><code>&gt;&gt;</code></td><td>stdout an Datei anhängen</td><td><code>date &gt;&gt; log.txt</code></td></tr>
+              <tr><td><code>2&gt;</code></td><td>stderr in Datei</td><td><code>cd /nope 2&gt; fehler.log</code></td></tr>
+              <tr><td><code>&amp;&gt;</code></td><td>stdout UND stderr in Datei</td><td><code>befehl &amp;&gt; alles.log</code></td></tr>
+              <tr><td><code>&gt; datei 2&gt;&amp;1</code></td><td>klassisch: beide in eine Datei</td><td><code>befehl &gt; alles.log 2&gt;&amp;1</code></td></tr>
+              <tr><td><code>&lt;</code></td><td>stdin aus Datei</td><td><code>sort &lt; unsortiert.txt</code></td></tr>
+              <tr><td><code>2&gt; /dev/null</code></td><td>Fehler verwerfen</td><td><code>find / -name "x" 2&gt;/dev/null</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du Redirection im Admin-Alltag?</div>
+            <ul>
+              <li><strong>Reports erzeugen:</strong>
+                <code>ls -la /var/log &gt; inventur.txt</code> — zum Mailen
+                oder Archivieren</li>
+              <li><strong>Snapshot vor Änderungen:</strong>
+                <code>iptables -L &gt; firewall_vorher.txt</code> —
+                Rollback-Referenz</li>
+              <li><strong>Fehler ausblenden:</strong>
+                <code>find / -name "x.conf" 2&gt;/dev/null</code> — nur Treffer,
+                kein Permission-Denied-Spam</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Use Cases — Redirection in der Praxis</summary>
+          <ul>
+            <li><strong>Log-Aggregation per Cron:</strong>
+              <code>(date; uptime; free -h) &gt;&gt; /var/log/healthcheck.log</code></li>
+            <li><strong>Saubere Skript-Ausgabe:</strong>
+              <code>mein_skript.sh &gt; output.log 2&gt; errors.log</code></li>
+            <li><strong>Stille Cron-Jobs:</strong>
+              <code>befehl &gt; /dev/null</code> — Cron mailt nur bei Fehlern</li>
+            <li><strong>Kompletter Mute:</strong>
+              <code>command &gt; /dev/null 2&gt;&amp;1</code> — nur Exit-Code zählt</li>
+            <li><strong>Schnell-Test ohne Output:</strong>
+              <code>cat datei.txt &gt; /dev/null &amp;&amp; echo OK</code></li>
+            <li><strong>DB-Dump einspielen:</strong>
+              <code>mysql -u root -p &lt; dump.sql</code></li>
+            <li><strong>Remote-Skript mit lokaler Eingabe:</strong>
+              <code>ssh server "befehl" &lt; lokale_eingabe.txt</code></li>
+          </ul>
+        </details>
+
+        <h4>Live-Demo</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Datum in Logfile schreiben — überschreibt!
+date &gt; heute.log
+
+# Datum anhängen — bleibt erhalten
+date &gt;&gt; heute.log
+
+# Nur Fehler abfangen
+find /etc -name "*.conf" 2&gt; fehler.log
+
+# Output unterdrücken
+ls -la /root 2&gt; /dev/null
+
+# Stdout UND stderr in eine Datei — zwei Schreibweisen
+befehl &amp;&gt; alles.log              # kurz (modern)
+befehl &gt; alles.log 2&gt;&amp;1          # klassisch (portabler)</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Überschreiben statt anhängen</div>
+            <p><code>&gt;</code> ist <strong>brutal</strong>. Ohne Nachfrage,
+            ohne Backup — Zieldatei wird auf null Bytes geleert und neu
+            geschrieben. Wenn dir der Inhalt einer Logdatei wichtig ist:
+            <code>&gt;&gt;</code> benutzen. Ein einziger fehlender Strich kann
+            das Audit-Log eines ganzen Tages auslöschen.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Was ist /dev/null?</summary>
+          <p><code>/dev/null</code> ist die <strong>schwarze Mülltonne</strong>
+          des Systems — alles, was du dort reinschreibst, ist weg. Beim Lesen
+          ist sie sofort EOF (also leer).</p>
+          <p>Technisch eine echte Gerätedatei (engl. <em>character device</em>)
+          im FHS unter <code>/dev/</code>. Verwandte:</p>
+          <ul>
+            <li><code>/dev/zero</code> — endlose Null-Bytes (für Test-Dateien)</li>
+            <li><code>/dev/random</code> / <code>/dev/urandom</code> —
+              Zufallszahlen-Quellen</li>
+          </ul>
+          <p>Beispiel — 100-MB-Testdatei erzeugen:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code>dd if=/dev/zero of=test.img bs=1M count=100</code></pre>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 1.5 PIPES & TEE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.5</span>
+        <h2 class="timeblock-title">Pipes <code>|</code> und <code>tee</code></h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine <strong>Pipe</strong> (Pipe-Symbol <code>|</code>, deutsche
+        Tastatur: AltGr+&lt;) leitet stdout des einen Befehls als stdin in
+        den nächsten. Damit kannst du kleine Werkzeuge zu großen Workflows
+        verknüpfen — ohne Zwischendatei.</p>
+
+        <div class="ascii-box">Redirection:                  Pipe:
+
+┌────────┐                    ┌────────┐    ┌────────┐
+│ ls     │ ──→ datei.txt      │ ls     │ →→ │ wc -l  │ → 7
+└────────┘                    └────────┘    └────────┘
+
+(Zwischendatei nötig)         (kein Zwischenfile)</div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du Pipes im Admin-Alltag?</div>
+            <ul>
+              <li><strong>Live-Fehler beobachten:</strong>
+                <code>tail -f /var/log/messages | grep -i error</code></li>
+              <li><strong>Prozess prüfen:</strong>
+                <code>ps aux | grep nginx</code></li>
+              <li><strong>Top-Speicherfresser finden:</strong>
+                <code>du -sh /* 2&gt;/dev/null | sort -h | tail -5</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr Pipe-Klassiker</summary>
+          <ul>
+            <li><code>who | wc -l</code> — wie viele User eingeloggt</li>
+            <li><code>df -h | grep -v tmpfs</code> — Disk-Belegung kompakt</li>
+            <li><code>ps aux --sort=-%mem | head -10</code> — Top-RAM</li>
+            <li><code>cat access.log | awk '{print $1}' | sort -u | wc -l</code> — eindeutige IPs</li>
+            <li><code>last | head -50 | grep -v reboot</code> — Login-Historie ohne Reboots</li>
+          </ul>
+        </details>
+
+        <h4>Live-Demo</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Wie viele Dateien im Verzeichnis?
+ls | wc -l
+
+# Wie viele Zeilen hat /etc/passwd?
+cat /etc/passwd | wc -l
+
+# Lange Ausgabe in Pages (Enter / Leertaste / q)
+ls -la /usr/bin | less
+
+# Sortieren + Duplikate zählen
+cat zugriffe.log | sort | uniq -c
+
+# Größte Dateien zuerst
+ls -lS /var/log | head -5</code></pre>
+        </div>
+      </div>
+
+      <div class="subblock">
+        <h3 class="subblock-title"><code>tee</code> — die „Y-Weiche"</h3>
+        <p><code>tee</code> liest stdin und schreibt es <em>gleichzeitig</em>
+        auf stdout UND in eine Datei. Der Name kommt von „T-Stück" in der
+        Klempnerei — der Datenstrom verzweigt.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Schreibt gleichzeitig auf Bildschirm UND in Datei
+echo "Wichtige Meldung" | tee log.txt
+
+# An Datei anhängen
+echo "Noch eine Zeile" | tee -a log.txt
+
+# Klassiker: Datei mit sudo schreiben
+echo "127.0.0.1 test" | sudo tee -a /etc/hosts</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>tee</code> für sudo</div>
+            <p>Der Klassiker <code>echo "..." | sudo tee -a /etc/...</code>
+            funktioniert, wo <code>echo "..." &gt;&gt; /etc/...</code>
+            <strong>scheitert</strong>: die Umleitung <code>&gt;&gt;</code>
+            läuft mit deinen User-Rechten, nicht mit sudo-Rechten. Bei
+            <code>tee</code> hingegen ist <em>der ganze Befehl</em> ein
+            sudo-Prozess, der die Datei öffnen darf.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Warum heißt es Pipe?</summary>
+          <p>Der Begriff geht zurück auf <strong>Douglas McIlroy</strong>
+          (Bell Labs, 1972) — er hat das Konzept in Unix eingeführt. Das
+          Unix-Mantra dazu: <em>„Make each program do one thing well — and to
+          work together with other programs."</em> Genau das ist die Idee
+          hinter <code>|</code>.</p>
+          <p>Technisch laufen die per Pipe verbundenen Befehle
+          <strong>parallel</strong>: der zweite Prozess wartet nicht auf
+          das Ende des ersten, sondern bekommt Datenstrom-Stück für
+          Datenstrom-Stück. Deshalb funktioniert
+          <code>tail -f log | grep error</code> live.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 1.6 GREP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.6</span>
+        <h2 class="timeblock-title"><code>grep</code> — der Filter</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>grep</code> ist das Schweizer Taschenmesser zum Filtern von
+        Text. Der Name steht für <strong>g</strong>lobal
+        <strong>r</strong>egular <strong>e</strong>xpression
+        <strong>p</strong>rint — also „durchsuche global nach einem Muster
+        und drucke die Treffer".</p>
+
+        <h4>Die wichtigsten Optionen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Option</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><em>(keine)</em></td><td>nur Zeilen mit Muster</td></tr>
+              <tr><td><code>-i</code></td><td>ignore case — Groß-/Kleinschreibung egal</td></tr>
+              <tr><td><code>-v</code></td><td>invert — Zeilen OHNE Muster</td></tr>
+              <tr><td><code>-n</code></td><td>mit Zeilennummern</td></tr>
+              <tr><td><code>-r</code></td><td>rekursiv durch Verzeichnisse</td></tr>
+              <tr><td><code>-c</code></td><td>nur Anzahl der Treffer</td></tr>
+              <tr><td><code>-l</code></td><td>nur Dateinamen mit Treffern</td></tr>
+              <tr><td><code>--color</code></td><td>Treffer farbig hervorheben</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu brauchst du grep im Admin-Alltag?</div>
+            <ul>
+              <li><strong>Fehler-Triage:</strong>
+                <code>grep -i error /var/log/messages</code></li>
+              <li><strong>Config-Inspektion:</strong>
+                <code>grep -v "^#" /etc/ssh/sshd_config</code> — nur aktive
+                Zeilen ohne Kommentare</li>
+              <li><strong>Quick-Audit:</strong>
+                <code>grep -r "192.168.1.100" /etc</code> — wo ist die alte
+                IP konfiguriert?</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr grep-Tricks aus dem Admin-Alltag</summary>
+          <ul>
+            <li><strong>Skript-Debugging:</strong>
+              <code>grep -rn "DB_HOST" /opt/myapp</code></li>
+            <li><strong>Prozess-Filter ohne sich selbst:</strong>
+              <code>ps aux | grep java | grep -v grep</code></li>
+            <li><strong>Nur Dateinamen mit Treffern:</strong>
+              <code>grep -rl "TODO" .</code></li>
+            <li><strong>Pre-/Post-Kontext:</strong>
+              <code>grep -A 3 -B 1 "error" log.txt</code></li>
+            <li><strong>Mehrere Patterns:</strong>
+              <code>grep -E "error|warning|critical" log.txt</code></li>
+            <li><strong>Anzahl statt Inhalt:</strong>
+              <code>grep -c "200 OK" access.log</code></li>
+          </ul>
+        </details>
+
+        <h4>Praxis-Beispiele</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Klassiker 1: In Datei nach Wort suchen
+grep "error" /var/log/messages
+
+# Klassiker 2: Case-insensitiv
+grep -i "warning" log.txt
+
+# Klassiker 3: Mit Pipe — Prozesse filtern
+ps aux | grep nginx
+
+# Klassiker 4: Zeilen mit Zeilennummer
+grep -n "TODO" *.py
+
+# Klassiker 5: Rekursiv in /etc nach IP-Adresse
+grep -r "192.168" /etc
+
+# Klassiker 6: Was NICHT passt — Kommentare rausfiltern
+grep -v "^#" /etc/ssh/sshd_config</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>grep</code> im Alltag</div>
+            <p><code>tail -f /var/log/messages | grep -i error</code> zeigt
+            <em>live</em>, wenn neue Fehler im Systemlog auftauchen — und ist
+            damit der wohl wichtigste Pflicht-Skill für jeden Admin. Du
+            siehst Probleme, sobald sie passieren, nicht erst nach dem
+            Anruf vom Chef.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Reguläre Ausdrücke (kurz)</summary>
+          <p>Das Muster, das du <code>grep</code> übergibst, ist nicht nur
+          Klartext — es ist ein <em>Regex</em>. Die wichtigsten Bausteine:</p>
+          <ul>
+            <li><code>^muster</code> → Zeile beginnt mit „muster"</li>
+            <li><code>muster$</code> → Zeile endet mit „muster"</li>
+            <li><code>.</code> → ein beliebiges Zeichen</li>
+            <li><code>*</code> → 0 oder mehr Vorkommen des Vorzeichens</li>
+            <li><code>[abc]</code> → eines dieser Zeichen</li>
+          </ul>
+          <p>Beispiel: <code>grep "^error" log.txt</code> — nur Zeilen, die mit
+          „error" <em>beginnen</em>. Für mächtigere Regex (Alternation,
+          Quantifier) brauchst du <code>grep -E</code> oder
+          <code>egrep</code>.</p>
+          <p><strong>Vorsicht:</strong> Das <code>*</code> in Regex ist
+          <em>nicht</em> dasselbe wie das <code>*</code> in Wildcards.
+          <code>grep "*.txt"</code> sucht NICHT nach „endet mit .txt".</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ LAB 2.1 ============ -->
+    <section class="lab" id="lab-2-1">
+      <div class="lab-header">
+        <span class="lab-icon">🧪</span>
+        <span class="lab-label">Lab 2.1</span>
+        <span class="lab-title">Logfile-Analyse beim Webserver-Audit</span>
+        <span class="lab-duration">45 min</span>
+      </div>
+      <div class="lab-body">
+        <div class="lab-scenario">
+          <p style="margin: 0 0 0.5rem 0;"><strong>📧 Von:</strong> Markus Becker · IT-Leitung<br>
+          <strong>An:</strong> Tim Schulz (du)<br>
+          <strong>Betreff:</strong> Webserver-Logs vor dem Audit — bitte vorbereiten</p>
+          <hr style="border: 0; border-top: 1px solid var(--border-default); margin: 0.6rem 0;">
+          <p>Hi Tim,</p>
+          <p>kurzfristig nochmal: morgen ist das externe Sicherheits-Audit, und
+          die Auditoren wollen Auszüge aus unseren Webserver-Logs sehen. Bitte
+          bereite Folgendes vor:</p>
+          <ol style="margin: 0.5rem 0 0.5rem 1.2rem;">
+            <li>Ein Sammelverzeichnis mit Test-Logs (Sandra schickt dir gleich
+              Beispiele).</li>
+            <li>Eine Übersicht: Wie viele Fehler haben wir letzte Woche gehabt?
+              Wie viele Warnings?</li>
+            <li>Eine „saubere" Datei, in der alle Kommentare aus unserer
+              Webserver-Config entfernt sind — die Auditoren wollen nur die
+              aktiven Regeln sehen.</li>
+            <li>Eine kombinierte Datei mit nur den Errors aus allen Logs.</li>
+          </ol>
+          <p>Setz dich heute Morgen in den ersten Block dran. Mit Wildcards,
+          Pipes und <code>grep</code> kriegst du das in 30 Minuten erledigt.
+          Cheat-Sheet liegt auf deinem Schreibtisch.</p>
+          <p style="margin-bottom: 0;">Danke!<br>
+          — Markus</p>
+        </div>
+
+        <div class="lab-section-title">Teil A — Test-Umgebung aufsetzen (10 min)</div>
+        <ol class="lab-tasks">
+          <li>Erstelle <code>~/audit-lab/</code> und wechsle hinein.</li>
+          <li>Erstelle die Unterordner <code>logs/</code>, <code>configs/</code>,
+            <code>output/</code> in <strong>einem</strong> Befehl
+            (Brace Expansion!).</li>
+          <li>Erstelle in <code>logs/</code> mit <code>touch</code> und Brace
+            Expansion die 12 Dateien <code>access_2026-01.log</code> bis
+            <code>access_2026-12.log</code>.</li>
+          <li>Bestücke einige Logs mit Beispielinhalten (Heredoc — siehe
+            Lösung).</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code>mkdir -p ~/audit-lab
+cd ~/audit-lab
+mkdir -p {logs,configs,output}
+touch logs/access_2026-{01..12}.log
+
+# Beispielinhalt in 3 Logs einfügen
+cat &gt; logs/access_2026-01.log &lt;&lt; 'EOF'
+2026-01-15 10:23:11 INFO User login: tim
+2026-01-15 10:25:34 WARN Slow query on /api/users
+2026-01-15 10:26:01 ERROR Database connection timeout
+2026-01-15 10:27:15 INFO Reconnected
+2026-01-15 11:02:44 ERROR 500 Internal Server Error
+EOF
+
+cat &gt; logs/access_2026-02.log &lt;&lt; 'EOF'
+2026-02-03 09:15:22 INFO User login: sandra
+2026-02-03 09:30:11 WARN Disk usage at 85%
+2026-02-03 14:22:17 ERROR Permission denied: /var/www/upload
+EOF
+
+cat &gt; logs/access_2026-03.log &lt;&lt; 'EOF'
+2026-03-12 08:00:00 INFO Daily backup started
+2026-03-12 08:05:23 INFO Backup completed
+2026-03-12 16:45:01 WARN Memory usage high
+EOF</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Wildcards &amp; Pipes (10 min)</div>
+        <ol class="lab-tasks" start="5">
+          <li>Liste alle <code>access_*.log</code>-Dateien auf.</li>
+          <li>Zähle die Gesamtzahl der Zeilen aller
+            <code>access_*.log</code>-Dateien (<code>wc -l</code>).</li>
+          <li>Liste nur die Logs aus Q1 (Jan/Feb/Mär) auf — mit einer einzigen
+            <code>ls</code>-Zeile.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 5)
+ls logs/access_*.log
+
+# 6) Gesamte Zeilenzahl aller access_*.log
+wc -l logs/access_*.log
+
+# 7) Nur Q1 (01, 02, 03)
+ls logs/access_2026-0[123].log</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Redirection &amp; Filter (12 min)</div>
+        <ol class="lab-tasks" start="8">
+          <li>Suche in allen <code>access_*.log</code> nach „ERROR" und
+            speichere die Treffer in <code>output/errors.txt</code>.</li>
+          <li>Zähle, wie viele ERROR-Zeilen es gibt (<code>grep -c</code> ODER
+            Pipe mit <code>wc -l</code>).</li>
+          <li>Filtere ALLE Warnings UND Errors heraus
+            (<code>grep -E "ERROR|WARN"</code>) → <code>output/probleme.txt</code>.</li>
+          <li>Versuche <code>cat /existiert_nicht.log 2&gt; output/fehler.log</code>
+            — was steht in <code>output/fehler.log</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 8)
+grep "ERROR" logs/access_*.log &gt; output/errors.txt
+
+# 9) zwei Varianten:
+grep -c "ERROR" logs/access_*.log
+# oder
+grep "ERROR" logs/access_*.log | wc -l
+
+# 10)
+grep -E "ERROR|WARN" logs/access_*.log &gt; output/probleme.txt
+
+# 11)
+cat /existiert_nicht.log 2&gt; output/fehler.log
+cat output/fehler.log
+# → cat: /existiert_nicht.log: No such file or directory</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Config säubern (10 min)</div>
+        <ol class="lab-tasks" start="12">
+          <li>Schreibe einen Beispiel-Config-Inhalt in
+            <code>configs/webserver.conf</code> (10 Zeilen, davon 4 Kommentare
+            mit <code>#</code>).</li>
+          <li>Erstelle eine „saubere" Config ohne Kommentare in
+            <code>output/webserver_clean.conf</code>
+            (Hinweis: <code>grep -v "^#"</code>).</li>
+          <li><strong>Bonus:</strong> Schreibe in einer Zeile sowohl auf
+            Bildschirm als auch in <code>output/audit-report.txt</code>:
+            <em>„Audit-Vorbereitung abgeschlossen: $(date)"</em> — mit
+            <code>tee</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 12)
+cat &gt; configs/webserver.conf &lt;&lt; 'EOF'
+# HanovaTech Webserver Config
+# Letztes Update: 2026-01-15
+listen 80
+server_name www.hanovatech.de
+# SSL muss noch aktiviert werden
+root /var/www/html
+index index.html
+# Logfile-Pfad
+access_log /var/log/nginx/access.log
+error_log /var/log/nginx/error.log
+EOF
+
+# 13)
+grep -v "^#" configs/webserver.conf &gt; output/webserver_clean.conf
+
+# 14) Bonus
+echo "Audit-Vorbereitung abgeschlossen: $(date)" | tee output/audit-report.txt</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+        <ol class="lab-tasks" start="15">
+          <li>Zähle, wie viele eindeutige Logleves (INFO/WARN/ERROR) im
+            Januar-Log auftauchen.</li>
+          <li>Welche Stunde des Tages hat im Januar die meisten Einträge?
+            (<code>grep</code> + <code>awk</code> oder <code>cut</code>)</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 15) Logleves zählen
+grep -oE "INFO|WARN|ERROR" logs/access_2026-01.log | sort | uniq -c
+
+# 16) Einträge pro Stunde
+cut -c12-13 logs/access_2026-01.log | sort | uniq -c</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 2.1 geschafft?</div>
+            <p>Wenn ja: Du hast gerade in 45 Minuten gemacht, wofür Markus dir
+            30 Minuten gegeben hat — Wildcards, Pipes, Redirection und
+            <code>grep</code> zusammen sind die wichtigste Shell-Kombi
+            überhaupt. Damit kannst du als Admin 80 % deiner täglichen
+            Routinen abkürzen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1.7 ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.7</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — <code>&gt; wichtige.txt</code> statt <code>&gt;&gt;</code></div>
+            <p>Datei überschrieben statt erweitert. <code>date &gt; log.txt</code>
+            leert das Log <em>vor jedem Schreiben</em>. Wenn dir der bisherige
+            Inhalt wichtig ist: immer <code>&gt;&gt;</code> benutzen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — <code>ls *.txt</code> in leerem Ordner</div>
+            <p>Wenn nichts passt, wird <code>*</code> wörtlich übergeben — und
+            <code>ls</code> sucht dann nach einer Datei namens
+            „<code>*.txt</code>" und meldet
+            <em>„No such file or directory"</em>. Das ist kein Bug, das ist
+            Globbing-Verhalten.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — <code>echo X &gt;&gt; /etc/hosts</code> als normaler User scheitert</div>
+            <p>sudo + Umleitung ist tricky: <code>sudo echo X &gt;&gt; /etc/...</code>
+            läuft das <em>echo</em> als root, aber die <em>Umleitung</em> macht
+            deine User-Shell — und die darf <code>/etc/hosts</code> nicht
+            anfassen. Lösung:
+            <code>echo X | sudo tee -a /etc/hosts</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — <code>grep</code> ohne Quotes bei Sonderzeichen</div>
+            <p><code>grep error message file.log</code> sucht „error" in den
+            Dateien <code>message</code> UND <code>file.log</code> — nicht
+            nach „error message" in einer Datei. Bei Leerzeichen oder
+            Sonderzeichen immer Quotes:
+            <code>grep "error message" file.log</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 5 — <code>grep</code> Pattern mit <code>*</code></div>
+            <p>Verwechslung Wildcards vs. Regex. <code>grep "*.txt"</code>
+            sucht NICHT nach .txt-Endungen, sondern nach dem wörtlichen
+            Pattern <code>*.txt</code> — und in Regex hat <code>*</code> noch
+            dazu eine andere Bedeutung (0+ Wiederholung). Für „Datei endet auf
+            .txt": <code>grep "\.txt$"</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wer löst Wildcards auf — die Shell oder der aufgerufene Befehl?</li>
+          <li>Was bedeuten <code>*</code>, <code>?</code> und <code>[abc]</code>?</li>
+          <li>Worin unterscheiden sich Wildcards und Brace Expansion?</li>
+          <li>Welche Nummern haben stdin, stdout und stderr?</li>
+          <li>Was ist der Unterschied zwischen <code>&gt;</code> und <code>&gt;&gt;</code>?</li>
+          <li>Wie leitest du nur Fehler in eine Datei um?</li>
+          <li>Wie leitest du stdout UND stderr in dieselbe Datei? Nenne zwei
+            Schreibweisen.</li>
+          <li>Wozu ist <code>/dev/null</code> da?</li>
+          <li>Was macht <code>tee</code> und wann brauchst du es?</li>
+          <li>Was macht <code>grep -v</code> und wann ist das nützlich?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>Die Shell</strong> löst Wildcards auf, BEVOR der
+                Befehl ausgeführt wird. Der Befehl sieht nur die fertige Liste.</li>
+              <li><code>*</code> = beliebig viele Zeichen; <code>?</code> =
+                genau ein Zeichen; <code>[abc]</code> = ein Zeichen aus der
+                Liste.</li>
+              <li>Wildcards matchen <strong>existierende</strong> Dateien.
+                Brace Expansion erzeugt <strong>Text-Listen</strong>,
+                unabhängig von Existenz.</li>
+              <li>stdin = 0, stdout = 1, stderr = 2.</li>
+              <li><code>&gt;</code> überschreibt die Zieldatei.
+                <code>&gt;&gt;</code> hängt an.</li>
+              <li><code>befehl 2&gt; fehler.log</code></li>
+              <li><code>befehl &amp;&gt; datei</code> (kurz) oder
+                <code>befehl &gt; datei 2&gt;&amp;1</code> (klassisch).</li>
+              <li>„Mülltonne" — alles, was reingeht, ist weg. Praktisch zum
+                Verwerfen von Ausgabe oder Fehlern (z.B.
+                <code>2&gt;/dev/null</code>).</li>
+              <li><code>tee</code> schreibt stdin gleichzeitig auf stdout UND
+                in eine Datei. Klassisch fürs Loggen + Anzeigen, oder mit
+                <code>sudo tee</code> für geschützte Dateien.</li>
+              <li><code>grep -v</code> zeigt Zeilen <em>OHNE</em> das Muster.
+                Nützlich z.B. um Kommentare zu filtern:
+                <code>grep -v "^#" config</code>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="../tag1/11-cheat-sheet.html">
+        <span class="nav-eyebrow">← Tag 1</span>
+        <span class="nav-title">Cheat-Sheet (Tag 1)</span>
+      </a>
+      <a href="02-tar-gzip.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 02 →</span>
+        <span class="nav-title">Archivieren mit tar &amp; gzip</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
