@@ -387,16 +387,16 @@ chmod -R 755 /opt/meine-app/</code></pre>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code># Eigentümer ändern (braucht meist sudo!)
-sudo chown sandra datei.txt
+sudo chown nobody datei.txt
 
 # Eigentümer UND Gruppe gleichzeitig — mit Doppelpunkt
-sudo chown sandra:dev datei.txt
+sudo chown nobody:wheel datei.txt
 
 # Nur die Gruppe (auch mit chown möglich)
-sudo chown :dev datei.txt
+sudo chown :wheel datei.txt
 
 # Rekursiv durch ein Verzeichnis
-sudo chown -R sandra:dev /opt/projekt/</code></pre>
+sudo chown -R nobody:wheel /opt/projekt/</code></pre>
         </div>
 
         <h4><code>chgrp</code> — change group</h4>
@@ -411,10 +411,10 @@ sudo chown -R sandra:dev /opt/projekt/</code></pre>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code># Gruppe ändern
-sudo chgrp dev datei.txt
+sudo chgrp wheel datei.txt
 
 # Rekursiv
-sudo chgrp -R dev /opt/projekt/</code></pre>
+sudo chgrp -R wheel /opt/projekt/</code></pre>
         </div>
 
         <div class="callout callout-info">
