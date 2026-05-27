@@ -332,11 +332,6 @@ function renderQuestion() {
 
     <div class="quiz-feedback" id="quiz-feedback" hidden></div>
   `;
-
-  // Event-Listener
-  document.querySelectorAll('.quiz-answer').forEach(btn => {
-    btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.index, 10)));
-  });
 }
 
 // ============ ANTWORT VERARBEITEN ============
@@ -492,6 +487,17 @@ function restartQuiz() {
   wrongChapters.clear();
   renderQuestion();
 }
+
+// ============ EVENT-DELEGATION (robust gegen Listener-Killer) ============
+// Ein einziger Listener am stabilen Container fängt jeden Klick auf eine
+// .quiz-answer ab — überlebt jedes Neu-Setzen von container.innerHTML.
+container.addEventListener('click', (e) => {
+  const btn = e.target.closest('.quiz-answer');
+  if (!btn || btn.disabled) return;
+  if (!container.contains(btn)) return;
+  const idx = parseInt(btn.dataset.index, 10);
+  if (Number.isFinite(idx)) handleAnswer(idx);
+});
 
 // ============ START ============
 renderQuestion();
