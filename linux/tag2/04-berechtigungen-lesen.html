@@ -504,6 +504,12 @@ groups        # → admin wheel developers</code></pre>
         Typ? <strong>(b)</strong> Was dürfen Owner / Group / Others?
         <strong>(c)</strong> Fällt dir sicherheitstechnisch etwas auf?</p>
 
+        <p><strong>Hinweis:</strong> Auf einem realen System können Dateien
+        verschiedenen Usern und Gruppen gehören — nicht nur dir. In den
+        folgenden Beispielen siehst du meistens deine eigenen Dateien
+        (<code>admin admin</code>), aber auch eine Datei, die einer Kollegin
+        gehört.</p>
+
         <div class="code-block">
           <div class="code-header">
             <div class="code-header-dots">
@@ -524,7 +530,7 @@ groups        # → admin wheel developers</code></pre>
 
 5)  lrwxrwxrwx   1 admin  admin     11  Mai 26 08:00  log -&gt; /var/log
 
-6)  -rw-rw-r--   1 sandra dev      512  Mai 24 16:20  team-config.conf</code></pre>
+6)  -rw-rw-r--   1 sandra wheel    512  Mai 24 16:20  team-config.conf</code></pre>
         </div>
 
         <div class="solution">
@@ -583,9 +589,9 @@ groups        # → admin wheel developers</code></pre>
 6) -rw-rw-r-- team-config.conf
    (a) Typ:    normale Datei
    (b) Owner:  rw-  (lesen + schreiben), Owner = sandra
-       Group:  rw-  (lesen + schreiben), Group = dev
+       Group:  rw-  (lesen + schreiben), Group = wheel
        Others: r--  (nur lesen)
-   (c) Typische Team-Datei: sandra und alle in "dev"
+   (c) Typische Team-Datei: sandra und alle in "wheel"
        können bearbeiten, der Rest darf nur lesen.
        ✅ Passt für eine Team-Config.</code></pre>
             </div>
