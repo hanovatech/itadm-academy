@@ -41,7 +41,7 @@
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 02</span>
-      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 55 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 45 min Lab</span>
       <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.2</span>
     </div>
   </section>
@@ -214,16 +214,38 @@
           </svg>
         </div>
 
-        <h4>Die zwei wichtigsten Konzepte: Targets &amp; Services</h4>
+        <h4>Alles ist eine Unit</h4>
+
+        <p>Das wichtigste Wort in der systemd-Welt heißt <strong>Unit</strong>. Eine Unit
+        ist nichts Magisches — es ist eine <strong>einfache Textdatei</strong>, die
+        systemd sagt: „Hier ist etwas, das du verwalten sollst." Ein Service, ein
+        Target, ein Mount-Point, ein Timer — alles sind Units. Sie unterscheiden sich
+        nur durch die <strong>Endung</strong>.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Unit-Typ</th><th>Endung</th><th>Wofür?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Service</td><td><code>.service</code></td><td>ein laufendes Programm (sshd, httpd, NetworkManager)</td></tr>
+              <tr><td>Target</td><td><code>.target</code></td><td>ein System-Zustand (multi-user, graphical, rescue)</td></tr>
+              <tr><td>Mount</td><td><code>.mount</code></td><td>ein Dateisystem-Mountpoint</td></tr>
+              <tr><td>Timer</td><td><code>.timer</code></td><td>zeitgesteuerter Trigger (Cron-Ersatz)</td></tr>
+              <tr><td>Socket</td><td><code>.socket</code></td><td>Netzwerk- oder Unix-Socket</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Targets vs. Services — die zwei, die du täglich brauchst</h4>
 
         <p><strong>Targets</strong> sind <em>System-Zustände</em> — wie die alten
-        Runlevels. „<code>multi-user.target</code>" bedeutet: das System ist
-        bereit, mehrere User können sich einloggen, Services laufen, aber keine
-        grafische Oberfläche. „<code>graphical.target</code>" bedeutet:
-        zusätzlich noch die GUI.</p>
+        Runlevels. „<code>multi-user.target</code>" bedeutet: das System ist bereit,
+        mehrere User können sich einloggen, Services laufen, aber keine grafische
+        Oberfläche. „<code>graphical.target</code>" bedeutet: zusätzlich noch die GUI.</p>
 
-        <p><strong>Services</strong> sind <em>einzelne Programme/Dienste</em>:
-        der SSH-Server (<code>sshd.service</code>), der Webserver
+        <p><strong>Services</strong> sind <em>einzelne Programme/Dienste</em>: der
+        SSH-Server (<code>sshd.service</code>), der Webserver
         (<code>httpd.service</code>), der Netzwerk-Manager
         (<code>NetworkManager.service</code>). Du kannst sie einzeln
         <strong>starten</strong>, <strong>stoppen</strong>, <strong>aktivieren</strong>
@@ -231,6 +253,80 @@
 
         <p>Beide werden mit <strong>einem einzigen Werkzeug</strong> gesteuert:
         <code>systemctl</code>.</p>
+
+        <h4>Wo leben Unit-Dateien?</h4>
+
+        <p>systemd schaut an zwei Stellen nach Unit-Dateien:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Inhalt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/usr/lib/systemd/system/</code></td><td>Units, die mit Paketen kommen (z. B. <code>sshd.service</code> von openssh-server). <strong>Hier nicht editieren!</strong> Wird beim Paket-Update überschrieben.</td></tr>
+              <tr><td><code>/etc/systemd/system/</code></td><td>Eigene Units &amp; Anpassungen. Wenn hier eine Datei mit gleichem Namen liegt wie unter <code>/usr/lib/...</code>, <strong>gewinnt /etc/</strong>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Wenn du wissen willst, was ein Service wirklich macht, schaust du in seine
+        Unit-Datei. Beispiel — die SSH-Server-Unit ansehen:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>cat /usr/lib/systemd/system/sshd.service</code></pre>
+        </div>
+
+        <p>Du siehst dann etwa diese Struktur (gekürzt):</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">ini</span>
+          </div>
+<pre><code>[Unit]
+Description=OpenSSH server daemon
+
+[Service]
+Type=notify
+ExecStart=/usr/sbin/sshd -D $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+        </div>
+
+        <p>Drei Sektionen, drei Aufgaben:</p>
+
+        <ul>
+          <li><strong><code>[Unit]</code></strong> — Beschreibung, was die Unit überhaupt ist (Description, Dokumentation, …)</li>
+          <li><strong><code>[Service]</code></strong> — wie wird der Dienst gestartet, neu geladen, beendet (welcher Befehl, mit welchen Parametern)</li>
+          <li><strong><code>[Install]</code></strong> — wann soll der Dienst aktiviert werden? <code>WantedBy=multi-user.target</code> heißt: wenn jemand <code>systemctl enable sshd</code> aufruft, soll er beim Erreichen des multi-user.target gestartet werden.</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Das eigentliche Aha</div>
+            <p>systemd ist <em>keine</em> Black Box. Hinter jedem
+            <code>systemctl start xyz</code> steht eine simple Textdatei, die du lesen
+            und verstehen kannst. Wenn ein Service nicht startet, schaust du in seine
+            Unit-Datei — und in seine Logs (gleich mehr dazu).</p>
+          </div>
+        </div>
 
         <details class="callout-deepdive">
           <summary>▶ Tiefer einsteigen: Warum war systemd so umstritten?</summary>
@@ -407,6 +503,31 @@ sudo systemctl enable --now sshd</code></pre>
             aktivieren.</p>
           </div>
         </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Was passiert technisch bei <code>systemctl enable</code>?</summary>
+          <p>Wenn du <code>sudo systemctl enable sshd</code> ausführst, legt systemd
+          einen <strong>Symlink</strong> an — und sonst nichts. Schau selbst:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+            </div>
+<pre><code>ls -l /etc/systemd/system/multi-user.target.wants/
+# sshd.service -> /usr/lib/systemd/system/sshd.service</code></pre>
+          </div>
+          <p>Der Symlink steht in einem Verzeichnis mit der Endung
+          <code>.target.wants/</code>. Übersetzt: „Das multi-user.target <em>möchte</em>
+          diesen Service haben." Wenn das Target beim Boot aktiviert wird, startet
+          systemd alle Services, die im <code>.wants/</code>-Verzeichnis stehen.</p>
+          <p>Diesen Mechanismus kennst du aus <strong>Tag 2 (Soft Links)</strong> wieder
+          — ein Verzeichnis voller Symlinks, die auf die echten Unit-Dateien zeigen.
+          Mehr Magie steckt nicht dahinter.</p>
+        </details>
       </div>
     </section>
 
@@ -476,12 +597,50 @@ sudo systemctl enable --now sshd</code></pre>
       </div>
     </section>
 
+    <!-- ============ VORAB JOURNALCTL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.6</span>
+        <h2 class="timeblock-title">Vorab fürs Lab: Logs lesen mit journalctl</h2>
+        <span class="timeblock-badge badge-vortrag">Kurz</span>
+      </div>
+      <div class="subblock">
+        <details class="callout-deepdive">
+          <summary>▶ Vorab: Was ist <code>journalctl</code>?</summary>
+          <p>Wenn ein Service nicht startet oder sich seltsam verhält, willst du
+          wissen <strong>warum</strong>. Auf modernen Linux-Systemen schreibt systemd
+          alle Service-Meldungen in das <strong>journal</strong> — eine zentrale,
+          binäre Log-Datenbank unter <code>/var/log/journal/</code>.</p>
+          <p>Gelesen wird das journal nicht mit <code>cat</code> oder <code>less</code>
+          (es ist binär), sondern mit <code>journalctl</code>. Die wichtigsten
+          Varianten:</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Befehl</th><th>Wirkung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>journalctl</code></td><td>alle Log-Meldungen seit Systemstart (q zum Beenden)</td></tr>
+                <tr><td><code>journalctl -u sshd</code></td><td>nur Meldungen des sshd-Services</td></tr>
+                <tr><td><code>journalctl -u sshd -n 20</code></td><td>nur die letzten 20 Zeilen</td></tr>
+                <tr><td><code>journalctl -u sshd -f</code></td><td>live mitschreiben (follow), bis Strg+C</td></tr>
+                <tr><td><code>journalctl -p err</code></td><td>nur Fehlermeldungen (priority error)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Im Lab gleich brauchst du nur <code>journalctl -u sshd -n 20</code>.
+          Mehr ist für heute nicht nötig — das ist eher Stoff für ein Logging-Modul
+          später.</p>
+        </details>
+      </div>
+    </section>
+
     <!-- ============ LAB 3.2 ============ -->
     <section class="timeblock">
       <div class="timeblock-header">
         <span class="timeblock-time">🧪</span>
         <h2 class="timeblock-title">Lab 3.2 — Targets &amp; Services beherrschen</h2>
-        <span class="timeblock-badge badge-lab">Lab · 55 min</span>
+        <span class="timeblock-badge badge-lab">Lab · 45 min</span>
       </div>
 
       <div class="subblock">
@@ -495,15 +654,18 @@ sudo systemctl enable --now sshd</code></pre>
             wirklich das Werkzeug, das du nächste Woche jeden Tag benutzen
             wirst. Du sollst:</p>
             <ol>
-              <li>SSH-Service anschauen, stoppen, starten, neu starten</li>
-              <li>Targets ausprobieren — multi-user und rescue</li>
+              <li>Eine Unit-Datei lesen und verstehen (sshd.service)</li>
+              <li>Den SSH-Service live steuern — ein Wartungsfenster simulieren</li>
               <li>Aus deiner Minimal-Installation einen Desktop machen
-                  (graphical.target installieren und isolieren)</li>
+                  (graphical.target isolieren) — ohne Reboot</li>
             </ol>
             <p>Das letzte ist der „<strong>Aha!</strong>"-Moment des Tages.
             Aus einem Server-Terminal wird per Befehl eine grafische
             Oberfläche.</p>
             <p style="margin-bottom: 0;">— Markus</p>
+            <p style="margin-top: 0.8rem; font-size: 0.92rem; color: var(--text-secondary);">
+              <strong>Aufbau:</strong> Drei Phasen, ca. 45 min insgesamt — mit
+              aufklappbaren Hints und Lösung pro Phase.</p>
           </div>
         </div>
 
@@ -531,25 +693,45 @@ sudo systemctl enable --now sshd</code></pre>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil A — Service-Steuerung üben (15 min)</div>
-        <ol class="lab-tasks">
-          <li>Schau dir den <strong>Status des SSH-Daemons</strong> an mit
-            <code>systemctl status sshd</code>. Ist er aktiv? Ist er enabled?</li>
-          <li>Stoppe den SSH-Dienst. Prüfe danach den Status nochmal — wie sieht
-            es jetzt aus?</li>
-          <li>Starte den SSH-Dienst wieder.</li>
-          <li>Mache einen <strong>restart</strong> des SSH-Dienstes und schau dir
-            danach den Status an. Wann wurde er gestartet? (Schau auf
-            „Active: active (running) since ...")</li>
-          <li>Prüfe mit <code>is-active</code> und <code>is-enabled</code> jeweils
-            kurz, ob SSH läuft und ob er beim Boot startet.</li>
-          <li>Schau dir die letzten <strong>10 Log-Zeilen</strong> von SSH an mit
-            <code>journalctl</code>.</li>
-        </ol>
+        <div class="lab-section-title">Phase 1 — Eine Unit-Datei lesen &amp; verstehen (10 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Tim, schau dir mal sshd.service genau an. Wenn du das verstanden hast, verstehst du systemd zur Hälfte." — Markus</p>
+            <p>Öffne die Unit-Datei des SSH-Servers und erklär in eigenen Worten, was
+            die Sektionen <code>[Unit]</code>, <code>[Service]</code> und
+            <code>[Install]</code> tun. Am Ende sollst du beantworten können: „Wenn ich
+            <code>systemctl enable sshd</code> mache — woher weiß systemd, dass das beim
+            Boot starten soll?"</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wo finde ich Unit-Dateien?</summary>
+          <p>Paket-Units liegen unter <code>/usr/lib/systemd/system/</code>, eigene
+          Anpassungen unter <code>/etc/systemd/system/</code>. Die sshd-Unit kommt vom
+          Paket — also im ersten Pfad.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Welcher Befehl liest die Datei?</summary>
+          <p><code>cat /usr/lib/systemd/system/sshd.service</code> — eine ganz normale
+          Textdatei, die du mit <code>cat</code> oder <code>less</code> lesen kannst.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Welche Zeile macht beim Boot-Start die Magie?</summary>
+          <p>Schau in die <code>[Install]</code>-Sektion. Die Zeile
+          <code>WantedBy=multi-user.target</code> sagt: beim <code>enable</code> wird der
+          Dienst dem multi-user.target zugeordnet und startet, sobald dieses erreicht
+          wird.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil A zeigen</span>
+            <span>✅ Lösung Phase 1 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -563,150 +745,151 @@ sudo systemctl enable --now sshd</code></pre>
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 1) Status anzeigen
-sudo systemctl status sshd
-# Active: active (running) since ...
-# Loaded: enabled
+<pre><code>cat /usr/lib/systemd/system/sshd.service
 
-# 2) Stoppen
+# [Unit]    → Description=OpenSSH server daemon  (was ist das?)
+# [Service] → ExecStart=/usr/sbin/sshd -D ...    (wie wird gestartet?)
+# [Install] → WantedBy=multi-user.target         (wann aktiviert?)</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong>
+            <code>[Unit]</code> beschreibt, <em>was</em> die Unit ist.
+            <code>[Service]</code> sagt, <em>wie</em> der Dienst
+            gestartet/neu geladen/beendet wird. <code>[Install]</code> legt fest,
+            <em>wann</em> er aktiviert wird: <code>WantedBy=multi-user.target</code> ist
+            genau die Zeile, die beim <code>systemctl enable sshd</code> dafür sorgt,
+            dass ein Symlink im <code>multi-user.target.wants/</code>-Verzeichnis
+            angelegt wird — und der Dienst dadurch beim Boot mitstartet.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Phase 2 — sshd live steuern (15 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Tim, ich brauch ein Wartungsfenster auf dem Test-Server. Stopp den SSH-Dienst für 5 Minuten und prüf danach, dass er sauber wieder läuft. Schau dir auch kurz die Logs an, ob beim Stoppen alles glatt lief." — Markus</p>
+            <p>Steuere den SSH-Dienst mit <code>systemctl</code>: Status prüfen (vorher),
+            stoppen, Status erneut prüfen, wieder starten — und am Ende einen Blick in
+            die Logs. Finde selbst heraus, welche Befehle du brauchst.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Welche systemctl-Befehle brauche ich überhaupt?</summary>
+          <p>Vier reichen: <code>systemctl status sshd</code>,
+          <code>systemctl stop sshd</code>, <code>systemctl start sshd</code> und
+          <code>systemctl restart sshd</code>. Status braucht kein sudo, die anderen
+          drei schon.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Wie sehe ich auf einen Blick, ob ein Service läuft?</summary>
+          <p>Statt den langen Status zu lesen: <code>systemctl is-active sshd</code>
+          (gibt <code>active</code> / <code>inactive</code>) und
+          <code>systemctl is-enabled sshd</code> (startet er beim Boot?).</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Wo sehe ich die Logs?</summary>
+          <p>Mit dem journalctl-Befehl von oben:
+          <code>journalctl -u sshd -n 20</code> zeigt die letzten 20 Zeilen des
+          sshd-Services — inklusive der Stop/Start-Meldungen.</p>
+        </details>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>✅ Lösung Phase 2 anzeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># Status vorher
+systemctl status sshd          # Active: active (running)
+
+# Wartungsfenster: stoppen
 sudo systemctl stop sshd
-sudo systemctl status sshd
-# Active: inactive (dead)
+systemctl is-active sshd       # inactive
 
-# 3) Wieder starten
+# ... 5 Minuten Wartung ... dann wieder starten
 sudo systemctl start sshd
+systemctl is-active sshd       # active
+systemctl is-enabled sshd      # enabled
 
-# 4) Restart
-sudo systemctl restart sshd
-sudo systemctl status sshd
-# "Active: active (running) since &lt;jetzt&gt;"
-
-# 5) Schnell-Checks
-sudo systemctl is-active sshd
-# active
-
-sudo systemctl is-enabled sshd
-# enabled
-
-# 6) Logs
-sudo journalctl -u sshd -n 10</code></pre>
+# Sauber wieder oben? Logs der letzten Minuten ansehen
+journalctl -u sshd -n 20</code></pre>
             </div>
-            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Die
-            ganze Service-Kontrolle ist <em>einheitlich</em> mit
-            <code>systemctl</code>. Egal ob SSH, Webserver, Firewall —
-            <strong>immer dieselben Befehle</strong>.</p>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Nach einem
+            <code>start</code> (oder <code>restart</code>) aktualisiert sich der
+            „Active: active (running) since …"-Zeitstempel im Status — so siehst du
+            sofort, dass der Dienst frisch hochgefahren ist. Die ganze
+            Service-Kontrolle ist einheitlich mit <code>systemctl</code>, egal ob
+            SSH, Webserver oder Firewall.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil B — Target-Wechsel (15 min)</div>
-        <ol class="lab-tasks" start="7">
-          <li>Zeige das <strong>aktuelle default Target</strong> mit
-            <code>systemctl get-default</code>. Was ist es? (Sollte
-            <code>multi-user.target</code> sein bei Minimal-Installation.)</li>
-          <li>Liste <strong>alle aktiven Targets</strong>:
-            <code>systemctl list-units --type=target</code>. Was siehst du?</li>
-          <li><strong>Mini-Übung:</strong> Wechsle mit <code>isolate</code> in
-            den <code>rescue.target</code>. <strong>Achtung:</strong> Du wirst
-            dein Passwort eingeben müssen. Tipp: Vorher Snapshot prüfen!</li>
-          <li>Im Rescue-Modus angekommen: Welche User sind eingeloggt?
-            Befehl: <code>who</code>. Welche Services laufen?
-            <code>systemctl list-units --type=service --state=active | head</code></li>
-          <li>Zurück in den normalen Multi-User-Modus mit
-            <code>sudo systemctl isolate multi-user.target</code>.</li>
-          <li>Setze das default Target dauerhaft auf
-            <code>multi-user.target</code> (das ist es jetzt schon — testen,
-            ob's noch da ist).</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil B zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 7) Default Target
-systemctl get-default
-# → multi-user.target
-
-# 8) Alle aktiven Targets
-systemctl list-units --type=target
-# basic.target, multi-user.target, sysinit.target ...
-
-# 9) In rescue wechseln (Passwort erforderlich!)
-sudo systemctl isolate rescue.target
-
-# 10) Im Rescue-Modus
-who
-# admin    pts/0    2026-05-27 10:30
-
-systemctl list-units --type=service --state=active | head
-# nur essentielle Services laufen
-
-# 11) Zurück zu multi-user
-sudo systemctl isolate multi-user.target
-
-# 12) Default-Target prüfen/setzen
-systemctl get-default
-sudo systemctl set-default multi-user.target
-# (sollte bereits multi-user sein)</code></pre>
-            </div>
-            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Im
-            Rescue-Modus sind plötzlich kaum Services aktiv. Das ist gewollt —
-            für Notfälle, wenn du z. B. eine kaputte Festplatte reparieren
-            musst, ohne dass alle Dienste dazwischenfunken.</p>
-          </div>
-        </div>
-
-        <div class="lab-section-title">Teil C — Graphical Target installieren &amp; isolieren (20 min)</div>
+        <div class="lab-section-title">Phase 3 — Target wechseln: aus Minimal mach Graphical (20 min)</div>
 
         <div class="callout callout-info">
           <div class="callout-icon">🎯</div>
           <div class="callout-content">
             <p style="margin: 0;"><strong>Der Aha-Moment des Tages.</strong>
             Du verwandelst deine schwarze Minimal-Installation in einen
-            grafischen Desktop — per Befehl.</p>
+            grafischen Desktop — per Befehl, ohne Reboot. Dann zurück.</p>
           </div>
         </div>
 
-        <ol class="lab-tasks" start="13">
-          <li><strong>Prüfen, ob die GUI-Installation fertig ist</strong> (sollte
-            seit Morgenstart laufen). Tipp: in zweitem Terminal mit
-            <code>ps aux | grep dnf</code> schauen. Wenn kein dnf-Prozess mehr
-            läuft, ist sie fertig.</li>
-          <li><strong>Falls noch nicht installiert</strong>, jetzt starten und
-            warten (5–15 Min):
-            <code>sudo dnf groupinstall "Server with GUI" -y</code></li>
-          <li>Setze das default Target auf <strong>graphical.target</strong>:
-            <code>sudo systemctl set-default graphical.target</code></li>
-          <li>Wechsle <strong>JETZT</strong> mit isolate ohne Reboot in den
-            grafischen Modus:
-            <code>sudo systemctl isolate graphical.target</code> →
-            <strong>Aha!</strong></li>
-          <li>Du solltest jetzt einen <strong>grafischen Login-Bildschirm</strong>
-            sehen. Logge dich grafisch ein, schau dich kurz um.</li>
-          <li>Öffne ein Terminal im Desktop und prüfe das aktuelle Target:
-            <code>systemctl get-default</code> und
-            <code>systemctl list-units --type=target | grep active</code></li>
-          <li><strong>Zurück zum Server-Modus:</strong>
-            <code>sudo systemctl isolate multi-user.target</code> — du landest
-            wieder im Terminal.</li>
-          <li><strong>Optional:</strong> default auch wieder zurücksetzen:
-            <code>sudo systemctl set-default multi-user.target</code></li>
-        </ol>
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Tim, manche Kollegen brauchen kurzfristig eine GUI für ein Tool. Du sollst zeigen, dass das mit systemd in 5 Sekunden geht — ohne den Server runterzufahren." — Markus</p>
+            <p>Wechsle <strong>live</strong> (ohne Reboot) ins
+            <code>graphical.target</code>, schau dich im Desktop kurz um, und komm
+            wieder zurück ins <code>multi-user.target</code>. Setz am Ende das Default
+            sauber wieder auf Minimal zurück.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Ist die GUI-Installation schon fertig?</summary>
+          <p>Die GUI (<code>Server with GUI</code>) sollte seit Tagesbeginn im
+          Hintergrund installiert worden sein. Ob <code>dnf</code> noch läuft, prüfst
+          du ohne Prozess-Tools so:
+          <code>ls /run/dnf.pid 2&gt;/dev/null</code> — existiert die Datei, läuft
+          dnf noch; kommt nichts zurück, ist es fertig. (Alternativ: in das Terminal
+          schauen, in dem du <code>dnf groupinstall</code> gestartet hast.) Falls noch
+          gar nicht installiert: <code>sudo dnf groupinstall "Server with GUI" -y</code>
+          und 5–15 Min warten.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Wie wechsle ich live, ohne Reboot?</summary>
+          <p><code>sudo systemctl isolate graphical.target</code> wechselt das System
+          <strong>sofort</strong> in den angegebenen Zustand — kein Reboot nötig.
+          Zurück geht's mit <code>sudo systemctl isolate multi-user.target</code>.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Unterschied <code>set-default</code> vs. <code>isolate</code>?</summary>
+          <p><code>isolate</code> wirkt <strong>jetzt sofort</strong> (aktuelle
+          Sitzung), <code>set-default</code> bestimmt den Zustand <strong>beim
+          nächsten Boot</strong>. Beides nutzen: <code>isolate</code> zum Live-Testen,
+          <code>set-default</code> um den Boot-Zustand dauerhaft festzulegen.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil C zeigen</span>
+            <span>✅ Lösung Phase 3 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -720,36 +903,32 @@ sudo systemctl set-default multi-user.target
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 13) Prüfen ob dnf noch läuft
-ps aux | grep dnf | grep -v grep
+<pre><code># 1) Ist die GUI-Installation fertig? (ohne Prozess-Tools)
+ls /run/dnf.pid 2&gt;/dev/null && echo "dnf läuft noch" || echo "fertig"
+# Falls noch nicht installiert:
+sudo dnf groupinstall "Server with GUI" -y   # 5-15 Min
 
-# 14) Falls nicht installiert
-sudo dnf groupinstall "Server with GUI" -y
-# (5-15 Minuten warten)
-
-# 15) Default auf graphical
-sudo systemctl set-default graphical.target
-# Created symlink ...
-
-# 16) SOFORT zum graphical Target wechseln
+# 2) LIVE in den grafischen Modus wechseln (ohne Reboot!)
 sudo systemctl isolate graphical.target
-# → Bildschirm wird schwarz, dann grafischer Login!
+# → Bildschirm wird schwarz, dann grafischer Login. Aha!
 
-# 17) Im Desktop: Terminal öffnen, prüfen
+# 3) Im Desktop: Terminal öffnen, aktuelles Target prüfen
 systemctl get-default
-# graphical.target
-systemctl list-units --type=target | grep active | head
 
-# 18) Zurück zum Multi-User
+# 4) Zurück in den Server-Modus
 sudo systemctl isolate multi-user.target
 
-# 19) Default wieder auf multi-user (optional)
+# 5) WICHTIG: Default sauber auf Minimal zurücksetzen,
+#    sonst startet die VM künftig immer mit GUI (frisst RAM)
 sudo systemctl set-default multi-user.target</code></pre>
             </div>
-            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Du
-            hast soeben aus einer „Server-Box" einen „Desktop" gemacht — und
-            wieder zurück. <strong>Ohne Reboot</strong>. Das ist die Magie von
-            systemd-Targets.</p>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Du hast aus
+            einer „Server-Box" einen „Desktop" gemacht — und wieder zurück,
+            <strong>ohne Reboot</strong>. <code>isolate</code> wechselt nur den
+            <em>aktuellen</em> Zustand, <code>set-default</code> bestimmt den
+            <em>nächsten Boot</em>. Deshalb am Ende
+            <code>set-default multi-user.target</code> — damit der Server nach dem
+            nächsten Neustart wieder schlank im Minimal-Modus hochkommt.</p>
           </div>
         </div>
 
@@ -896,13 +1075,15 @@ systemctl list-units --state=failed
         <ol class="lab-tasks">
           <li>Wofür wird Runlevel 0 verwendet?</li>
           <li>Welches systemd-Target entspricht Runlevel 5?</li>
-          <li>Du bist im graphical.target und willst sofort zum multi-user.target
-            wechseln. Welcher Befehl?</li>
+          <li>Welche <strong>Sektion</strong> einer <code>.service</code>-Unit-Datei
+            steuert, ob ein Dienst beim Boot startet — und welche <strong>Zeile</strong>
+            darin?</li>
+          <li>Was ist der Unterschied zwischen <code>systemctl isolate</code> und
+            <code>systemctl set-default</code>?</li>
           <li>Was ist der Unterschied zwischen <code>start</code> und
             <code>enable</code>?</li>
           <li>Welche zwei Befehle (Auswahl: shutdown, reboot, poweroff, telinit,
             systemctl) können das System ausschalten?</li>
-          <li>Welche PID hat systemd?</li>
         </ol>
 
         <div class="solution">
@@ -914,7 +1095,15 @@ systemctl list-units --state=failed
             <ol>
               <li>Runlevel 0 = <strong>System herunterfahren (Shutdown)</strong>.</li>
               <li>Runlevel 5 = <code>graphical.target</code></li>
-              <li><code>sudo systemctl isolate multi-user.target</code></li>
+              <li>Die <strong><code>[Install]</code></strong>-Sektion, konkret die Zeile
+                <strong><code>WantedBy=multi-user.target</code></strong>. Beim
+                <code>systemctl enable</code> wird daraus ein Symlink im
+                <code>multi-user.target.wants/</code>-Verzeichnis angelegt.</li>
+              <li><strong><code>isolate</code></strong> wechselt das Target
+                <strong>sofort</strong> in der laufenden Sitzung (kein Reboot).
+                <strong><code>set-default</code></strong> legt fest, welches Target
+                beim <strong>nächsten Boot</strong> angefahren wird — jetzt passiert
+                nichts.</li>
               <li><strong><code>start</code></strong> startet den Dienst sofort
                 (aber nicht beim nächsten Boot).
                 <strong><code>enable</code></strong> macht ihn boot-persistent
@@ -922,7 +1111,6 @@ systemctl list-units --state=failed
               <li><strong><code>shutdown</code></strong> und
                 <strong><code>systemctl poweroff</code></strong>. (auch
                 <code>poweroff</code> und <code>telinit 0</code> wären richtig)</li>
-              <li><strong>PID 1</strong></li>
             </ol>
           </div>
         </div>
