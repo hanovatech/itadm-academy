@@ -324,33 +324,63 @@ sudo dnf autoremove</code></pre>
             <p><strong>Betreff:</strong> Mach dir deinen Werkzeugkasten</p>
             <p>Hi Tim,</p>
             <p>auf der Minimal-Installation fehlt einiges, was Admins täglich brauchen.
-            Installier dir bitte selbst die wichtigsten Tools:</p>
+            Statt dir eine Einkaufsliste zu geben, beschreibe ich dir die <strong>Aufgaben</strong>,
+            für die du Tools brauchst — und du suchst dir selbst die passenden Pakete:</p>
             <ul>
-              <li><strong>htop</strong> — schöner Prozess-Monitor (besser als top)</li>
-              <li><strong>tree</strong> — zeigt Ordnerstrukturen als Baum</li>
-              <li><strong>wget</strong> — Dateien aus dem Web ziehen</li>
-              <li><strong>nano</strong> — als Fallback-Editor (sollte schon da sein, prüf bitte)</li>
+              <li>Du willst <strong>Prozesse besser beobachten</strong> als mit dem
+                eingebauten <code>top</code> — mit Farben, Mauszeiger, F-Tasten.</li>
+              <li>Du brauchst eine Möglichkeit, <strong>Verzeichnis-Strukturen als Baum</strong>
+                zu visualisieren — gut für Dokumentation und schnelle Übersicht.</li>
+              <li>Du willst <strong>Dateien aus dem Web</strong> ziehen können (Klassiker,
+                wirst du in vielen Anleitungen sehen).</li>
+              <li>Prüf außerdem kurz, ob <code>nano</code> schon installiert ist — als
+                Fallback-Editor sollte er da sein.</li>
             </ul>
-            <p>Lern dabei <code>dnf</code> kennen. Du wirst es ständig brauchen.</p>
+            <p>Lern dabei <code>dnf</code> kennen. Such selbst mit
+            <code>dnf search</code>, was passt. Du wirst <code>dnf</code> ab nächster
+            Woche ständig brauchen.</p>
             <p style="margin-bottom: 0;">— Markus</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil A — Erkunden, was da ist (8 min)</div>
-        <ol class="lab-tasks">
-          <li>Liste alle installierten Pakete mit <code>rpm -qa</code> auf und
-            zähle sie mit <code>rpm -qa | wc -l</code>. Wie viele sind es?</li>
-          <li>Prüfe, ob <code>nano</code> installiert ist:
-            <code>rpm -qi nano</code>. Was sagt der Befehl, wenn ja? Was, wenn nein?</li>
-          <li>Suche mit <code>dnf</code> nach Paketen, die „htop" enthalten.
-            Tipp: <code>dnf search htop</code>.</li>
-          <li>Schau dir mit <code>dnf info htop</code> Details an: Größe,
-            Beschreibung, Repository.</li>
-        </ol>
+        <div class="lab-section-title">Phase 1 — Was habe ich, was suche ich? (10 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Du weißt noch nicht, welche Tools dir Markus eigentlich meint. Such selbst — bevor du blind installierst."</p>
+            <p>Verschaff dir Überblick: Was ist installiert? Dann finde mit
+            <code>dnf search</code> und <code>dnf info</code> die Pakete für Markus'
+            drei Aufgaben. Notiere dir die Paketnamen — installieren kommt in
+            Phase 2.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie sehe ich, was schon installiert ist?</summary>
+          <p><code>rpm -qa</code> listet alle installierten Pakete. Mit
+          <code>| wc -l</code> zählst du sie. Mit <code>rpm -qi PAKETNAME</code>
+          prüfst du gezielt ein einzelnes Paket.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Wie suche ich nach Paketen?</summary>
+          <p><code>dnf search STICHWORT</code>. Beispiel: <code>dnf search process</code>
+          findet alle Pakete, die im Namen oder in der Beschreibung „process"
+          enthalten. <code>dnf info PAKETNAME</code> zeigt dir Details.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Welche Pakete passen zu Markus' drei Aufgaben?</summary>
+          <p>Stichworte, die helfen: für Prozesse → such nach „interactive process
+          viewer"; für Verzeichnis-Baum → der Paketname ist sehr kurz und sagt es
+          direkt; für Web-Download → ebenfalls sehr klassischer kurzer Name.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil A zeigen</span>
+            <span>✅ Lösung Phase 1 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -364,42 +394,72 @@ sudo dnf autoremove</code></pre>
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 1) Alle Pakete zählen
+<pre><code># 1) Was ist installiert?
 rpm -qa | wc -l
-# → meist 400–600 bei Minimal-Installation
+# → meist 400–600 bei Minimal-Install
 
 # 2) Nano-Status prüfen
 rpm -qi nano
 # Wenn installiert: zeigt Version, Größe, Beschreibung
-# Wenn nicht installiert: "package nano is not installed"
+# Wenn nicht: "package nano is not installed"
 
-# 3) Nach htop suchen
-dnf search htop
+# 3) Suchen nach passenden Tools
+dnf search "interactive process"
 # → htop.x86_64 : Interactive process viewer
+dnf search tree
+# → tree.x86_64 : File system tree viewer
+dnf search wget
+# → wget.x86_64 : A utility for retrieving files using HTTP, HTTPS, and FTP
 
-# 4) Details
+# 4) Details ansehen, bevor du installierst
 dnf info htop
-# → Version, Architektur, Größe, Repo (epel/baseos), Beschreibung</code></pre>
+# Zeigt: Version, Architektur, Größe (Download + installiert),
+#        Repository, Beschreibung</code></pre>
             </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong>
+            <code>dnf search</code> durchsucht Paketnamen UND -beschreibungen —
+            deshalb findet er auch Pakete, deren Name nicht das Stichwort
+            enthält.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil B — Installieren (10 min)</div>
-        <ol class="lab-tasks" start="5">
-          <li>Installiere <code>htop</code> mit <code>sudo dnf install htop</code>.
-            Was wird alles als Abhängigkeit mit installiert? (vor dem
-            Bestätigen mit „y" anschauen!)</li>
-          <li>Installiere <code>tree</code> und <code>wget</code> in einem Befehl.</li>
-          <li>Falls <code>nano</code> noch nicht da war, installiere es jetzt.</li>
-          <li>Starte <code>htop</code> und vergleiche mit <code>top</code> aus
-            Lab 3.3. Was fällt dir auf? (Farben? Maus? F-Tasten?). Beende
-            wieder mit <kbd>q</kbd> oder <kbd>F10</kbd>.</li>
-          <li>Probiere <code>tree ~</code> aus. Was zeigt es?</li>
-        </ol>
+        <div class="lab-section-title">Phase 2 — Installieren und ausprobieren (12 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Markus erwartet, dass du nicht blind klickst. Jeder erfahrene Admin liest, was bei einem install mitkommt — bevor er bestätigt."</p>
+            <p>Installier die in Phase 1 gefundenen Tools. <strong>Vor dem Bestätigen
+            mit y die Abhängigkeitsliste lesen</strong> — du musst dich daran
+            gewöhnen, was du dem System hinzufügst. Dann probiere die Tools aus.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie installiere ich ein Paket?</summary>
+          <p><code>sudo dnf install PAKETNAME</code>. Achtung: ohne <code>sudo</code>
+          geht's nicht (Schreibrechte in /usr). Mehrere Pakete in einem Befehl:
+          <code>sudo dnf install p1 p2 p3</code>.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Soll ich <code>-y</code> benutzen?</summary>
+          <p>Lieber nicht beim ersten Mal — du sollst die Abhängigkeiten sehen.
+          <code>-y</code> ist für Skripte/Automatisierung, nicht für interaktives
+          Lernen.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Wie sehe ich htop und tree in Aktion?</summary>
+          <p>Nach Installation: <code>htop</code> starten (F10 oder q zum Beenden).
+          <code>tree -L 2 /etc/</code> zeigt die ersten zwei Verzeichnis-Ebenen —
+          beeindruckend! Für <code>wget</code>: einfach <code>wget --version</code>.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil B zeigen</span>
+            <span>✅ Lösung Phase 2 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -413,46 +473,70 @@ dnf info htop
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 5) htop installieren
-sudo dnf install htop
-# Zeigt: Paket htop wird installiert
-# Optional: weitere Abhängigkeiten (meist wenige)
-# Bestätigen mit y
-# Vor dem Bestätigen Größenangabe prüfen!
+<pre><code># 1) Installieren (mehrere in einem Befehl)
+sudo dnf install htop tree wget
+# Lies die Liste der Abhängigkeiten!
+# Bestätige mit y
 
-# 6) Tree und wget in einem Befehl
-sudo dnf install tree wget
-
-# 7) Nano (falls nötig)
+# Falls nano noch fehlt, jetzt nachinstallieren
 sudo dnf install nano
 
-# 8) htop starten
+# 2) htop ausprobieren — vergleiche mit top aus Kap 03!
 htop
-# Farben! Maus klickbar! F-Tasten unten sichtbar!
+# Farben, Maus, F-Tasten — viel komfortabler als top
 # F10 oder q zum Beenden
 
-# 9) Tree im Home-Verzeichnis
-tree ~
-# Oder kürzer (nur 2 Ebenen):
-tree -L 2 ~</code></pre>
+# 3) tree mit /etc/-Beispiel (beeindruckender als ~)
+tree -L 2 /etc/
+# Zeigt erste zwei Ebenen unter /etc
+
+# 4) wget testen
+wget --version
+# Zeigt installierte Version</code></pre>
             </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong> <code>htop</code>
+            ist der Nachfolger von <code>top</code> (Kap 03) — viele Admins
+            installieren ihn als erstes Tool nach dem Login. Der Trick
+            <code>tree -L 2</code> zeigt nur die obersten zwei Ebenen — bei
+            <code>/etc/</code> schon eindrucksvoll.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil C — Aktualisieren (6 min)</div>
-        <ol class="lab-tasks" start="10">
-          <li>Schau dir an, welche Updates es gibt:
-            <code>dnf check-update</code>. Wie viele Pakete würden aktualisiert?</li>
-          <li>Aktualisiere nur <code>htop</code> (falls es Updates gibt):
-            <code>sudo dnf update htop</code>.</li>
-          <li><strong>Optional:</strong> Aktualisiere das ganze System mit
-            <code>sudo dnf update</code>. Vorsicht: kann dauern (mehrere
-            Minuten). Wenn der Zeitplan eng ist — überspringen.</li>
-        </ol>
+        <div class="lab-section-title">Phase 3 — Verwalten: Updates und Entfernen (8 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Ab Montag wirst du das wöchentlich machen: schauen, was es an Updates gibt, gezielt einspielen, gelegentlich aufräumen."</p>
+            <p>Jetzt das Pflicht-Repertoire jedes Admins: Prüfen, welche Updates
+            verfügbar sind. Ein Paket gezielt aktualisieren. Ein Paket entfernen und
+            wieder installieren.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie sehe ich, welche Updates verfügbar wären?</summary>
+          <p><code>dnf check-update</code> — listet auf, was sich aktualisieren ließe,
+          ohne etwas zu installieren. Read-only, völlig harmlos.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Wie aktualisiere ich nur ein bestimmtes Paket?</summary>
+          <p><code>sudo dnf update PAKETNAME</code> aktualisiert nur dieses eine,
+          ohne System-weites Update.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Wie entferne ich ein Paket sauber?</summary>
+          <p><code>sudo dnf remove PAKETNAME</code>. dnf prüft Abhängigkeiten und
+          warnt, falls andere Pakete darauf angewiesen wären. (Nicht
+          <code>rpm -e</code> — das ignoriert Abhängigkeiten!)</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil C zeigen</span>
+            <span>✅ Lösung Phase 3 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -466,60 +550,46 @@ tree -L 2 ~</code></pre>
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 10) Was gibt's an Updates?
+<pre><code># 1) Was wäre verfügbar?
 dnf check-update
-# Wenn nichts: "Nothing to do" oder leere Liste
-# Sonst: Liste der Pakete mit alter und neuer Version
+# Listet alle Pakete mit verfügbarem Update.
+# Gibt Exit-Code 100 zurück, wenn Updates da sind, 0 wenn nicht.
 
-# 11) Nur htop
-sudo dnf update htop
-# → "Nothing to do" wenn schon aktuell
+# 2) Gezielt ein Paket aktualisieren (kein System-Update!)
+sudo dnf update tree
+# Nur tree, nichts anderes
+# (Falls "Nothing to do" — schon aktuell, normal)
 
-# 12) Volles Update (optional!)
-sudo dnf update
-# Dauert je nach Anzahl der Pakete einige Minuten.
-# Im Kurs nur machen, wenn Zeit ist.</code></pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="lab-section-title">Teil D — Entfernen (6 min)</div>
-        <ol class="lab-tasks" start="13">
-          <li>Entferne <code>tree</code> mit <code>sudo dnf remove tree</code>.
-            Bestätige mit „y".</li>
-          <li>Prüfe mit <code>rpm -qi tree</code>: Ist es wirklich weg?</li>
-          <li>Installiere <code>tree</code> wieder — diesmal mit der Option
-            <code>-y</code>, die ohne Rückfrage installiert.</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil D zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 13) Tree entfernen
+# 3) Entfernen und wieder installieren
 sudo dnf remove tree
-# Mit y bestätigen
+# y bestätigen
 
-# 14) Prüfen
+# Prüfen: wirklich weg?
 rpm -qi tree
 # → "package tree is not installed"
 
-# 15) Wieder rein, ohne Rückfrage
+# Wieder installieren, diesmal mit -y (zum Üben)
 sudo dnf install -y tree
-# Läuft durch ohne y-Bestätigung</code></pre>
+# Läuft durch ohne Rückfrage</code></pre>
             </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong>
+            <code>dnf check-update</code> ist deine erste Aktion vor jedem
+            Update-Tag — du siehst sofort, was kommen würde. Im echten
+            Produktivbetrieb macht man danach <code>sudo dnf update</code> für alles
+            auf einmal, idealerweise in einem Wartungsfenster.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-warn" style="margin-top: 1.5rem;">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Im Lab bewusst weggelassen: Volles System-Update</div>
+            <p>Wir haben hier <strong>nicht</strong> <code>sudo dnf update</code> ohne
+            Paketnamen ausgeführt — das würde alle Pakete des Systems aktualisieren.
+            In Rocky 9 sind das oft hunderte MB Download und 5–15 Minuten Zeit.
+            Auf einem Produktivserver macht man das nur in Wartungsfenstern.
+            Im Lab sparen wir uns das, damit du die anderen Aufgaben in Ruhe
+            fertig bekommst.</p>
           </div>
         </div>
 
@@ -535,7 +605,7 @@ sudo dnf install -y tree
         <ol class="lab-tasks" start="16">
           <li><strong>History:</strong> <code>dnf history</code> zeigt alle
             dnf-Transaktionen. Schau dir die letzte Transaktion genauer an
-            mit <code>dnf history info LAST</code>.</li>
+            mit <code>dnf history info last</code>.</li>
           <li><strong>Gruppen:</strong> Liste Paket-Gruppen mit
             <code>dnf group list</code>. Was zeigt das?</li>
           <li><strong>Repo-Info:</strong> Welche Repos sind aktiviert?
@@ -665,11 +735,17 @@ dnf provides /usr/bin/htop
 
       <div class="subblock">
         <ol class="lab-tasks">
-          <li>Was ist der Unterschied zwischen einem Paket und einem Repository?</li>
-          <li>Welche zwei dnf-Befehle aktualisieren das System? (Tipp: Q4)</li>
-          <li>Warum braucht <code>dnf install</code> sudo, <code>dnf search</code>
-            aber nicht?</li>
-          <li>Mit welchem Befehl prüfst du, ob ein bestimmtes Paket installiert ist?</li>
+          <li>Du willst wissen, ob ein bestimmtes Paket installiert ist. Welcher
+            Befehl?</li>
+          <li>Was ist der Unterschied zwischen <code>dnf check-update</code> und
+            <code>dnf update</code>?</li>
+          <li>Du hast ein lokales <code>.rpm</code>-File heruntergeladen. Wie
+            installierst du es — und was ist sicherer: <code>rpm -ivh</code> oder
+            <code>dnf install ./datei.rpm</code>?</li>
+          <li>Warum braucht <code>dnf install</code> ein <code>sudo</code>,
+            <code>dnf search</code> aber nicht?</li>
+          <li>Du willst sehen, welche Repositories deinem System verfügbar sind.
+            Welcher Befehl?</li>
           <li>Was ist der Unterschied zwischen <code>dnf remove</code> und
             <code>rpm -e</code>?</li>
         </ol>
@@ -681,16 +757,22 @@ dnf provides /usr/bin/htop
           </button>
           <div class="solution-content">
             <ol>
-              <li>Ein <strong>Paket</strong> ist eine .rpm-Datei mit Programm +
-                Abhängigkeiten. Ein <strong>Repository</strong> ist ein Server
-                im Internet, der viele Pakete bereitstellt.</li>
-              <li><code>dnf update</code> und <code>dnf upgrade</code> — bei dnf
-                sind beide identisch.</li>
+              <li><code>rpm -qi PAKETNAME</code> — zeigt Infos, falls installiert,
+                sonst „package … is not installed".</li>
+              <li><code>dnf check-update</code> <strong>zeigt nur</strong>, welche
+                Updates verfügbar wären (read-only, ändert nichts).
+                <code>dnf update</code> <strong>installiert</strong> sie tatsächlich
+                (braucht sudo).</li>
+              <li>Mit <code>sudo dnf install ./datei.rpm</code> — das ist sicherer
+                als <code>rpm -ivh</code>, weil <strong>dnf die Abhängigkeiten
+                auflöst</strong> und fehlende Pakete aus den Repos nachzieht.
+                <code>rpm -ivh</code> installiert nur die eine Datei und scheitert
+                (oder lässt das System inkonsistent), wenn Abhängigkeiten fehlen.</li>
               <li>Suchen ändert nichts am System (nur Lese-Zugriff auf Metadaten).
                 Installieren schreibt in <code>/usr/</code> — dafür braucht es
                 Root-Rechte (sudo).</li>
-              <li><code>rpm -qi PAKETNAME</code> — zeigt Infos, falls installiert,
-                sonst „is not installed".</li>
+              <li><code>dnf repolist</code> — zeigt die aktivierten Repositories
+                (meist baseos, appstream, extras).</li>
               <li><code>dnf remove</code> prüft Abhängigkeiten und warnt, wenn
                 andere Pakete davon abhängen. <code>rpm -e</code> löscht ohne
                 Prüfung — kann das System beschädigen.</li>
