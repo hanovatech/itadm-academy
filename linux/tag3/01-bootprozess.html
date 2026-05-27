@@ -640,11 +640,14 @@ sudo reboot</code></pre>
         </div>
 
         <ol class="lab-tasks" start="1">
-          <li><strong>Default-Eintrag ändern:</strong> Setze
-            <code>GRUB_DEFAULT</code> so, dass beim nächsten Boot automatisch
-            der <strong>zweite</strong> Eintrag gewählt wird (falls vorhanden).
-            Hint: <code>GRUB_DEFAULT=0</code> ist der erste, <code>=1</code> der
-            zweite, <code>=saved</code> merkt sich den zuletzt gewählten.</li>
+          <li><strong>Welche Kernel hast du installiert?</strong> Schau dir an, welche
+            Kernel-Versionen dein System verfügbar hat:
+            <pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.4rem;"><code>ls /boot/vmlinuz-*</code></pre>
+            Bei einer frischen Rocky-9-Installation siehst du meist nur einen.
+            Nach einem Kernel-Update wären es zwei — und genau dann wäre der
+            Default-Eintrag im GRUB-Menü relevant, weil du nach einem Update
+            zwischen alt und neu wählen könntest (z. B. zum Zurückrollen, falls
+            der neue Kernel Probleme macht). Heute nur erkunden — nichts ändern.</li>
           <li><strong>BIOS oder UEFI?</strong> Prüfe selbst auf deinem System:
             <code>[ -d /sys/firmware/efi ] &amp;&amp; echo UEFI || echo BIOS</code>.
             Was hast du?</li>
@@ -670,9 +673,11 @@ sudo reboot</code></pre>
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 1) Default-Eintrag auf den zweiten setzen
-sudo vim /etc/default/grub      # GRUB_DEFAULT=1
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+<pre><code># 1) Installierte Kernel anzeigen (nur lesen)
+ls /boot/vmlinuz-*
+# z. B. nur einer:  /boot/vmlinuz-5.14.0-503.el9.x86_64
+# Nach einem "dnf update" käme ein zweiter Eintrag dazu — erst dann
+# ist GRUB_DEFAULT relevant (Auswahl zwischen altem und neuem Kernel).
 
 # 2) BIOS oder UEFI?
 [ -d /sys/firmware/efi ] &amp;&amp; echo "UEFI" || echo "BIOS"

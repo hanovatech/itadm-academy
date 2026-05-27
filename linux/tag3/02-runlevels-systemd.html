@@ -757,8 +757,10 @@ sudo systemctl set-default multi-user.target</code></pre>
 
         <ol class="lab-tasks" start="20">
           <li><strong>Zweiten Service erkunden:</strong> Schau dir den Status von
-            <code>firewalld</code> an. Wenn er nicht läuft, starte ihn. Was
-            zeigt der Status?</li>
+            <code>firewalld</code> an. Was zeigt der Status? Ist der Service
+            aktiv (<code>active</code>) und enabled (startet er beim Boot)?
+            <em>Nicht starten oder stoppen</em> — Firewall-Konfiguration kommt
+            in einem späteren Modul. Heute nur lesen.</li>
           <li><strong>Boot-Performance:</strong> Welche Services brauchen am
             längsten beim Boot? Befehl: <code>systemd-analyze blame</code>.
             Hängt das vom Target ab? (Tipp: nach Wechsel zu graphical werden
@@ -766,7 +768,10 @@ sudo systemctl set-default multi-user.target</code></pre>
           <li><strong>Geplantes Herunterfahren:</strong> Plane einen Shutdown in 5
             Minuten mit einer Nachricht, dann breche ihn ab.
             Tipp: <code>shutdown +5 "Wartung..."</code> und
-            <code>shutdown -c</code>.</li>
+            <strong>direkt danach</strong> <code>shutdown -c</code> zum Abbrechen.
+            <strong>Achtung:</strong> Wenn du das Abbrechen vergisst, fährt
+            deine VM in 5 Minuten herunter — also <em>direkt nacheinander</em>
+            eingeben.</li>
           <li><strong>Failed Services:</strong> Gibt es Services, die nicht starten
             wollen? <code>systemctl list-units --state=failed</code>. Hoffentlich
             keiner — aber das ist die erste Stelle, an der man bei Boot-Problemen
@@ -789,10 +794,10 @@ sudo systemctl set-default multi-user.target</code></pre>
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 20) Firewalld
-sudo systemctl status firewalld
-sudo systemctl start firewalld   # falls nötig
-sudo systemctl status firewalld
+<pre><code># 20) Firewalld — nur Status lesen, NICHT starten/stoppen
+systemctl status firewalld
+# Zeigt: active (running) oder inactive (dead), enabled/disabled.
+# Firewall-Konfiguration kommt in einem späteren Modul.
 
 # 21) Boot-Performance
 systemd-analyze blame

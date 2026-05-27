@@ -810,10 +810,13 @@ jobs
           <li><strong>Prozess-Baum:</strong> Zeige den ganzen Prozess-Baum mit
             <code>ps -ef --forest | head -30</code>. Welcher Prozess ist der
             Großvater von allen?</li>
-          <li><strong>Eigener Hänger:</strong> Starte einen Endlos-Prozess
-            (<code>yes &gt; /dev/null &amp;</code>) und finde ihn mit
-            <code>top</code>. Beende ihn mit <code>kill</code>. Schau dir
-            vor dem Kill an, wie viel CPU er frisst.</li>
+          <li><strong>Eigener Hintergrund-Prozess:</strong> Starte einen langen
+            Schlaf-Prozess (<code>sleep 600 &amp;</code>) und finde ihn mit
+            <code>ps -ef | grep sleep</code> oder <code>jobs</code>. Notiere
+            die PID. Beende ihn mit <code>kill PID</code> und prüfe mit
+            <code>jobs</code>, dass er weg ist.
+            <em>Warum sleep statt yes oder ähnliches? sleep verbraucht keine
+            CPU und stört die VM nicht — perfekt zum Üben.</em></li>
         </ol>
 
         <div class="solution">
@@ -842,14 +845,14 @@ ps -eo pid,user,%mem,comm --sort=-%mem | head -6
 ps -ef --forest | head -30
 # Der "Großvater von allen" ist systemd (PID 1)
 
-# 22) yes-Endlos-Prozess
-yes &gt; /dev/null &amp;
+# 22) Langer Hintergrund-Prozess (CPU-schonend)
+sleep 600 &amp;
 # → [1] 5678
-# In top sehen: yes frisst ~100% einer CPU
-top
-# q zum Beenden
+ps -ef | grep sleep    # oder: jobs
 kill 5678
-# Höflich reicht hier — yes hat nichts zu sichern</code></pre>
+jobs
+# → [1]+  Terminated  sleep 600   (oder leer = weg)
+# Höflich reicht hier — sleep hat nichts zu sichern</code></pre>
             </div>
           </div>
         </div>
