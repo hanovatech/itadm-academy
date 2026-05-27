@@ -565,25 +565,22 @@ tar --zstd -cvf backup.tar.zst ordner/</code></pre>
 <pre><code>mkdir -p ~/website/{src,configs,logs}
 mkdir -p ~/backups
 
-cat &gt; ~/website/src/index.html &lt;&lt; 'EOF'
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;&lt;body&gt;
-  &lt;h1&gt;HanovaTech&lt;/h1&gt;
-  &lt;p&gt;Willkommen auf der Website.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-EOF
+# index.html
+echo "&lt;!DOCTYPE html&gt;" &gt; ~/website/src/index.html
+echo "&lt;html&gt;&lt;body&gt;" &gt;&gt; ~/website/src/index.html
+echo "  &lt;h1&gt;HanovaTech&lt;/h1&gt;" &gt;&gt; ~/website/src/index.html
+echo "  &lt;p&gt;Willkommen auf der Website.&lt;/p&gt;" &gt;&gt; ~/website/src/index.html
+echo "&lt;/body&gt;&lt;/html&gt;" &gt;&gt; ~/website/src/index.html
 
-cat &gt; ~/website/configs/nginx.conf &lt;&lt; 'EOF'
-listen 80;
-server_name www.hanovatech.de;
-root /var/www/html;
-EOF
+# nginx.conf
+echo "listen 80;" &gt; ~/website/configs/nginx.conf
+echo "server_name www.hanovatech.de;" &gt;&gt; ~/website/configs/nginx.conf
+echo "root /var/www/html;" &gt;&gt; ~/website/configs/nginx.conf
 
-cat &gt; ~/website/logs/access.log &lt;&lt; 'EOF'
-2026-05-26 09:00:00 GET / 200
-2026-05-26 09:01:23 GET /api/users 200
-2026-05-26 09:05:11 GET /favicon.ico 404
-EOF
+# access.log
+echo "2026-05-26 09:00:00 GET / 200" &gt; ~/website/logs/access.log
+echo "2026-05-26 09:01:23 GET /api/users 200" &gt;&gt; ~/website/logs/access.log
+echo "2026-05-26 09:05:11 GET /favicon.ico 404" &gt;&gt; ~/website/logs/access.log
 
 ls -la ~/website/</code></pre>
             </div>

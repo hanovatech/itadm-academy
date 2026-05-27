@@ -746,8 +746,11 @@ grep -v "^#" /etc/ssh/sshd_config</code></pre>
           <li>Erstelle in <code>logs/</code> mit <code>touch</code> und Brace
             Expansion die 12 Dateien <code>access_2026-01.log</code> bis
             <code>access_2026-12.log</code>.</li>
-          <li>Bestücke einige Logs mit Beispielinhalten (Heredoc — siehe
-            Lösung).</li>
+          <li>Bestücke drei der Logs (<code>access_2026-01.log</code>,
+            <code>access_2026-02.log</code>, <code>access_2026-03.log</code>)
+            jeweils mit ein paar Beispielzeilen — nutze dafür
+            <code>echo "..." &gt;&gt; datei.log</code> (mehrfach
+            hintereinander).</li>
         </ol>
 
         <div class="solution">
@@ -772,25 +775,20 @@ mkdir -p {logs,configs,output}
 touch logs/access_2026-{01..12}.log
 
 # Beispielinhalt in 3 Logs einfügen
-cat &gt; logs/access_2026-01.log &lt;&lt; 'EOF'
-2026-01-15 10:23:11 INFO User login: tim
-2026-01-15 10:25:34 WARN Slow query on /api/users
-2026-01-15 10:26:01 ERROR Database connection timeout
-2026-01-15 10:27:15 INFO Reconnected
-2026-01-15 11:02:44 ERROR 500 Internal Server Error
-EOF
+# (mehrfach echo mit &gt;&gt; hängt Zeilen an)
+echo "2026-01-15 10:23:11 INFO User login: tim" &gt;&gt; logs/access_2026-01.log
+echo "2026-01-15 10:25:34 WARN Slow query on /api/users" &gt;&gt; logs/access_2026-01.log
+echo "2026-01-15 10:26:01 ERROR Database connection timeout" &gt;&gt; logs/access_2026-01.log
+echo "2026-01-15 10:27:15 INFO Reconnected" &gt;&gt; logs/access_2026-01.log
+echo "2026-01-15 11:02:44 ERROR 500 Internal Server Error" &gt;&gt; logs/access_2026-01.log
 
-cat &gt; logs/access_2026-02.log &lt;&lt; 'EOF'
-2026-02-03 09:15:22 INFO User login: sandra
-2026-02-03 09:30:11 WARN Disk usage at 85%
-2026-02-03 14:22:17 ERROR Permission denied: /var/www/upload
-EOF
+echo "2026-02-03 09:15:22 INFO User login: sandra" &gt;&gt; logs/access_2026-02.log
+echo "2026-02-03 09:30:11 WARN Disk usage at 85%" &gt;&gt; logs/access_2026-02.log
+echo "2026-02-03 14:22:17 ERROR Permission denied: /var/www/upload" &gt;&gt; logs/access_2026-02.log
 
-cat &gt; logs/access_2026-03.log &lt;&lt; 'EOF'
-2026-03-12 08:00:00 INFO Daily backup started
-2026-03-12 08:05:23 INFO Backup completed
-2026-03-12 16:45:01 WARN Memory usage high
-EOF</code></pre>
+echo "2026-03-12 08:00:00 INFO Daily backup started" &gt;&gt; logs/access_2026-03.log
+echo "2026-03-12 08:05:23 INFO Backup completed" &gt;&gt; logs/access_2026-03.log
+echo "2026-03-12 16:45:01 WARN Memory usage high" &gt;&gt; logs/access_2026-03.log</code></pre>
             </div>
           </div>
         </div>
@@ -889,7 +887,7 @@ cat output/fehler.log
             (Hinweis: <code>grep -v "^#"</code>).</li>
           <li><strong>Bonus:</strong> Schreibe in einer Zeile sowohl auf
             Bildschirm als auch in <code>output/audit-report.txt</code>:
-            <em>„Audit-Vorbereitung abgeschlossen: $(date)"</em> — mit
+            <em>„Audit-Vorbereitung abgeschlossen am 26.05.2026"</em> — mit
             <code>tee</code>.</li>
         </ol>
 
@@ -910,24 +908,26 @@ cat output/fehler.log
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
 <pre><code># 12)
-cat &gt; configs/webserver.conf &lt;&lt; 'EOF'
-# HanovaTech Webserver Config
-# Letztes Update: 2026-01-15
-listen 80
-server_name www.hanovatech.de
-# SSL muss noch aktiviert werden
-root /var/www/html
-index index.html
-# Logfile-Pfad
-access_log /var/log/nginx/access.log
-error_log /var/log/nginx/error.log
-EOF
+# webserver.conf mit echo aufbauen
+# (erste Zeile mit &gt; erstellt, alle weiteren mit &gt;&gt; anhängen)
+echo "# HanovaTech Webserver Config" &gt; configs/webserver.conf
+echo "# Letztes Update: 2026-01-15" &gt;&gt; configs/webserver.conf
+echo "listen 80" &gt;&gt; configs/webserver.conf
+echo "server_name www.hanovatech.de" &gt;&gt; configs/webserver.conf
+echo "# SSL muss noch aktiviert werden" &gt;&gt; configs/webserver.conf
+echo "root /var/www/html" &gt;&gt; configs/webserver.conf
+echo "index index.html" &gt;&gt; configs/webserver.conf
+echo "# Logfile-Pfad" &gt;&gt; configs/webserver.conf
+echo "access_log /var/log/nginx/access.log" &gt;&gt; configs/webserver.conf
+echo "error_log /var/log/nginx/error.log" &gt;&gt; configs/webserver.conf
 
 # 13)
 grep -v "^#" configs/webserver.conf &gt; output/webserver_clean.conf
 
 # 14) Bonus
-echo "Audit-Vorbereitung abgeschlossen: $(date)" | tee output/audit-report.txt</code></pre>
+# Datum heute manuell einsetzen
+# (Profi-Variante mit $(date) lernst du in Tag 3)
+echo "Audit-Vorbereitung abgeschlossen am 26.05.2026" | tee output/audit-report.txt</code></pre>
             </div>
           </div>
         </div>
