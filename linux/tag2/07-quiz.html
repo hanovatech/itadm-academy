@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tages-Quiz · Tag 2 · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 2 · Tages-Quiz</div>
+    <h1 class="page-title">
+      <span class="highlight">Tages-Quiz</span> Tag 2
+    </h1>
+    <p class="page-subtitle">
+      Zwölf Fragen quer durch den Tag — von Wildcards bis <code>find</code>.
+      Pro Frage hast du <strong>einen Versuch</strong>. Am Ende siehst du dein
+      Ergebnis und kannst nochmal nachschauen, wo du unsicher warst. Viel
+      Erfolg!
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Tages-Quiz</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 8 min</span>
+      <span class="meta-item"><span class="meta-item-icon">📊</span> 12 Fragen</span>
+    </div>
+  </section>
+
+  <article>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">📌</div>
+      <div class="callout-content">
+        <div class="callout-title">So funktioniert das Quiz</div>
+        <ul>
+          <li><strong>12 Fragen</strong> quer durch alle 6 Kapitel von heute</li>
+          <li>Pro Frage <strong>eine Antwort</strong> — kein zweiter Versuch</li>
+          <li><strong>Sofort-Feedback</strong> nach jeder Antwort: richtig
+            (grün) oder falsch (rot) plus kurze Erklärung</li>
+          <li>Am Ende siehst du deinen <strong>Punktestand</strong> und Tipps,
+            wo du nochmal nachschauen kannst</li>
+          <li>Beim Neuladen der Seite startest du wieder bei null — du kannst
+            beliebig oft üben</li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="quiz-section">
+      <div id="quiz-container">
+        <!-- wird vom JavaScript gerendert -->
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="06-suchen.html">
+        <span class="nav-eyebrow">← Kapitel 06</span>
+        <span class="nav-title">Dateien suchen</span>
+      </a>
+      <a href="08-cheat-sheet.html" class="nav-next">
+        <span class="nav-eyebrow">Finale →</span>
+        <span class="nav-title">Cheat-Sheet (Tag 2)</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+
+<script>
+// ============ QUIZ-DATEN ============
+const QUIZ_QUESTIONS = [
+  {
+    chapter: "01",
+    chapterTitle: "Wildcards, Redirection & Pipes",
+    chapterUrl: "01-wildcards-redirection.html",
+    difficulty: "easy",
+    question: 'Welche Wildcard steht für <strong>„genau ein beliebiges Zeichen"</strong>?',
+    answers: [
+      "<code>*</code>",
+      "<code>?</code>",
+      "<code>[ ]</code>",
+      "<code>~</code>"
+    ],
+    correct: 1,
+    explanation: "<code>?</code> steht für genau ein Zeichen. <code>*</code> ist „beliebig viele Zeichen", <code>[ ]</code> ist „eines von diesen Zeichen", <code>~</code> ist das Home-Verzeichnis."
+  },
+  {
+    chapter: "01",
+    chapterTitle: "Wildcards, Redirection & Pipes",
+    chapterUrl: "01-wildcards-redirection.html",
+    difficulty: "medium",
+    question: 'Du willst die Ausgabe von <code>ls</code> in eine Datei <code>liste.txt</code> umleiten und Fehlermeldungen verwerfen. Welcher Operator gehört in die Lücke?<br><br><code>ls /etc &gt; liste.txt ___ /dev/null</code>',
+    answers: [
+      "<code>&gt;</code>",
+      "<code>&gt;&gt;</code>",
+      "<code>2&gt;</code>",
+      "<code>&amp;&gt;</code>"
+    ],
+    correct: 2,
+    explanation: "<code>2&gt;</code> leitet <strong>nur</strong> Fehler (stderr) um. <code>&gt;</code> würde die normale Ausgabe nochmal überschreiben, <code>&gt;&gt;</code> würde sie anhängen, und <code>&amp;&gt;</code> würde alles zusammen umleiten."
+  },
+  {
+    chapter: "02",
+    chapterTitle: "Archivieren mit tar & gzip",
+    chapterUrl: "02-tar-gzip.html",
+    difficulty: "easy",
+    question: 'Was bedeutet die Option <code>-z</code> in <code>tar</code>?',
+    answers: [
+      "Archiv zippen (komprimieren mit gzip)",
+      "Archiv anzeigen (nur listen)",
+      "Archiv leeren",
+      "Archiv verschlüsseln"
+    ],
+    correct: 0,
+    explanation: "<code>-z</code> aktiviert die gzip-Komprimierung. „Z" wie „Zip"."
+  },
+  {
+    chapter: "02",
+    chapterTitle: "Archivieren mit tar & gzip",
+    chapterUrl: "02-tar-gzip.html",
+    difficulty: "medium",
+    question: 'Welcher Befehl entpackt das Archiv <code>backup.tar.gz</code>?',
+    answers: [
+      "<code>tar -czvf backup.tar.gz</code>",
+      "<code>tar -xzvf backup.tar.gz</code>",
+      "<code>tar -tzvf backup.tar.gz</code>",
+      "<code>gunzip backup.tar.gz</code>"
+    ],
+    correct: 1,
+    explanation: "<code>-x</code> = extract (entpacken). <code>-c</code> wäre erstellen, <code>-t</code> nur listen. <code>gunzip</code> kann nur einzelne <code>.gz</code>-Dateien, aber kein <code>.tar</code>-Archiv darin."
+  },
+  {
+    chapter: "03",
+    chapterTitle: "Inodes & Links",
+    chapterUrl: "03-inodes-links.html",
+    difficulty: "easy",
+    question: '<strong>Wahr oder Falsch:</strong> „Ein Hard-Link auf eine Datei und das Original haben dieselbe Inode-Nummer."',
+    answers: [
+      "Wahr",
+      "Falsch"
+    ],
+    correct: 0,
+    explanation: "Ein Hard-Link ist ein zweiter Name für <strong>dieselbe</strong> Inode — keine Kopie, sondern eine zusätzliche Referenz. Beide zeigen auf exakt dieselben Datenblöcke."
+  },
+  {
+    chapter: "03",
+    chapterTitle: "Inodes & Links",
+    chapterUrl: "03-inodes-links.html",
+    difficulty: "medium",
+    question: 'Du hast einen Soft-Link <code>current → version-2.3.txt</code>. Was passiert, wenn du <code>version-2.3.txt</code> <strong>löschst</strong>?',
+    answers: [
+      "Der Soft-Link wird automatisch gelöscht",
+      "Der Soft-Link bleibt, aber zeigt ins Leere (dangling)",
+      "Die Datei <code>version-2.3.txt</code> bleibt, weil der Link sie schützt",
+      "Es kommt eine Fehlermeldung beim Löschen"
+    ],
+    correct: 1,
+    explanation: "Soft-Links sind nur Wegweiser zu einem Pfad — wenn das Ziel weg ist, zeigt der Wegweiser ins Leere. Das nennt man „dangling symlink". <code>cat current</code> würde dann fehlschlagen."
+  },
+  {
+    chapter: "04",
+    chapterTitle: "Berechtigungen lesen",
+    chapterUrl: "04-berechtigungen-lesen.html",
+    difficulty: "easy",
+    question: 'Du siehst in <code>ls -l</code>: <code>drwxr-xr-x</code>. Was für ein Objekt ist das?',
+    answers: [
+      "Eine normale Datei",
+      "Ein Verzeichnis",
+      "Ein Symlink",
+      "Eine ausführbare Datei"
+    ],
+    correct: 1,
+    explanation: "Das erste Zeichen <code>d</code> steht für <strong>directory</strong> (Verzeichnis). <code>-</code> wäre eine normale Datei, <code>l</code> ein Symlink."
+  },
+  {
+    chapter: "04",
+    chapterTitle: "Berechtigungen lesen",
+    chapterUrl: "04-berechtigungen-lesen.html",
+    difficulty: "medium",
+    question: 'Welche Berechtigung steht hinter <code>-rw-r-----</code>?',
+    answers: [
+      "Owner darf lesen+schreiben, Group darf lesen, Others nichts",
+      "Owner darf alles, Group darf lesen+schreiben, Others nichts",
+      "Owner darf lesen+schreiben, Group darf lesen+schreiben, Others lesen",
+      "Owner darf lesen, Group darf schreiben, Others lesen"
+    ],
+    correct: 0,
+    explanation: "Aufgeteilt in 3+3+3: <code>rw-</code> (User), <code>r--</code> (Group), <code>---</code> (Others). Dateityp <code>-</code> (normale Datei) wird abgetrennt vom ersten Zeichen."
+  },
+  {
+    chapter: "05",
+    chapterTitle: "Berechtigungen setzen",
+    chapterUrl: "05-berechtigungen-setzen.html",
+    difficulty: "medium",
+    question: 'Welche Zahl entspricht der Berechtigung <code>rwxr-x---</code>?',
+    answers: [
+      "<code>755</code>",
+      "<code>750</code>",
+      "<code>770</code>",
+      "<code>700</code>"
+    ],
+    correct: 1,
+    explanation: "Owner = <code>rwx</code> = 7, Group = <code>r-x</code> = 5, Others = <code>---</code> = 0 → zusammen <strong>750</strong>."
+  },
+  {
+    chapter: "05",
+    chapterTitle: "Berechtigungen setzen",
+    chapterUrl: "05-berechtigungen-setzen.html",
+    difficulty: "hard",
+    question: 'Du willst eine Datei privat machen — nur du darfst lesen und schreiben, sonst niemand. Welcher Befehl ist <strong>falsch</strong>? (Achtung: hier suchst du die falsche Antwort!)',
+    answers: [
+      "<code>chmod 600 datei.txt</code>",
+      "<code>chmod u=rw,go= datei.txt</code>",
+      "<code>chmod 700 datei.txt</code>",
+      "<code>chmod u+rw,g-rwx,o-rwx datei.txt</code>"
+    ],
+    correct: 2,
+    explanation: "<code>700</code> setzt auch <code>x</code> (Ausführrecht) für Owner — bei einer normalen Textdatei brauchst du das nicht. Korrekt wäre <code>600</code>. Die anderen drei Varianten ergeben alle <code>-rw-------</code>."
+  },
+  {
+    chapter: "06",
+    chapterTitle: "Dateien suchen",
+    chapterUrl: "06-suchen.html",
+    difficulty: "easy",
+    question: '<strong>Wahr oder Falsch:</strong> „<code>locate</code> durchsucht das Dateisystem immer live und ist daher schneller als <code>find</code>."',
+    answers: [
+      "Wahr",
+      "Falsch"
+    ],
+    correct: 1,
+    explanation: "<code>locate</code> ist schneller, aber <strong>nicht</strong> weil es live sucht — im Gegenteil: <code>locate</code> nutzt eine <strong>vorgenerierte Datenbank</strong> (täglich aktualisiert per Cron). Deswegen findet es eben <strong>keine</strong> neuen Dateien, die seit dem letzten <code>updatedb</code> erstellt wurden. <code>find</code> ist langsam, weil es das Dateisystem live durchsucht."
+  },
+  {
+    chapter: "06",
+    chapterTitle: "Dateien suchen",
+    chapterUrl: "06-suchen.html",
+    difficulty: "medium",
+    question: 'Welcher Befehl findet alle <code>.conf</code>-Dateien in <code>/etc/</code>, die in den letzten 7 Tagen geändert wurden?',
+    answers: [
+      '<code>find /etc -name "*.conf" -mtime +7</code>',
+      '<code>find /etc -name "*.conf" -mtime -7</code>',
+      '<code>find /etc -name "*.conf" -mtime 7</code>',
+      '<code>locate "*.conf" -mtime -7</code>'
+    ],
+    correct: 1,
+    explanation: "<code>-mtime -7</code> heißt „<strong>weniger als</strong> 7 Tage her" — also in den letzten 7 Tagen. <code>+7</code> wäre „älter als 7 Tage". <code>locate</code> hat keine <code>-mtime</code>-Option, das geht nur mit <code>find</code>."
+  }
+];
+
+// ============ QUIZ-STATE ============
+let currentQuestionIndex = 0;
+let userAnswers = []; // {questionIndex, selectedIndex, isCorrect}
+const wrongChapters = new Set();
+
+// ============ DOM-HELPER ============
+const container = document.getElementById('quiz-container');
+
+const DIFFICULTY_LABELS = {
+  easy: 'Einfach',
+  medium: 'Mittel',
+  hard: 'Schwer'
+};
+
+// ============ FRAGE RENDERN ============
+function renderQuestion() {
+  const q = QUIZ_QUESTIONS[currentQuestionIndex];
+  const progressPercent = Math.round((currentQuestionIndex / QUIZ_QUESTIONS.length) * 100);
+
+  const answersHtml = q.answers.map((answer, idx) =>
+    `<button class="quiz-answer" data-index="${idx}">${answer}</button>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" style="width: ${progressPercent}%"></div>
+      </div>
+      <div class="quiz-progress-text">Frage ${currentQuestionIndex + 1} von ${QUIZ_QUESTIONS.length}</div>
+    </div>
+
+    <div class="quiz-question-meta">
+      <span class="quiz-chapter-badge">Kapitel ${q.chapter}</span>
+      <span class="quiz-difficulty-badge quiz-difficulty-${q.difficulty}">${DIFFICULTY_LABELS[q.difficulty]}</span>
+    </div>
+
+    <h2 class="quiz-question-text">${q.question}</h2>
+
+    <div class="quiz-answers">
+      ${answersHtml}
+    </div>
+
+    <div class="quiz-feedback" id="quiz-feedback" hidden></div>
+  `;
+
+  // Event-Listener
+  document.querySelectorAll('.quiz-answer').forEach(btn => {
+    btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.index, 10)));
+  });
+}
+
+// ============ ANTWORT VERARBEITEN ============
+function handleAnswer(selectedIndex) {
+  const q = QUIZ_QUESTIONS[currentQuestionIndex];
+  const isCorrect = selectedIndex === q.correct;
+
+  // Antwort speichern
+  userAnswers.push({
+    questionIndex: currentQuestionIndex,
+    selectedIndex,
+    isCorrect
+  });
+
+  if (!isCorrect) {
+    wrongChapters.add(q.chapter);
+  }
+
+  // Alle Buttons disablen
+  const buttons = document.querySelectorAll('.quiz-answer');
+  buttons.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === q.correct) {
+      btn.classList.add('quiz-answer-correct');
+    } else if (idx === selectedIndex && !isCorrect) {
+      btn.classList.add('quiz-answer-wrong');
+    }
+  });
+
+  // Feedback anzeigen
+  const feedback = document.getElementById('quiz-feedback');
+  feedback.className = `quiz-feedback ${isCorrect ? 'quiz-feedback-correct' : 'quiz-feedback-wrong'}`;
+  feedback.hidden = false;
+
+  const linkHtml = !isCorrect
+    ? `<div class="quiz-feedback-link">Nochmal nachschauen: → <a href="${q.chapterUrl}">Kapitel ${q.chapter} (${q.chapterTitle})</a></div>`
+    : '';
+
+  const isLast = currentQuestionIndex === QUIZ_QUESTIONS.length - 1;
+  const nextBtnLabel = isLast ? 'Ergebnis anzeigen →' : 'Nächste Frage →';
+
+  feedback.innerHTML = `
+    <div class="quiz-feedback-icon">${isCorrect ? '✓' : '✗'}</div>
+    <div class="quiz-feedback-title">${isCorrect ? 'Richtig!' : 'Leider falsch'}</div>
+    <div class="quiz-feedback-explanation">${q.explanation}</div>
+    ${linkHtml}
+    <button class="quiz-next-btn" id="quiz-next-btn">${nextBtnLabel}</button>
+  `;
+
+  document.getElementById('quiz-next-btn').addEventListener('click', goToNext);
+
+  // Sanft scrollen zum Feedback
+  feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ============ NÄCHSTE FRAGE / ABSCHLUSS ============
+function goToNext() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex >= QUIZ_QUESTIONS.length) {
+    renderResult();
+  } else {
+    renderQuestion();
+    // Nach oben scrollen
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ============ ABSCHLUSS-SCREEN ============
+function renderResult() {
+  const correctCount = userAnswers.filter(a => a.isCorrect).length;
+  const total = QUIZ_QUESTIONS.length;
+  const percent = Math.round((correctCount / total) * 100);
+
+  // Score-Kategorie bestimmen
+  let icon, title, message, scoreClass;
+  if (percent === 100) {
+    icon = '🏆';
+    title = 'Perfekt!';
+    message = 'Du hast Tag 2 komplett verinnerlicht. Bereit für Tag 3!';
+    scoreClass = 'score-excellent';
+  } else if (percent >= 83) {
+    icon = '🎉';
+    title = 'Großartig!';
+    message = 'Du hast Tag 2 fest im Griff. Schau dir die Fehler-Stellen kurz an und mach weiter.';
+    scoreClass = 'score-excellent';
+  } else if (percent >= 67) {
+    icon = '👍';
+    title = 'Solide!';
+    message = 'Ein paar Themen sollten wir nochmal vertiefen — siehe unten.';
+    scoreClass = 'score-good';
+  } else if (percent >= 42) {
+    icon = '📚';
+    title = 'Geht noch besser';
+    message = 'Da ist noch Luft nach oben. Geh die markierten Kapitel nochmal durch — am besten direkt vor dem Schlaf.';
+    scoreClass = 'score-okay';
+  } else {
+    icon = '💪';
+    title = 'Schwieriger Tag';
+    message = 'Schlaf eine Nacht drüber und mach das Quiz morgen früh nochmal — vor Tag 3.';
+    scoreClass = 'score-low';
+  }
+
+  // Empfehlungs-Liste aus falschen Antworten
+  let recommendationsHtml = '';
+  if (wrongChapters.size > 0) {
+    // Map Kapitel → Anzahl Fehler
+    const errorCount = {};
+    userAnswers.filter(a => !a.isCorrect).forEach(a => {
+      const ch = QUIZ_QUESTIONS[a.questionIndex].chapter;
+      errorCount[ch] = (errorCount[ch] || 0) + 1;
+    });
+
+    const items = Array.from(wrongChapters).sort().map(ch => {
+      const q = QUIZ_QUESTIONS.find(x => x.chapter === ch);
+      const n = errorCount[ch];
+      return `<li>• <a href="${q.chapterUrl}">Kapitel ${ch} — ${q.chapterTitle}</a> (${n} ${n === 1 ? 'Fehler' : 'Fehler'})</li>`;
+    }).join('');
+
+    recommendationsHtml = `
+      <div class="quiz-result-recommendations">
+        <div class="quiz-result-recommendations-title">Empfehlung zum Nachlesen:</div>
+        <ul>${items}</ul>
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div class="quiz-result">
+      <div class="quiz-result-icon">${icon}</div>
+      <h2 class="quiz-result-title">${title}</h2>
+      <div class="quiz-result-score">${correctCount} / ${total}</div>
+      <div class="quiz-result-score-bar">
+        <div class="quiz-result-score-fill ${scoreClass}" style="width: ${percent}%"></div>
+      </div>
+      <div class="quiz-result-message">${message}</div>
+      ${recommendationsHtml}
+      <div class="quiz-result-actions">
+        <button class="quiz-result-btn quiz-result-btn-secondary" id="quiz-restart-btn">Quiz neu starten</button>
+        <a href="08-cheat-sheet.html" class="quiz-result-btn quiz-result-btn-primary">Cheat-Sheet →</a>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('quiz-restart-btn').addEventListener('click', restartQuiz);
+
+  container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============ RESET ============
+function restartQuiz() {
+  currentQuestionIndex = 0;
+  userAnswers = [];
+  wrongChapters.clear();
+  renderQuestion();
+}
+
+// ============ START ============
+renderQuestion();
+</script>
+
+</body>
+</html>
