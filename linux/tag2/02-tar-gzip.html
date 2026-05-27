@@ -637,9 +637,10 @@ du -sh website/
 
         <div class="lab-section-title">Teil C — Komprimieren + Restore-Test (12 min)</div>
         <ol class="lab-tasks" start="9">
-          <li>Erstelle jetzt ein <strong>komprimiertes</strong> Archiv mit
-            Datum im Namen: <code>website-backup-YYYYMMDD.tar.gz</code>
-            (Hinweis: <code>$(date +%Y%m%d)</code>).</li>
+          <li>Erstelle jetzt ein <strong>komprimiertes</strong> Archiv mit dem
+            heutigen Datum im Namen, z. B.
+            <code>website-backup-20260526.tar.gz</code>. Verwende das aktuelle
+            Tagesdatum im Format <code>JJJJMMTT</code>.</li>
           <li>Verschiebe das <code>.tar.gz</code>-Archiv in
             <code>~/backups/</code>.</li>
           <li><strong>Lösche</strong> das gesamte
@@ -665,8 +666,9 @@ du -sh website/
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 9)
-tar -czvf website-backup-$(date +%Y%m%d).tar.gz website/
+<pre><code># 9) Datum heute manuell einsetzen, z. B. 20260526
+# (Profi-Variante mit $(date +%Y%m%d) lernst du in Tag 3)
+tar -czvf website-backup-20260526.tar.gz website/
 
 # 10)
 mv website-*.tar.gz ~/backups/
