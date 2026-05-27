@@ -21,7 +21,7 @@ itadm-academy/
 │
 ├── linux/                   ← Linux-Modul
 │   ├── index.html           ← Linux Übersicht
-│   ├── tag1/                ← Tag 1, aufgeteilt in 12 Kapitelseiten
+│   ├── tag1/                ← Tag 1, 10 Kapitel + Cheat-Sheet
 │   │   ├── index.html       ← Tag-1-Übersicht
 │   │   ├── 01-betriebssystem.html
 │   │   ├── 02-unix-geschichte.html
@@ -29,13 +29,21 @@ itadm-academy/
 │   │   ├── 04-virtualisierung.html
 │   │   ├── 05-installation.html
 │   │   ├── 06-terminal.html
-│   │   ├── 07-dateisystem.html
-│   │   ├── 08-navigation.html
+│   │   ├── 07-navigation.html
+│   │   ├── 08-dateisystem.html
 │   │   ├── 09-dateien.html
 │   │   ├── 10-editoren.html
-│   │   ├── 11-wildcards.html
-│   │   └── 12-quiz.html
-│   ├── tag2.html            ← Tag 2 (Platzhalter)
+│   │   └── 11-cheat-sheet.html
+│   ├── tag2/                ← Tag 2, 6 Kapitel + Quiz + Cheat-Sheet
+│   │   ├── index.html       ← Tag-2-Übersicht
+│   │   ├── 01-wildcards-redirection.html
+│   │   ├── 02-tar-gzip.html
+│   │   ├── 03-inodes-links.html
+│   │   ├── 04-berechtigungen-lesen.html
+│   │   ├── 05-berechtigungen-setzen.html
+│   │   ├── 06-suchen.html
+│   │   ├── 07-quiz.html          (kommt noch)
+│   │   └── 08-cheat-sheet.html   (kommt noch)
 │   └── tag3.html            ← Tag 3 (Platzhalter)
 │
 ├── windows/                 ← Windows-Modul (kommt später)
