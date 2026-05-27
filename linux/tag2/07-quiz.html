@@ -292,6 +292,7 @@ const QUIZ_QUESTIONS = [
 let currentQuestionIndex = 0;
 let userAnswers = []; // {questionIndex, selectedIndex, isCorrect}
 const wrongChapters = new Set();
+let answered = false; // Guard: verhindert Doppelauswertung (onclick + Delegation)
 
 // ============ DOM-HELPER ============
 const container = document.getElementById('quiz-container');
@@ -304,11 +305,12 @@ const DIFFICULTY_LABELS = {
 
 // ============ FRAGE RENDERN ============
 function renderQuestion() {
+  answered = false;
   const q = QUIZ_QUESTIONS[currentQuestionIndex];
   const progressPercent = Math.round((currentQuestionIndex / QUIZ_QUESTIONS.length) * 100);
 
   const answersHtml = q.answers.map((answer, idx) =>
-    `<button class="quiz-answer" data-index="${idx}">${answer}</button>`
+    `<button class="quiz-answer" type="button" data-index="${idx}" onclick="quizSelect(${idx})">${answer}</button>`
   ).join('');
 
   container.innerHTML = `
@@ -336,6 +338,8 @@ function renderQuestion() {
 
 // ============ ANTWORT VERARBEITEN ============
 function handleAnswer(selectedIndex) {
+  if (answered) return; // schon beantwortet — Doppel-Trigger ignorieren
+  answered = true;
   const q = QUIZ_QUESTIONS[currentQuestionIndex];
   const isCorrect = selectedIndex === q.correct;
 
@@ -488,9 +492,16 @@ function restartQuiz() {
   renderQuestion();
 }
 
-// ============ EVENT-DELEGATION (robust gegen Listener-Killer) ============
-// Ein einziger Listener am stabilen Container fängt jeden Klick auf eine
-// .quiz-answer ab — überlebt jedes Neu-Setzen von container.innerHTML.
+// ============ KLICK-HANDLER (mehrfach abgesichert) ============
+// 1) Inline onclick="quizSelect(i)" an jedem Button (siehe renderQuestion):
+//    robustester Weg — vom HTML-Parser gesetzt, unabhaengig von
+//    addEventListener, ueberlebt Listener-Killer. Muss global sein.
+window.quizSelect = function (idx) {
+  if (Number.isFinite(idx)) handleAnswer(idx);
+};
+
+// 2) Backup: Event-Delegation am stabilen Container (bubble-Phase).
+//    Falls inline-onclick blockiert sein sollte, faengt dies den Klick.
 container.addEventListener('click', (e) => {
   const btn = e.target.closest('.quiz-answer');
   if (!btn || btn.disabled) return;
