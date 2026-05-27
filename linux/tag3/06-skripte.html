@@ -67,18 +67,21 @@
 
   LÖSUNG
   ┌─────────────────────────────────────────┐
-  │  täglich.sh                              │
+  │  morgens.sh                              │
   ├─────────────────────────────────────────┤
   │  #!/bin/bash                             │
-  │  echo "Starte Backup..."                 │
-  │  tar -czf backup.tar.gz /home/admin/      │
-  │  echo "Update..."                        │
-  │  sudo dnf update -y                      │
-  │  echo "Fertig!"                          │
+  │  echo "=== System-Check $(date) ==="     │
+  │  echo                                    │
+  │  echo "-- Speicher --"                   │
+  │  free -h                                 │
+  │  echo                                    │
+  │  echo "-- Disk --"                       │
+  │  df -h                                   │
+  │  echo "Fertig."                          │
   └─────────────────────────────────────────┘
 
   Statt 5 Befehle → ein einziger:
-  $ ./täglich.sh</div>
+  $ ./morgens.sh</div>
 
         <div class="callout callout-info">
           <div class="callout-icon">🧠</div>
@@ -127,7 +130,7 @@
         <div class="callout callout-info">
           <div class="callout-icon">📌</div>
           <div class="callout-content">
-            <div class="callout-title">Q19-Klassiker: Wie heißt <code>#!/bin/bash</code>?</div>
+            <div class="callout-title">Begriff: Shebang</div>
             <p>Der Begriff lautet <strong>Shebang</strong> (manchmal auch
             „Hashbang" genannt). Aus <strong>Sh</strong>arp + <strong>Bang</strong>
             (# + !). Steht <strong>immer</strong> in der ersten Zeile, ohne
@@ -409,6 +412,11 @@ echo "Ich bin jetzt in $PWD"</code></pre>
             arbeiten und das Ergebnis prüfen kannst.</p>
             <p>Mach die Snapshot-Sicherung <code>vor-skript</code>, bevor du
             anfängst — das Skript löscht Dateien.</p>
+            <p>Das Lab ist diesmal anders aufgebaut: <strong>Phase 1 führt
+            dich Schritt für Schritt durchs Skript-Schreiben</strong> — beim
+            ersten Mal soll niemand im Dunkeln tappen. <strong>Phase 2 ist
+            offen</strong>: du gehst dein eigenes Skript durch und beantwortest
+            Reflexionsfragen. Der Bonus ist optional.</p>
             <p>Wenn du das hinkriegst, bist du offiziell <strong>Skript-fähig</strong>.
             Ab dann ist dein Admin-Leben deutlich entspannter.</p>
             <p style="margin-bottom: 0;">— Markus</p>
@@ -425,62 +433,73 @@ echo "Ich bin jetzt in $PWD"</code></pre>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil A — Vorbereitung: Ordner und Dateien (5 min)</div>
-        <ol class="lab-tasks">
-          <li>Wechsle in dein Home-Verzeichnis: <code>cd ~</code>.</li>
-          <li>Erstelle einen Ordner namens <code>autos</code>:
-            <code>mkdir autos</code>.</li>
-          <li>Wechsle in den Ordner: <code>cd autos</code>.</li>
-          <li>Lege drei leere Dateien an:
-            <code>touch bmw nissan opel</code>.</li>
-          <li>Prüfe mit <code>ls -l</code>. Was zeigt es? Welche Rechte haben
-            die Dateien?</li>
-        </ol>
+        <div class="lab-section-title">Phase 1 — Skript bauen (geführt, 25 min)</div>
 
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil A zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 1) Home-Verzeichnis
-cd ~
-
-# 2) Ordner anlegen
-mkdir autos
-
-# 3) Rein wechseln
-cd autos
-
-# 4) Drei Dateien
-touch bmw nissan opel
-
-# 5) Prüfen
-ls -l
-# → -rw-r--r-- 1 admin admin 0 ... bmw
-# → -rw-r--r-- 1 admin admin 0 ... nissan
-# → -rw-r--r-- 1 admin admin 0 ... opel
-# Standard-Rechte: 644 (rw für Owner, r für Gruppe/Others)</code></pre>
-            </div>
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p>Bau dein erstes eigenes Bash-Skript. Diese Phase ist <strong>bewusst
+            Schritt für Schritt geführt</strong> — beim ersten Skript der Karriere
+            soll niemand im Dunkeln tappen. Phase 2 ist dann offener.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil B — Das Skript schreiben (12 min)</div>
-        <ol class="lab-tasks" start="6">
-          <li>Bleib im Ordner <code>autos</code>. Öffne einen Editor und erstelle
-            eine neue Datei: <code>nano meinErstesSkript.sh</code>.</li>
-          <li>Schreibe in das Skript folgenden Inhalt:
-<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.5rem; overflow-x: auto;"><code>#!/bin/bash
+        <h4>Schritt 1 — Test-Umgebung anlegen</h4>
+        <p>Bevor du das Skript schreibst, brauchst du einen kleinen Test-Ordner mit
+        ein paar Test-Dateien, auf denen das Skript arbeiten soll.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>cd ~
+mkdir autos
+cd autos
+touch bmw nissan opel
+ls -l</code></pre>
+        </div>
+
+        <p>Nach <code>ls -l</code> solltest du drei leere Dateien sehen, alle mit
+        Standard-Rechten <code>-rw-r--r--</code> (das ist 644 — du erinnerst dich
+        aus Tag 2).</p>
+
+        <h4>Schritt 2 — Skript-Datei schreiben</h4>
+        <p>Bleib im <code>autos</code>-Ordner. Erstelle die Skript-Datei mit
+        <code>nano</code>:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>nano meinErstesSkript.sh</code></pre>
+        </div>
+
+        <p>Trag genau diesen Inhalt ein:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>#!/bin/bash
 # Mein erstes Skript
 # Autor: Tim Schulz
 # Aufgabe: Datei-Verwaltung im Ordner autos
@@ -490,146 +509,131 @@ chmod 644 bmw
 rm -f nissan
 ls -l
 echo "Wir haben es geschafft"</code></pre>
-          </li>
-          <li>Speichern und schließen: <kbd>Strg</kbd>+<kbd>O</kbd>, <kbd>Enter</kbd>,
-            <kbd>Strg</kbd>+<kbd>X</kbd>.</li>
-          <li>Prüfe mit <code>cat meinErstesSkript.sh</code>, ob alles richtig
-            drin steht.</li>
-          <li>Prüfe mit <code>ls -l meinErstesSkript.sh</code> die Rechte.
-            Hat es schon das Execute-Bit?</li>
-        </ol>
+        </div>
 
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil B zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 6) Editor öffnen
-nano meinErstesSkript.sh
+        <p>Speichern mit <kbd>Strg</kbd>+<kbd>O</kbd>, <kbd>Enter</kbd>, dann
+        <kbd>Strg</kbd>+<kbd>X</kbd> zum Verlassen.</p>
 
-# 7) Inhalt eintippen (siehe Aufgabe)
-
-# 8) Strg+O, Enter, Strg+X
-
-# 9) Inhalt prüfen
-cat meinErstesSkript.sh
-# Zeigt den ganzen Skript-Inhalt
-
-# 10) Rechte prüfen
-ls -l meinErstesSkript.sh
-# → -rw-r--r-- — KEIN Execute-Bit!
-# Das müssen wir gleich setzen (Teil C).</code></pre>
-            </div>
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <p style="margin: 0;">Falls du lieber <code>vim</code> nutzt: geht auch.
+            nano ist nur die Empfehlung, weil es für Anfänger einfacher ist. Beide
+            erzeugen identische Textdateien — das Skript ist Editor-unabhängig.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil C — Ausführbar machen und testen (8 min)</div>
-        <ol class="lab-tasks" start="11">
-          <li>Versuche das Skript direkt auszuführen: <code>./meinErstesSkript.sh</code>.
-            Was passiert?</li>
-          <li>Mache es ausführbar: <code>chmod +x meinErstesSkript.sh</code>.</li>
-          <li>Prüfe nochmal mit <code>ls -l</code>. Was hat sich geändert?</li>
-          <li>Führe das Skript aus: <code>./meinErstesSkript.sh</code>.</li>
-          <li>Schau dir die Ausgabe genau an: welche Datei ist weg? Was ist mit
-            bmw und opel?</li>
-        </ol>
+        <h4>Schritt 3 — Ausführbar machen und ausführen</h4>
+        <p>Schau dir zuerst die Rechte deines Skripts an: <code>ls -l meinErstesSkript.sh</code>.
+        Du wirst sehen, dass das <code>x</code>-Bit fehlt — das Skript ist noch
+        <strong>nicht ausführbar</strong>. Setz es mit:</p>
 
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil C zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 11) Erster Versuch — geht NICHT
-./meinErstesSkript.sh
-# → bash: ./meinErstesSkript.sh: Permission denied
-# Weil kein x-Bit gesetzt ist!
-
-# 12) Execute-Bit setzen
-chmod +x meinErstesSkript.sh
-
-# 13) Rechte nochmal prüfen
-ls -l meinErstesSkript.sh
-# → -rwxr-xr-x — jetzt mit x für alle drei Gruppen
-
-# 14) Ausführen
-./meinErstesSkript.sh
-
-# Ausgabe sollte sein:
-# Hallo
-# -rw-r--r-- 1 admin admin 0 ... bmw       (chmod 644 wurde gesetzt)
-# -rwxr-xr-x 1 admin admin ... meinErstesSkript.sh
-# -rw-r--r-- 1 admin admin 0 ... opel
-# Wir haben es geschafft
-
-# 15) Beobachtung:
-# - nissan ist WEG (rm -f hat sie gelöscht)
-# - bmw existiert noch, hat aber explizit 644 (war ohnehin schon so)
-# - opel ist unverändert
-# - meinErstesSkript.sh selbst taucht jetzt im ls-Output auf</code></pre>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
             </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>chmod +x meinErstesSkript.sh
+ls -l meinErstesSkript.sh
+./meinErstesSkript.sh</code></pre>
+        </div>
+
+        <p>Du solltest jetzt sehen:</p>
+        <ul>
+          <li><code>Hallo</code> als erste Ausgabe</li>
+          <li>Eine Liste der noch vorhandenen Dateien (<code>bmw</code> und
+            <code>opel</code> — <code>nissan</code> ist weg, <code>rm -f</code>
+            hat sie gelöscht)</li>
+          <li><code>Wir haben es geschafft</code> als letzte Ausgabe</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <p style="margin: 0;"><strong>Geschafft.</strong> Du hast gerade dein
+            erstes eigenes Bash-Skript geschrieben und ausgeführt. Jetzt geht's um
+            Verstehen — Phase 2.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil D — Verstehen, was passiert (5 min)</div>
-        <ol class="lab-tasks" start="16">
-          <li>Was passiert, wenn du das Skript ein <strong>zweites Mal</strong>
-            ausführst (<code>./meinErstesSkript.sh</code>)? Klappt es noch?</li>
-          <li>Warum benutzt das Skript <code>rm -f</code> und nicht nur
-            <code>rm</code>? Tipp: <code>-f</code> = force.</li>
-          <li>Erkläre einem Sitznachbarn (oder dir selbst laut), was jede
-            Zeile des Skripts macht.</li>
-        </ol>
+        <div class="lab-section-title">Phase 2 — Verstehen, was passiert (10 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p>Jetzt geh dein Skript Zeile für Zeile durch. Beantworte die folgenden
+            drei Fragen — selbst nachdenken, dann erst die Lösung aufmachen. Die
+            Hints helfen, wenn du nicht weiterkommst.</p>
+            <ol>
+              <li><strong>Idempotenz:</strong> Was passiert, wenn du das Skript ein
+                zweites Mal ausführst? Probiere es aus. Warum funktioniert das
+                zweite Mal trotzdem fehlerfrei?</li>
+              <li><strong>rm -f:</strong> Warum benutzt das Skript <code>rm -f</code>
+                und nicht nur <code>rm</code>? Was wäre ohne <code>-f</code>?</li>
+              <li><strong>Shebang weglassen:</strong> Was wäre passiert, wenn die
+                Zeile <code>#!/bin/bash</code> ganz gefehlt hätte? Würde das Skript
+                trotzdem laufen?</li>
+            </ol>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie teste ich das zweite Ausführen?</summary>
+          <p>Einfach noch einmal <code>./meinErstesSkript.sh</code> tippen. Schau
+          dir die Ausgabe an: gibt es eine Fehlermeldung? Beachte: <code>nissan</code>
+          ist beim ersten Lauf gelöscht worden — was passiert beim zweiten Lauf
+          mit der Zeile <code>rm -f nissan</code>?</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Was bedeutet -f bei rm?</summary>
+          <p>Das <code>-f</code> steht für <strong>force</strong>: rm beschwert sich
+          nicht, wenn die Datei nicht existiert. Ohne <code>-f</code> würde
+          <code>rm nissan</code> beim zweiten Lauf einen Fehler werfen — und der
+          Rest des Skripts würde trotzdem weiterlaufen, aber mit Fehler-Exit-Code
+          am Ende.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Skript ohne Shebang testen</summary>
+          <p>Du kannst das selbst ausprobieren: kopier dein Skript zu einer Test-Datei
+          ohne Shebang. <code>cp meinErstesSkript.sh ohne_shebang.sh</code>, dann
+          in der Kopie die <code>#!/bin/bash</code>-Zeile löschen. Versuche
+          <code>./ohne_shebang.sh</code> — was passiert? Versuche
+          <code>bash ohne_shebang.sh</code> — was passiert da?</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil D zeigen</span>
+            <span>Lösung Phase 2 zeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
-            <p><strong>16) Zweites Mal:</strong> Klappt — aber jetzt zeigt
-            <code>rm -f nissan</code> keinen Fehler, weil <code>-f</code>
-            (force) auch bei <em>nicht-existierender Datei</em> nicht meckert.
-            Ohne <code>-f</code> würde es sagen
-            "rm: cannot remove 'nissan': No such file or directory" und der Exit-Code
-            wäre nicht 0. Das Skript läuft trotzdem weiter, aber mit Fehler.</p>
-
-            <p><strong>17) Warum <code>-f</code>:</strong> Genau aus dem Grund —
-            es macht das Skript <strong>idempotent</strong> (wiederholt ausführbar
-            ohne Fehler). Auch nützlich bei Skripten, die Dateien aufräumen,
-            ohne sich um die Existenz zu kümmern.</p>
-
-            <p><strong>18) Zeile-für-Zeile:</strong></p>
-            <ul>
-              <li><code>#!/bin/bash</code> — Shebang, sagt: nutze Bash zum Ausführen</li>
-              <li><code># …</code> — Kommentare, nur für den Menschen</li>
-              <li><code>echo "Hallo"</code> — gibt „Hallo" aus</li>
-              <li><code>chmod 644 bmw</code> — setzt Rechte rw-r--r-- auf bmw</li>
-              <li><code>rm -f nissan</code> — löscht nissan ohne zu fragen</li>
-              <li><code>ls -l</code> — listet aktuellen Ordner als „long format"</li>
-              <li><code>echo "Wir haben es geschafft"</code> — Schluss-Ausgabe</li>
-            </ul>
+            <p><strong>Frage 1 — Idempotenz:</strong> Beim zweiten Lauf läuft das
+            Skript komplett durch, ohne Fehler. Grund: <code>rm -f nissan</code>
+            ist <em>idempotent</em> — der Befehl meckert nicht, wenn die Datei
+            schon weg ist. <code>chmod 644 bmw</code> setzt einfach nochmal die
+            gleichen Rechte. <code>ls -l</code> und <code>echo</code> sind ohnehin
+            nur lesend bzw. ausgebend.</p>
+            <p><strong>Frage 2 — rm -f:</strong> <code>-f</code> = force. Ohne wäre
+            das Skript beim zweiten Lauf nicht mehr fehlerfrei, weil
+            <code>rm nissan</code> klagen würde: „cannot remove 'nissan': No such
+            file or directory". Das Skript würde zwar weiterlaufen (Bash bricht
+            nicht ab), aber der Exit-Code wäre nicht 0 — und in automatisierten
+            Pipelines ist das ein Problem.</p>
+            <p><strong>Frage 3 — ohne Shebang:</strong> <code>./skript.sh</code>
+            funktioniert nicht zuverlässig — der Kernel weiß nicht, mit welchem
+            Interpreter er die Datei ausführen soll. Auf modernen Systemen
+            versucht es manchmal die aktuelle Shell, aber das ist Glückssache.
+            <code>bash skript.sh</code> funktioniert dagegen immer, weil du den
+            Interpreter explizit angibst. Faustregel: <strong>Shebang macht das
+            Skript portabel und vorhersagbar.</strong></p>
           </div>
         </div>
 
@@ -649,6 +653,21 @@ ls -l meinErstesSkript.sh
             <code>echo "Hallo $USER, das Skript startet..."</code></li>
           <li><strong>Datum:</strong> Füge eine Zeile hinzu, die das aktuelle
             Datum ausgibt: <code>echo "Heute: $(date +%Y-%m-%d)"</code></li>
+        </ol>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🔗</div>
+          <div class="callout-content">
+            <p style="margin: 0;"><strong>Cross-Reference Kap 05:</strong> In Lab
+            3.5 hast du <code>$HOME/skripte/</code> in deinen <code>$PATH</code>
+            aufgenommen. Falls du das gemacht hast, kannst du das Backup-Skript
+            nach dem <code>chmod +x</code> einfach mit <code>backup.sh</code>
+            aufrufen — ohne <code>./</code> davor. Falls nicht, geht
+            <code>$HOME/skripte/backup.sh</code> auch immer.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="21">
           <li><strong>Backup-Skript:</strong> Erstelle ein neues Skript
             <code>~/skripte/backup.sh</code>, das den autos-Ordner als
             tar.gz-Archiv ins Home-Verzeichnis sichert. Das Archiv soll das
@@ -660,8 +679,8 @@ datum=$(date +%Y-%m-%d_%H-%M)
 backup_name="autos-backup-$datum.tar.gz"
 
 echo "Erstelle Backup: $backup_name"
-tar -czf ~/$backup_name ~/autos/
-echo "Fertig! Backup liegt in ~/$backup_name"</code></pre>
+tar -czf $HOME/$backup_name $HOME/autos/
+echo "Fertig! Backup liegt in $HOME/$backup_name"</code></pre>
           </li>
           <li>Mach das Backup-Skript ausführbar und führe es aus. Prüfe mit
             <code>ls -lh ~/autos-backup-*</code>, ob das Archiv da ist.</li>
@@ -809,8 +828,7 @@ ls -lh ~/autos-backup-*
 
       <div class="subblock">
         <ol class="lab-tasks">
-          <li>Wie heißt die Zeile <code>#!/bin/bash</code> in einem Skript?
-            (Tipp: Q19)</li>
+          <li>Wie heißt die Zeile <code>#!/bin/bash</code> in einem Skript, und welche Funktion erfüllt sie technisch?</li>
           <li>Welche drei Schritte brauchst du, um aus einer Textdatei ein
             ausführbares Skript zu machen?</li>
           <li>Warum musst du <code>./skript.sh</code> tippen statt nur
