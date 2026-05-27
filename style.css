@@ -2204,3 +2204,81 @@ details.callout-deepdive > summary:hover { text-decoration: underline; }
 .quiz-result-btn:hover {
   opacity: 0.85;
 }
+
+/* ========== QUIZ v2 — native radio + label + CSS :has() (kein JS noetig) ========== */
+.q2 { margin-top: 1.5rem; }
+.q2-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+.q2-item {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.q2-meta { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.q2-badge, .q2-diff {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  padding: 0.2rem 0.55rem; border-radius: 4px;
+}
+.q2-badge { background: rgba(100,150,200,0.15); color: #6496c8; border: 1px solid rgba(100,150,200,0.3); }
+.q2-diff-easy   { background: rgba(100,200,100,0.15); color:#64c864; border:1px solid rgba(100,200,100,0.3); }
+.q2-diff-medium { background: rgba(220,180,80,0.15);  color:#dcb450; border:1px solid rgba(220,180,80,0.3); }
+.q2-diff-hard   { background: rgba(220,100,100,0.15); color:#dc6464; border:1px solid rgba(220,100,100,0.3); }
+.q2-q {
+  font-size: 1.15rem; font-weight: 600; margin: 0 0 1rem;
+  line-height: 1.45; color: var(--text-primary);
+}
+.q2-num { color: var(--accent); font-family: var(--font-mono); margin-right: 0.3rem; }
+.q2-q code, .q2-opt-text code, .q2-expl code {
+  background: var(--bg-darker); padding: 0.1rem 0.35rem; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.92em;
+}
+.q2-opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.q2-opt {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--bg-darker);
+  border: 2px solid var(--border-default);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.q2-opt:hover { border-color: var(--accent); }
+.q2-opt input {
+  accent-color: var(--accent);
+  width: 1.1rem; height: 1.1rem; flex-shrink: 0; cursor: pointer; margin: 0;
+}
+.q2-opt-text { flex: 1; }
+
+/* Sofort-Feedback rein per CSS :has() — keine Klick-Listener noetig */
+.q2-opt.q2-correct:has(input:checked) {
+  background: rgba(100,200,100,0.15); border-color: #64c864; color: #64c864;
+}
+.q2-opt:not(.q2-correct):has(input:checked) {
+  background: rgba(220,100,100,0.15); border-color: #dc6464; color: #dc6464;
+}
+/* sobald eine Antwort gewaehlt ist: die korrekte immer gruen markieren */
+.q2-item:has(input:checked) .q2-opt.q2-correct { border-color: #64c864; }
+
+.q2-expl {
+  display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px;
+  border-left: 4px solid; line-height: 1.5; color: var(--text-secondary);
+}
+.q2-expl strong { color: var(--text-primary); }
+.q2-expl-correct { background: rgba(100,200,100,0.08); border-left-color: #64c864; }
+.q2-expl-wrong   { background: rgba(220,100,100,0.08); border-left-color: #dc6464; }
+.q2-item:has(.q2-correct input:checked) .q2-expl-correct { display: block; }
+.q2-item:has(input:checked):not(:has(.q2-correct input:checked)) .q2-expl-wrong { display: block; }
+.q2-expl-link { margin-top: 0.5rem; font-size: 0.9rem; font-family: var(--font-mono); }
+.q2-expl-link a { color: var(--accent); text-decoration: none; }
+.q2-expl-link a:hover { text-decoration: underline; }
+
+.q2-score {
+  margin-top: 1.5rem; padding: 1.1rem 1.25rem;
+  background: var(--bg-dark); border: 1px solid var(--border-default);
+  border-radius: 10px; text-align: center;
+  font-family: var(--font-mono); font-size: 1.05rem; color: var(--text-primary);
+  position: sticky; bottom: 0.5rem;
+}

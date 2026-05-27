@@ -34,9 +34,8 @@
     </h1>
     <p class="page-subtitle">
       Zwölf Fragen quer durch den Tag — von Wildcards bis <code>find</code>.
-      Pro Frage hast du <strong>einen Versuch</strong>. Am Ende siehst du dein
-      Ergebnis und kannst nochmal nachschauen, wo du unsicher warst. Viel
-      Erfolg!
+      Wähle pro Frage eine Antwort und du siehst sofort, ob sie stimmt — plus
+      eine kurze Erklärung. Unten erscheint dein Punktestand. Viel Erfolg!
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">🎯</span> Tages-Quiz</span>
@@ -53,7 +52,7 @@
         <div class="callout-title">So funktioniert das Quiz</div>
         <ul>
           <li><strong>12 Fragen</strong> quer durch alle 6 Kapitel von heute</li>
-          <li>Pro Frage <strong>eine Antwort</strong> — kein zweiter Versuch</li>
+          <li>Wähle pro Frage eine Antwort — du kannst sie jederzeit ändern</li>
           <li><strong>Sofort-Feedback</strong> nach jeder Antwort: richtig
             (grün) oder falsch (rot) plus kurze Erklärung</li>
           <li>Am Ende siehst du deinen <strong>Punktestand</strong> und Tipps,
@@ -65,9 +64,319 @@
     </div>
 
     <section class="quiz-section">
-      <div id="quiz-container">
-        <!-- wird vom JavaScript gerendert -->
-      </div>
+    <form class="q2" id="quiz-form">
+      <ol class="q2-list">
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 01</span>
+          <span class="q2-diff q2-diff-easy">Einfach</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">1.</span> Welche Wildcard steht für <strong>„genau ein beliebiges Zeichen"</strong>?</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q0" value="0">
+            <span class="q2-opt-text"><code>*</code></span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q0" value="1">
+            <span class="q2-opt-text"><code>?</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q0" value="2">
+            <span class="q2-opt-text"><code>[ ]</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q0" value="3">
+            <span class="q2-opt-text"><code>~</code></span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>?</code> steht für genau ein Zeichen. <code>*</code> ist „beliebig viele Zeichen“, <code>[ ]</code> ist „eines von diesen Zeichen“, <code>~</code> ist das Home-Verzeichnis.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>?</code> steht für genau ein Zeichen. <code>*</code> ist „beliebig viele Zeichen“, <code>[ ]</code> ist „eines von diesen Zeichen“, <code>~</code> ist das Home-Verzeichnis.<div class="q2-expl-link">Nochmal nachschauen: → <a href="01-wildcards-redirection.html">Kapitel 01 (Wildcards, Redirection & Pipes)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 01</span>
+          <span class="q2-diff q2-diff-medium">Mittel</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">2.</span> Du willst die Ausgabe von <code>ls</code> in eine Datei <code>liste.txt</code> umleiten und Fehlermeldungen verwerfen. Welcher Operator gehört in die Lücke?<br><br><code>ls /etc &gt; liste.txt ___ /dev/null</code></p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q1" value="0">
+            <span class="q2-opt-text"><code>&gt;</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q1" value="1">
+            <span class="q2-opt-text"><code>&gt;&gt;</code></span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q1" value="2">
+            <span class="q2-opt-text"><code>2&gt;</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q1" value="3">
+            <span class="q2-opt-text"><code>&amp;&gt;</code></span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>2&gt;</code> leitet <strong>nur</strong> Fehler (stderr) um. <code>&gt;</code> würde die normale Ausgabe nochmal überschreiben, <code>&gt;&gt;</code> würde sie anhängen, und <code>&amp;&gt;</code> würde alles zusammen umleiten.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>2&gt;</code> leitet <strong>nur</strong> Fehler (stderr) um. <code>&gt;</code> würde die normale Ausgabe nochmal überschreiben, <code>&gt;&gt;</code> würde sie anhängen, und <code>&amp;&gt;</code> würde alles zusammen umleiten.<div class="q2-expl-link">Nochmal nachschauen: → <a href="01-wildcards-redirection.html">Kapitel 01 (Wildcards, Redirection & Pipes)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 02</span>
+          <span class="q2-diff q2-diff-easy">Einfach</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">3.</span> Was bedeutet die Option <code>-z</code> in <code>tar</code>?</p>
+        <div class="q2-opts">
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q2" value="0">
+            <span class="q2-opt-text">Archiv zippen (komprimieren mit gzip)</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q2" value="1">
+            <span class="q2-opt-text">Archiv anzeigen (nur listen)</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q2" value="2">
+            <span class="q2-opt-text">Archiv leeren</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q2" value="3">
+            <span class="q2-opt-text">Archiv verschlüsseln</span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>-z</code> aktiviert die gzip-Komprimierung. „Z“ wie „Zip“.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>-z</code> aktiviert die gzip-Komprimierung. „Z“ wie „Zip“.<div class="q2-expl-link">Nochmal nachschauen: → <a href="02-tar-gzip.html">Kapitel 02 (Archivieren mit tar & gzip)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 02</span>
+          <span class="q2-diff q2-diff-medium">Mittel</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">4.</span> Welcher Befehl entpackt das Archiv <code>backup.tar.gz</code>?</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q3" value="0">
+            <span class="q2-opt-text"><code>tar -czvf backup.tar.gz</code></span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q3" value="1">
+            <span class="q2-opt-text"><code>tar -xzvf backup.tar.gz</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q3" value="2">
+            <span class="q2-opt-text"><code>tar -tzvf backup.tar.gz</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q3" value="3">
+            <span class="q2-opt-text"><code>gunzip backup.tar.gz</code></span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>-x</code> = extract (entpacken). <code>-c</code> wäre erstellen, <code>-t</code> nur listen. <code>gunzip</code> kann nur einzelne <code>.gz</code>-Dateien, aber kein <code>.tar</code>-Archiv darin.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>-x</code> = extract (entpacken). <code>-c</code> wäre erstellen, <code>-t</code> nur listen. <code>gunzip</code> kann nur einzelne <code>.gz</code>-Dateien, aber kein <code>.tar</code>-Archiv darin.<div class="q2-expl-link">Nochmal nachschauen: → <a href="02-tar-gzip.html">Kapitel 02 (Archivieren mit tar & gzip)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 03</span>
+          <span class="q2-diff q2-diff-easy">Einfach</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">5.</span> <strong>Wahr oder Falsch:</strong> „Ein Hard-Link auf eine Datei und das Original haben dieselbe Inode-Nummer."</p>
+        <div class="q2-opts">
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q4" value="0">
+            <span class="q2-opt-text">Wahr</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q4" value="1">
+            <span class="q2-opt-text">Falsch</span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> Ein Hard-Link ist ein zweiter Name für <strong>dieselbe</strong> Inode — keine Kopie, sondern eine zusätzliche Referenz. Beide zeigen auf exakt dieselben Datenblöcke.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> Ein Hard-Link ist ein zweiter Name für <strong>dieselbe</strong> Inode — keine Kopie, sondern eine zusätzliche Referenz. Beide zeigen auf exakt dieselben Datenblöcke.<div class="q2-expl-link">Nochmal nachschauen: → <a href="03-inodes-links.html">Kapitel 03 (Inodes & Links)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 03</span>
+          <span class="q2-diff q2-diff-medium">Mittel</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">6.</span> Du hast einen Soft-Link <code>current → version-2.3.txt</code>. Was passiert, wenn du <code>version-2.3.txt</code> <strong>löschst</strong>?</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q5" value="0">
+            <span class="q2-opt-text">Der Soft-Link wird automatisch gelöscht</span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q5" value="1">
+            <span class="q2-opt-text">Der Soft-Link bleibt, aber zeigt ins Leere (dangling)</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q5" value="2">
+            <span class="q2-opt-text">Die Datei <code>version-2.3.txt</code> bleibt, weil der Link sie schützt</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q5" value="3">
+            <span class="q2-opt-text">Es kommt eine Fehlermeldung beim Löschen</span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> Soft-Links sind nur Wegweiser zu einem Pfad — wenn das Ziel weg ist, zeigt der Wegweiser ins Leere. Das nennt man „dangling symlink“. <code>cat current</code> würde dann fehlschlagen.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> Soft-Links sind nur Wegweiser zu einem Pfad — wenn das Ziel weg ist, zeigt der Wegweiser ins Leere. Das nennt man „dangling symlink“. <code>cat current</code> würde dann fehlschlagen.<div class="q2-expl-link">Nochmal nachschauen: → <a href="03-inodes-links.html">Kapitel 03 (Inodes & Links)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 04</span>
+          <span class="q2-diff q2-diff-easy">Einfach</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">7.</span> Du siehst in <code>ls -l</code>: <code>drwxr-xr-x</code>. Was für ein Objekt ist das?</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q6" value="0">
+            <span class="q2-opt-text">Eine normale Datei</span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q6" value="1">
+            <span class="q2-opt-text">Ein Verzeichnis</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q6" value="2">
+            <span class="q2-opt-text">Ein Symlink</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q6" value="3">
+            <span class="q2-opt-text">Eine ausführbare Datei</span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> Das erste Zeichen <code>d</code> steht für <strong>directory</strong> (Verzeichnis). <code>-</code> wäre eine normale Datei, <code>l</code> ein Symlink.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> Das erste Zeichen <code>d</code> steht für <strong>directory</strong> (Verzeichnis). <code>-</code> wäre eine normale Datei, <code>l</code> ein Symlink.<div class="q2-expl-link">Nochmal nachschauen: → <a href="04-berechtigungen-lesen.html">Kapitel 04 (Berechtigungen lesen)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 04</span>
+          <span class="q2-diff q2-diff-medium">Mittel</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">8.</span> Welche Berechtigung steht hinter <code>-rw-r-----</code>?</p>
+        <div class="q2-opts">
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q7" value="0">
+            <span class="q2-opt-text">Owner darf lesen+schreiben, Group darf lesen, Others nichts</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q7" value="1">
+            <span class="q2-opt-text">Owner darf alles, Group darf lesen+schreiben, Others nichts</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q7" value="2">
+            <span class="q2-opt-text">Owner darf lesen+schreiben, Group darf lesen+schreiben, Others lesen</span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q7" value="3">
+            <span class="q2-opt-text">Owner darf lesen, Group darf schreiben, Others lesen</span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> Aufgeteilt in 3+3+3: <code>rw-</code> (User), <code>r--</code> (Group), <code>---</code> (Others). Dateityp <code>-</code> (normale Datei) wird abgetrennt vom ersten Zeichen.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> Aufgeteilt in 3+3+3: <code>rw-</code> (User), <code>r--</code> (Group), <code>---</code> (Others). Dateityp <code>-</code> (normale Datei) wird abgetrennt vom ersten Zeichen.<div class="q2-expl-link">Nochmal nachschauen: → <a href="04-berechtigungen-lesen.html">Kapitel 04 (Berechtigungen lesen)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 05</span>
+          <span class="q2-diff q2-diff-medium">Mittel</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">9.</span> Welche Zahl entspricht der Berechtigung <code>rwxr-x---</code>?</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q8" value="0">
+            <span class="q2-opt-text"><code>755</code></span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q8" value="1">
+            <span class="q2-opt-text"><code>750</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q8" value="2">
+            <span class="q2-opt-text"><code>770</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q8" value="3">
+            <span class="q2-opt-text"><code>700</code></span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> Owner = <code>rwx</code> = 7, Group = <code>r-x</code> = 5, Others = <code>---</code> = 0 → zusammen <strong>750</strong>.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> Owner = <code>rwx</code> = 7, Group = <code>r-x</code> = 5, Others = <code>---</code> = 0 → zusammen <strong>750</strong>.<div class="q2-expl-link">Nochmal nachschauen: → <a href="05-berechtigungen-setzen.html">Kapitel 05 (Berechtigungen setzen)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 05</span>
+          <span class="q2-diff q2-diff-hard">Schwer</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">10.</span> Du willst eine Datei privat machen — nur du darfst lesen und schreiben, sonst niemand. Welcher Befehl ist <strong>falsch</strong>? (Achtung: hier suchst du die falsche Antwort!)</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q9" value="0">
+            <span class="q2-opt-text"><code>chmod 600 datei.txt</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q9" value="1">
+            <span class="q2-opt-text"><code>chmod u=rw,go= datei.txt</code></span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q9" value="2">
+            <span class="q2-opt-text"><code>chmod 700 datei.txt</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q9" value="3">
+            <span class="q2-opt-text"><code>chmod u+rw,g-rwx,o-rwx datei.txt</code></span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>700</code> setzt auch <code>x</code> (Ausführrecht) für Owner — bei einer normalen Textdatei brauchst du das nicht. Korrekt wäre <code>600</code>. Die anderen drei Varianten ergeben alle <code>-rw-------</code>.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>700</code> setzt auch <code>x</code> (Ausführrecht) für Owner — bei einer normalen Textdatei brauchst du das nicht. Korrekt wäre <code>600</code>. Die anderen drei Varianten ergeben alle <code>-rw-------</code>.<div class="q2-expl-link">Nochmal nachschauen: → <a href="05-berechtigungen-setzen.html">Kapitel 05 (Berechtigungen setzen)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 06</span>
+          <span class="q2-diff q2-diff-easy">Einfach</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">11.</span> <strong>Wahr oder Falsch:</strong> „<code>locate</code> durchsucht das Dateisystem immer live und ist daher schneller als <code>find</code>."</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q10" value="0">
+            <span class="q2-opt-text">Wahr</span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q10" value="1">
+            <span class="q2-opt-text">Falsch</span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>locate</code> ist schneller, aber <strong>nicht</strong> weil es live sucht — im Gegenteil: <code>locate</code> nutzt eine <strong>vorgenerierte Datenbank</strong> (täglich aktualisiert per Cron). Deswegen findet es eben <strong>keine</strong> neuen Dateien, die seit dem letzten <code>updatedb</code> erstellt wurden. <code>find</code> ist langsam, weil es das Dateisystem live durchsucht.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>locate</code> ist schneller, aber <strong>nicht</strong> weil es live sucht — im Gegenteil: <code>locate</code> nutzt eine <strong>vorgenerierte Datenbank</strong> (täglich aktualisiert per Cron). Deswegen findet es eben <strong>keine</strong> neuen Dateien, die seit dem letzten <code>updatedb</code> erstellt wurden. <code>find</code> ist langsam, weil es das Dateisystem live durchsucht.<div class="q2-expl-link">Nochmal nachschauen: → <a href="06-suchen.html">Kapitel 06 (Dateien suchen)</a></div></div>
+      </li>
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Kapitel 06</span>
+          <span class="q2-diff q2-diff-medium">Mittel</span>
+        </div>
+        <p class="q2-q"><span class="q2-num">12.</span> Welcher Befehl findet alle <code>.conf</code>-Dateien in <code>/etc/</code>, die in den letzten 7 Tagen geändert wurden?</p>
+        <div class="q2-opts">
+          <label class="q2-opt">
+            <input type="radio" name="q11" value="0">
+            <span class="q2-opt-text"><code>find /etc -name "*.conf" -mtime +7</code></span>
+          </label>
+          <label class="q2-opt q2-correct">
+            <input type="radio" name="q11" value="1">
+            <span class="q2-opt-text"><code>find /etc -name "*.conf" -mtime -7</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q11" value="2">
+            <span class="q2-opt-text"><code>find /etc -name "*.conf" -mtime 7</code></span>
+          </label>
+          <label class="q2-opt">
+            <input type="radio" name="q11" value="3">
+            <span class="q2-opt-text"><code>locate "*.conf" -mtime -7</code></span>
+          </label>
+        </div>
+        <div class="q2-expl q2-expl-correct"><strong>✓ Richtig!</strong> <code>-mtime -7</code> heißt „<strong>weniger als</strong> 7 Tage her“ — also in den letzten 7 Tagen. <code>+7</code> wäre „älter als 7 Tage“. <code>locate</code> hat keine <code>-mtime</code>-Option, das geht nur mit <code>find</code>.</div>
+        <div class="q2-expl q2-expl-wrong"><strong>✗ Leider falsch.</strong> <code>-mtime -7</code> heißt „<strong>weniger als</strong> 7 Tage her“ — also in den letzten 7 Tagen. <code>+7</code> wäre „älter als 7 Tage“. <code>locate</code> hat keine <code>-mtime</code>-Option, das geht nur mit <code>find</code>.<div class="q2-expl-link">Nochmal nachschauen: → <a href="06-suchen.html">Kapitel 06 (Dateien suchen)</a></div></div>
+      </li>
+      </ol>
+      <div class="q2-score" id="q2-score">Noch keine Frage beantwortet.</div>
+    </form>
     </section>
 
     <!-- ============ NAV ============ -->
@@ -106,412 +415,34 @@
 
 <script src="../../script.js"></script>
 <script src="/cookies.js" defer></script>
-
 <script>
-// ============ QUIZ-DATEN ============
-const QUIZ_QUESTIONS = [
-  {
-    chapter: "01",
-    chapterTitle: "Wildcards, Redirection & Pipes",
-    chapterUrl: "01-wildcards-redirection.html",
-    difficulty: "easy",
-    question: 'Welche Wildcard steht für <strong>„genau ein beliebiges Zeichen"</strong>?',
-    answers: [
-      "<code>*</code>",
-      "<code>?</code>",
-      "<code>[ ]</code>",
-      "<code>~</code>"
-    ],
-    correct: 1,
-    explanation: '<code>?</code> steht für genau ein Zeichen. <code>*</code> ist „beliebig viele Zeichen“, <code>[ ]</code> ist „eines von diesen Zeichen“, <code>~</code> ist das Home-Verzeichnis.'
-  },
-  {
-    chapter: "01",
-    chapterTitle: "Wildcards, Redirection & Pipes",
-    chapterUrl: "01-wildcards-redirection.html",
-    difficulty: "medium",
-    question: 'Du willst die Ausgabe von <code>ls</code> in eine Datei <code>liste.txt</code> umleiten und Fehlermeldungen verwerfen. Welcher Operator gehört in die Lücke?<br><br><code>ls /etc &gt; liste.txt ___ /dev/null</code>',
-    answers: [
-      "<code>&gt;</code>",
-      "<code>&gt;&gt;</code>",
-      "<code>2&gt;</code>",
-      "<code>&amp;&gt;</code>"
-    ],
-    correct: 2,
-    explanation: "<code>2&gt;</code> leitet <strong>nur</strong> Fehler (stderr) um. <code>&gt;</code> würde die normale Ausgabe nochmal überschreiben, <code>&gt;&gt;</code> würde sie anhängen, und <code>&amp;&gt;</code> würde alles zusammen umleiten."
-  },
-  {
-    chapter: "02",
-    chapterTitle: "Archivieren mit tar & gzip",
-    chapterUrl: "02-tar-gzip.html",
-    difficulty: "easy",
-    question: 'Was bedeutet die Option <code>-z</code> in <code>tar</code>?',
-    answers: [
-      "Archiv zippen (komprimieren mit gzip)",
-      "Archiv anzeigen (nur listen)",
-      "Archiv leeren",
-      "Archiv verschlüsseln"
-    ],
-    correct: 0,
-    explanation: '<code>-z</code> aktiviert die gzip-Komprimierung. „Z“ wie „Zip“.'
-  },
-  {
-    chapter: "02",
-    chapterTitle: "Archivieren mit tar & gzip",
-    chapterUrl: "02-tar-gzip.html",
-    difficulty: "medium",
-    question: 'Welcher Befehl entpackt das Archiv <code>backup.tar.gz</code>?',
-    answers: [
-      "<code>tar -czvf backup.tar.gz</code>",
-      "<code>tar -xzvf backup.tar.gz</code>",
-      "<code>tar -tzvf backup.tar.gz</code>",
-      "<code>gunzip backup.tar.gz</code>"
-    ],
-    correct: 1,
-    explanation: "<code>-x</code> = extract (entpacken). <code>-c</code> wäre erstellen, <code>-t</code> nur listen. <code>gunzip</code> kann nur einzelne <code>.gz</code>-Dateien, aber kein <code>.tar</code>-Archiv darin."
-  },
-  {
-    chapter: "03",
-    chapterTitle: "Inodes & Links",
-    chapterUrl: "03-inodes-links.html",
-    difficulty: "easy",
-    question: '<strong>Wahr oder Falsch:</strong> „Ein Hard-Link auf eine Datei und das Original haben dieselbe Inode-Nummer."',
-    answers: [
-      "Wahr",
-      "Falsch"
-    ],
-    correct: 0,
-    explanation: "Ein Hard-Link ist ein zweiter Name für <strong>dieselbe</strong> Inode — keine Kopie, sondern eine zusätzliche Referenz. Beide zeigen auf exakt dieselben Datenblöcke."
-  },
-  {
-    chapter: "03",
-    chapterTitle: "Inodes & Links",
-    chapterUrl: "03-inodes-links.html",
-    difficulty: "medium",
-    question: 'Du hast einen Soft-Link <code>current → version-2.3.txt</code>. Was passiert, wenn du <code>version-2.3.txt</code> <strong>löschst</strong>?',
-    answers: [
-      "Der Soft-Link wird automatisch gelöscht",
-      "Der Soft-Link bleibt, aber zeigt ins Leere (dangling)",
-      "Die Datei <code>version-2.3.txt</code> bleibt, weil der Link sie schützt",
-      "Es kommt eine Fehlermeldung beim Löschen"
-    ],
-    correct: 1,
-    explanation: 'Soft-Links sind nur Wegweiser zu einem Pfad — wenn das Ziel weg ist, zeigt der Wegweiser ins Leere. Das nennt man „dangling symlink“. <code>cat current</code> würde dann fehlschlagen.'
-  },
-  {
-    chapter: "04",
-    chapterTitle: "Berechtigungen lesen",
-    chapterUrl: "04-berechtigungen-lesen.html",
-    difficulty: "easy",
-    question: 'Du siehst in <code>ls -l</code>: <code>drwxr-xr-x</code>. Was für ein Objekt ist das?',
-    answers: [
-      "Eine normale Datei",
-      "Ein Verzeichnis",
-      "Ein Symlink",
-      "Eine ausführbare Datei"
-    ],
-    correct: 1,
-    explanation: "Das erste Zeichen <code>d</code> steht für <strong>directory</strong> (Verzeichnis). <code>-</code> wäre eine normale Datei, <code>l</code> ein Symlink."
-  },
-  {
-    chapter: "04",
-    chapterTitle: "Berechtigungen lesen",
-    chapterUrl: "04-berechtigungen-lesen.html",
-    difficulty: "medium",
-    question: 'Welche Berechtigung steht hinter <code>-rw-r-----</code>?',
-    answers: [
-      "Owner darf lesen+schreiben, Group darf lesen, Others nichts",
-      "Owner darf alles, Group darf lesen+schreiben, Others nichts",
-      "Owner darf lesen+schreiben, Group darf lesen+schreiben, Others lesen",
-      "Owner darf lesen, Group darf schreiben, Others lesen"
-    ],
-    correct: 0,
-    explanation: "Aufgeteilt in 3+3+3: <code>rw-</code> (User), <code>r--</code> (Group), <code>---</code> (Others). Dateityp <code>-</code> (normale Datei) wird abgetrennt vom ersten Zeichen."
-  },
-  {
-    chapter: "05",
-    chapterTitle: "Berechtigungen setzen",
-    chapterUrl: "05-berechtigungen-setzen.html",
-    difficulty: "medium",
-    question: 'Welche Zahl entspricht der Berechtigung <code>rwxr-x---</code>?',
-    answers: [
-      "<code>755</code>",
-      "<code>750</code>",
-      "<code>770</code>",
-      "<code>700</code>"
-    ],
-    correct: 1,
-    explanation: "Owner = <code>rwx</code> = 7, Group = <code>r-x</code> = 5, Others = <code>---</code> = 0 → zusammen <strong>750</strong>."
-  },
-  {
-    chapter: "05",
-    chapterTitle: "Berechtigungen setzen",
-    chapterUrl: "05-berechtigungen-setzen.html",
-    difficulty: "hard",
-    question: 'Du willst eine Datei privat machen — nur du darfst lesen und schreiben, sonst niemand. Welcher Befehl ist <strong>falsch</strong>? (Achtung: hier suchst du die falsche Antwort!)',
-    answers: [
-      "<code>chmod 600 datei.txt</code>",
-      "<code>chmod u=rw,go= datei.txt</code>",
-      "<code>chmod 700 datei.txt</code>",
-      "<code>chmod u+rw,g-rwx,o-rwx datei.txt</code>"
-    ],
-    correct: 2,
-    explanation: "<code>700</code> setzt auch <code>x</code> (Ausführrecht) für Owner — bei einer normalen Textdatei brauchst du das nicht. Korrekt wäre <code>600</code>. Die anderen drei Varianten ergeben alle <code>-rw-------</code>."
-  },
-  {
-    chapter: "06",
-    chapterTitle: "Dateien suchen",
-    chapterUrl: "06-suchen.html",
-    difficulty: "easy",
-    question: '<strong>Wahr oder Falsch:</strong> „<code>locate</code> durchsucht das Dateisystem immer live und ist daher schneller als <code>find</code>."',
-    answers: [
-      "Wahr",
-      "Falsch"
-    ],
-    correct: 1,
-    explanation: "<code>locate</code> ist schneller, aber <strong>nicht</strong> weil es live sucht — im Gegenteil: <code>locate</code> nutzt eine <strong>vorgenerierte Datenbank</strong> (täglich aktualisiert per Cron). Deswegen findet es eben <strong>keine</strong> neuen Dateien, die seit dem letzten <code>updatedb</code> erstellt wurden. <code>find</code> ist langsam, weil es das Dateisystem live durchsucht."
-  },
-  {
-    chapter: "06",
-    chapterTitle: "Dateien suchen",
-    chapterUrl: "06-suchen.html",
-    difficulty: "medium",
-    question: 'Welcher Befehl findet alle <code>.conf</code>-Dateien in <code>/etc/</code>, die in den letzten 7 Tagen geändert wurden?',
-    answers: [
-      '<code>find /etc -name "*.conf" -mtime +7</code>',
-      '<code>find /etc -name "*.conf" -mtime -7</code>',
-      '<code>find /etc -name "*.conf" -mtime 7</code>',
-      '<code>locate "*.conf" -mtime -7</code>'
-    ],
-    correct: 1,
-    explanation: '<code>-mtime -7</code> heißt „<strong>weniger als</strong> 7 Tage her“ — also in den letzten 7 Tagen. <code>+7</code> wäre „älter als 7 Tage“. <code>locate</code> hat keine <code>-mtime</code>-Option, das geht nur mit <code>find</code>.'
-  }
-];
-
-// ============ QUIZ-STATE ============
-let currentQuestionIndex = 0;
-let userAnswers = []; // {questionIndex, selectedIndex, isCorrect}
-const wrongChapters = new Set();
-let answered = false; // Guard: verhindert Doppelauswertung (onclick + Delegation)
-
-// ============ DOM-HELPER ============
-const container = document.getElementById('quiz-container');
-
-const DIFFICULTY_LABELS = {
-  easy: 'Einfach',
-  medium: 'Mittel',
-  hard: 'Schwer'
-};
-
-// ============ FRAGE RENDERN ============
-function renderQuestion() {
-  answered = false;
-  const q = QUIZ_QUESTIONS[currentQuestionIndex];
-  const progressPercent = Math.round((currentQuestionIndex / QUIZ_QUESTIONS.length) * 100);
-
-  const answersHtml = q.answers.map((answer, idx) =>
-    `<button class="quiz-answer" type="button" data-index="${idx}" onclick="quizSelect(${idx})">${answer}</button>`
-  ).join('');
-
-  container.innerHTML = `
-    <div class="quiz-progress">
-      <div class="quiz-progress-bar">
-        <div class="quiz-progress-fill" style="width: ${progressPercent}%"></div>
-      </div>
-      <div class="quiz-progress-text">Frage ${currentQuestionIndex + 1} von ${QUIZ_QUESTIONS.length}</div>
-    </div>
-
-    <div class="quiz-question-meta">
-      <span class="quiz-chapter-badge">Kapitel ${q.chapter}</span>
-      <span class="quiz-difficulty-badge quiz-difficulty-${q.difficulty}">${DIFFICULTY_LABELS[q.difficulty]}</span>
-    </div>
-
-    <h2 class="quiz-question-text">${q.question}</h2>
-
-    <div class="quiz-answers">
-      ${answersHtml}
-    </div>
-
-    <div class="quiz-feedback" id="quiz-feedback" hidden></div>
-  `;
-}
-
-// ============ ANTWORT VERARBEITEN ============
-function handleAnswer(selectedIndex) {
-  if (answered) return; // schon beantwortet — Doppel-Trigger ignorieren
-  answered = true;
-  const q = QUIZ_QUESTIONS[currentQuestionIndex];
-  const isCorrect = selectedIndex === q.correct;
-
-  // Antwort speichern
-  userAnswers.push({
-    questionIndex: currentQuestionIndex,
-    selectedIndex,
-    isCorrect
-  });
-
-  if (!isCorrect) {
-    wrongChapters.add(q.chapter);
-  }
-
-  // Alle Buttons disablen
-  const buttons = document.querySelectorAll('.quiz-answer');
-  buttons.forEach((btn, idx) => {
-    btn.disabled = true;
-    if (idx === q.correct) {
-      btn.classList.add('quiz-answer-correct');
-    } else if (idx === selectedIndex && !isCorrect) {
-      btn.classList.add('quiz-answer-wrong');
-    }
-  });
-
-  // Feedback anzeigen
-  const feedback = document.getElementById('quiz-feedback');
-  feedback.className = `quiz-feedback ${isCorrect ? 'quiz-feedback-correct' : 'quiz-feedback-wrong'}`;
-  feedback.hidden = false;
-
-  const linkHtml = !isCorrect
-    ? `<div class="quiz-feedback-link">Nochmal nachschauen: → <a href="${q.chapterUrl}">Kapitel ${q.chapter} (${q.chapterTitle})</a></div>`
-    : '';
-
-  const isLast = currentQuestionIndex === QUIZ_QUESTIONS.length - 1;
-  const nextBtnLabel = isLast ? 'Ergebnis anzeigen →' : 'Nächste Frage →';
-
-  feedback.innerHTML = `
-    <div class="quiz-feedback-icon">${isCorrect ? '✓' : '✗'}</div>
-    <div class="quiz-feedback-title">${isCorrect ? 'Richtig!' : 'Leider falsch'}</div>
-    <div class="quiz-feedback-explanation">${q.explanation}</div>
-    ${linkHtml}
-    <button class="quiz-next-btn" id="quiz-next-btn">${nextBtnLabel}</button>
-  `;
-
-  document.getElementById('quiz-next-btn').addEventListener('click', goToNext);
-
-  // Sanft scrollen zum Feedback
-  feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-// ============ NÄCHSTE FRAGE / ABSCHLUSS ============
-function goToNext() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex >= QUIZ_QUESTIONS.length) {
-    renderResult();
-  } else {
-    renderQuestion();
-    // Nach oben scrollen
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-}
-
-// ============ ABSCHLUSS-SCREEN ============
-function renderResult() {
-  const correctCount = userAnswers.filter(a => a.isCorrect).length;
-  const total = QUIZ_QUESTIONS.length;
-  const percent = Math.round((correctCount / total) * 100);
-
-  // Score-Kategorie bestimmen
-  let icon, title, message, scoreClass;
-  if (percent === 100) {
-    icon = '🏆';
-    title = 'Perfekt!';
-    message = 'Du hast Tag 2 komplett verinnerlicht. Bereit für Tag 3!';
-    scoreClass = 'score-excellent';
-  } else if (percent >= 83) {
-    icon = '🎉';
-    title = 'Großartig!';
-    message = 'Du hast Tag 2 fest im Griff. Schau dir die Fehler-Stellen kurz an und mach weiter.';
-    scoreClass = 'score-excellent';
-  } else if (percent >= 67) {
-    icon = '👍';
-    title = 'Solide!';
-    message = 'Ein paar Themen sollten wir nochmal vertiefen — siehe unten.';
-    scoreClass = 'score-good';
-  } else if (percent >= 42) {
-    icon = '📚';
-    title = 'Geht noch besser';
-    message = 'Da ist noch Luft nach oben. Geh die markierten Kapitel nochmal durch — am besten direkt vor dem Schlaf.';
-    scoreClass = 'score-okay';
-  } else {
-    icon = '💪';
-    title = 'Schwieriger Tag';
-    message = 'Schlaf eine Nacht drüber und mach das Quiz morgen früh nochmal — vor Tag 3.';
-    scoreClass = 'score-low';
-  }
-
-  // Empfehlungs-Liste aus falschen Antworten
-  let recommendationsHtml = '';
-  if (wrongChapters.size > 0) {
-    // Map Kapitel → Anzahl Fehler
-    const errorCount = {};
-    userAnswers.filter(a => !a.isCorrect).forEach(a => {
-      const ch = QUIZ_QUESTIONS[a.questionIndex].chapter;
-      errorCount[ch] = (errorCount[ch] || 0) + 1;
+// Score-Anzeige (Enhancement) — die Kern-Interaktion laeuft rein ueber
+// native radio/label + CSS :has(), ganz ohne JavaScript.
+(function () {
+  var form = document.getElementById('quiz-form');
+  var scoreEl = document.getElementById('q2-score');
+  if (!form || !scoreEl) return;
+  var total = form.querySelectorAll('.q2-item').length;
+  function update() {
+    var answered = 0, correct = 0;
+    form.querySelectorAll('.q2-item').forEach(function (it) {
+      if (it.querySelector('input:checked')) {
+        answered++;
+        if (it.querySelector('.q2-correct input:checked')) correct++;
+      }
     });
-
-    const items = Array.from(wrongChapters).sort().map(ch => {
-      const q = QUIZ_QUESTIONS.find(x => x.chapter === ch);
-      const n = errorCount[ch];
-      return `<li>• <a href="${q.chapterUrl}">Kapitel ${ch} — ${q.chapterTitle}</a> (${n} ${n === 1 ? 'Fehler' : 'Fehler'})</li>`;
-    }).join('');
-
-    recommendationsHtml = `
-      <div class="quiz-result-recommendations">
-        <div class="quiz-result-recommendations-title">Empfehlung zum Nachlesen:</div>
-        <ul>${items}</ul>
-      </div>
-    `;
+    if (answered === 0) { scoreEl.textContent = 'Noch keine Frage beantwortet.'; return; }
+    if (answered < total) {
+      scoreEl.textContent = 'Beantwortet: ' + answered + ' / ' + total + ' — davon richtig: ' + correct;
+      return;
+    }
+    var pct = Math.round(correct / total * 100);
+    var tail = pct === 100 ? '🏆 Perfekt!' : pct >= 83 ? '🎉 Großartig!' : pct >= 67 ? '👍 Solide!' : pct >= 42 ? '📚 Geht noch besser.' : '💪 Nochmal üben!';
+    scoreEl.textContent = 'Fertig! ' + correct + ' / ' + total + ' richtig (' + pct + '%). ' + tail;
   }
-
-  container.innerHTML = `
-    <div class="quiz-result">
-      <div class="quiz-result-icon">${icon}</div>
-      <h2 class="quiz-result-title">${title}</h2>
-      <div class="quiz-result-score">${correctCount} / ${total}</div>
-      <div class="quiz-result-score-bar">
-        <div class="quiz-result-score-fill ${scoreClass}" style="width: ${percent}%"></div>
-      </div>
-      <div class="quiz-result-message">${message}</div>
-      ${recommendationsHtml}
-      <div class="quiz-result-actions">
-        <button class="quiz-result-btn quiz-result-btn-secondary" id="quiz-restart-btn">Quiz neu starten</button>
-        <a href="08-cheat-sheet.html" class="quiz-result-btn quiz-result-btn-primary">Cheat-Sheet →</a>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('quiz-restart-btn').addEventListener('click', restartQuiz);
-
-  container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ============ RESET ============
-function restartQuiz() {
-  currentQuestionIndex = 0;
-  userAnswers = [];
-  wrongChapters.clear();
-  renderQuestion();
-}
-
-// ============ KLICK-HANDLER (mehrfach abgesichert) ============
-// 1) Inline onclick="quizSelect(i)" an jedem Button (siehe renderQuestion):
-//    robustester Weg — vom HTML-Parser gesetzt, unabhaengig von
-//    addEventListener, ueberlebt Listener-Killer. Muss global sein.
-window.quizSelect = function (idx) {
-  if (Number.isFinite(idx)) handleAnswer(idx);
-};
-
-// 2) Backup: Event-Delegation am stabilen Container (bubble-Phase).
-//    Falls inline-onclick blockiert sein sollte, faengt dies den Klick.
-container.addEventListener('click', (e) => {
-  const btn = e.target.closest('.quiz-answer');
-  if (!btn || btn.disabled) return;
-  if (!container.contains(btn)) return;
-  const idx = parseInt(btn.dataset.index, 10);
-  if (Number.isFinite(idx)) handleAnswer(idx);
-});
-
-// ============ START ============
-renderQuestion();
+  form.addEventListener('change', update);
+  update();
+})();
 </script>
 
 </body>
