@@ -39,8 +39,8 @@
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 04</span>
-      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 15 min Lese-Übung</span>
-      <span class="meta-item"><span class="meta-item-icon">🔍</span> Lese-Übung 2.4a</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 20 min Theorie + 10 min Lese-Übung</span>
+      <span class="meta-item"><span class="meta-item-icon">🔍</span> Lese-Übung 2.4</span>
     </div>
   </section>
 
@@ -176,34 +176,31 @@
           </table>
         </div>
 
-        <div class="callout callout-info">
-          <div class="callout-icon">📌</div>
-          <div class="callout-content">
-            <div class="callout-title">Was im Alltag wichtig ist</div>
-            <p>In 95 % aller Admin-Aufgaben siehst du nur drei Typen:
-            <strong><code>-</code></strong> (Datei),
-            <strong><code>d</code></strong> (Verzeichnis) und
-            <strong><code>l</code></strong> (Symlink, kennst du aus Kapitel
-            03!). Die anderen vier — <code>c</code>, <code>b</code>,
-            <code>p</code>, <code>s</code> — gibt es vor allem in
-            <code>/dev/</code>, <code>/proc/</code> und <code>/run/</code>.
-            Gut zu wissen, dass es sie gibt, aber selten zu setzen.</p>
-          </div>
-        </div>
+        <p>Im Alltag siehst du fast nur drei Typen: <strong><code>-</code></strong>
+        (Datei), <strong><code>d</code></strong> (Verzeichnis) und
+        <strong><code>l</code></strong> (Symlink, aus Kapitel 03).</p>
 
-        <div class="code-block">
-          <div class="code-header">
-            <div class="code-header-dots">
-              <span class="code-dot code-dot-red"></span>
-              <span class="code-dot code-dot-yellow"></span>
-              <span class="code-dot code-dot-green"></span>
+        <details class="callout-deepdive">
+          <summary>▶ Optional: Die selteneren Typen c, b, p, s</summary>
+          <p>Die anderen vier — <code>c</code> (character device),
+          <code>b</code> (block device), <code>p</code> (named pipe),
+          <code>s</code> (socket) — gibt es vor allem in <code>/dev/</code>,
+          <code>/proc/</code> und <code>/run/</code>. Gut zu wissen, dass es
+          sie gibt, aber selten selbst zu setzen. Anschauen kannst du sie so:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
             </div>
-            <span class="code-lang">bash</span>
-            <button class="copy-btn">📋 Kopieren</button>
-          </div>
 <pre><code># Verschiedene Typen sehen — Listing von /dev/
 ls -l /dev/ | head -10</code></pre>
-        </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -468,11 +465,11 @@ groups        # → admin wheel</code></pre>
       </div>
     </section>
 
-    <!-- ============ LESE-ÜBUNG 2.4a ============ -->
+    <!-- ============ LESE-ÜBUNG 2.4 ============ -->
     <section class="lab" id="lab-2-4a">
       <div class="lab-header">
         <span class="lab-icon">🔍</span>
-        <span class="lab-label">Lese-Übung 2.4a</span>
+        <span class="lab-label">Lese-Übung 2.4</span>
         <span class="lab-title">Berechtigungs-Detektiv — <code>ls -l</code> entschlüsseln</span>
         <span class="lab-duration">15 min</span>
       </div>
@@ -500,7 +497,7 @@ groups        # → admin wheel</code></pre>
         </div>
 
         <div class="lab-section-title">Deine Aufgabe</div>
-        <p>Beantworte für jede der 6 Zeilen unten: <strong>(a)</strong> Welcher
+        <p>Beantworte für jede der 4 Zeilen unten: <strong>(a)</strong> Welcher
         Typ? <strong>(b)</strong> Was dürfen Owner / Group / Others?
         <strong>(c)</strong> Fällt dir sicherheitstechnisch etwas auf?</p>
 
@@ -526,11 +523,7 @@ groups        # → admin wheel</code></pre>
 
 3)  -rwxrwxrwx   1 admin  admin    256  Mai 25 11:00  install.sh
 
-4)  -rw-------   1 admin  admin   2048  Mai 25 12:42  passwords.txt
-
-5)  lrwxrwxrwx   1 admin  admin     11  Mai 26 08:00  log -&gt; /var/log
-
-6)  -rw-rw-r--   1 sandra wheel    512  Mai 24 16:20  team-config.conf</code></pre>
+4)  lrwxrwxrwx   1 admin  admin     11  Mai 26 08:00  log -&gt; /var/log</code></pre>
         </div>
 
         <div class="solution">
@@ -572,28 +565,11 @@ groups        # → admin wheel</code></pre>
        Jeder kann das Skript ändern und ausführen.
        SICHERHEITSRISIKO! Sollte z. B. -rwxr-x--- werden.
 
-4) -rw------- passwords.txt
-   (a) Typ:    normale Datei
-   (b) Owner:  rw-  (lesen + schreiben)
-       Group:  ---
-       Others: ---
-   (c) Sehr restriktiv — nur Owner hat Zugriff.
-       Genau richtig für eine Passwort-Datei! ✅
-
-5) lrwxrwxrwx log -&gt; /var/log
+4) lrwxrwxrwx log -&gt; /var/log
    (a) Typ:    Symlink (l)
    (b) Rechte: lrwxrwxrwx ist NORMAL für Symlinks —
        die echten Rechte stehen am Ziel /var/log.
-   (c) Nichts Ungewöhnliches.
-
-6) -rw-rw-r-- team-config.conf
-   (a) Typ:    normale Datei
-   (b) Owner:  rw-  (lesen + schreiben), Owner = sandra
-       Group:  rw-  (lesen + schreiben), Group = wheel
-       Others: r--  (nur lesen)
-   (c) Typische Team-Datei: sandra und alle in "wheel"
-       können bearbeiten, der Rest darf nur lesen.
-       ✅ Passt für eine Team-Config.</code></pre>
+   (c) Nichts Ungewöhnliches.</code></pre>
             </div>
           </div>
         </div>

@@ -41,7 +41,7 @@
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 01</span>
-      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 45 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 30 min Lab</span>
       <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 2.1</span>
     </div>
   </section>
@@ -737,7 +737,7 @@ grep -v "^#" /etc/ssh/sshd_config</code></pre>
           — Markus</p>
         </div>
 
-        <div class="lab-section-title">Teil A — Test-Umgebung aufsetzen (10 min)</div>
+        <div class="lab-section-title">Teil A — Test-Umgebung aufsetzen (7 min)</div>
         <ol class="lab-tasks">
           <li>Erstelle <code>~/audit-lab/</code> und wechsle hinein.</li>
           <li>Erstelle die Unterordner <code>logs/</code>, <code>configs/</code>,
@@ -782,12 +782,10 @@ echo "2026-01-15 10:26:01 ERROR Database connection timeout" &gt;&gt; logs/acces
 echo "2026-01-15 10:27:15 INFO Reconnected" &gt;&gt; logs/access_2026-01.log
 echo "2026-01-15 11:02:44 ERROR 500 Internal Server Error" &gt;&gt; logs/access_2026-01.log
 
-echo "2026-02-03 09:15:22 INFO User login: sandra" &gt;&gt; logs/access_2026-02.log
 echo "2026-02-03 09:30:11 WARN Disk usage at 85%" &gt;&gt; logs/access_2026-02.log
 echo "2026-02-03 14:22:17 ERROR Permission denied: /var/www/upload" &gt;&gt; logs/access_2026-02.log
 
 echo "2026-03-12 08:00:00 INFO Daily backup started" &gt;&gt; logs/access_2026-03.log
-echo "2026-03-12 08:05:23 INFO Backup completed" &gt;&gt; logs/access_2026-03.log
 echo "2026-03-12 16:45:01 WARN Memory usage high" &gt;&gt; logs/access_2026-03.log</code></pre>
             </div>
           </div>
@@ -932,46 +930,14 @@ echo "Audit-Vorbereitung abgeschlossen am 26.05.2026" | tee output/audit-report.
           </div>
         </div>
 
-        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
-        <ol class="lab-tasks" start="15">
-          <li>Zähle, wie viele eindeutige Logleves (INFO/WARN/ERROR) im
-            Januar-Log auftauchen.</li>
-          <li>Welche Stunde des Tages hat im Januar die meisten Einträge?
-            (<code>grep</code> + <code>awk</code> oder <code>cut</code>)</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Bonus zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 15) Logleves zählen
-grep -oE "INFO|WARN|ERROR" logs/access_2026-01.log | sort | uniq -c
-
-# 16) Einträge pro Stunde
-cut -c12-13 logs/access_2026-01.log | sort | uniq -c</code></pre>
-            </div>
-          </div>
-        </div>
+        <!-- Hinweis: awk/cut-Vertiefung erfolgt in Tag 3 -->
 
         <div class="callout callout-tip" style="margin-top: 1.5rem;">
           <div class="callout-icon">🎉</div>
           <div class="callout-content">
             <div class="callout-title">Lab 2.1 geschafft?</div>
-            <p>Wenn ja: Du hast gerade in 45 Minuten gemacht, wofür Markus dir
-            30 Minuten gegeben hat — Wildcards, Pipes, Redirection und
-            <code>grep</code> zusammen sind die wichtigste Shell-Kombi
+            <p>Wenn ja: Du beherrschst jetzt Wildcards, Pipes, Redirection und
+            <code>grep</code> im Zusammenspiel — die wichtigste Shell-Kombi
             überhaupt. Damit kannst du als Admin 80 % deiner täglichen
             Routinen abkürzen.</p>
           </div>
