@@ -129,16 +129,20 @@
             </thead>
             <tbody>
               <tr><td><code>ps</code></td><td>Nur Prozesse der aktuellen Shell (meist 2–3)</td></tr>
-              <tr><td><code>ps -e</code> oder <code>ps -A</code></td><td><strong>Alle Prozesse</strong> auf dem System</td></tr>
-              <tr><td><code>ps -ef</code></td><td>Alle Prozesse, <strong>F</strong>ull-Format (mit PPID, Zeit)</td></tr>
-              <tr><td><code>ps aux</code></td><td>BSD-Stil — alle Prozesse mit CPU% und MEM% (der Klassiker)</td></tr>
+              <tr><td><code>ps -alf</code></td><td><strong>Empfohlen für Admins.</strong> <strong>a</strong>lle Prozesse mit Terminal, <strong>l</strong>ong format (zeigt PRI, NI, PPID, State), <strong>f</strong>ull format (volle Befehlszeile)</td></tr>
+              <tr><td><code>ps -ef</code></td><td>Alle Prozesse inkl. ohne Terminal (Daemons), <strong>F</strong>ull-Format mit PPID</td></tr>
+              <tr><td><code>ps aux</code></td><td>BSD-Stil — alternativer Klassiker, zeigt %CPU und %MEM, aber kein PRI/NI</td></tr>
               <tr><td><code>ps -u admin</code></td><td>Nur Prozesse des Benutzers <code>admin</code></td></tr>
               <tr><td><code>ps -ef | grep nginx</code></td><td>Filter: nur Prozesse mit „nginx" im Namen</td></tr>
             </tbody>
           </table>
         </div>
 
-        <h4>So liest du <code>ps aux</code></h4>
+        <h4>So liest du <code>ps -alf</code></h4>
+
+        <p>Starte zur Demonstration zuerst einen Test-Prozess, den du gleich
+        selbst beobachten kannst:</p>
+
         <div class="code-block">
           <div class="code-header">
             <div class="code-header-dots">
@@ -149,39 +153,104 @@
             <span class="code-lang">bash</span>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
-<pre><code>$ ps aux | head -5
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root         1  0.0  0.4 173456 13892 ?        Ss   08:00   0:02 /usr/lib/systemd/systemd
-root         2  0.0  0.0      0     0 ?        S    08:00   0:00 [kthreadd]
-admin     3892  0.1  0.5  22884  5612 pts/0    Ss   08:15   0:00 -bash
-admin     4711  0.0  0.2  19384  2104 pts/0    S+   09:23   0:00 nano /etc/hosts</code></pre>
+<pre><code># Test-Prozess starten (schläft 444 Sekunden im Hintergrund)
+sleep 444 &amp;
+
+# Jetzt anschauen, was läuft
+ps -alf | head -10</code></pre>
         </div>
 
-        <ul>
-          <li><strong>USER</strong> — wem gehört der Prozess</li>
-          <li><strong>PID</strong> — Process ID (eindeutig)</li>
-          <li><strong>%CPU / %MEM</strong> — wie viel CPU/RAM frisst er</li>
-          <li><strong>STAT</strong> — Zustand (R=running, S=sleeping, Z=zombie, T=stopped, +=im Vordergrund)</li>
-          <li><strong>COMMAND</strong> — welches Programm</li>
-        </ul>
+        <p>Beispiel-Ausgabe (gekürzt):</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">text</span>
+          </div>
+<pre><code>F S UID    PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY      TIME CMD
+4 S root  3892  3891  0  80   0 -  5721 do_wai pts/0   00:00:00 -bash
+0 S root  4711  3892  0  80   0 -  1234 hrtime pts/0   00:00:00 sleep 444
+4 R root  4712  3892  0  80   0 -  5234 -      pts/0   00:00:00 ps -alf</code></pre>
+        </div>
+
+        <h4>Die wichtigsten Spalten — was bedeuten sie?</h4>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Spalte</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>F</strong></td><td>Flags (Kernel-interne Info, meist 0, 1 oder 4 — selten relevant)</td></tr>
+              <tr><td><strong>S</strong></td><td><strong>State</strong> — R running, S sleeping (Standard), D uninterruptible (meist I/O-warten), Z zombie, T stopped</td></tr>
+              <tr><td><strong>UID</strong></td><td>Wem gehört der Prozess (User-Name, falls bekannt)</td></tr>
+              <tr><td><strong>PID</strong></td><td><strong>Process ID</strong> — eindeutige Prozess-Nummer</td></tr>
+              <tr><td><strong>PPID</strong></td><td><strong>Parent PID</strong> — wer hat diesen Prozess gestartet? Wichtig zum Verständnis der Prozess-Hierarchie.</td></tr>
+              <tr><td><strong>C</strong></td><td>CPU-Auslastung als Ganzzahl (selten interessant — bessere Werte in top)</td></tr>
+              <tr><td><strong>PRI</strong></td><td><strong>Priorität</strong> — vom Kernel berechnet. Default 80 (höher = niedrigere Priorität in dieser Anzeige!)</td></tr>
+              <tr><td><strong>NI</strong></td><td><strong>Niceness</strong> — der vom User beeinflussbare Wert (-20 bis +19, Default 0). Mehr dazu in Abschnitt 3.6.</td></tr>
+              <tr><td><strong>TTY</strong></td><td>An welchem Terminal hängt der Prozess? <code>?</code> = kein Terminal (Daemon), <code>pts/0</code> = SSH-Terminal etc.</td></tr>
+              <tr><td><strong>TIME</strong></td><td>CPU-Zeit, die der Prozess bisher verbraucht hat (nicht Echtzeit!)</td></tr>
+              <tr><td><strong>CMD</strong></td><td>Welches Programm wird ausgeführt</td></tr>
+            </tbody>
+          </table>
+        </div>
 
         <div class="callout callout-tip">
           <div class="callout-icon">💡</div>
           <div class="callout-content">
-            <div class="callout-title">Der Klassiker zum Auswendiglernen</div>
-            <p><code>ps aux | grep BEFEHL</code> — findet alle Prozesse mit dem
-            Namen, zeigt deren PID. Wenn du den PID weißt, kannst du gezielt
-            <code>kill</code>en. Beispiel: <code>ps aux | grep firefox</code> →
-            siehst die PID → <code>kill 12345</code>.</p>
+            <div class="callout-title">Aha-Moment: PPID = Eltern-Prozess</div>
+            <p>Im Beispiel oben hat der <code>sleep 444</code>-Prozess die PPID 3892 —
+            das ist die PID deiner Bash. Bash hat sleep gestartet. Wenn du Bash
+            schließt, geht der sleep-Prozess auch weg (es sei denn, du nutzt
+            <code>nohup</code> oder <code>disown</code>). PPID hilft dir, Prozess-Bäume
+            zu verstehen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Suchen nach Befehl</div>
+            <p>Der Klassiker zum Auswendiglernen:
+            <code>ps -ef | grep BEFEHL</code> — findet alle Prozesse mit dem Namen,
+            zeigt deren PID. Wenn du den PID weißt, kannst du gezielt
+            <code>kill</code>en (kommt in Abschnitt 3.5). Beispiel:
+            <code>ps -ef | grep sleep</code>.</p>
           </div>
         </div>
 
         <details class="callout-deepdive">
-          <summary>▶ Mehr ps-Tricks für später</summary>
+          <summary>▶ ps aux — die BSD-Variante (alternativer Klassiker)</summary>
+          <p><code>ps aux</code> ist die zweite häufig gesehene Form. Sie zeigt
+          zusätzlich <strong>%CPU</strong> und <strong>%MEM</strong>, aber dafür
+          <em>nicht</em> PRI/NI/PPID. Beispiel-Ausgabe:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">text</span>
+            </div>
+<pre><code>USER       PID %CPU %MEM    VSZ   RSS TTY   STAT START   TIME COMMAND
+root      4711  0.0  0.0   4936  1024 pts/0 S    09:23  0:00 sleep 444</code></pre>
+          </div>
+          <p>Wann welche Variante? <code>ps -alf</code> für Prozess-Hierarchie und
+          Priorität, <code>ps aux</code> wenn dich CPU- und RAM-Verbrauch
+          interessieren. Du wirst beide im echten Admin-Alltag sehen.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>▶ Weitere ps-Tricks für später</summary>
           <ul>
-            <li><code>ps -ef --forest</code> — Prozess-Baum (zeigt Eltern-Kind-Beziehungen)</li>
-            <li><code>ps -eo pid,user,%cpu,%mem,comm --sort=-%cpu | head</code> — Top-CPU-Fresser</li>
-            <li><code>ps -eo pid,user,%cpu,%mem,comm --sort=-%mem | head</code> — Top-RAM-Fresser</li>
+            <li><code>ps -ef --forest</code> — Prozess-Baum (zeigt Eltern-Kind-Beziehungen grafisch)</li>
+            <li><code>ps -eo pid,user,pri,ni,comm</code> — eigene Spalten-Auswahl</li>
             <li><code>pgrep BEFEHL</code> — kürzer: nur die PID(s) zu einem Namen</li>
             <li><code>pidof BEFEHL</code> — ähnlich, exakter Name-Match</li>
           </ul>
@@ -226,6 +295,57 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2256.1 avail Mem
  4711 admin     20   0   19384   2104   1856 S   0.3   0.1   0:00.15 nano
  3892 admin     20   0   22884   5612   3340 S   0.0   0.1   0:00.42 bash
     1 root      20   0  173456  13892   8124 S   0.0   0.4   0:02.31 systemd</code></pre>
+        </div>
+
+        <h4>Die wichtigsten Spalten in <code>top</code></h4>
+
+        <p>top zeigt mehr Spalten als <code>ps</code>, und manche sind verwirrend.
+        Hier die, die du verstehen musst:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Spalte</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>PID</strong></td><td>Process ID — wie bei ps</td></tr>
+              <tr><td><strong>USER</strong></td><td>Wem gehört der Prozess</td></tr>
+              <tr><td><strong>PR</strong></td><td><strong>Priority</strong> — vom Kernel berechneter Wert (Default 20). Je kleiner, desto höhere Priorität. <code>rt</code> = realtime (höchste).</td></tr>
+              <tr><td><strong>NI</strong></td><td><strong>Niceness</strong> — vom User setzbar (-20 bis +19, Default 0). Faustregel: <code>PR = 20 + NI</code> bei normalen Prozessen.</td></tr>
+              <tr><td><strong>VIRT</strong></td><td><strong>Virtual Memory</strong> — gesamter <em>angeforderter</em> Speicher. Oft viel mehr als physisch belegt (enthält reservierten, aber ungenutzten Speicher).</td></tr>
+              <tr><td><strong>RES</strong></td><td><strong>Resident Memory</strong> — der <em>tatsächlich</em> im RAM belegte Speicher. <strong>Das ist der Wert, der zählt!</strong></td></tr>
+              <tr><td><strong>SHR</strong></td><td><strong>Shared Memory</strong> — mit anderen Prozessen geteilt (typisch: gemeinsame Bibliotheken). Teil von RES.</td></tr>
+              <tr><td><strong>S</strong></td><td><strong>State</strong> — wie bei ps: R running, S sleeping, D uninterruptible, Z zombie, T stopped</td></tr>
+              <tr><td><strong>%CPU</strong></td><td>Wie viel CPU-Zeit der Prozess gerade beansprucht (kann &gt;100% sein bei Multi-Core!)</td></tr>
+              <tr><td><strong>%MEM</strong></td><td>Anteil am gesamten RAM (basiert auf RES, nicht VIRT)</td></tr>
+              <tr><td><strong>TIME+</strong></td><td>CPU-Zeit insgesamt seit Start (in Hundertstelsekunden)</td></tr>
+              <tr><td><strong>COMMAND</strong></td><td>Welches Programm läuft</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Der häufigste Verständnis-Fehler: VIRT vs. RES</div>
+            <p>Wenn du in top siehst, dass ein Prozess <code>2.3G VIRT</code> hat, heißt
+            das <em>nicht</em>, dass er 2,3 GB RAM frisst. <code>VIRT</code> ist nur,
+            was er <em>angefordert</em> hat. <code>RES</code> ist, was er <em>wirklich
+            benutzt</em>. Schau immer auf <strong>RES</strong>, wenn du wissen willst,
+            welcher Prozess der echte RAM-Fresser ist.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">PR vs. NI — warum zwei Spalten?</div>
+            <p><strong>NI</strong> ist der „nice"-Wert, den du als User setzen kannst
+            (mit <code>nice</code> oder <code>renice</code>, siehe Abschnitt 3.6).
+            <strong>PR</strong> ist die daraus vom Kernel <em>abgeleitete</em>
+            Echtzeit-Priorität. Default: NI=0 ergibt PR=20. Wenn du NI auf 10 setzt
+            (höflicher), wird PR=30 (niedrigere Priorität für den Kernel).</p>
+          </div>
         </div>
 
         <h4>Die wichtigsten Tasten in <code>top</code></h4>
@@ -560,38 +680,32 @@ sudo renice 10 -u admin</code></pre>
             <p><strong>Betreff:</strong> Server kriecht — kannst du mal nachschauen?</p>
             <p>Hi Tim,</p>
             <p>der Test-Server ist seit heute Morgen extrem langsam. Markus ist in Berlin,
-            deshalb schreibe ich dich an. Kannst du:</p>
+            deshalb schreibe ich dich an.</p>
+            <p>Ich teile das in drei Schritte für dich auf:</p>
             <ol>
-              <li>nachschauen, welcher Prozess die CPU frisst</li>
-              <li>einen langlaufenden Job, den ich aus Versehen gestartet habe, in den
-                Hintergrund schicken und seine Priorität runterdrehen, damit er meinen
-                Code-Build nicht stört</li>
-              <li>am Ende einen hängenden Test-Prozess sauber beenden</li>
+              <li><strong>Erst Übersicht verschaffen:</strong> bau dir ein Testszenario
+                mit ein paar gezielten Prozessen, damit du verstehst, was ps und top
+                dir eigentlich sagen.</li>
+              <li><strong>Dann Hintergrund-Jobs üben:</strong> ich starte oft Sachen
+                versehentlich im Vordergrund — zeig mir, wie ich sie in den Hintergrund
+                schiebe, ohne sie neu zu starten.</li>
+              <li><strong>Zum Schluss das eigentliche Problem:</strong> ein Backup-Job
+                frisst gerade die CPU. Beende einen Test-Prozess sauber, und zeig mir,
+                wie du die Priorität so eines Jobs runterdrehen würdest.</li>
             </ol>
-            <p>Mach das bitte heute, sonst kommt der Sprint-Plan in Verzug. Wenn du
-            unsicher bist, einfach den Lösungs-Toggle aufmachen — kein Drama.</p>
-            <p style="margin-bottom: 0;">Danke!<br>— Sandra</p>
+            <p>Mach Snapshots, wenn du dich unsicher fühlst. Wenn du gleich nicht
+            weiterkommst, ist der Hint-Toggle dein Freund.</p>
+            <p style="margin-bottom: 0;">— Sandra</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil A — Beobachten mit ps und top (10 min)</div>
-        <ol class="lab-tasks">
-          <li>Liste mit <code>ps</code> nur die Prozesse deiner aktuellen Shell auf.
-            Wie viele sind es?</li>
-          <li>Liste mit <code>ps aux</code> ALLE Prozesse auf, leite die Ausgabe an
-            <code>head -10</code> weiter. Was ist der Prozess mit PID 1?</li>
-          <li>Finde mit <code>ps aux | grep bash</code>, welche Bash-Prozesse laufen.</li>
-          <li>Starte <code>top</code>. Drücke <kbd>M</kbd> (Memory-Sort). Welcher
-            Prozess frisst am meisten RAM? Drücke <kbd>P</kbd> (CPU-Sort). Welcher
-            am meisten CPU? Beende top mit <kbd>q</kbd>.</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil A zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
+        <div class="callout callout-info" style="margin-top: 1.5rem;">
+          <div class="callout-icon">👤</div>
+          <div class="callout-content">
+            <div class="callout-title">Empfehlung für dieses Lab: als root arbeiten</div>
+            <p>In diesem Lab wirst du Prozesse mit verschiedenen Prioritäten setzen —
+            auch <strong>negative Niceness</strong>, die nur root darf. Statt ständig
+            <code>sudo</code> zu tippen, melde dich einmal als root an:</p>
             <div class="code-block">
               <div class="code-header">
                 <div class="code-header-dots">
@@ -600,43 +714,51 @@ sudo renice 10 -u admin</code></pre>
                   <span class="code-dot code-dot-green"></span>
                 </div>
                 <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 1) Nur eigene Shell-Prozesse
-ps
-# → meist nur 2: bash + ps selbst
-
-# 2) Alle Prozesse, gekürzt
-ps aux | head -10
-# PID 1 ist IMMER /usr/lib/systemd/systemd (siehe Kap. 02)
-
-# 3) Bash-Prozesse finden
-ps aux | grep bash
-# Zeigt deine Login-Shell + ggf. den grep-Befehl selbst
-
-# 4) top mit Memory- und CPU-Sortierung
-top
-# Im top: M drücken (Memory-Sort), beobachten, dann P drücken (CPU)
-# Mit q beenden</code></pre>
+<pre><code>sudo su -</code></pre>
             </div>
+            <p>Am Ende des Labs mit <code>exit</code> wieder zurück zum normalen User.
+            <strong>Achtung:</strong> als root hast du keine Sicherheitsnetze —
+            deshalb der Snapshot vorher.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil B — Hintergrund-Jobs (10 min)</div>
-        <ol class="lab-tasks" start="5">
-          <li>Starte einen Job, der 60 Sekunden schläft, im Hintergrund:
-            <code>sleep 60 &amp;</code>. Was zeigt die Ausgabe?</li>
-          <li>Starte zwei weitere: <code>sleep 120 &amp;</code> und <code>sleep 180 &amp;</code>.
-            Liste deine Jobs mit <code>jobs</code> auf.</li>
-          <li>Hole Job 2 in den Vordergrund (<code>fg %2</code>). Stoppe ihn mit
-            <kbd>Strg</kbd>+<kbd>Z</kbd>. Was sagt <code>jobs</code> jetzt?</li>
-          <li>Lass den gestoppten Job im Hintergrund weiterlaufen mit
-            <code>bg %2</code>. Prüfe nochmal mit <code>jobs</code>.</li>
-        </ol>
+        <div class="lab-section-title">Phase 1 — Beobachten lernen mit ps -alf und top (15 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Bevor du das echte Problem von Sandra suchst, musst du verstehen, was die Tools dir überhaupt zeigen. Bau dir ein kontrolliertes Szenario."</p>
+            <p>Starte dir ein paar <code>sleep</code>-Prozesse als Testszenario, in dem
+            du <strong>selbst weißt</strong>, was läuft. Beobachte sie mit
+            <code>ps -alf</code> und mit <code>top</code>. Am Ende sollst du einem
+            Kollegen die Spalten <strong>PRI, NI, S</strong> und <strong>PPID</strong>
+            erklären können — am eigenen Beispiel.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie bau ich mir Test-Prozesse?</summary>
+          <p>Starte 3 sleep-Prozesse mit unterschiedlichen Zeiten im Hintergrund.
+          Erinnerung: <code>sleep ZEIT &amp;</code>.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Welcher ps-Befehl zeigt mir PRI und NI?</summary>
+          <p><code>ps -alf</code> ist die Variante, die diese Spalten enthält. Tipp:
+          <code>ps -alf | head</code> zeigt nur die ersten Zeilen.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Wie sehe ich dasselbe live?</summary>
+          <p><code>top</code> zeigt dieselben Prozesse, nur ständig aktualisiert.
+          Beende top mit <code>q</code>.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil B zeigen</span>
+            <span>✅ Lösung Phase 1 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -650,145 +772,201 @@ top
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 5) Erster Hintergrund-Job
-sleep 60 &amp;
-# → [1] 4711  (Job-Nummer 1, PID 4711)
+<pre><code># Drei Test-Prozesse starten
+sleep 600 &amp;
+sleep 800 &amp;
+sleep 1000 &amp;
 
-# 6) Zwei weitere
-sleep 120 &amp;
-sleep 180 &amp;
-jobs
-# → [1]   Running    sleep 60 &amp;
-# → [2]-  Running    sleep 120 &amp;
-# → [3]+  Running    sleep 180 &amp;
+# Mit ps anschauen
+ps -alf | head
 
-# 7) Job 2 in den Vordergrund
-fg %2
-# Jetzt blockiert die Shell. Strg+Z drücken:
-# → [2]+  Stopped    sleep 120
-jobs
-# → Status von Job 2 = "Stopped"
+# Filter nur auf sleep
+ps -alf | grep sleep
 
-# 8) Wieder in den Hintergrund
-bg %2
-# → [2]+  sleep 120 &amp;
-jobs
-# → alle drei wieder "Running"</code></pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="lab-section-title">Teil C — Niceness setzen (10 min)</div>
-        <ol class="lab-tasks" start="9">
-          <li>Starte ein langes <code>sleep</code> mit <strong>niedriger Priorität</strong>
-            (höflich): <code>nice -n 15 sleep 300 &amp;</code>. Notiere die PID
-            (steht in der Ausgabe).</li>
-          <li>Prüfe in <code>top</code>: ist der NI-Wert wirklich 15?
-            (Spalte NI). Beende top.</li>
-          <li>Setze mit <code>renice</code> den Niceness deines sleep-Prozesses auf 5.
-            Tipp: <code>renice 5 -p PID</code>.</li>
-          <li>Versuche, den Niceness auf <strong>-5</strong> zu setzen (ohne sudo).
-            Was passiert?</li>
-          <li>Setze ihn mit <code>sudo renice -5 -p PID</code>. Klappt das?</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil C zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 9) Job mit niedriger Priorität
-nice -n 15 sleep 300 &amp;
-# → [4] 5234
-# PID merken: 5234
-
-# 10) Prüfen in top
+# Mit top live anschauen
 top
-# Spalte NI sollte 15 zeigen für diesen Prozess
+# m drücken für Memory-Sortierung, P für CPU
+# q zum Beenden</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong> Die PPID aller
+            sleep-Prozesse ist die PID deiner Bash — sie sind ihre Kinder. Der State
+            <code>S</code> (sleeping) ist bei sleep normal: die Prozesse verbrauchen
+            keine CPU, sie warten nur. PRI/NI stehen bei allen auf dem Default
+            (80 bzw. 0), weil du noch keine Priorität geändert hast.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Phase 2 — Hintergrund-Jobs steuern: jobs, fg, bg, Strg+Z (15 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Du sollst Sandra zeigen, wie sie aus einem vergessenen Vordergrund-Prozess wieder rauskommt — ohne ihn zu beenden."</p>
+            <p>Sandras zweites Problem: <em>„Ich starte oft Sachen versehentlich im
+            Vordergrund."</em> Übe das: starte einen <code>sleep</code> im Vordergrund,
+            halte ihn an, schiebe ihn in den Hintergrund, hole ihn zurück, beende ihn
+            sauber.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie sehe ich, welche Jobs ich habe?</summary>
+          <p>Der Befehl <code>jobs</code> listet die Jobs der aktuellen Shell.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Wie schiebe ich einen laufenden Vordergrund-Job in den Hintergrund?</summary>
+          <p>Erst mit <kbd>Strg</kbd>+<kbd>Z</kbd> anhalten (suspend), dann mit
+          <code>bg</code> im Hintergrund weiterlaufen lassen.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Und wieder zurück in den Vordergrund?</summary>
+          <p><code>fg %JOB-NR</code> (z. B. <code>fg %1</code>). Mit
+          <kbd>Strg</kbd>+<kbd>C</kbd> kannst du den Vordergrund-Prozess dann
+          beenden.</p>
+        </details>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>✅ Lösung Phase 2 anzeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># Vordergrund-Prozess starten
+sleep 500
+
+# Strg+Z drücken → angehalten
+# [1]+  Stopped    sleep 500
+
+# In den Hintergrund schicken
+bg %1
+# [1]+ sleep 500 &amp;
+
+# Liste der Jobs
+jobs
+# [1]+  Running    sleep 500 &amp;
+
+# Zurück in den Vordergrund
+fg %1
+# sleep 500
+
+# Mit Strg+C beenden</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong>
+            <kbd>Strg</kbd>+<kbd>Z</kbd> sendet SIGSTOP (Prozess pausiert),
+            <code>bg</code>/<code>fg</code> ändern nur, ob er im Vordergrund oder
+            Hintergrund läuft — nicht, <em>ob</em> er läuft. Ein angehaltener Job
+            verbraucht keine CPU, bis du ihn mit <code>bg</code> oder <code>fg</code>
+            fortsetzt.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Phase 3 — Killen und Priorisieren (15 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Das ist das eigentliche Skill-Set, das Sandra wissen will: Wie beende ich einen Prozess sauber, und wie priorisiere ich einen laufenden Job, ohne ihn neu starten zu müssen?"</p>
+            <p>Sandras drittes Problem: ein Backup-Job frisst die CPU. Beende einen
+            deiner sleep-Test-Prozesse sauber mit <code>kill</code>, dann starte einen
+            neuen und drehe seine Priorität mit <code>renice</code> runter —
+            verifiziere die Änderung in <code>top</code>.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wie finde ich die PID eines bestimmten Prozesses?</summary>
+          <p><code>ps -ef | grep BEFEHL</code> oder direkt <code>pgrep BEFEHL</code>.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Welches kill-Signal soll ich nutzen?</summary>
+          <p>Default ist <code>SIGTERM</code> (15) — höflich. Reicht für sleep.
+          <code>kill -9 PID</code> (SIGKILL) ist die brutale Variante, nur wenn der
+          Prozess nicht reagiert.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Wie ändere ich die Priorität eines laufenden Prozesses?</summary>
+          <p><code>renice WERT -p PID</code>. Beispiel: <code>renice 10 -p 4711</code>
+          macht Prozess 4711 höflicher. Negative Werte (höhere Prio) gehen nur als
+          root. Prüfen kannst du in <code>top</code>, Spalte NI.</p>
+        </details>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>✅ Lösung Phase 3 anzeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># Noch laufende sleeps anschauen
+ps -ef | grep sleep
+
+# Einen gezielt beenden (höflich)
+kill PID-NUMMER
+
+# Verifizieren
+ps -ef | grep sleep
+# (der eine ist weg)
+
+# Neuen sleep starten und niedriger priorisieren
+sleep 1000 &amp;
+# [1] 4811
+
+# Niceness auf +10 setzen (höflicher)
+renice 10 -p 4811
+# 4811 (process ID) old priority 0, new priority 10
+
+# In top verifizieren
+top
+# NI-Spalte für PID 4811 zeigt jetzt 10
 # q zum Beenden
 
-# 11) Auf 5 umstellen (höhere Prio als 15)
-renice 5 -p 5234
-# → 5234 (process ID) old priority 15, new priority 5
-
-# 12) Negativ ohne sudo
-renice -5 -p 5234
-# → renice: failed to set priority for 5234: Permission denied
-# Nur root darf negative Niceness setzen!
-
-# 13) Mit sudo
-sudo renice -5 -p 5234
-# → 5234 (process ID) old priority 5, new priority -5
-# Klappt!</code></pre>
+# Alle restlichen sleeps aufräumen
+pkill sleep</code></pre>
             </div>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong>
+            <code>renice</code> ändert nur die Niceness — der Prozess läuft ungestört
+            weiter, kein Neustart nötig. Als root könntest du auch negative Werte
+            setzen (= höhere Priorität). <code>pkill sleep</code> räumt am Ende alle
+            verbliebenen sleep-Prozesse auf einmal auf.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil D — Prozesse beenden (10 min)</div>
-        <ol class="lab-tasks" start="14">
-          <li>Liste deine Jobs mit <code>jobs</code> auf. Finde die PIDs mit
-            <code>jobs -l</code>.</li>
-          <li>Beende einen der <code>sleep</code>-Prozesse <strong>höflich</strong>
-            mit <code>kill PID</code>. Was sagt die nächste Ausgabe von
-            <code>jobs</code>?</li>
-          <li>Beende einen weiteren mit <code>kill -9 PID</code>. Unterschied?</li>
-          <li>Beende alle restlichen <code>sleep</code>-Prozesse auf einmal mit
-            <code>pkill sleep</code>.</li>
-          <li>Prüfe mit <code>jobs</code>: sind alle weg?</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil D zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 14) Jobs mit PIDs anzeigen
-jobs -l
-# → [1] 4711 Running   sleep 60 &amp;
-# → [2] 4812 Running   sleep 120 &amp;
-# → [3] 4913 Running   sleep 180 &amp;
-
-# 15) Höflich beenden
-kill 4711
-jobs
-# → [1]+  Terminated  sleep 60
-
-# 16) Hart beenden
-kill -9 4812
-# Beim nächsten Enter zeigt die Shell:
-# → [2]+  Killed      sleep 120
-# Unterschied zu kill: "Killed" statt "Terminated"
-
-# 17) Per Name beenden
-pkill sleep
-# Beendet ALLE sleep-Prozesse des aktuellen Users
-
-# 18) Prüfen
-jobs
-# → leer (oder noch kurz "Terminated"-Einträge)</code></pre>
-            </div>
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">✅</div>
+          <div class="callout-content">
+            <div class="callout-title">Sandras drei Probleme: gelöst.</div>
+            <p>Du hast jetzt das komplette Werkzeug-Set: <strong>beobachten</strong>
+            (ps, top), <strong>steuern</strong> (jobs, fg, bg), <strong>beenden und
+            priorisieren</strong> (kill, renice). Schreib Sandra kurz, was du gemacht
+            hast — oder mach den Bonus, wenn du Zeit hast.</p>
+            <p style="margin-bottom: 0;"><strong>Vergiss nicht:</strong> mit
+            <code>exit</code> zurück zum normalen User, falls du noch als root
+            angemeldet bist.</p>
           </div>
         </div>
 
@@ -942,12 +1120,15 @@ jobs
         <ol class="lab-tasks">
           <li>Was ist der Unterschied zwischen einem Programm und einem Prozess?</li>
           <li>Welcher Prozess hat immer PID 1, und warum?</li>
-          <li>Was zeigt <code>jobs</code> — und was nicht?</li>
+          <li>Was bedeutet die Spalte <strong>S</strong> in <code>ps -alf</code>?
+            Und was sind die häufigsten Werte?</li>
+          <li>Was ist der Unterschied zwischen <strong>VIRT</strong> und
+            <strong>RES</strong> in top? Welcher Wert ist relevanter, wenn du wissen
+            willst, ob ein Prozess viel RAM frisst?</li>
           <li>Welches Signal ist default bei <code>kill PID</code>? Was ist
             der Unterschied zu <code>kill -9 PID</code>?</li>
-          <li>Welcher Niceness-Wert bedeutet die <strong>höchste</strong> Priorität,
-            und wer darf den setzen?</li>
-          <li>Wie startest du einen Befehl direkt mit niedriger Priorität (Niceness 15)?</li>
+          <li>Du willst einen laufenden Prozess mit PID 4711 niedriger priorisieren
+            (NI auf +10). Welcher Befehl?</li>
         </ol>
 
         <div class="solution">
@@ -963,17 +1144,20 @@ jobs
               <li><strong>systemd</strong> hat PID 1, weil es der erste Prozess
                 nach dem Kernel-Start ist und alle weiteren Prozesse von ihm
                 abstammen (Init-Prozess).</li>
-              <li><code>jobs</code> zeigt <strong>nur</strong> die Hintergrund-Jobs
-                der <strong>aktuellen Shell</strong>. Nicht alle Prozesse des
-                Systems, nicht Prozesse anderer User.</li>
+              <li><strong>S</strong> = State (Zustand). Häufigste Werte:
+                <strong>S</strong> sleeping (Standard — wartet), <strong>R</strong>
+                running, <strong>D</strong> uninterruptible (meist I/O-warten),
+                <strong>Z</strong> zombie, <strong>T</strong> stopped.</li>
+              <li><strong>VIRT</strong> ist der gesamte <em>angeforderte</em>
+                Speicher (oft viel mehr als real belegt). <strong>RES</strong> ist
+                der <em>tatsächlich</em> im RAM belegte Speicher. <strong>RES</strong>
+                ist relevanter, wenn du den echten RAM-Fresser finden willst.</li>
               <li>Default ist <strong>SIGTERM (15)</strong> — der Prozess darf
                 aufräumen. <strong>SIGKILL (9)</strong> beendet sofort ohne
                 Aufräumen — Notlösung.</li>
-              <li><strong>-20</strong> ist die höchste Priorität. Nur
-                <strong>root</strong> darf negative Niceness setzen
-                (mit <code>sudo</code>).</li>
-              <li><code>nice -n 15 BEFEHL</code> — Achtung:
-                <code>-n</code> vor der Zahl!</li>
+              <li><code>renice 10 -p 4711</code> — die Zahl direkt (ohne
+                <code>-n</code>), <code>-p</code> vor der PID. Positive Werte
+                gehen ohne sudo, negative (höhere Prio) nur als root.</li>
             </ol>
           </div>
         </div>
