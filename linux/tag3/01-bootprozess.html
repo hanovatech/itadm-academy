@@ -40,7 +40,7 @@
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 01</span>
-      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 30 min Theorie + 40 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 30 min Theorie + 30 min Lab</span>
       <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.1</span>
     </div>
   </section>
@@ -274,17 +274,15 @@
         Partitionstabelle separat, mit Backup-Kopie am Ende der Platte
         (Fehlertoleranz!), keine 2-TB-Grenze, viele Partitionen erlaubt.</p>
 
-        <details class="callout-deepdive">
-          <summary>▶ Wie finde ich heraus, ob mein System BIOS oder UEFI ist?</summary>
-          <p>In Linux:</p>
-<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; overflow-x: auto;"><code># Existiert /sys/firmware/efi? → dann UEFI
-ls /sys/firmware/efi 2&gt;/dev/null &amp;&amp; echo "UEFI" || echo "BIOS"
-
-# Festplatten-Format prüfen
-sudo fdisk -l /dev/sda | grep -i "type\|disklabel"</code></pre>
-          <p>In der Rocky-VM aus Tag 1 hast du wahrscheinlich BIOS+MBR, weil
-          VMware das standardmäßig so anlegt.</p>
-        </details>
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Selbst prüfen: BIOS oder UEFI?</div>
+            <p>Auf deinem System kannst du es schnell selbst herausfinden:</p>
+            <pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem;"><code>[ -d /sys/firmware/efi ] &amp;&amp; echo "UEFI" || echo "BIOS"</code></pre>
+            <p>Wenn das Verzeichnis <code>/sys/firmware/efi</code> existiert, läuft dein System im UEFI-Modus. Ansonsten Legacy-BIOS. In der Rocky-VM aus Tag 1 ist es meist BIOS+MBR, weil VMware das standardmäßig so anlegt.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -341,7 +339,8 @@ sudo su -
 
 # 3. Einstellungs-Datei bearbeiten
 vim /etc/default/grub
-# z. B. GRUB_TIMEOUT=5 → GRUB_TIMEOUT=10
+# z. B. GRUB_TIMEOUT_STYLE=menu und GRUB_TIMEOUT=10,
+# damit das Menü 10 Sekunden lang erscheint
 
 # 4. Die echte grub.cfg neu generieren lassen
 grub2-mkconfig -o /boot/grub2/grub.cfg
@@ -365,22 +364,33 @@ reboot</code></pre>
           </div>
         </div>
 
-        <details class="callout-deepdive">
-          <summary>▶ Wichtige Einstellungen in /etc/default/grub</summary>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr><th>Variable</th><th>Bedeutung</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>GRUB_TIMEOUT</code></td><td>Sekunden, die das GRUB-Menü angezeigt wird (0 = sofort booten)</td></tr>
-                <tr><td><code>GRUB_DEFAULT</code></td><td>Welcher Eintrag default ist (0 = erster, <code>saved</code> = zuletzt gewählter)</td></tr>
-                <tr><td><code>GRUB_CMDLINE_LINUX</code></td><td>Kernel-Parameter, die beim Boot übergeben werden</td></tr>
-                <tr><td><code>GRUB_DISABLE_RECOVERY</code></td><td>Recovery-Mode-Einträge ein-/ausblenden</td></tr>
-              </tbody>
-            </table>
+        <h4>Wichtige Einstellungen in /etc/default/grub</h4>
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum siehst du das GRUB-Menü oft gar nicht?</div>
+            <p>Auf einer Default-Rocky-9-Installation mit nur einem
+            Kernel-Eintrag ist das Menü standardmäßig <strong>versteckt</strong>
+            (<code>GRUB_TIMEOUT_STYLE=hidden</code>). Du musst sowohl
+            <code>GRUB_TIMEOUT</code> als auch
+            <code>GRUB_TIMEOUT_STYLE=menu</code> setzen, damit das Menü
+            erscheint.</p>
           </div>
-        </details>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Variable</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>GRUB_TIMEOUT</code></td><td>Sekunden, die das GRUB-Menü angezeigt wird (0 = sofort booten)</td></tr>
+              <tr><td><code>GRUB_TIMEOUT_STYLE</code></td><td><code>menu</code> = Menü sichtbar · <code>hidden</code> = unsichtbar, nur Timeout · <code>countdown</code> = kurzer Countdown ohne Menü</td></tr>
+              <tr><td><code>GRUB_DEFAULT</code></td><td>Welcher Eintrag default ist (0 = erster, <code>saved</code> = zuletzt gewählter)</td></tr>
+              <tr><td><code>GRUB_CMDLINE_LINUX</code></td><td>Kernel-Parameter, die beim Boot übergeben werden</td></tr>
+              <tr><td><code>GRUB_DISABLE_RECOVERY</code></td><td>Recovery-Mode-Einträge ein-/ausblenden</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -388,8 +398,8 @@ reboot</code></pre>
     <section class="timeblock">
       <div class="timeblock-header">
         <span class="timeblock-time">🧪</span>
-        <h2 class="timeblock-title">Lab 3.1 — Boot-Reise &amp; GRUB sichern</h2>
-        <span class="timeblock-badge badge-lab">Lab · 40 min</span>
+        <h2 class="timeblock-title">Lab 3.1 — GRUB-Menü sichtbar machen</h2>
+        <span class="timeblock-badge badge-lab">Lab · 30 min</span>
       </div>
 
       <div class="subblock">
@@ -421,75 +431,47 @@ reboot</code></pre>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil A — Boot-Reise live beobachten (10 min)</div>
-        <ol class="lab-tasks">
-          <li><strong>Starte deine VM neu</strong> mit <code>sudo reboot</code>.
-            Beobachte den Boot-Vorgang aufmerksam.</li>
-          <li>Wenn das <strong>GRUB-Menü</strong> erscheint, drücke sofort
-            <strong>eine Pfeiltaste</strong>, um den Timer zu stoppen. Schau dir
-            die Einträge an. Wie viele Kernel hast du? (Normalerweise nur einer,
-            aber Rocky behält manchmal den vorherigen.)</li>
-          <li>Drücke <strong><code>e</code></strong> bei einem Eintrag — was
-            siehst du? (Das ist der Editor-Modus für einmalige Boot-Parameter.)</li>
-          <li>Drücke <strong><code>Esc</code></strong>, um zurück zum Menü zu kommen.</li>
-          <li>Wähle den normalen Eintrag und drücke <strong>Enter</strong>. Beobachte
-            den Boot weiter: Siehst du Kernel-Meldungen kurz aufblitzen?</li>
-          <li>Nach dem Login: Schau dir die Boot-Meldungen im Detail an:</li>
-        </ol>
+        <div class="lab-section-title">Phase 1 — Verstehen, was da ist (8 min)</div>
 
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil A zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># Boot-Meldungen anschauen
-dmesg | less
-# (q drücken zum Beenden)
-
-# Nur die letzten Meldungen
-dmesg | tail -20
-
-# Wie lange hat der Boot gedauert?
-systemd-analyze
-# Beispiel-Output:
-# Startup finished in 1.234s (kernel) + 5.678s (userspace) = 6.912s
-# graphical.target reached after 5.6s in userspace
-
-# Welche Services brauchten am längsten?
-systemd-analyze blame | head -10</code></pre>
-            </div>
-            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Du hast
-            jetzt gesehen, wie GRUB das Menü zeigt → der Kernel lädt → systemd
-            die Services hochfährt. Genau die vier Phasen!</p>
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p>Finde heraus, <strong>welche GRUB-Dateien</strong> dein System hat und
+            <strong>wofür sie da sind</strong>. Am Ende sollst du einem Kollegen
+            erklären können: „Welche Datei ändere ich, welche fasse ich NIE an —
+            und warum?"</p>
+            <p style="margin-bottom: 0;">Arbeite selbstständig. Die Hints unten helfen,
+            wenn du nicht weiterkommst.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil B — GRUB-Dateien finden (10 min)</div>
-        <ol class="lab-tasks" start="7">
-          <li>Liste den Inhalt von <code>/boot/</code>. Was findest du? Schau
-            besonders auf <code>vmlinuz-*</code> und <code>initramfs-*</code>.</li>
-          <li>Wechsle nach <code>/boot/grub2/</code>. Welche Dateien siehst du?</li>
-          <li>Öffne <code>/etc/default/grub</code> mit <code>cat</code> (oder
-            <code>less</code>). Welche Variablen sind gesetzt? Wie lang ist
-            <code>GRUB_TIMEOUT</code>?</li>
-          <li>Vergleiche: Wie groß ist <code>/etc/default/grub</code> im Vergleich
-            zu <code>/boot/grub2/grub.cfg</code>? (Tipp: <code>ls -lh</code>)</li>
-        </ol>
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Wo soll ich überhaupt schauen?</summary>
+          <p>GRUB lebt an zwei Stellen: in <code>/etc/...</code> liegen die
+          Einstellungen, in <code>/boot/...</code> die generierten Dateien und der
+          eigentliche Kernel.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Welche zwei Dateien sind die wichtigsten?</summary>
+          <p>Schau dir <code>/etc/default/grub</code> und <code>/boot/grub2/grub.cfg</code>
+          an. Vergleiche ihre Größe mit <code>ls -lh</code> und ihren Inhalt mit
+          <code>cat</code>. Eine ist klein und lesbar, eine groß und automatisch
+          generiert.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Warum NICHT direkt grub.cfg ändern?</summary>
+          <p>Die Datei <code>grub.cfg</code> wird bei jedem Kernel-Update von
+          <code>grub2-mkconfig</code> neu geschrieben. Deine Änderungen wären weg.
+          Deshalb: immer <code>/etc/default/grub</code> ändern und danach
+          <code>grub2-mkconfig</code> ausführen.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil B zeigen</span>
+            <span>✅ Lösung Phase 1 anzeigen (erst nach 8 min!)</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -503,52 +485,73 @@ systemd-analyze blame | head -10</code></pre>
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code>ls /boot/
-# vmlinuz-5.14...    ← der Linux-Kernel (komprimiert)
-# initramfs-5.14...  ← initial RAM filesystem
-# grub2/             ← GRUB-Konfig-Verzeichnis
+<pre><code># Was liegt in /boot/?
+ls /boot/
+# vmlinuz-*    ← der Kernel | initramfs-*  ← initial RAM fs | grub2/
 
-ls -l /boot/grub2/
-# grub.cfg           ← die generierte Config
-# grubenv            ← Umgebungsvariablen für GRUB
+# GRUB-Verzeichnis
+ls /boot/grub2/
+# grub.cfg     ← generierte Config (NIE direkt ändern!)
+# grubenv      ← gespeicherte GRUB-Umgebung
 
+# Die lesbare Einstellungs-Datei
 cat /etc/default/grub
-# GRUB_TIMEOUT=5
-# GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
-# GRUB_DEFAULT=saved
-# GRUB_DISABLE_SUBMENU=true
-# GRUB_TERMINAL_OUTPUT="console"
-# GRUB_CMDLINE_LINUX="..."
 
-# Größenvergleich
-ls -lh /etc/default/grub /boot/grub2/grub.cfg
-# /etc/default/grub  → ca. 300 Bytes  (lesbar)
-# /boot/grub2/grub.cfg → ca. 6 KB     (generiert, komplex)</code></pre>
+# Größenvergleich: klein (Vorlage) vs. groß (generiert)
+ls -lh /etc/default/grub /boot/grub2/grub.cfg</code></pre>
             </div>
-            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Die
-            kleine Datei in <code>/etc/default/grub</code> beschreibt
-            <em>was du willst</em>. Die große <code>grub.cfg</code> ist die
-            ausgeschriebene Variante — die wirst du <strong>nie selbst
-            schreiben</strong>!</p>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong> Die kleine
+            Datei <code>/etc/default/grub</code> ist die <em>Vorlage</em> — hier
+            beschreibst du, was du willst. Die große
+            <code>/boot/grub2/grub.cfg</code> wird daraus <em>generiert</em>.
+            Faustregel: <strong>immer nur die Vorlage ändern</strong>, dann neu
+            generieren — die generierte Datei fasst du nie direkt an.</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil C — Sicherheits-Backup üben (10 min)</div>
-        <ol class="lab-tasks" start="11">
-          <li>Mache ein <strong>Backup der grub.cfg</strong> nach
-            <code>/boot/grub2/grub.cfg.backup</code>. Tipp: <code>sudo cp ...</code></li>
-          <li>Verifiziere mit <code>ls -l</code>, dass beide Dateien existieren
-            und gleich groß sind.</li>
-          <li>Mache zusätzlich ein <strong>datiertes Backup</strong>:
-            <code>grub.cfg.YYYY-MM-DD</code> (heutiges Datum einsetzen).</li>
-          <li><strong>Mini-Übung:</strong> Lass GRUB die <code>grub.cfg</code> aus
-            den aktuellen Einstellungen <strong>neu generieren</strong>. Was
-            passiert? Ändert sich etwas?</li>
-        </ol>
+        <div class="lab-section-title">Phase 2 — Markus' Auftrag umsetzen (15 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p style="font-style: italic; border-left: 3px solid var(--border-default); padding-left: 0.8rem;">„Tim, bei der nächsten Wartung muss ich am Bootmenü Parameter
+            setzen können — aktuell ist das Menü versteckt, ich sehe es gar nicht.
+            Mach mir das sichtbar und gib mir 10 Sekunden Zeit zum Auswählen.
+            Dokumentier dabei, was du tust, falls ich es irgendwann selbst
+            nachvollziehen will." — Markus</p>
+            <p style="margin-bottom: 0;">Mach das Menü beim nächsten Boot
+            <strong>sichtbar</strong> mit <strong>10 Sekunden</strong> Wartezeit.
+            Sicherheits-Backup nicht vergessen. Teste mit einem Reboot.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint 1 — Backup zuerst!</summary>
+          <p>Bevor du irgendetwas änderst: Sicherheitskopie der generierten
+          Config. <code>sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.backup</code>
+          — dann kannst du im Notfall zurück.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 2 — Welche Variablen muss ich überhaupt ändern?</summary>
+          <p>Zwei Variablen in <code>/etc/default/grub</code>:
+          <code>GRUB_TIMEOUT</code> (Wartezeit in Sekunden) und
+          <code>GRUB_TIMEOUT_STYLE</code> (steuert, ob das Menü überhaupt
+          erscheint). Welche Werte du brauchst, ergibt sich aus Markus' Auftrag.</p>
+        </details>
+
+        <details class="callout-deepdive">
+          <summary>💡 Hint 3 — Datei geändert, aber beim Reboot passiert nichts</summary>
+          <p>Das Ändern von <code>/etc/default/grub</code> allein reicht nicht —
+          die echte Boot-Config muss neu generiert werden:
+          <code>sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code>. Erst danach
+          greift die Änderung beim nächsten Boot.</p>
+        </details>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil C zeigen</span>
+            <span>✅ Lösung Phase 2 anzeigen (erst selbst probieren!)</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -562,29 +565,66 @@ ls -lh /etc/default/grub /boot/grub2/grub.cfg
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 11) Einfaches Backup
+<pre><code># 1. Backup zuerst
 sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.backup
 
-# 12) Verifizieren
-ls -l /boot/grub2/grub.cfg*
-# -rw-r--r--. 1 root root 6128 Mai 27 10:15 /boot/grub2/grub.cfg
-# -rw-r--r--. 1 root root 6128 Mai 27 10:18 /boot/grub2/grub.cfg.backup
+# 2. Vorlage anpassen: GRUB_TIMEOUT=10, GRUB_TIMEOUT_STYLE=menu
+sudo vim /etc/default/grub
 
-# 13) Datiertes Backup (mit Datum-Befehl)
-sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.$(date +%F)
-ls -l /boot/grub2/grub.cfg*
-
-# 14) Neu generieren
+# 3. Echte Config neu generieren
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-# Generating grub configuration file ...
-# Found linux image: /boot/vmlinuz-5.14...
-# Found initrd image: /boot/initramfs-5.14...
-# done</code></pre>
+
+# 4. Testen
+sudo reboot</code></pre>
             </div>
-            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Auch
-            wenn du nichts geändert hast, generiert <code>grub2-mkconfig</code>
-            die Datei sauber neu. Das ist <em>immer</em> der richtige Weg —
-            <strong>nie</strong> direkt in <code>grub.cfg</code> editieren!</p>
+            <p style="margin-top: 0.8rem;"><strong>Was beim Reboot passieren
+            sollte:</strong> Das GRUB-Menü erscheint jetzt sichtbar und zählt
+            10 Sekunden herunter, bevor automatisch der Default-Eintrag startet.
+            In dieser Zeit kann Markus mit den Pfeiltasten einen Eintrag
+            auswählen.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Phase 3 — Dokumentieren (7 min)</div>
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Deine Aufgabe</div>
+            <p>Schreib in <strong>3–5 Sätzen</strong> auf, was du gemacht hast —
+            als kurze Notiz für Markus, damit er es später selbst nachvollziehen
+            kann. Format ist frei: ein Editor deiner Wahl, eine Textdatei, ein
+            Notizzettel.</p>
+            <p style="margin-bottom: 0;"><strong>Bonus-Frage zum Nachdenken:</strong>
+            Was wäre passiert, wenn du <code>grub.cfg</code> direkt geändert
+            hättest statt über <code>/etc/default/grub</code>?</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive" style="margin-top: 1rem;">
+          <summary>💡 Hint — Was gehört in so eine Notiz?</summary>
+          <p>Eine gute Doku beantwortet: <em>Was</em> wurde geändert (welche
+          Datei, welche Variablen)? <em>Wie</em> wurde es wirksam gemacht
+          (welcher Befehl)? <em>Wo</em> liegt das Backup? Und: <em>getestet?</em></p>
+        </details>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>✅ Muster-Dokumentation anzeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p style="border-left: 3px solid var(--accent); padding-left: 0.8rem;">
+            „Bootmenü sichtbar gemacht: <code>/etc/default/grub</code> angepasst
+            (<code>GRUB_TIMEOUT_STYLE=menu</code>, <code>GRUB_TIMEOUT=10</code>),
+            mit <code>grub2-mkconfig -o /boot/grub2/grub.cfg</code> aktiviert,
+            Backup der alten grub.cfg unter <code>grub.cfg.backup</code>. Reboot
+            getestet — Menü erscheint mit 10s Countdown."</p>
+            <p style="margin-top: 0.8rem;"><strong>Zur Bonus-Frage:</strong> Hättest
+            du <code>grub.cfg</code> direkt geändert, wäre deine Änderung beim
+            nächsten <code>grub2-mkconfig</code>-Lauf (z. B. bei einem
+            Kernel-Update) <strong>spurlos überschrieben</strong> worden. Deshalb
+            immer über die Vorlage <code>/etc/default/grub</code>.</p>
           </div>
         </div>
 
@@ -593,30 +633,30 @@ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
         <div class="callout callout-info">
           <div class="callout-icon">📌</div>
           <div class="callout-content">
-            <p style="margin: 0;">Im Bonus probierst du die einmalige
-            Boot-Parameter-Änderung im GRUB-Editor — das ist die
-            <strong>Rettungs-Technik</strong>, mit der Admins ein hängendes
-            System reparieren können, ohne dauerhaft etwas zu ändern.</p>
+            <p style="margin: 0;">Drei kleine Zusatzaufgaben für alle, die mit
+            Markus' Auftrag früher fertig sind. Jede ist in ein, zwei Zeilen
+            erledigt.</p>
           </div>
         </div>
 
-        <ol class="lab-tasks" start="15">
-          <li><strong>Boot-Zeit messen:</strong> Nutze <code>systemd-analyze</code>,
-            um zu sehen, wie lange dein Boot dauert. Welche Phase
-            (Kernel/Userspace) ist länger? Was ist der langsamste Service
-            (<code>systemd-analyze blame | head -5</code>)?</li>
-          <li><strong>BIOS oder UEFI?</strong> Finde mit dem Befehl aus dem
-            Deep-Dive oben heraus, ob deine VM BIOS oder UEFI nutzt.</li>
-          <li><strong>Welcher Kernel läuft?</strong> Befehl <code>uname -r</code>.
-            Vergleiche mit der Datei in <code>/boot/</code> — passt das?</li>
-          <li><strong>Vorsichts-Test (nur lesen!):</strong> Welche
-            Kernel-Parameter wurden beim Boot übergeben?
-            Datei <code>/proc/cmdline</code> anschauen.</li>
+        <ol class="lab-tasks" start="1">
+          <li><strong>Default-Eintrag ändern:</strong> Setze
+            <code>GRUB_DEFAULT</code> so, dass beim nächsten Boot automatisch
+            der <strong>zweite</strong> Eintrag gewählt wird (falls vorhanden).
+            Hint: <code>GRUB_DEFAULT=0</code> ist der erste, <code>=1</code> der
+            zweite, <code>=saved</code> merkt sich den zuletzt gewählten.</li>
+          <li><strong>BIOS oder UEFI?</strong> Prüfe selbst auf deinem System:
+            <code>[ -d /sys/firmware/efi ] &amp;&amp; echo UEFI || echo BIOS</code>.
+            Was hast du?</li>
+          <li><strong>Boot-Geschwindigkeit messen:</strong>
+            <code>systemd-analyze</code> ausführen — wie lange dauert dein Boot?
+            <em>(Hinweis: Services und Units lernen wir gleich in Kapitel 02 —
+            hier nur ein kurzer Vorgriff.)</em></li>
         </ol>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Bonus zeigen</span>
+            <span>✅ Lösung Bonus anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -630,24 +670,16 @@ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
                 <span class="code-lang">bash</span>
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
-<pre><code># 15) Boot-Zeit messen
-systemd-analyze
-# Startup finished in 1.5s (kernel) + 6.2s (userspace) = 7.7s
+<pre><code># 1) Default-Eintrag auf den zweiten setzen
+sudo vim /etc/default/grub      # GRUB_DEFAULT=1
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 
-systemd-analyze blame | head -5
-# Zeigt langsamste Services
-
-# 16) BIOS oder UEFI?
+# 2) BIOS oder UEFI?
 [ -d /sys/firmware/efi ] &amp;&amp; echo "UEFI" || echo "BIOS"
 
-# 17) Welcher Kernel läuft?
-uname -r
-# z. B. 5.14.0-503.el9.x86_64
-ls /boot/vmlinuz-*
-
-# 18) Kernel-Parameter
-cat /proc/cmdline
-# z. B. BOOT_IMAGE=(hd0,msdos1)/vmlinuz-5.14... root=/dev/mapper/...</code></pre>
+# 3) Boot-Geschwindigkeit (Vorgriff auf Kap. 02)
+systemd-analyze
+# z. B.: Startup finished in 1.5s (kernel) + 6.2s (userspace) = 7.7s</code></pre>
             </div>
           </div>
         </div>
@@ -736,12 +768,15 @@ cat /proc/cmdline
           <li>Nenne die vier Phasen des Linux-Bootprozesses in der richtigen
             Reihenfolge.</li>
           <li>Welches Programm wird nach BIOS ausgeführt? (Prüfungsfrage!)</li>
-          <li>Wie heißt die <strong>echte</strong> GRUB-Konfigurationsdatei, die
-            beim Booten gelesen wird?</li>
-          <li>Welche Datei editierst du, um GRUB-Einstellungen zu ändern — und
-            welcher Befehl macht die Änderung danach wirksam?</li>
+          <li>Warum ist das GRUB-Menü auf einer Default-Rocky-9-Installation oft
+            gar nicht sichtbar — und welche Variable (mit welchem Wert) macht es
+            sichtbar?</li>
+          <li>Welche Datei editierst du, um GRUB-Einstellungen zu ändern, und
+            welcher Befehl macht die Änderung wirksam? Warum fasst du die
+            <code>grub.cfg</code> nie direkt an?</li>
           <li>Was ist der Unterschied zwischen MBR und GPT?</li>
-          <li>Welche PID hat <code>systemd</code> auf einem laufenden Linux-System?</li>
+          <li>Mit welchem Ein-Zeilen-Befehl prüfst du, ob dein System im
+            BIOS- oder UEFI-Modus läuft?</li>
         </ol>
 
         <div class="solution">
@@ -757,14 +792,23 @@ cat /proc/cmdline
                 <strong>I</strong>nit (systemd). Merksatz: <strong>F-B-K-I</strong>.</li>
               <li>Der <strong>Bootloader</strong> (in Linux meistens GRUB2). NICHT
                 der Kernel und NICHT init.</li>
-              <li><code>/boot/grub2/grub.cfg</code></li>
+              <li>Weil bei nur einem Kernel-Eintrag standardmäßig
+                <code>GRUB_TIMEOUT_STYLE=hidden</code> gesetzt ist — das Menü wird
+                übersprungen. Sichtbar machst du es mit
+                <code>GRUB_TIMEOUT_STYLE=menu</code> (zusammen mit einem
+                <code>GRUB_TIMEOUT</code> &gt; 0).</li>
               <li>Editieren: <code>/etc/default/grub</code>. Wirksam machen:
-                <code>sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code></li>
+                <code>sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code>. Die
+                <code>grub.cfg</code> fasst man nie direkt an, weil sie bei jedem
+                <code>grub2-mkconfig</code>-Lauf (z. B. Kernel-Update) neu
+                generiert und dabei überschrieben wird.</li>
               <li><strong>MBR</strong> (Master Boot Record): alt, max. 2 TB,
                 max. 4 Primärpartitionen, BIOS-typisch.
                 <strong>GPT</strong> (GUID Partition Table): modern, viele Partitionen,
                 bis zu 9,4 ZB, mit Backup-Tabelle, UEFI-typisch.</li>
-              <li><strong>PID 1</strong> — systemd ist der Urvater aller Prozesse.</li>
+              <li><code>[ -d /sys/firmware/efi ] &amp;&amp; echo UEFI || echo BIOS</code>
+                — existiert das Verzeichnis <code>/sys/firmware/efi</code>, läuft
+                das System im UEFI-Modus, sonst Legacy-BIOS.</li>
             </ol>
           </div>
         </div>
