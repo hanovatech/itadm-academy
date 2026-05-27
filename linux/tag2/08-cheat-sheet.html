@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheat-Sheet · Tag 2 · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 2 · Finale</div>
+    <h1 class="page-title">
+      <span class="highlight">Cheat-Sheet</span> &amp; Tages-Wrap-Up
+    </h1>
+    <p class="page-subtitle">
+      Druckbare Befehls-Referenz für alle Werkzeuge von Tag 2 — Wildcards,
+      Redirection, tar, Links, Berechtigungen und find. Plus Tag-2-Wrap-Up und
+      Ausblick auf Tag 3.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">🏁</span> Finale</span>
+      <span class="meta-item"><span class="meta-item-icon">📋</span> Cheat-Sheet</span>
+      <span class="meta-item"><span class="meta-item-icon">🚀</span> Tag-3-Ausblick</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ CHEAT-SHEET ============ -->
+    <section class="timeblock" id="cheatsheet">
+      <div class="timeblock-header">
+        <span class="timeblock-time">📋</span>
+        <h2 class="timeblock-title">Cheat-Sheet — alle Befehle von Tag 2</h2>
+        <span class="timeblock-badge badge-vortrag">Druckbar</span>
+      </div>
+
+      <div class="subblock">
+        <p>Diese Tabelle ausdrucken (oder die Seite als PDF speichern) und neben
+        den Bildschirm legen — das ist dein Begleiter für Tag 3 und den
+        Admin-Alltag.</p>
+
+        <h4>1 · Wildcards &amp; Brace Expansion</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>*</code></td><td>beliebig viele Zeichen (auch 0)</td><td><code>ls *.txt</code></td></tr>
+              <tr><td><code>?</code></td><td>genau ein Zeichen</td><td><code>ls report?.log</code></td></tr>
+              <tr><td><code>[abc]</code></td><td>eines dieser Zeichen</td><td><code>ls datei[123].txt</code></td></tr>
+              <tr><td><code>[a-z]</code></td><td>Zeichenbereich</td><td><code>ls log_[0-9].txt</code></td></tr>
+              <tr><td><code>{a,b,c}</code></td><td>Brace Expansion: jeder dieser Strings</td><td><code>mkdir {src,dst,bak}</code></td></tr>
+              <tr><td><code>{1..10}</code></td><td>Zahlen-Range</td><td><code>touch file_{01..12}.log</code></td></tr>
+              <tr><td><code>{2024..2026}</code></td><td>Jahres-Range</td><td><code>mkdir archiv_{2024..2026}</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>2 · Redirection &amp; Pipes</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>&gt;</code></td><td>stdout in Datei umleiten (überschreibt!)</td><td><code>ls &gt; liste.txt</code></td></tr>
+              <tr><td><code>&gt;&gt;</code></td><td>stdout anhängen</td><td><code>date &gt;&gt; logbuch.txt</code></td></tr>
+              <tr><td><code>2&gt;</code></td><td>stderr umleiten</td><td><code>find / -name "x" 2&gt; fehler.log</code></td></tr>
+              <tr><td><code>&amp;&gt;</code></td><td>stdout + stderr umleiten</td><td><code>cmd &amp;&gt; alles.log</code></td></tr>
+              <tr><td><code>2&gt;&amp;1</code></td><td>stderr in stdout umleiten</td><td><code>cmd &gt; out.log 2&gt;&amp;1</code></td></tr>
+              <tr><td><code>&lt; datei</code></td><td>stdin aus Datei</td><td><code>sort &lt; unsortiert.txt</code></td></tr>
+              <tr><td><code>/dev/null</code></td><td>„Mülltonne" — alles wird verworfen</td><td><code>cmd 2&gt; /dev/null</code></td></tr>
+              <tr><td><code>|</code></td><td>Pipe — stdout zu stdin verketten</td><td><code>ls | grep conf</code></td></tr>
+              <tr><td><code>tee DATEI</code></td><td>Ausgabe AUF Bildschirm + in Datei</td><td><code>ls | tee liste.txt</code></td></tr>
+              <tr><td><code>tee -a DATEI</code></td><td>tee mit Anhängen</td><td><code>cmd | tee -a log.txt</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3 · <code>grep</code> — Mustersuche</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>grep MUSTER DATEI</code></td><td>Zeilen mit Treffer ausgeben</td><td><code>grep ERROR app.log</code></td></tr>
+              <tr><td><code>grep -i</code></td><td>Groß-/Kleinschreibung ignorieren</td><td><code>grep -i error app.log</code></td></tr>
+              <tr><td><code>grep -v</code></td><td>Zeilen OHNE Treffer</td><td><code>grep -v "^#" config.txt</code></td></tr>
+              <tr><td><code>grep -n</code></td><td>Zeilennummern anzeigen</td><td><code>grep -n WARN log.txt</code></td></tr>
+              <tr><td><code>grep -r MUSTER DIR</code></td><td>Rekursiv im Verzeichnisbaum</td><td><code>grep -r TODO src/</code></td></tr>
+              <tr><td><code>grep -c</code></td><td>Nur Anzahl Treffer</td><td><code>grep -c ERROR log.txt</code></td></tr>
+              <tr><td><code>grep -E</code></td><td>Extended Regex</td><td><code>grep -E "INFO|ERROR" log.txt</code></td></tr>
+              <tr><td><code>grep -l</code></td><td>Nur Dateinamen mit Treffer</td><td><code>grep -rl secret /etc</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>4 · Archivieren &amp; Komprimieren (tar, gzip)</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>tar -cvf ARCHIV QUELLE</code></td><td>Archiv erstellen (uncompressed)</td><td><code>tar -cvf backup.tar /etc</code></td></tr>
+              <tr><td><code>tar -czvf ARCHIV QUELLE</code></td><td>Archiv erstellen + gzip-komprimiert</td><td><code>tar -czvf backup.tar.gz /etc</code></td></tr>
+              <tr><td><code>tar -xvf ARCHIV</code></td><td>Archiv entpacken</td><td><code>tar -xvf backup.tar</code></td></tr>
+              <tr><td><code>tar -xzvf ARCHIV</code></td><td>gzip-Archiv entpacken</td><td><code>tar -xzvf backup.tar.gz</code></td></tr>
+              <tr><td><code>tar -tvf ARCHIV</code></td><td>Inhalt anzeigen (NICHT entpacken)</td><td><code>tar -tvf backup.tar.gz</code></td></tr>
+              <tr><td><code>tar -C ZIEL -xzvf ARCHIV</code></td><td>In bestimmtes Verzeichnis entpacken</td><td><code>tar -C /tmp/ -xzvf backup.tar.gz</code></td></tr>
+              <tr><td><code>tar --exclude='*.log' ...</code></td><td>Bestimmte Muster ausschließen</td><td><code>tar --exclude='*.log' -czvf b.tar.gz dir/</code></td></tr>
+              <tr><td><code>gzip DATEI</code></td><td>Datei komprimieren (Original wird ersetzt!)</td><td><code>gzip access.log</code></td></tr>
+              <tr><td><code>gunzip DATEI.gz</code></td><td>Datei dekomprimieren</td><td><code>gunzip access.log.gz</code></td></tr>
+              <tr><td><code>gzip -k DATEI</code></td><td>Original behalten</td><td><code>gzip -k access.log</code></td></tr>
+              <tr><td><code>gzip -9 DATEI</code></td><td>Maximale Komprimierung (langsam)</td><td><code>gzip -9 backup.tar</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Eselsbrücke <code>tar</code>-Optionen</div>
+            <p><code>c</code> = create, <code>x</code> = extract, <code>t</code>
+            = list. <code>z</code> = gzip, <code>j</code> = bzip2,
+            <code>J</code> = xz. <code>v</code> = verbose (was passiert),
+            <code>f</code> = file (Dateiname kommt als Nächstes).<br>
+            Merkspruch: <strong>„Christel xagt: tar verfüllt"</strong> →
+            c/x/t · v · f.</p>
+          </div>
+        </div>
+
+        <h4>5 · Hard- &amp; Soft-Links</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>ln ZIEL NAME</code></td><td>Hard-Link erstellen</td><td><code>ln original.txt hardlink.txt</code></td></tr>
+              <tr><td><code>ln -s ZIEL NAME</code></td><td>Soft-Link (Symlink) erstellen</td><td><code>ln -s /opt/app/v2.3 current</code></td></tr>
+              <tr><td><code>ln -sfn ZIEL NAME</code></td><td>Symlink umbiegen (überschreibt vorhandenen)</td><td><code>ln -sfn /opt/app/v2.4 current</code></td></tr>
+              <tr><td><code>readlink NAME</code></td><td>Ziel eines Symlinks anzeigen</td><td><code>readlink current</code></td></tr>
+              <tr><td><code>readlink -f NAME</code></td><td>Absoluten Pfad auflösen</td><td><code>readlink -f current</code></td></tr>
+              <tr><td><code>unlink NAME</code></td><td>Link entfernen (sicherer als <code>rm</code>)</td><td><code>unlink current</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>6 · Inode-Befehle</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>ls -i</code></td><td>Inode-Nummern anzeigen</td><td><code>ls -i datei.txt</code></td></tr>
+              <tr><td><code>ls -li</code></td><td>Long-Listing + Inode-Nummern</td><td><code>ls -li /etc/</code></td></tr>
+              <tr><td><code>stat DATEI</code></td><td>Detail-Infos: Inode, Größe, Rechte, Zeiten</td><td><code>stat /etc/hosts</code></td></tr>
+              <tr><td><code>df -i</code></td><td>Inode-Belegung des Dateisystems</td><td><code>df -i</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>7 · Berechtigungen lesen</h4>
+        <p>Die 10 Zeichen aus <code>ls -l</code> entschlüsseln:</p>
+        <div class="ascii-box">-rwxr-xr--   1 admin wheel  1024  Mai 26 14:22  script.sh
+│└┬┘└┬┘└┬┘
+│ │  │  └── Others   → r--  (lesen)
+│ │  └───── Group    → r-x  (lesen + ausführen)
+│ └──────── Owner    → rwx  (lesen, schreiben, ausführen)
+└────────── Typ      → -    (normale Datei)</div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Zeichen</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>-</code></td><td>Normale Datei</td></tr>
+              <tr><td><code>d</code></td><td>Verzeichnis (directory)</td></tr>
+              <tr><td><code>l</code></td><td>Symlink (link)</td></tr>
+              <tr><td><code>c</code></td><td>Character device</td></tr>
+              <tr><td><code>b</code></td><td>Block device</td></tr>
+              <tr><td><code>p</code></td><td>Named pipe</td></tr>
+              <tr><td><code>s</code></td><td>Socket</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>8 · Berechtigungen setzen (symbolisch)</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Symbol</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>u</code></td><td>user (owner)</td></tr>
+              <tr><td><code>g</code></td><td>group</td></tr>
+              <tr><td><code>o</code></td><td>others</td></tr>
+              <tr><td><code>a</code></td><td>all (u+g+o)</td></tr>
+              <tr><td><code>+</code></td><td>Recht hinzufügen</td></tr>
+              <tr><td><code>-</code></td><td>Recht entziehen</td></tr>
+              <tr><td><code>=</code></td><td>Recht exakt setzen (überschreibt)</td></tr>
+              <tr><td><code>r</code> / <code>w</code> / <code>x</code></td><td>read / write / execute</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Beispiel</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>chmod u+x script.sh</code></td><td>Owner darf zusätzlich ausführen</td></tr>
+              <tr><td><code>chmod g-w datei.txt</code></td><td>Group verliert Schreibrecht</td></tr>
+              <tr><td><code>chmod o= geheim.txt</code></td><td>Others bekommen GAR NICHTS</td></tr>
+              <tr><td><code>chmod a+r doku.md</code></td><td>Alle dürfen lesen</td></tr>
+              <tr><td><code>chmod u=rw,g=r,o= datei</code></td><td>Komplette Zuweisung</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>9 · Berechtigungen setzen (numerisch)</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Wert</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>4</code></td><td>read (r)</td></tr>
+              <tr><td><code>2</code></td><td>write (w)</td></tr>
+              <tr><td><code>1</code></td><td>execute (x)</td></tr>
+              <tr><td><code>0</code></td><td>nichts</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Oktal</th><th>Symbolisch</th><th>Typische Verwendung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>400</code></td><td><code>r--------</code></td><td>Nur Owner darf lesen (privat)</td></tr>
+              <tr><td><code>600</code></td><td><code>rw-------</code></td><td>Owner darf alles, sonst nichts (Konfig, Keys)</td></tr>
+              <tr><td><code>644</code></td><td><code>rw-r--r--</code></td><td>Standard für <strong>Dateien</strong>: Owner schreibt, Rest liest</td></tr>
+              <tr><td><code>700</code></td><td><code>rwx------</code></td><td>Owner darf alles, sonst nichts</td></tr>
+              <tr><td><code>750</code></td><td><code>rwxr-x---</code></td><td>Owner alles, Group lesen+ausführen, Rest nichts</td></tr>
+              <tr><td><code>755</code></td><td><code>rwxr-xr-x</code></td><td>Standard für <strong>Verzeichnisse</strong> und Skripte</td></tr>
+              <tr><td><code>775</code></td><td><code>rwxrwxr-x</code></td><td>Group darf schreiben (Team-Verzeichnisse)</td></tr>
+              <tr><td><code>777</code></td><td><code>rwxrwxrwx</code></td><td>⚠️ ALLE dürfen ALLES — <strong>fast immer falsch!</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>10 · Eigentümer &amp; Gruppen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>whoami</code></td><td>aktueller Username</td><td><code>whoami</code></td></tr>
+              <tr><td><code>groups</code></td><td>Gruppen-Mitgliedschaften</td><td><code>groups</code></td></tr>
+              <tr><td><code>id</code></td><td>User-ID + Gruppen-IDs</td><td><code>id</code></td></tr>
+              <tr><td><code>chown USER DATEI</code></td><td>Owner ändern</td><td><code>sudo chown admin datei.txt</code></td></tr>
+              <tr><td><code>chown USER:GROUP DATEI</code></td><td>Owner + Group gleichzeitig</td><td><code>sudo chown admin:wheel datei.txt</code></td></tr>
+              <tr><td><code>chown -R USER DIR</code></td><td>Rekursiv (gesamter Baum)</td><td><code>sudo chown -R admin /srv/app</code></td></tr>
+              <tr><td><code>chgrp GROUP DATEI</code></td><td>Nur Group ändern</td><td><code>sudo chgrp wheel datei.txt</code></td></tr>
+              <tr><td><code>chgrp -R GROUP DIR</code></td><td>Rekursiv</td><td><code>sudo chgrp -R wheel /srv/team</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>11 · Suchen (find, locate, which, whereis)</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>find PFAD -name "MUSTER"</code></td><td>Datei nach Name suchen</td><td><code>find /etc -name "*.conf"</code></td></tr>
+              <tr><td><code>find PFAD -iname "MUSTER"</code></td><td>Case-insensitive</td><td><code>find / -iname "readme*"</code></td></tr>
+              <tr><td><code>find PFAD -type f</code></td><td>Nur normale Dateien</td><td><code>find /var -type f</code></td></tr>
+              <tr><td><code>find PFAD -type d</code></td><td>Nur Verzeichnisse</td><td><code>find / -type d -name "log"</code></td></tr>
+              <tr><td><code>find PFAD -type l</code></td><td>Nur Symlinks</td><td><code>find /usr -type l</code></td></tr>
+              <tr><td><code>find PFAD -size +100M</code></td><td>Größer als 100 MB</td><td><code>find /var -size +100M</code></td></tr>
+              <tr><td><code>find PFAD -size -1k</code></td><td>Kleiner als 1 KB</td><td><code>find . -size -1k</code></td></tr>
+              <tr><td><code>find PFAD -mtime -7</code></td><td>Geändert in letzten 7 Tagen</td><td><code>find /etc -mtime -7</code></td></tr>
+              <tr><td><code>find PFAD -mtime +30</code></td><td>Älter als 30 Tage</td><td><code>find /tmp -mtime +30</code></td></tr>
+              <tr><td><code>find PFAD -user USER</code></td><td>Bestimmter Owner</td><td><code>find /home -user admin</code></td></tr>
+              <tr><td><code>find PFAD -perm 644</code></td><td>Bestimmte Berechtigung</td><td><code>find /etc -perm 644</code></td></tr>
+              <tr><td><code>find PFAD -perm -o=w</code></td><td>„mindestens"-Match (Others-Write)</td><td><code>find / -perm -o=w</code></td></tr>
+              <tr><td><code>find ... -exec CMD {} \;</code></td><td>Befehl pro Treffer ausführen</td><td><code>find /tmp -name "*.log" -exec rm {} \;</code></td></tr>
+              <tr><td><code>find ... -delete</code></td><td>Treffer löschen (gefährlich!)</td><td><code>find /tmp -mtime +30 -delete</code></td></tr>
+              <tr><td><code>locate MUSTER</code></td><td>Schnell-Suche über Datenbank</td><td><code>locate nginx.conf</code></td></tr>
+              <tr><td><code>sudo updatedb</code></td><td>locate-Datenbank aktualisieren</td><td><code>sudo updatedb</code></td></tr>
+              <tr><td><code>which BEFEHL</code></td><td>Pfad eines Befehls</td><td><code>which find</code></td></tr>
+              <tr><td><code>whereis BEFEHL</code></td><td>Pfad + Manpage + Source</td><td><code>whereis find</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Vorsicht mit <code>find -delete</code></div>
+            <p><code>find -delete</code> ist <strong>destruktiv und nicht
+            rückholbar</strong>. Erste Regel: immer <strong>zuerst ohne
+            <code>-delete</code></strong> ausführen, schauen was getroffen wird,
+            <strong>dann</strong> mit <code>-delete</code> wiederholen. Niemals
+            blind <code>find / -delete</code> tippen.</p>
+          </div>
+        </div>
+
+        <h4>12 · Goldene Regeln für Tag 2</h4>
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Die 7 Goldenen Regeln für Tag 2</div>
+            <ol style="margin-top: 0.5rem; padding-left: 1.25rem;">
+              <li><strong>chmod 777 ist fast immer falsch.</strong> Wenn du
+                glaubst, du brauchst es — du brauchst es nicht. 755 oder 644
+                reichen in 99 % aller Fälle.</li>
+              <li><strong>Vor <code>find -delete</code> immer ohne
+                <code>-delete</code> testen.</strong> Erst sehen, was getroffen
+                wird. Dann löschen.</li>
+              <li><strong>Wildcards expandiert die Shell, nicht der
+                Befehl.</strong> Wenn <code>ls *.txt</code> nichts findet, gibt
+                es keine <code>.txt</code>-Dateien — der Befehl sieht den Stern
+                gar nicht.</li>
+              <li><strong>Hard-Links nur innerhalb desselben
+                Dateisystems.</strong> Über Filesystem-Grenzen geht nur
+                Soft-Link.</li>
+              <li><strong>Symlinks zeigen auf einen <em>Pfad</em>, nicht auf
+                eine Datei.</strong> Wenn das Ziel verschoben wird, zeigt der
+                Link ins Leere. „Dangling symlink."</li>
+              <li><strong><code>&gt;</code> überschreibt ohne Warnung.</strong>
+                Wenn du anhängen willst: <code>&gt;&gt;</code>. Wenn nicht
+                sicher: erst <code>echo</code> ohne Umleitung testen.</li>
+              <li><strong><code>tar -cf</code> ohne <code>-z</code> = nicht
+                komprimiert.</strong> Wenn die Datei <code>.tar.gz</code> heißen
+                soll, brauchst du <code>-z</code>. Sonst hast du nur ein
+                unkomprimiertes <code>.tar</code> mit irreführendem Namen.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ AUSBLICK TAG 3 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🚀</span>
+        <h2 class="timeblock-title">Ausblick: Was kommt an Tag 3?</h2>
+        <span class="timeblock-badge badge-vortrag">Vorschau</span>
+      </div>
+
+      <div class="subblock">
+        <p>Tag 2 war die <strong>Werkzeug-Werkstatt</strong>. Du kennst jetzt die
+        Bausteine: Wildcards, Pipes, Archive, Berechtigungen, Links und
+        <code>find</code>. Tag 3 baut darauf auf — wir gehen ins „echte
+        Admin-Land":</p>
+
+        <ul>
+          <li><strong>Prozesse &amp; Jobs</strong> — <code>ps</code>,
+            <code>top</code>, <code>htop</code>, <code>kill</code>,
+            <code>jobs</code>, <code>fg</code>/<code>bg</code></li>
+          <li><strong>Systemd-Services</strong> — <code>systemctl</code>,
+            Services starten/stoppen, Logs mit <code>journalctl</code></li>
+          <li><strong>Benutzer &amp; Gruppen anlegen</strong> —
+            <code>useradd</code>, <code>passwd</code>, <code>groupadd</code>,
+            <code>/etc/passwd</code>, <code>/etc/shadow</code></li>
+          <li><strong>Pakete installieren</strong> — <code>dnf</code> tiefer,
+            Repositories, Updates, Repo-Pinning</li>
+          <li><strong>Netzwerk-Grundlagen</strong> — <code>ip</code>,
+            <code>ss</code>, Routing, Hostname, DNS-Auflösung</li>
+          <li><strong>Bash-Variablen &amp; Command Substitution</strong> —
+            <code>$VAR</code>, <code>$(befehl)</code>, einfache Skripte</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💼</div>
+          <div class="callout-content">
+            <div class="callout-title">Hausaufgabe bis Tag 3</div>
+            <p>Spiele 20 Minuten mit den Tag-2-Befehlen. Bau dir eine eigene
+            Test-Struktur in <code>~/uebung/</code> und probiere
+            <code>chmod</code>, <code>find</code>, <code>tar</code> in
+            verschiedenen Kombinationen aus. Wer am nächsten Morgen mit
+            Muskelgedächtnis kommt, hat Tag 3 schon halb gewonnen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Empfehlung für freiwillige Vertiefung</div>
+            <ul style="margin-top: 0.5rem;">
+              <li><code>man chmod</code>, <code>man find</code>,
+                <code>man tar</code> — die offiziellen Manpages</li>
+              <li><a href="https://explainshell.com/" target="_blank" rel="noopener">explainshell.com</a>
+                — komplexe Shell-Befehle Stück für Stück erklären lassen</li>
+              <li><a href="https://man7.org/linux/man-pages/" target="_blank" rel="noopener">man7.org</a>
+                — alle Linux-Manpages online, hübsch formatiert</li>
+              <li>Spiel <code>find</code> als Schatzsuche: „Find alle Dateien
+                in <code>/etc</code>, die größer als 100 KB sind UND in den
+                letzten 30 Tagen geändert wurden"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAG-2-WRAP-UP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎉</span>
+        <h2 class="timeblock-title">Tag 2 — geschafft!</h2>
+        <span class="timeblock-badge badge-vortrag">Finale</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-tip">
+          <div class="callout-icon">🥳</div>
+          <div class="callout-content">
+            <div class="callout-title">Du hast heute richtig viel geschafft</div>
+            <ul style="margin-top: 0.5rem;">
+              <li>Du kennst <strong>Wildcards</strong> und kannst viele Dateien
+                in einem Befehl ansprechen</li>
+              <li>Du kannst Ausgaben <strong>umleiten</strong> und Befehle mit
+                <strong>Pipes</strong> verketten</li>
+              <li>Du suchst Muster mit <code>grep</code> aus Text und Logs</li>
+              <li>Du <strong>archivierst und komprimierst</strong> Daten mit
+                <code>tar</code> und <code>gzip</code></li>
+              <li>Du verstehst <strong>Inodes</strong> und den Unterschied
+                zwischen <strong>Hard-</strong> und <strong>Soft-Links</strong></li>
+              <li>Du <strong>liest und setzt Berechtigungen</strong> — symbolisch
+                und numerisch</li>
+              <li>Du findest jede Datei mit <code>find</code> — nach Name, Größe,
+                Alter, Owner und Berechtigung</li>
+            </ul>
+            <p style="margin-top: 0.8rem;">Das ist mehr Linux-Power als die
+            meisten Sysadmins nach einem halben Jahr im Job nutzen. Sei stolz
+            drauf.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info" style="margin-top: 1.5rem;">
+          <div class="callout-icon">☕</div>
+          <div class="callout-content">
+            <div class="callout-title">Feierabend-Tipp</div>
+            <p>Bevor du den Laptop zuklappst: <strong>Snapshot deiner VM</strong>.
+            Nenn ihn <code>tag2-abschluss</code>. Falls Tag 3 wild wird, hast du
+            einen sauberen Stand zum Zurückkehren.</p>
+          </div>
+        </div>
+
+        <p style="margin-top: 2rem; text-align: center; font-size: 1.1rem;">
+          <strong>Bis morgen, frischer Linux-Admin. 🐧</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="07-quiz.html">
+        <span class="nav-eyebrow">← Quiz</span>
+        <span class="nav-title">Tages-Quiz Tag 2</span>
+      </a>
+      <a href="index.html" class="nav-next">
+        <span class="nav-eyebrow">↑ Tag 2 Übersicht</span>
+        <span class="nav-title">zurück zur Kapitel-Übersicht</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
