@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 05 · Umgebungsvariablen &amp; PATH · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Kapitel 05 von 6</div>
+    <h1 class="page-title">
+      <span class="highlight">Umgebungsvariablen</span> &amp; PATH
+    </h1>
+    <p class="page-subtitle">
+      Warum findet die Shell <code>ls</code>, aber nicht <code>mein_skript.sh</code>?
+      Antwort: <strong>$PATH</strong>. Heute lernst du, wie die Shell Befehle
+      findet, wie du eigene Variablen setzt und warum
+      <code>.bashrc</code> die wichtigste Datei deines Linux-Lebens wird.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 05</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 15 min Theorie + 30 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.5</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 5.1 WAS IST EINE VARIABLE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.1</span>
+        <h2 class="timeblock-title">Was ist eine Umgebungsvariable?</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine <strong>Variable</strong> ist ein <em>Name</em>, der einen
+        <em>Wert</em> hält. Auf Linux gibt es zwei wichtige Arten:</p>
+
+        <div class="ascii-box">  SHELL-VARIABLE
+  ┌─────────────────────────────────────────────┐
+  │  meine_variable="hallo"                      │
+  │  → Lebt NUR in deiner aktuellen Shell        │
+  │  → Kind-Prozesse sehen sie NICHT             │
+  └─────────────────────────────────────────────┘
+
+  UMGEBUNGS-VARIABLE (Environment Variable)
+  ┌─────────────────────────────────────────────┐
+  │  export MEINE_VARIABLE="hallo"               │
+  │  → Lebt in deiner Shell                      │
+  │  → Wird an ALLE Kind-Prozesse vererbt        │
+  │  → Konvention: GROSSGESCHRIEBEN             │
+  └─────────────────────────────────────────────┘</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Konvention: GROSSBUCHSTABEN</div>
+            <p>Umgebungsvariablen werden standardmäßig <strong>komplett
+            großgeschrieben</strong>: <code>PATH</code>, <code>HOME</code>,
+            <code>USER</code>, <code>SHELL</code>. Eigene Variablen für Skripte
+            schreibst du meist kleingeschrieben: <code>name</code>,
+            <code>zaehler</code>. Das hilft, sie optisch zu unterscheiden.</p>
+          </div>
+        </div>
+
+        <h4>Die wichtigsten vordefinierten Variablen</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Variable</th><th>Inhalt</th><th>Beispiel</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>$HOME</code></td><td>dein Home-Verzeichnis</td><td><code>/home/admin</code></td></tr>
+              <tr><td><code>$USER</code></td><td>dein Login-Name</td><td><code>admin</code></td></tr>
+              <tr><td><code>$SHELL</code></td><td>welche Shell läuft</td><td><code>/bin/bash</code></td></tr>
+              <tr><td><code>$PATH</code></td><td>wo Befehle gesucht werden</td><td><code>/usr/local/bin:/usr/bin:/bin</code></td></tr>
+              <tr><td><code>$PWD</code></td><td>aktuelles Verzeichnis</td><td><code>/home/admin</code></td></tr>
+              <tr><td><code>$LANG</code></td><td>Sprache &amp; Zeichensatz</td><td><code>de_DE.UTF-8</code></td></tr>
+              <tr><td><code>$EDITOR</code></td><td>Default-Editor</td><td><code>nano</code> oder <code>vim</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5.2 VARIABLEN LESEN UND SETZEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.2</span>
+        <h2 class="timeblock-title">Variablen lesen und setzen</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <h4>Lesen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Den Wert einer Variable ausgeben — mit $
+echo $HOME
+# → /home/admin
+
+echo $USER
+# → admin
+
+# Mit geschweiften Klammern (eindeutiger)
+echo ${USER}
+echo "Hallo, ${USER}!"   # → Hallo, admin!
+
+# ALLE Umgebungsvariablen auflisten
+env
+# Oder:
+printenv
+
+# Eine bestimmte Variable suchen
+env | grep PATH</code></pre>
+        </div>
+
+        <h4>Setzen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Shell-Variable (nur diese Shell)
+name="Tim"
+echo $name
+# → Tim
+
+# WICHTIG: KEINE Leerzeichen um das = !
+name = "Tim"   # ← FALSCH! "name: command not found"
+name="Tim"     # ← richtig
+
+# Umgebungsvariable (auch für Kind-Prozesse)
+export PROJEKT="hanovatech"
+echo $PROJEKT
+# → hanovatech
+
+# Variable LÖSCHEN
+unset name
+echo $name
+# → (leer)</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>export</code> macht Variablen sichtbar</div>
+            <p>Ohne <code>export</code> sieht nur deine aktuelle Shell die Variable.
+            Mit <code>export</code> sehen sie auch alle Programme, die du aus
+            dieser Shell startest — z.B. Skripte. <strong>Faustregel:</strong>
+            wenn ein Skript auf eine Variable zugreifen soll, muss sie
+            <code>export</code>iert sein.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Test: Vererbung selbst nachprüfen</summary>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+<pre><code># Shell-Variable (OHNE export)
+test1="hallo"
+
+# Neue Bash starten (Kind-Prozess)
+bash
+
+# Im Kind: Variable da?
+echo $test1
+# → (leer) — Kind sieht nichts!
+
+# Zurück zum Eltern-Prozess
+exit
+
+# Jetzt mit export
+export test2="hallo"
+bash
+echo $test2
+# → hallo — Kind sieht es!
+exit</code></pre>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 5.3 PATH ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.3</span>
+        <h2 class="timeblock-title"><code>$PATH</code> — die wichtigste Variable</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Wenn du <code>ls</code> tippst, woher weiß die Shell, wo
+        <code>/usr/bin/ls</code> liegt? Antwort: aus <code>$PATH</code>.</p>
+
+        <p><code>$PATH</code> ist eine Liste von Verzeichnissen, getrennt durch
+        <strong>Doppelpunkte</strong>. Die Shell sucht in jedem dieser
+        Verzeichnisse <strong>der Reihe nach</strong> nach dem getippten
+        Befehl. Beim ersten Treffer ist Schluss.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>$ echo $PATH
+/home/admin/.local/bin:/home/admin/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin</code></pre>
+        </div>
+
+        <h4>So funktioniert die Suche</h4>
+        <div class="ascii-box">  Du tippst:  ls
+              │
+              ▼
+  Shell schaut in $PATH der Reihe nach:
+    1. /home/admin/.local/bin/ls  ← nein, gibt's nicht
+    2. /home/admin/bin/ls         ← nein
+    3. /usr/local/bin/ls          ← nein
+    4. /usr/bin/ls                ← TREFFER! → ausführen
+              │
+              ▼
+  Wenn nirgendwo gefunden:
+    "ls: command not found"</div>
+
+        <h4>Welcher Befehl wird ausgeführt? — <code>which</code></h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Wo liegt der Befehl, der ausgeführt wird?
+which ls
+# → /usr/bin/ls
+
+which dnf
+# → /usr/bin/dnf</code></pre>
+        </div>
+
+        <h4>PATH erweitern</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Neues Verzeichnis am ENDE anhängen
+export PATH=$PATH:/home/admin/meine-skripte
+
+# Neues Verzeichnis am ANFANG (höhere Priorität!)
+export PATH=/home/admin/meine-skripte:$PATH
+
+# Wichtig: NICHT überschreiben!
+export PATH=/home/admin/meine-skripte
+# ← FATAL! Du verlierst /usr/bin, /bin, alles!
+# ls, cd, dnf — nichts geht mehr.
+# Nur durch Neu-Login zu retten.</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">PATH NIE überschreiben!</div>
+            <p>Immer <strong>erweitern</strong> mit
+            <code>$PATH:NEU</code> oder <code>NEU:$PATH</code>. Wenn du
+            <code>export PATH=/etwas</code> ohne das alte
+            <code>$PATH</code> schreibst, verlierst du Zugriff auf alle
+            normalen Befehle. Notfall-Rettung: Terminal schließen, neu öffnen —
+            die <code>.bashrc</code> setzt PATH zurück.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5.4 PERSISTENT MIT .BASHRC ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.4</span>
+        <h2 class="timeblock-title">Persistent mit <code>.bashrc</code></h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Variablen, die du in der Shell setzt, sind <strong>weg</strong>, sobald
+        du das Terminal schließt. Wenn sie <em>jedes Mal</em> beim Login da sein
+        sollen, müssen sie in eine <strong>Startdatei</strong>:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Datei</th><th>Wann gelesen</th><th>Wofür</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>~/.bashrc</code></td><td>bei jedem neuen Terminal-Fenster (interaktiv)</td><td><strong>Hier setzt du eigene Sachen!</strong></td></tr>
+              <tr><td><code>~/.bash_profile</code></td><td>nur beim Login</td><td>Selten gebraucht</td></tr>
+              <tr><td><code>/etc/profile</code></td><td>beim Login, für ALLE User</td><td>System-weite Defaults</td></tr>
+              <tr><td><code>/etc/bashrc</code></td><td>bei jeder Bash, für ALLE User</td><td>System-weite Bash-Settings</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Typische .bashrc-Erweiterungen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Datei öffnen
+nano ~/.bashrc
+
+# Am ENDE der Datei eintragen:
+
+# Eigene Variablen
+export EDITOR=nano
+export PROJEKT_DIR=~/hanovatech
+
+# Eigenes Skript-Verzeichnis im PATH
+export PATH=$PATH:~/meine-skripte
+
+# Aliase (Tipp-Abkürzungen)
+alias ll='ls -la'
+alias gs='git status'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Speichern (Strg+O, Enter, Strg+X)
+
+# DAMIT ES SOFORT GREIFT — neu laden:
+source ~/.bashrc
+# oder kürzer:
+. ~/.bashrc</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Aliase — kleine Welt, große Wirkung</div>
+            <p>Aliase sind <strong>Tipp-Abkürzungen</strong>. Ein <code>ll</code>
+            statt <code>ls -la</code> spart 5 Anschläge — bei 100x am Tag sind das
+            500 Anschläge. Setz dir früh deine Lieblings-Aliase, und das Terminal
+            wird zur zweiten Heimat.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>source</code> vs. neues Terminal</div>
+            <p>Nachdem du <code>.bashrc</code> geändert hast, gilt das nicht
+            automatisch in der laufenden Shell. Zwei Optionen:</p>
+            <ul>
+              <li><code>source ~/.bashrc</code> — lädt die Datei in die aktuelle Shell</li>
+              <li>Terminal schließen und neu öffnen — neuer Start, neue Variablen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 3.5 ============ -->
+    <section class="timeblock" id="lab35">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🧪</span>
+        <h2 class="timeblock-title">Lab 3.5 — Deine Shell-Umgebung einrichten</h2>
+        <span class="timeblock-badge badge-quiz">Selbstständig · 30 min</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">📧</div>
+          <div class="callout-content">
+            <div class="callout-title">Mail von Markus Becker</div>
+            <p><strong>Betreff:</strong> Richte dir die Shell ein, wie ein Profi</p>
+            <p>Hi Tim,</p>
+            <p>du wirst die nächsten Monate viel Zeit im Terminal verbringen.
+            Richte es dir bequem ein: ein paar Aliase, eine eigene
+            <code>PROJEKT_DIR</code>-Variable und ein
+            <code>~/skripte/</code>-Ordner im PATH, damit du deine eigenen
+            Skripte einfach aufrufen kannst.</p>
+            <p>Bonus: einen schönen Prompt mit Farben — die machen das Leben besser
+            (siehe Bonus-Aufgabe).</p>
+            <p style="margin-bottom: 0;">— Markus</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil A — Variablen erkunden (5 min)</div>
+        <ol class="lab-tasks">
+          <li>Zeige die wichtigsten Umgebungsvariablen einzeln an:
+            <code>echo $HOME</code>, <code>echo $USER</code>,
+            <code>echo $SHELL</code>, <code>echo $PWD</code>.</li>
+          <li>Liste ALLE Umgebungsvariablen mit <code>env</code> auf. Leite die
+            Ausgabe an <code>less</code> weiter (q zum Beenden).</li>
+          <li>Finde mit <code>env | grep PATH</code> die PATH-Variable. Wie
+            viele Verzeichnisse sind drin?
+            (Tipp: zähle die Doppelpunkte + 1)</li>
+          <li>Wo liegt der <code>ls</code>-Befehl? Wo liegt <code>dnf</code>?
+            (mit <code>which</code>).</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1) Einzelne Variablen
+echo $HOME    # → /home/admin
+echo $USER    # → admin
+echo $SHELL   # → /bin/bash
+echo $PWD     # → aktuelles Verzeichnis
+
+# 2) Alle Umgebungsvariablen
+env | less
+# Mit q beenden
+
+# 3) PATH finden
+env | grep PATH
+# Anzahl: einfach Doppelpunkte zählen + 1
+# Oder programmatisch:
+echo $PATH | tr ':' '\n' | wc -l
+
+# 4) Wo liegen Befehle?
+which ls   # → /usr/bin/ls
+which dnf  # → /usr/bin/dnf</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Eigene Variablen setzen (8 min)</div>
+        <ol class="lab-tasks" start="5">
+          <li>Setze eine Shell-Variable <code>mein_name</code> mit deinem Vornamen.
+            (Achtung: <strong>keine Leerzeichen</strong> um das =!)</li>
+          <li>Gib sie aus: <code>echo $mein_name</code>. Klappt?</li>
+          <li>Starte eine neue Bash mit <code>bash</code>. Gib darin
+            <code>echo $mein_name</code> ein. Was passiert?</li>
+          <li>Verlasse die innere Bash (<code>exit</code>). Mache jetzt
+            <code>export mein_name</code>. Starte wieder <code>bash</code> und
+            gib die Variable aus. Unterschied?</li>
+          <li>Lösche die Variable mit <code>unset mein_name</code> und prüfe
+            mit <code>echo $mein_name</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 5) Shell-Variable setzen
+mein_name="Tim"
+# Achtung: KEINE Leerzeichen! mein_name = "Tim" geht NICHT
+
+# 6) Ausgeben
+echo $mein_name
+# → Tim
+
+# 7) Neue Bash → Variable nicht sichtbar
+bash
+echo $mein_name
+# → (leer!) — Kind sieht Shell-Variable nicht
+exit
+
+# 8) Mit export sichtbar machen
+export mein_name
+bash
+echo $mein_name
+# → Tim — jetzt klappt's!
+exit
+
+# 9) Löschen
+unset mein_name
+echo $mein_name
+# → (leer)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — PATH erweitern (8 min)</div>
+        <ol class="lab-tasks" start="10">
+          <li>Erstelle einen Ordner für eigene Skripte: <code>mkdir ~/skripte</code>.</li>
+          <li>Lege darin ein einfaches Skript an:
+            <code>echo 'echo "Hallo aus meinem Skript!"' &gt; ~/skripte/hallo.sh</code>
+            und mache es ausführbar: <code>chmod +x ~/skripte/hallo.sh</code>.</li>
+          <li>Versuche es direkt aufzurufen: <code>hallo.sh</code>. Was passiert?</li>
+          <li>Erweitere PATH temporär: <code>export PATH=$PATH:~/skripte</code>.</li>
+          <li>Jetzt nochmal <code>hallo.sh</code>. Klappt es?</li>
+          <li>Schließe das Terminal und öffne ein neues. Ist PATH noch erweitert?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 10) Ordner anlegen
+mkdir ~/skripte
+
+# 11) Mini-Skript
+echo 'echo "Hallo aus meinem Skript!"' &gt; ~/skripte/hallo.sh
+chmod +x ~/skripte/hallo.sh
+
+# 12) Direkt aufrufen — geht NICHT
+hallo.sh
+# → bash: hallo.sh: command not found
+# Weil ~/skripte nicht im PATH ist!
+
+# 13) PATH erweitern
+export PATH=$PATH:~/skripte
+
+# 14) Nochmal — klappt!
+hallo.sh
+# → Hallo aus meinem Skript!
+
+# 15) Neues Terminal → PATH weg
+# Im neuen Terminal:
+echo $PATH | grep skripte
+# → (leer) — die Änderung war nur in der alten Shell
+# Lösung: persistent in .bashrc speichern (Teil D!)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Persistent in .bashrc (9 min)</div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <p style="margin: 0;"><strong>Vor Teil D:</strong> Mach kurz ein Backup
+            der bashrc: <code>cp ~/.bashrc ~/.bashrc.backup</code>. Falls was
+            schiefläuft, kannst du zurück.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="16">
+          <li>Mach ein Backup: <code>cp ~/.bashrc ~/.bashrc.backup</code>.</li>
+          <li>Öffne <code>~/.bashrc</code> in nano. Geh ganz ans Ende.</li>
+          <li>Trage am Ende ein:
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.5rem; overflow-x: auto;"><code># Meine Erweiterungen
+export EDITOR=nano
+export PROJEKT_DIR=~/hanovatech
+export PATH=$PATH:~/skripte
+
+# Aliase
+alias ll='ls -la'
+alias ..='cd ..'</code></pre>
+          </li>
+          <li>Speichern (Strg+O, Enter, Strg+X).</li>
+          <li>Lade die Datei neu: <code>source ~/.bashrc</code>.</li>
+          <li>Teste: <code>echo $EDITOR</code>, <code>echo $PROJEKT_DIR</code>,
+            <code>hallo.sh</code>, <code>ll</code>.</li>
+          <li>Öffne ein NEUES Terminal und prüfe nochmal — sind die Variablen
+            und Aliase auch dort?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 16) Backup
+cp ~/.bashrc ~/.bashrc.backup
+
+# 17) Datei öffnen
+nano ~/.bashrc
+# Mit Strg+_ und Eingabe einer Zeile ans Ende springen
+# Oder einfach Strg+End
+
+# 18) Am Ende einfügen (siehe Aufgabe)
+
+# 19) Speichern: Strg+O, Enter, Strg+X
+
+# 20) Neu laden
+source ~/.bashrc
+
+# 21) Testen
+echo $EDITOR        # → nano
+echo $PROJEKT_DIR   # → /home/admin/hanovatech
+hallo.sh            # → Hallo aus meinem Skript!
+ll                  # → ls -la-Ausgabe
+
+# 22) Neues Terminal
+# Alles immer noch da, weil .bashrc beim neuen Terminal gelesen wird!</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <p style="margin: 0;">Bonus: schöner Prompt + nützliche Aliase.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="23">
+          <li><strong>Bunter Prompt:</strong> Schau dir an, was deine
+            <code>$PS1</code>-Variable enthält: <code>echo $PS1</code>.
+            Setze sie in der .bashrc auf einen einfachen bunten Prompt:
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.4rem; overflow-x: auto;"><code>export PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[0m\]\$ '</code></pre>
+          </li>
+          <li><strong>Mehr Aliase:</strong> Füge hinzu:
+            <code>alias grep='grep --color=auto'</code>,
+            <code>alias df='df -h'</code>,
+            <code>alias free='free -h'</code>.</li>
+          <li><strong>Geschichte länger:</strong> Setze in .bashrc:
+            <code>HISTSIZE=10000</code> (mehr Befehls-Geschichte).</li>
+          <li><strong>Source und testen.</strong></li>
+        </ol>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 3.5 geschafft?</div>
+            <p>Stark! Du hast jetzt eine <strong>eigene Shell-Umgebung</strong> —
+            so wie jeder Admin sie sich nach und nach baut. Die <code>.bashrc</code>
+            wächst über die Jahre und wird zu deinem persönlichen Werkzeug.
+            Manche Admins kopieren sie sogar von Server zu Server — das ist
+            quasi der digitale Fingerabdruck.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">5.5</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — Leerzeichen bei <code>=</code></div>
+            <p><code>name = "Tim"</code> ist FALSCH. Bash denkt, du willst den
+            Befehl <code>name</code> mit den Argumenten <code>=</code> und
+            <code>"Tim"</code> ausführen. <strong>Richtig:</strong>
+            <code>name="Tim"</code> — direkt aneinander, kein Leerzeichen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — PATH überschreiben statt erweitern</div>
+            <p><code>export PATH=/meine-skripte</code> ohne <code>:$PATH</code> →
+            alle anderen Verzeichnisse weg. Plötzlich gehen <code>ls</code>,
+            <code>dnf</code> usw. nicht mehr. <strong>Notfall-Rettung:</strong>
+            Terminal schließen, neu öffnen — die .bashrc setzt PATH neu.
+            <strong>Immer:</strong> <code>export PATH=$PATH:NEU</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — Vergessen, <code>source</code> zu machen</div>
+            <p>Du änderst <code>.bashrc</code>, sparst dir das neue Terminal — und
+            wunderst dich, warum die Änderungen nicht greifen. <strong>Lösung:</strong>
+            <code>source ~/.bashrc</code> in der aktuellen Shell, oder neues
+            Terminal öffnen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — <code>export</code> vergessen</div>
+            <p>Variable in der Shell gesetzt, aber Skript sieht sie nicht?
+            Wahrscheinlich fehlt <code>export</code>. Ohne <code>export</code>
+            bleibt sie in der aktuellen Shell. <strong>Faustregel:</strong> wenn
+            ein Skript drauf zugreifen soll → <code>export</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wie werden Umgebungsvariablen konventionell geschrieben — groß oder klein?
+            (Tipp: Q9)</li>
+          <li>Was bewirkt <code>export</code> bei einer Variable? (Tipp: Q10)</li>
+          <li>Wie zeigst du den Wert der Variable <code>$HOME</code> an?</li>
+          <li>Wofür braucht die Shell <code>$PATH</code>?</li>
+          <li>Was ist der KRITISCHE Unterschied zwischen
+            <code>export PATH=$PATH:/neu</code> und
+            <code>export PATH=/neu</code>?</li>
+          <li>In welcher Datei trägst du deine Aliase und PATH-Erweiterungen
+            ein, damit sie bei jedem neuen Terminal da sind?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>GROSSGESCHRIEBEN</strong> — komplett, per Konvention
+                (PATH, HOME, USER, …).</li>
+              <li><code>export</code> macht die Variable für <strong>Kind-Prozesse
+                bekannt</strong> (z.B. Skripte). Ohne export sieht nur die
+                aktuelle Shell sie.</li>
+              <li><code>echo $HOME</code> — das Dollarzeichen vor dem Namen.</li>
+              <li>Damit sie weiß, in welchen Verzeichnissen sie nach Befehlen
+                suchen muss, wenn du z.B. <code>ls</code> tippst.</li>
+              <li>Variante 1 <strong>erweitert</strong> PATH (sicher). Variante 2
+                <strong>überschreibt</strong> PATH komplett — alle anderen
+                Befehle (ls, dnf, …) gehen dann nicht mehr.</li>
+              <li><code>~/.bashrc</code> — wird bei jedem interaktiven Terminal
+                gelesen.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="04-paketverwaltung.html">
+        <span class="nav-eyebrow">← Kapitel 04</span>
+        <span class="nav-title">Paketverwaltung mit dnf</span>
+      </a>
+      <a href="06-skripte.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 06 →</span>
+        <span class="nav-title">Bash-Skripte schreiben</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 04 · Paketverwaltung mit dnf · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Kapitel 04 von 6</div>
+    <h1 class="page-title">
+      <span class="highlight">Paketverwaltung</span> mit dnf
+    </h1>
+    <p class="page-subtitle">
+      Software-Installation auf Linux funktioniert anders als auf Windows — kein
+      „Setup.exe herunterladen", sondern <code>dnf install paketname</code>.
+      Heute lernst du die Welt von RPM-Paketen, Repositories und die vier
+      <code>dnf</code>-Befehle, die du 90 % der Zeit brauchst.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 04</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 15 min Theorie + 30 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.4</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 4.1 PAKETE & REPOS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.1</span>
+        <h2 class="timeblock-title">Pakete, Repositories &amp; dnf</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p>Auf <strong>Windows</strong> lädst du <code>setup.exe</code> herunter,
+        klickst dich durch den Installer und hoffst, dass es funktioniert.
+        Auf <strong>Linux</strong> machst du <code>dnf install nano</code> — und
+        Linux holt sich das Programm aus einem zentralen, signierten
+        <strong>Repository</strong>.</p>
+
+        <h4>Drei Begriffe, die du brauchst</h4>
+        <div class="ascii-box">  REPOSITORY (Repo)
+  ┌─────────────────────────────────────────────┐
+  │  Server im Internet mit Tausenden Paketen   │
+  │  z.B. mirror.rockylinux.org/baseos/          │
+  └─────────────────────────────────────────────┘
+            │ enthält
+            ▼
+  PAKET (.rpm-Datei)
+  ┌─────────────────────────────────────────────┐
+  │  nano-5.6.1-5.el9.x86_64.rpm                │
+  │  • der Programm-Code                         │
+  │  • Manpage, Konfig-Dateien                   │
+  │  • Liste der Abhängigkeiten                  │
+  └─────────────────────────────────────────────┘
+            │ wird installiert von
+            ▼
+  dnf (Paketmanager)
+  ┌─────────────────────────────────────────────┐
+  │  • lädt das Paket aus dem Repo               │
+  │  • prüft Signatur                            │
+  │  • löst Abhängigkeiten auf                   │
+  │  • installiert + registriert                 │
+  └─────────────────────────────────────────────┘</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Die RPM-Familie</div>
+            <p><strong>RPM</strong> = Red Hat Package Manager. Das ist das
+            Paketformat (.rpm-Dateien). <strong>dnf</strong> ist das Werkzeug,
+            das mit RPM-Paketen umgeht — installiert, aktualisiert, löst
+            Abhängigkeiten auf. Auf Rocky, RHEL, Fedora, Alma → überall
+            <code>dnf</code>. Auf Debian/Ubuntu wäre das Pendant
+            <code>apt</code>.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Was ist mit <code>yum</code>?</summary>
+          <p><code>yum</code> war der Vorgänger von <code>dnf</code>. In Rocky 9
+          ist <code>yum</code> nur noch ein <strong>Symlink</strong> auf
+          <code>dnf</code> — du kannst <code>yum install nano</code> tippen, es
+          funktioniert, aber intern ruft es <code>dnf</code> auf. <strong>Neue
+          Skripte und Dokumentation sollten <code>dnf</code> verwenden.</strong>
+          Wenn du irgendwo alte Anleitungen mit <code>yum</code> siehst — funktioniert
+          1:1, einfach <code>dnf</code> statt <code>yum</code> tippen.</p>
+        </details>
+
+        <h4>Wo lebt was?</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Inhalt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/etc/yum.repos.d/</code></td><td>Repository-Definitionen (.repo-Dateien)</td></tr>
+              <tr><td><code>/var/cache/dnf/</code></td><td>Cache der heruntergeladenen Pakete und Metadaten</td></tr>
+              <tr><td><code>/var/log/dnf.log</code></td><td>Log aller dnf-Aktionen</td></tr>
+              <tr><td><code>/var/log/dnf.rpm.log</code></td><td>Log aller Installationen/Updates</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.2 DIE VIER BEFEHLE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.2</span>
+        <h2 class="timeblock-title">Die vier dnf-Befehle für 90 % der Fälle</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Du musst nicht alle 50 dnf-Optionen kennen. Diese vier reichen für den
+        Großteil des Admin-Alltags:</p>
+
+        <h4>1 · <code>dnf search</code> — was gibt's überhaupt?</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Pakete mit "htop" im Namen oder der Beschreibung
+dnf search htop
+
+# Detaillierte Info zu einem Paket
+dnf info htop</code></pre>
+        </div>
+
+        <h4>2 · <code>dnf install</code> — installieren</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Ein Paket installieren (sudo wegen Schreibrechten in /usr/)
+sudo dnf install htop
+
+# Mehrere auf einmal
+sudo dnf install htop tree nano
+
+# Ohne Rückfrage (Achtung: keine Sicherheitsabfrage!)
+sudo dnf install -y htop</code></pre>
+        </div>
+
+        <h4>3 · <code>dnf update</code> — aktualisieren</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Schauen, welche Updates es gäbe (nichts installieren)
+dnf check-update
+
+# Alle Pakete aktualisieren
+sudo dnf update
+
+# Nur ein bestimmtes Paket aktualisieren
+sudo dnf update htop
+
+# Alias: dnf upgrade macht das Gleiche
+sudo dnf upgrade</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>update</code> vs. <code>upgrade</code> bei dnf</div>
+            <p>Bei <code>dnf</code> sind <strong>beide identisch</strong> —
+            beide installieren neuere Versionen. (Bei Debian/Ubuntu mit
+            <code>apt</code> ist es anders: dort macht <code>apt update</code>
+            nur die Paketliste, <code>apt upgrade</code> installiert. Verwirrend,
+            aber wir sind bei Rocky → <code>dnf update</code> = <code>dnf upgrade</code>.)</p>
+          </div>
+        </div>
+
+        <h4>4 · <code>dnf remove</code> — entfernen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Paket entfernen
+sudo dnf remove htop
+
+# Mehrere
+sudo dnf remove htop tree
+
+# Verwaiste Abhängigkeiten aufräumen
+sudo dnf autoremove</code></pre>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Die Wichtigen auf einen Blick</div>
+            <div class="table-wrapper" style="margin-top: 0.5rem;">
+              <table>
+                <thead>
+                  <tr><th>Befehl</th><th>Wirkung</th><th>Frage aus deinem Material</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>dnf search PAKET</code></td><td>nach Paketen suchen</td><td></td></tr>
+                  <tr><td><code>dnf info PAKET</code></td><td>Infos zum Paket</td><td>Q4</td></tr>
+                  <tr><td><code>sudo dnf install PAKET</code></td><td>installieren</td><td></td></tr>
+                  <tr><td><code>sudo dnf remove PAKET</code></td><td>entfernen</td><td></td></tr>
+                  <tr><td><code>sudo dnf update</code></td><td>alle Updates</td><td>Q4</td></tr>
+                  <tr><td><code>sudo dnf upgrade</code></td><td>identisch zu update</td><td>Q4</td></tr>
+                  <tr><td><code>dnf check-update</code></td><td>welche Updates gäbe es?</td><td></td></tr>
+                  <tr><td><code>dnf list installed</code></td><td>installierte Pakete</td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4.3 RPM (KURZ) ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.3</span>
+        <h2 class="timeblock-title"><code>rpm</code> — die Low-Level-Ebene</h2>
+        <span class="timeblock-badge badge-vortrag">Übersicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Unter <code>dnf</code> arbeitet <code>rpm</code> — das eigentliche
+        Paket-Werkzeug. Du brauchst es selten direkt, aber es ist gut, die
+        wichtigsten <code>rpm</code>-Befehle zu kennen — vor allem, wenn du
+        ein lokales <code>.rpm</code>-File hast, das nicht aus einem Repo kommt.</p>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Übersicht — kurzer Blick genügt</div>
+
+            <div class="table-wrapper" style="margin-top: 0.5rem;">
+              <table>
+                <thead>
+                  <tr><th>Befehl</th><th>Wirkung</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>rpm -qa</code></td><td>liste <strong>a</strong>lle installierten Pakete</td></tr>
+                  <tr><td><code>rpm -qi PAKET</code></td><td>prüft, ob ein Paket installiert ist, zeigt Infos</td></tr>
+                  <tr><td><code>rpm -qpi datei.rpm</code></td><td>Infos zu einer <strong>p</strong>aket-Datei (nicht installiert)</td></tr>
+                  <tr><td><code>rpm -qpl datei.rpm</code></td><td>was würde dieses Paket installieren? (<strong>l</strong>iste)</td></tr>
+                  <tr><td><code>rpm -ivh datei.rpm</code></td><td>lokales Paket installieren (<strong>i</strong>nstall <strong>v</strong>erbose <strong>h</strong>ash)</td></tr>
+                  <tr><td><code>rpm -K datei.rpm</code></td><td>Signatur prüfen</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p style="margin-top: 0.6rem;"><strong>Faustregel:</strong> wenn das
+            Paket aus einem Repo kommt → <code>dnf</code>. Wenn du ein einzelnes
+            <code>.rpm</code>-File hast (z.B. heruntergeladen von einer Hersteller-Seite)
+            → <code>rpm -ivh</code> oder auch <code>dnf install ./datei.rpm</code>
+            (kann dnf auch).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 3.4 ============ -->
+    <section class="timeblock" id="lab34">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🧪</span>
+        <h2 class="timeblock-title">Lab 3.4 — Werkzeugkasten selbst installieren</h2>
+        <span class="timeblock-badge badge-quiz">Selbstständig · 30 min</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">📧</div>
+          <div class="callout-content">
+            <div class="callout-title">Mail von Markus Becker</div>
+            <p><strong>Betreff:</strong> Mach dir deinen Werkzeugkasten</p>
+            <p>Hi Tim,</p>
+            <p>auf der Minimal-Installation fehlt einiges, was Admins täglich brauchen.
+            Installier dir bitte selbst die wichtigsten Tools:</p>
+            <ul>
+              <li><strong>htop</strong> — schöner Prozess-Monitor (besser als top)</li>
+              <li><strong>tree</strong> — zeigt Ordnerstrukturen als Baum</li>
+              <li><strong>wget</strong> — Dateien aus dem Web ziehen</li>
+              <li><strong>nano</strong> — als Fallback-Editor (sollte schon da sein, prüf bitte)</li>
+            </ul>
+            <p>Lern dabei <code>dnf</code> kennen. Du wirst es ständig brauchen.</p>
+            <p style="margin-bottom: 0;">— Markus</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil A — Erkunden, was da ist (8 min)</div>
+        <ol class="lab-tasks">
+          <li>Liste alle installierten Pakete mit <code>rpm -qa</code> auf und
+            zähle sie mit <code>rpm -qa | wc -l</code>. Wie viele sind es?</li>
+          <li>Prüfe, ob <code>nano</code> installiert ist:
+            <code>rpm -qi nano</code>. Was sagt der Befehl, wenn ja? Was, wenn nein?</li>
+          <li>Suche mit <code>dnf</code> nach Paketen, die „htop" enthalten.
+            Tipp: <code>dnf search htop</code>.</li>
+          <li>Schau dir mit <code>dnf info htop</code> Details an: Größe,
+            Beschreibung, Repository.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1) Alle Pakete zählen
+rpm -qa | wc -l
+# → meist 400–600 bei Minimal-Installation
+
+# 2) Nano-Status prüfen
+rpm -qi nano
+# Wenn installiert: zeigt Version, Größe, Beschreibung
+# Wenn nicht installiert: "package nano is not installed"
+
+# 3) Nach htop suchen
+dnf search htop
+# → htop.x86_64 : Interactive process viewer
+
+# 4) Details
+dnf info htop
+# → Version, Architektur, Größe, Repo (epel/baseos), Beschreibung</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Installieren (10 min)</div>
+        <ol class="lab-tasks" start="5">
+          <li>Installiere <code>htop</code> mit <code>sudo dnf install htop</code>.
+            Was wird alles als Abhängigkeit mit installiert? (vor dem
+            Bestätigen mit „y" anschauen!)</li>
+          <li>Installiere <code>tree</code> und <code>wget</code> in einem Befehl.</li>
+          <li>Falls <code>nano</code> noch nicht da war, installiere es jetzt.</li>
+          <li>Starte <code>htop</code> und vergleiche mit <code>top</code> aus
+            Lab 3.3. Was fällt dir auf? (Farben? Maus? F-Tasten?). Beende
+            wieder mit <kbd>q</kbd> oder <kbd>F10</kbd>.</li>
+          <li>Probiere <code>tree ~</code> aus. Was zeigt es?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 5) htop installieren
+sudo dnf install htop
+# Zeigt: Paket htop wird installiert
+# Optional: weitere Abhängigkeiten (meist wenige)
+# Bestätigen mit y
+# Vor dem Bestätigen Größenangabe prüfen!
+
+# 6) Tree und wget in einem Befehl
+sudo dnf install tree wget
+
+# 7) Nano (falls nötig)
+sudo dnf install nano
+
+# 8) htop starten
+htop
+# Farben! Maus klickbar! F-Tasten unten sichtbar!
+# F10 oder q zum Beenden
+
+# 9) Tree im Home-Verzeichnis
+tree ~
+# Oder kürzer (nur 2 Ebenen):
+tree -L 2 ~</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Aktualisieren (6 min)</div>
+        <ol class="lab-tasks" start="10">
+          <li>Schau dir an, welche Updates es gibt:
+            <code>dnf check-update</code>. Wie viele Pakete würden aktualisiert?</li>
+          <li>Aktualisiere nur <code>htop</code> (falls es Updates gibt):
+            <code>sudo dnf update htop</code>.</li>
+          <li><strong>Optional:</strong> Aktualisiere das ganze System mit
+            <code>sudo dnf update</code>. Vorsicht: kann dauern (mehrere
+            Minuten). Wenn der Zeitplan eng ist — überspringen.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 10) Was gibt's an Updates?
+dnf check-update
+# Wenn nichts: "Nothing to do" oder leere Liste
+# Sonst: Liste der Pakete mit alter und neuer Version
+
+# 11) Nur htop
+sudo dnf update htop
+# → "Nothing to do" wenn schon aktuell
+
+# 12) Volles Update (optional!)
+sudo dnf update
+# Dauert je nach Anzahl der Pakete einige Minuten.
+# Im Kurs nur machen, wenn Zeit ist.</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Entfernen (6 min)</div>
+        <ol class="lab-tasks" start="13">
+          <li>Entferne <code>tree</code> mit <code>sudo dnf remove tree</code>.
+            Bestätige mit „y".</li>
+          <li>Prüfe mit <code>rpm -qi tree</code>: Ist es wirklich weg?</li>
+          <li>Installiere <code>tree</code> wieder — diesmal mit der Option
+            <code>-y</code>, die ohne Rückfrage installiert.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 13) Tree entfernen
+sudo dnf remove tree
+# Mit y bestätigen
+
+# 14) Prüfen
+rpm -qi tree
+# → "package tree is not installed"
+
+# 15) Wieder rein, ohne Rückfrage
+sudo dnf install -y tree
+# Läuft durch ohne y-Bestätigung</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <p style="margin: 0;">Bonus: erkunde die History und die Gruppen.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="16">
+          <li><strong>History:</strong> <code>dnf history</code> zeigt alle
+            dnf-Transaktionen. Schau dir die letzte Transaktion genauer an
+            mit <code>dnf history info LAST</code>.</li>
+          <li><strong>Gruppen:</strong> Liste Paket-Gruppen mit
+            <code>dnf group list</code>. Was zeigt das?</li>
+          <li><strong>Repo-Info:</strong> Welche Repos sind aktiviert?
+            <code>dnf repolist</code>.</li>
+          <li><strong>Welches Paket bringt einen Befehl mit?</strong>
+            <code>dnf provides /usr/bin/htop</code> — sagt dir, aus welchem
+            Paket eine Datei kommt. Sehr nützlich!</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 16) History
+dnf history
+dnf history info last
+# Zeigt: was installiert/entfernt wurde, wann, von wem
+
+# 17) Gruppen
+dnf group list
+# z.B. "Server with GUI" (das, was wir morgen früh installieren!),
+# "Development Tools", "Minimal Install"
+
+# 18) Repo-Liste
+dnf repolist
+# Meist: baseos, appstream, extras
+
+# 19) Welches Paket liefert einen Befehl?
+dnf provides /usr/bin/htop
+# → procps-ng oder htop selbst</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 3.4 geschafft?</div>
+            <p>Top! Du kannst jetzt eigenständig Software installieren,
+            aktualisieren und entfernen. Das ist der zentrale Selbstständigkeits-Punkt
+            — ab jetzt musst du nicht mehr fragen „wie installiere ich X?".
+            Du machst <code>dnf search X</code> und dann <code>sudo dnf install X</code>.
+            Fertig.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">4.4</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — <code>dnf install</code> ohne <code>sudo</code></div>
+            <p>Installieren braucht Schreibrechte in <code>/usr/</code> — die hat
+            nur root. Ohne <code>sudo</code> bekommst du „Permission denied"
+            oder „Operation not permitted". <strong>Suchen und Infos</strong>
+            (search, info, list) geht ohne sudo — <strong>Schreiben</strong>
+            (install, remove, update) braucht sudo.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Wild <code>dnf install -y ALLES</code></div>
+            <p>Die <code>-y</code>-Option ist praktisch für Skripte, aber gefährlich
+            im interaktiven Gebrauch. Du siehst die Liste der Abhängigkeiten
+            nicht mehr und bestätigst alles blind. <strong>Erst lesen, dann
+            bestätigen.</strong> Manche Pakete ziehen 100 MB Abhängigkeiten
+            nach — gut zu wissen, BEVOR es passiert.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — Mit <code>rpm -e</code> entfernen</div>
+            <p><code>rpm -e</code> (erase) löscht ein Paket, ohne Abhängigkeiten
+            zu prüfen. Wenn andere Pakete davon abhängen, kann das System
+            kaputtgehen. <strong>Immer <code>dnf remove</code> nehmen</strong> —
+            das prüft Abhängigkeiten und warnt.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Mehrere dnf-Prozesse gleichzeitig</div>
+            <p>dnf nutzt einen Lock — du kannst nicht zwei <code>dnf install</code>
+            gleichzeitig laufen lassen. Fehlermeldung „Another app is currently
+            holding the yum lock". <strong>Lösung:</strong> warten, bis der
+            erste fertig ist, oder mit <code>ps aux | grep dnf</code> schauen,
+            welcher hängt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Was ist der Unterschied zwischen einem Paket und einem Repository?</li>
+          <li>Welche zwei dnf-Befehle aktualisieren das System? (Tipp: Q4)</li>
+          <li>Warum braucht <code>dnf install</code> sudo, <code>dnf search</code>
+            aber nicht?</li>
+          <li>Mit welchem Befehl prüfst du, ob ein bestimmtes Paket installiert ist?</li>
+          <li>Was ist der Unterschied zwischen <code>dnf remove</code> und
+            <code>rpm -e</code>?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li>Ein <strong>Paket</strong> ist eine .rpm-Datei mit Programm +
+                Abhängigkeiten. Ein <strong>Repository</strong> ist ein Server
+                im Internet, der viele Pakete bereitstellt.</li>
+              <li><code>dnf update</code> und <code>dnf upgrade</code> — bei dnf
+                sind beide identisch.</li>
+              <li>Suchen ändert nichts am System (nur Lese-Zugriff auf Metadaten).
+                Installieren schreibt in <code>/usr/</code> — dafür braucht es
+                Root-Rechte (sudo).</li>
+              <li><code>rpm -qi PAKETNAME</code> — zeigt Infos, falls installiert,
+                sonst „is not installed".</li>
+              <li><code>dnf remove</code> prüft Abhängigkeiten und warnt, wenn
+                andere Pakete davon abhängen. <code>rpm -e</code> löscht ohne
+                Prüfung — kann das System beschädigen.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="03-prozessverwaltung.html">
+        <span class="nav-eyebrow">← Kapitel 03</span>
+        <span class="nav-title">Prozessverwaltung</span>
+      </a>
+      <a href="05-umgebungsvariablen.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 05 →</span>
+        <span class="nav-title">Umgebungsvariablen &amp; PATH</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

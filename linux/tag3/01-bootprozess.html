@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 01 · Bootprozess, BIOS/UEFI &amp; Bootloader · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Kapitel 01 von 6</div>
+    <h1 class="page-title">
+      <span class="highlight">Bootprozess</span>, BIOS/UEFI &amp; Bootloader
+    </h1>
+    <p class="page-subtitle">
+      Vom Power-Knopf bis zum Login-Prompt — heute verstehst du, was zwischen
+      den beiden passiert. Vier Phasen, zwei Firmware-Welten (BIOS vs. UEFI) und
+      ein Bootloader namens GRUB2, der deinen Kernel lädt. Im Lab erkundest du
+      das GRUB-Menü und sicherst die Konfiguration.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 01</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 30 min Theorie + 40 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.1</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 1.1 EINSTIEG ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.1</span>
+        <h2 class="timeblock-title">Warum musst du das verstehen?</h2>
+        <span class="timeblock-badge badge-vortrag">Einstieg</span>
+      </div>
+
+      <div class="subblock">
+        <p>Stell dir vor: Du kommst Montagmorgen ins Büro. Sandra läuft dir
+        entgegen — der <strong>Webserver kommt nicht hoch</strong>. Bildschirm
+        schwarz, kein Login-Prompt, nur eine kryptische Meldung. Du hast genau
+        zwei Möglichkeiten: <strong>panisch rebooten</strong> (und hoffen) oder
+        <strong>wissen, an welcher Stelle es klemmt</strong>.</p>
+
+        <p>Wer den Bootprozess versteht, kann gezielt diagnostizieren:
+        Liegt's an der Firmware? Am Bootloader? Am Kernel? An einem Service,
+        der nicht startet? Diese vier Stellen sind die <strong>vier Phasen
+        jedes Linux-Boots</strong> — und du wirst sie heute kennenlernen.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Ziel dieses Kapitels</div>
+            <p>Am Ende kannst du die vier Boot-Phasen in eigenen Worten
+            erklären, BIOS und UEFI auseinanderhalten und das GRUB-Menü
+            interaktiv bedienen. Das ist die <strong>Basis für
+            Troubleshooting</strong> — und Prüfungsstoff.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1.2 DIE VIER PHASEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.2</span>
+        <h2 class="timeblock-title">Die vier Phasen des Boot-Prozesses</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Jedes Linux-System durchläuft beim Booten <strong>genau diese vier
+        Phasen</strong>, in dieser Reihenfolge:</p>
+
+        <!-- SVG: Boot-Reise -->
+        <div style="margin: 1.5rem 0; overflow-x: auto;">
+          <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 900px; height: auto; font-family: 'Courier New', monospace;">
+            <defs>
+              <linearGradient id="phase1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a1a1a"/>
+                <stop offset="100%" style="stop-color:#0a0a0a"/>
+              </linearGradient>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#39ff14"/>
+              </marker>
+            </defs>
+
+            <!-- Power-Button -->
+            <circle cx="60" cy="140" r="35" fill="url(#phase1)" stroke="#39ff14" stroke-width="2"/>
+            <text x="60" y="135" text-anchor="middle" fill="#39ff14" font-size="11" font-weight="bold">POWER</text>
+            <text x="60" y="150" text-anchor="middle" fill="#39ff14" font-size="20">⏻</text>
+
+            <!-- Pfeil -->
+            <line x1="100" y1="140" x2="135" y2="140" stroke="#39ff14" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Phase 1: Firmware -->
+            <rect x="140" y="80" width="140" height="120" fill="url(#phase1)" stroke="#39ff14" stroke-width="2" rx="6"/>
+            <text x="210" y="105" text-anchor="middle" fill="#39ff14" font-size="13" font-weight="bold">1. FIRMWARE</text>
+            <text x="210" y="125" text-anchor="middle" fill="#cccccc" font-size="11">BIOS / UEFI</text>
+            <line x1="155" y1="135" x2="265" y2="135" stroke="#39ff14" stroke-width="0.5" opacity="0.5"/>
+            <text x="210" y="152" text-anchor="middle" fill="#aaaaaa" font-size="10">• Hardware-Check (POST)</text>
+            <text x="210" y="167" text-anchor="middle" fill="#aaaaaa" font-size="10">• Boot-Device finden</text>
+            <text x="210" y="182" text-anchor="middle" fill="#aaaaaa" font-size="10">• Bootloader laden</text>
+
+            <!-- Pfeil -->
+            <line x1="285" y1="140" x2="320" y2="140" stroke="#39ff14" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Phase 2: Bootloader -->
+            <rect x="325" y="80" width="140" height="120" fill="url(#phase1)" stroke="#39ff14" stroke-width="2" rx="6"/>
+            <text x="395" y="105" text-anchor="middle" fill="#39ff14" font-size="13" font-weight="bold">2. BOOTLOADER</text>
+            <text x="395" y="125" text-anchor="middle" fill="#cccccc" font-size="11">GRUB2</text>
+            <line x1="340" y1="135" x2="450" y2="135" stroke="#39ff14" stroke-width="0.5" opacity="0.5"/>
+            <text x="395" y="152" text-anchor="middle" fill="#aaaaaa" font-size="10">• Boot-Menü zeigen</text>
+            <text x="395" y="167" text-anchor="middle" fill="#aaaaaa" font-size="10">• Kernel auswählen</text>
+            <text x="395" y="182" text-anchor="middle" fill="#aaaaaa" font-size="10">• Kernel laden</text>
+
+            <!-- Pfeil -->
+            <line x1="470" y1="140" x2="505" y2="140" stroke="#39ff14" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Phase 3: Kernel -->
+            <rect x="510" y="80" width="140" height="120" fill="url(#phase1)" stroke="#39ff14" stroke-width="2" rx="6"/>
+            <text x="580" y="105" text-anchor="middle" fill="#39ff14" font-size="13" font-weight="bold">3. KERNEL</text>
+            <text x="580" y="125" text-anchor="middle" fill="#cccccc" font-size="11">Linux-Kernel</text>
+            <line x1="525" y1="135" x2="635" y2="135" stroke="#39ff14" stroke-width="0.5" opacity="0.5"/>
+            <text x="580" y="152" text-anchor="middle" fill="#aaaaaa" font-size="10">• Hardware initialisieren</text>
+            <text x="580" y="167" text-anchor="middle" fill="#aaaaaa" font-size="10">• Treiber laden</text>
+            <text x="580" y="182" text-anchor="middle" fill="#aaaaaa" font-size="10">• Wurzel-Dateisys. mounten</text>
+
+            <!-- Pfeil -->
+            <line x1="655" y1="140" x2="690" y2="140" stroke="#39ff14" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Phase 4: systemd -->
+            <rect x="695" y="80" width="140" height="120" fill="url(#phase1)" stroke="#39ff14" stroke-width="2" rx="6"/>
+            <text x="765" y="105" text-anchor="middle" fill="#39ff14" font-size="13" font-weight="bold">4. INIT</text>
+            <text x="765" y="125" text-anchor="middle" fill="#cccccc" font-size="11">systemd (PID 1)</text>
+            <line x1="710" y1="135" x2="820" y2="135" stroke="#39ff14" stroke-width="0.5" opacity="0.5"/>
+            <text x="765" y="152" text-anchor="middle" fill="#aaaaaa" font-size="10">• Services starten</text>
+            <text x="765" y="167" text-anchor="middle" fill="#aaaaaa" font-size="10">• Target erreichen</text>
+            <text x="765" y="182" text-anchor="middle" fill="#aaaaaa" font-size="10">• Login-Prompt zeigen</text>
+
+            <!-- Zeit-Achse unten -->
+            <line x1="60" y1="240" x2="835" y2="240" stroke="#39ff14" stroke-width="1" opacity="0.4"/>
+            <text x="60" y="260" text-anchor="middle" fill="#888" font-size="10">0 s</text>
+            <text x="210" y="260" text-anchor="middle" fill="#888" font-size="10">~ 2 s</text>
+            <text x="395" y="260" text-anchor="middle" fill="#888" font-size="10">~ 5 s</text>
+            <text x="580" y="260" text-anchor="middle" fill="#888" font-size="10">~ 15 s</text>
+            <text x="765" y="260" text-anchor="middle" fill="#888" font-size="10">~ 30 s — Login!</text>
+          </svg>
+        </div>
+
+        <h4>Phase 1 — Firmware (BIOS oder UEFI)</h4>
+        <p>Du drückst den Power-Knopf. Strom fließt. Die <strong>Firmware</strong>
+        auf dem Motherboard erwacht und macht den <strong>POST</strong>
+        (Power-On Self-Test): RAM zählen, CPU prüfen, angeschlossene Geräte
+        finden. Findet sie alles in Ordnung, sucht sie das <strong>Boot-Device</strong>
+        (Festplatte, SSD, USB-Stick) und lädt dessen <strong>Bootloader</strong>.</p>
+
+        <h4>Phase 2 — Bootloader (GRUB2)</h4>
+        <p>GRUB2 ist ein <strong>kleines Programm</strong>, das die Firmware in den
+        RAM lädt und ausführt. Seine Aufgabe: das <strong>Boot-Menü</strong>
+        zeigen (welcher Kernel? welches Betriebssystem?) und dann den
+        ausgewählten <strong>Linux-Kernel</strong> in den RAM laden und starten.</p>
+
+        <h4>Phase 3 — Kernel</h4>
+        <p>Jetzt übernimmt der <strong>Linux-Kernel</strong>. Er initialisiert die
+        Hardware (CPU, RAM, Bus-Systeme), lädt die nötigen <strong>Treiber</strong>
+        und mountet das <strong>Wurzel-Dateisystem</strong> (<code>/</code>).
+        Sobald das steht, startet er das allererste Userland-Programm:
+        <strong>systemd</strong>.</p>
+
+        <h4>Phase 4 — init (systemd)</h4>
+        <p><strong>systemd</strong> bekommt die <strong>Prozess-ID 1</strong> (PID 1)
+        — es ist der <em>Urvater aller Prozesse</em>. Von hier startet alles
+        andere: Netzwerk, SSH, Webserver, Login-Manager. Wenn das
+        konfigurierte <strong>Target</strong> erreicht ist (mehr dazu in Kap. 02),
+        siehst du den <strong>Login-Prompt</strong>. Boot fertig.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Merksatz</div>
+            <p><strong>F-B-K-I</strong> — <strong>F</strong>irmware,
+            <strong>B</strong>ootloader, <strong>K</strong>ernel,
+            <strong>I</strong>nit. Diese vier Phasen kommen in jeder
+            Linux-Prüfung dran. Wer die kennt, weiß bei jedem Boot-Problem,
+            wo er suchen muss.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Was ist initramfs?</summary>
+          <p>Zwischen Phase 3 (Kernel) und Phase 4 (init) gibt es eine
+          versteckte Mini-Phase: die <strong>initramfs</strong> (initial RAM
+          filesystem). Das ist ein <em>Mini-Linux im RAM</em>, das der Kernel
+          ganz früh lädt, weil er noch nicht weiß, wie er die echte Festplatte
+          mounten soll (vielleicht braucht er erst einen Treiber für den
+          RAID-Controller oder das LUKS-verschlüsselte Volume).</p>
+          <p>Du siehst die initramfs in <code>/boot/initramfs-*.img</code>.
+          Diese Datei wird beim Kernel-Update neu generiert und enthält genau
+          die Treiber, die <em>zum Mounten der echten Wurzel</em> nötig sind.
+          Sobald das echte <code>/</code> da ist, wird initramfs verworfen.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 1.3 BIOS VS UEFI ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.3</span>
+        <h2 class="timeblock-title">BIOS vs. UEFI — die zwei Firmware-Welten</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Es gibt <strong>zwei</strong> Firmware-Standards, und du wirst beide
+        in der Praxis treffen:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Eigenschaft</th><th>BIOS (alt)</th><th>UEFI (modern)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Erschienen</strong></td><td>1981 (IBM-PC)</td><td>2007 (Intel-Standard)</td></tr>
+              <tr><td><strong>Festplatten-Format</strong></td><td>MBR (max. 2 TB, 4 Partitionen)</td><td>GPT (max. 9,4 ZB, 128+ Partitionen)</td></tr>
+              <tr><td><strong>Boot-Modus</strong></td><td>16-Bit Real Mode</td><td>32-/64-Bit Protected Mode</td></tr>
+              <tr><td><strong>Boot-Geschwindigkeit</strong></td><td>langsam (POST + Boot)</td><td>schnell (Fast Boot möglich)</td></tr>
+              <tr><td><strong>Konfig-Oberfläche</strong></td><td>Text-basiert, Tastatur</td><td>Grafisch, Maus möglich</td></tr>
+              <tr><td><strong>Secure Boot</strong></td><td>❌ nein</td><td>✅ ja</td></tr>
+              <tr><td><strong>Netzwerk-Boot</strong></td><td>nur mit PXE-Erweiterung</td><td>nativ eingebaut</td></tr>
+              <tr><td><strong>Bootloader-Ort</strong></td><td>MBR (erste 512 Bytes)</td><td>EFI System Partition (ESP)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Was bedeutet das für dich als Admin?</div>
+            <p><strong>Auf neuen Servern</strong> hast du fast immer UEFI mit
+            GPT. Vorteile: schnellerer Boot, mehr als 2 TB Festplatten möglich,
+            Secure Boot für Sicherheit. <strong>Auf alten Servern oder
+            VMs</strong> kann noch BIOS+MBR laufen — vor allem in Rocky-VMs
+            wird oft BIOS als Default genommen, weil's einfacher ist.</p>
+          </div>
+        </div>
+
+        <h4>MBR vs. GPT — Festplatten-Partitionsschemata</h4>
+        <p><strong>MBR (Master Boot Record)</strong> sitzt in den ersten 512 Bytes der
+        Festplatte. Er enthält den Bootloader-Code UND die Partitionstabelle —
+        beides eng zusammen, was Probleme macht.</p>
+
+        <p><strong>GPT (GUID Partition Table)</strong> ist neuer und sauberer:
+        Partitionstabelle separat, mit Backup-Kopie am Ende der Platte
+        (Fehlertoleranz!), keine 2-TB-Grenze, viele Partitionen erlaubt.</p>
+
+        <details class="callout-deepdive">
+          <summary>▶ Wie finde ich heraus, ob mein System BIOS oder UEFI ist?</summary>
+          <p>In Linux:</p>
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; overflow-x: auto;"><code># Existiert /sys/firmware/efi? → dann UEFI
+ls /sys/firmware/efi 2&gt;/dev/null &amp;&amp; echo "UEFI" || echo "BIOS"
+
+# Festplatten-Format prüfen
+sudo fdisk -l /dev/sda | grep -i "type\|disklabel"</code></pre>
+          <p>In der Rocky-VM aus Tag 1 hast du wahrscheinlich BIOS+MBR, weil
+          VMware das standardmäßig so anlegt.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 1.4 GRUB2 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.4</span>
+        <h2 class="timeblock-title">GRUB2 — der Bootloader, den du täglich siehst</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>GRUB2</strong> (GRand Unified Bootloader, Version 2) ist der
+        Standard-Bootloader auf praktisch allen modernen Linux-Distributionen —
+        Rocky, Debian, Ubuntu, Fedora, RHEL. Wenn du beim Booten ein
+        <strong>schwarzes Menü</strong> mit Kernel-Auswahl siehst, ist das GRUB2.</p>
+
+        <h4>Die wichtigsten GRUB-Dateien</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Datei / Pfad</th><th>Aufgabe</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/etc/default/grub</code></td><td><strong>Einstellungen</strong> in lesbarem Format (Wartezeit, Default-Eintrag, Kernel-Parameter)</td></tr>
+              <tr><td><code>/boot/grub2/grub.cfg</code></td><td><strong>Generierte Config</strong> — wird beim Boot gelesen. <strong>NIE direkt editieren!</strong></td></tr>
+              <tr><td><code>/etc/grub.d/</code></td><td>Skripte, die die <code>grub.cfg</code> bauen</td></tr>
+              <tr><td><code>/boot/vmlinuz-*</code></td><td>Die Kernel-Dateien selbst</td></tr>
+              <tr><td><code>/boot/initramfs-*.img</code></td><td>Initial RAM filesystems (siehe Deep-Dive oben)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Der Workflow: GRUB-Einstellungen ändern</h4>
+        <p>Wenn du z. B. die Wartezeit im GRUB-Menü ändern willst, gehst du
+        <strong>nie direkt</strong> in die <code>grub.cfg</code> (die wird beim
+        nächsten Update überschrieben). Stattdessen:</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># 1. SICHERHEITSKOPIE machen (immer zuerst!)
+sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.backup
+
+# 2. Als root anmelden (oder mit sudo arbeiten)
+sudo su -
+
+# 3. Einstellungs-Datei bearbeiten
+vim /etc/default/grub
+# z. B. GRUB_TIMEOUT=5 → GRUB_TIMEOUT=10
+
+# 4. Die echte grub.cfg neu generieren lassen
+grub2-mkconfig -o /boot/grub2/grub.cfg
+
+# 5. Neustart, um zu testen
+reboot</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Vorsicht beim GRUB-Editieren</div>
+            <p>Ein falscher Eintrag in <code>/etc/default/grub</code> und das
+            System bootet nicht mehr. Deshalb:</p>
+            <ul>
+              <li><strong>Immer Backup</strong> der <code>grub.cfg</code> machen</li>
+              <li><strong>In der VM</strong>: Snapshot vorher!</li>
+              <li><strong>Nach Änderung</strong>: <code>grub2-mkconfig</code> nicht vergessen, sonst greift die Änderung nicht</li>
+              <li><strong>Auf Produktionsservern</strong>: NIE ohne Wartungsfenster</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Wichtige Einstellungen in /etc/default/grub</summary>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Variable</th><th>Bedeutung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>GRUB_TIMEOUT</code></td><td>Sekunden, die das GRUB-Menü angezeigt wird (0 = sofort booten)</td></tr>
+                <tr><td><code>GRUB_DEFAULT</code></td><td>Welcher Eintrag default ist (0 = erster, <code>saved</code> = zuletzt gewählter)</td></tr>
+                <tr><td><code>GRUB_CMDLINE_LINUX</code></td><td>Kernel-Parameter, die beim Boot übergeben werden</td></tr>
+                <tr><td><code>GRUB_DISABLE_RECOVERY</code></td><td>Recovery-Mode-Einträge ein-/ausblenden</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ LAB 3.1 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🧪</span>
+        <h2 class="timeblock-title">Lab 3.1 — Boot-Reise &amp; GRUB sichern</h2>
+        <span class="timeblock-badge badge-lab">Lab · 40 min</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📧</div>
+          <div class="callout-content">
+            <div class="callout-title">Auftrag von Markus (aus seiner Mail)</div>
+            <p style="margin-top: 0.5rem;">Hallo Tim,</p>
+            <p>für deine erste eigenständige Aufgabe heute: <strong>Lerne unser
+            Boot-System kennen</strong>. Du sollst dir das GRUB-Menü ansehen,
+            die Konfigurationsdateien finden und vor allem
+            <strong>sicher mit Backups arbeiten</strong>. Wenn du das beherrschst,
+            kannst du nächste Woche auch produktive Server gefahrlos anfassen.</p>
+            <p>Wichtig: <strong>Snapshot vorher!</strong> Wenn GRUB kaputt geht,
+            kommt die VM nicht mehr hoch. Mit Snapshot kannst du in 5 Sekunden
+            zurück.</p>
+            <p style="margin-bottom: 0;">— Markus</p>
+          </div>
+        </div>
+
+        <div class="callout callout-warn" style="margin-top: 1.5rem;">
+          <div class="callout-icon">📸</div>
+          <div class="callout-content">
+            <div class="callout-title">VOR dem Lab: Snapshot!</div>
+            <p>Mach <strong>jetzt</strong> in VMware einen Snapshot deiner VM
+            und nenne ihn <code>vor-grub</code>. Wenn etwas schief geht (z. B.
+            GRUB-Datei kaputt), bist du in Sekunden wieder da.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil A — Boot-Reise live beobachten (10 min)</div>
+        <ol class="lab-tasks">
+          <li><strong>Starte deine VM neu</strong> mit <code>sudo reboot</code>.
+            Beobachte den Boot-Vorgang aufmerksam.</li>
+          <li>Wenn das <strong>GRUB-Menü</strong> erscheint, drücke sofort
+            <strong>eine Pfeiltaste</strong>, um den Timer zu stoppen. Schau dir
+            die Einträge an. Wie viele Kernel hast du? (Normalerweise nur einer,
+            aber Rocky behält manchmal den vorherigen.)</li>
+          <li>Drücke <strong><code>e</code></strong> bei einem Eintrag — was
+            siehst du? (Das ist der Editor-Modus für einmalige Boot-Parameter.)</li>
+          <li>Drücke <strong><code>Esc</code></strong>, um zurück zum Menü zu kommen.</li>
+          <li>Wähle den normalen Eintrag und drücke <strong>Enter</strong>. Beobachte
+            den Boot weiter: Siehst du Kernel-Meldungen kurz aufblitzen?</li>
+          <li>Nach dem Login: Schau dir die Boot-Meldungen im Detail an:</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># Boot-Meldungen anschauen
+dmesg | less
+# (q drücken zum Beenden)
+
+# Nur die letzten Meldungen
+dmesg | tail -20
+
+# Wie lange hat der Boot gedauert?
+systemd-analyze
+# Beispiel-Output:
+# Startup finished in 1.234s (kernel) + 5.678s (userspace) = 6.912s
+# graphical.target reached after 5.6s in userspace
+
+# Welche Services brauchten am längsten?
+systemd-analyze blame | head -10</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Du hast
+            jetzt gesehen, wie GRUB das Menü zeigt → der Kernel lädt → systemd
+            die Services hochfährt. Genau die vier Phasen!</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — GRUB-Dateien finden (10 min)</div>
+        <ol class="lab-tasks" start="7">
+          <li>Liste den Inhalt von <code>/boot/</code>. Was findest du? Schau
+            besonders auf <code>vmlinuz-*</code> und <code>initramfs-*</code>.</li>
+          <li>Wechsle nach <code>/boot/grub2/</code>. Welche Dateien siehst du?</li>
+          <li>Öffne <code>/etc/default/grub</code> mit <code>cat</code> (oder
+            <code>less</code>). Welche Variablen sind gesetzt? Wie lang ist
+            <code>GRUB_TIMEOUT</code>?</li>
+          <li>Vergleiche: Wie groß ist <code>/etc/default/grub</code> im Vergleich
+            zu <code>/boot/grub2/grub.cfg</code>? (Tipp: <code>ls -lh</code>)</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code>ls /boot/
+# vmlinuz-5.14...    ← der Linux-Kernel (komprimiert)
+# initramfs-5.14...  ← initial RAM filesystem
+# grub2/             ← GRUB-Konfig-Verzeichnis
+
+ls -l /boot/grub2/
+# grub.cfg           ← die generierte Config
+# grubenv            ← Umgebungsvariablen für GRUB
+
+cat /etc/default/grub
+# GRUB_TIMEOUT=5
+# GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+# GRUB_DEFAULT=saved
+# GRUB_DISABLE_SUBMENU=true
+# GRUB_TERMINAL_OUTPUT="console"
+# GRUB_CMDLINE_LINUX="..."
+
+# Größenvergleich
+ls -lh /etc/default/grub /boot/grub2/grub.cfg
+# /etc/default/grub  → ca. 300 Bytes  (lesbar)
+# /boot/grub2/grub.cfg → ca. 6 KB     (generiert, komplex)</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Die
+            kleine Datei in <code>/etc/default/grub</code> beschreibt
+            <em>was du willst</em>. Die große <code>grub.cfg</code> ist die
+            ausgeschriebene Variante — die wirst du <strong>nie selbst
+            schreiben</strong>!</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Sicherheits-Backup üben (10 min)</div>
+        <ol class="lab-tasks" start="11">
+          <li>Mache ein <strong>Backup der grub.cfg</strong> nach
+            <code>/boot/grub2/grub.cfg.backup</code>. Tipp: <code>sudo cp ...</code></li>
+          <li>Verifiziere mit <code>ls -l</code>, dass beide Dateien existieren
+            und gleich groß sind.</li>
+          <li>Mache zusätzlich ein <strong>datiertes Backup</strong>:
+            <code>grub.cfg.YYYY-MM-DD</code> (heutiges Datum einsetzen).</li>
+          <li><strong>Mini-Übung:</strong> Lass GRUB die <code>grub.cfg</code> aus
+            den aktuellen Einstellungen <strong>neu generieren</strong>. Was
+            passiert? Ändert sich etwas?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 11) Einfaches Backup
+sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.backup
+
+# 12) Verifizieren
+ls -l /boot/grub2/grub.cfg*
+# -rw-r--r--. 1 root root 6128 Mai 27 10:15 /boot/grub2/grub.cfg
+# -rw-r--r--. 1 root root 6128 Mai 27 10:18 /boot/grub2/grub.cfg.backup
+
+# 13) Datiertes Backup (mit Datum-Befehl)
+sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.$(date +%F)
+ls -l /boot/grub2/grub.cfg*
+
+# 14) Neu generieren
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+# Generating grub configuration file ...
+# Found linux image: /boot/vmlinuz-5.14...
+# Found initrd image: /boot/initramfs-5.14...
+# done</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Auch
+            wenn du nichts geändert hast, generiert <code>grub2-mkconfig</code>
+            die Datei sauber neu. Das ist <em>immer</em> der richtige Weg —
+            <strong>nie</strong> direkt in <code>grub.cfg</code> editieren!</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <p style="margin: 0;">Im Bonus probierst du die einmalige
+            Boot-Parameter-Änderung im GRUB-Editor — das ist die
+            <strong>Rettungs-Technik</strong>, mit der Admins ein hängendes
+            System reparieren können, ohne dauerhaft etwas zu ändern.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="15">
+          <li><strong>Boot-Zeit messen:</strong> Nutze <code>systemd-analyze</code>,
+            um zu sehen, wie lange dein Boot dauert. Welche Phase
+            (Kernel/Userspace) ist länger? Was ist der langsamste Service
+            (<code>systemd-analyze blame | head -5</code>)?</li>
+          <li><strong>BIOS oder UEFI?</strong> Finde mit dem Befehl aus dem
+            Deep-Dive oben heraus, ob deine VM BIOS oder UEFI nutzt.</li>
+          <li><strong>Welcher Kernel läuft?</strong> Befehl <code>uname -r</code>.
+            Vergleiche mit der Datei in <code>/boot/</code> — passt das?</li>
+          <li><strong>Vorsichts-Test (nur lesen!):</strong> Welche
+            Kernel-Parameter wurden beim Boot übergeben?
+            Datei <code>/proc/cmdline</code> anschauen.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 15) Boot-Zeit messen
+systemd-analyze
+# Startup finished in 1.5s (kernel) + 6.2s (userspace) = 7.7s
+
+systemd-analyze blame | head -5
+# Zeigt langsamste Services
+
+# 16) BIOS oder UEFI?
+[ -d /sys/firmware/efi ] &amp;&amp; echo "UEFI" || echo "BIOS"
+
+# 17) Welcher Kernel läuft?
+uname -r
+# z. B. 5.14.0-503.el9.x86_64
+ls /boot/vmlinuz-*
+
+# 18) Kernel-Parameter
+cat /proc/cmdline
+# z. B. BOOT_IMAGE=(hd0,msdos1)/vmlinuz-5.14... root=/dev/mapper/...</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 3.1 geschafft?</div>
+            <p>Sehr gut! Du hast jetzt verstanden, was zwischen Power-Knopf und
+            Login-Prompt passiert. Du weißt, wo GRUB sitzt, wie man es sicher
+            ändert und wie man Backups macht. Das ist die <strong>Basis für
+            Server-Troubleshooting</strong> — und in vielen Vorstellungs-Gesprächen
+            wird genau das gefragt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TYPISCHE FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">1.5</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — Direkt in grub.cfg editieren</div>
+            <p>„Ich ändere mal eben die Wartezeit." → Editor auf
+            <code>/boot/grub2/grub.cfg</code> → speichern. Beim nächsten
+            Kernel-Update wird die Datei <strong>automatisch überschrieben</strong>,
+            deine Änderung ist weg. Richtig:
+            <code>/etc/default/grub</code> editieren, dann
+            <code>grub2-mkconfig</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — grub2-mkconfig vergessen</div>
+            <p>Du hast <code>/etc/default/grub</code> sauber editiert, gespeichert —
+            und es passiert nichts. Grund: Ohne
+            <code>grub2-mkconfig -o /boot/grub2/grub.cfg</code> wird die
+            <strong>echte Boot-Config nicht neu erzeugt</strong>. Erst der Befehl
+            macht die Änderung wirksam.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — Kein Backup vor dem Editieren</div>
+            <p>„Wird schon nichts passieren" → falsch getippter Kernel-Parameter
+            in <code>GRUB_CMDLINE_LINUX</code> → System bootet nicht mehr → Panik.
+            <strong>Immer</strong> erst <code>cp grub.cfg grub.cfg.backup</code> und
+            in der VM <strong>Snapshot</strong>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — BIOS und UEFI verwechseln</div>
+            <p>In Prüfungsfragen: „Welches Format nutzt UEFI?" → MBR ist FALSCH,
+            UEFI nutzt GPT. <strong>Faustregel:</strong> BIOS+MBR sind das
+            alte Paar, UEFI+GPT das moderne Paar.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Nenne die vier Phasen des Linux-Bootprozesses in der richtigen
+            Reihenfolge.</li>
+          <li>Welches Programm wird nach BIOS ausgeführt? (Prüfungsfrage!)</li>
+          <li>Wie heißt die <strong>echte</strong> GRUB-Konfigurationsdatei, die
+            beim Booten gelesen wird?</li>
+          <li>Welche Datei editierst du, um GRUB-Einstellungen zu ändern — und
+            welcher Befehl macht die Änderung danach wirksam?</li>
+          <li>Was ist der Unterschied zwischen MBR und GPT?</li>
+          <li>Welche PID hat <code>systemd</code> auf einem laufenden Linux-System?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>F</strong>irmware (BIOS/UEFI) →
+                <strong>B</strong>ootloader (GRUB2) →
+                <strong>K</strong>ernel →
+                <strong>I</strong>nit (systemd). Merksatz: <strong>F-B-K-I</strong>.</li>
+              <li>Der <strong>Bootloader</strong> (in Linux meistens GRUB2). NICHT
+                der Kernel und NICHT init.</li>
+              <li><code>/boot/grub2/grub.cfg</code></li>
+              <li>Editieren: <code>/etc/default/grub</code>. Wirksam machen:
+                <code>sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code></li>
+              <li><strong>MBR</strong> (Master Boot Record): alt, max. 2 TB,
+                max. 4 Primärpartitionen, BIOS-typisch.
+                <strong>GPT</strong> (GUID Partition Table): modern, viele Partitionen,
+                bis zu 9,4 ZB, mit Backup-Tabelle, UEFI-typisch.</li>
+              <li><strong>PID 1</strong> — systemd ist der Urvater aller Prozesse.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="index.html">
+        <span class="nav-eyebrow">↑ Tag 3 Übersicht</span>
+        <span class="nav-title">Übersicht aller Kapitel</span>
+      </a>
+      <a href="02-runlevels-systemd.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 02 →</span>
+        <span class="nav-title">Runlevels, systemd &amp; Targets</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

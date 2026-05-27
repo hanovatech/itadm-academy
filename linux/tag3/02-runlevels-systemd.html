@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 02 · Runlevels, systemd &amp; Targets · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Kapitel 02 von 6</div>
+    <h1 class="page-title">
+      <span class="highlight">Runlevels</span>, systemd &amp; Targets
+    </h1>
+    <p class="page-subtitle">
+      Phase 4 des Boots aufgeklappt: was systemd genau macht, was Runlevels
+      (0–6) sind, wie sie zu modernen Targets passen — und wie du mit
+      <code>systemctl</code> Services und ganze System-Zustände steuerst.
+      Im Lab verwandelst du deine Minimal-Installation in einen vollen
+      Desktop.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 02</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 35 min Theorie + 55 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.2</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 2.1 RUNLEVELS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.1</span>
+        <h2 class="timeblock-title">Runlevels — die klassische Welt</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>In der klassischen Unix-Welt (und in Linux bis etwa 2015) gab es das
+        Konzept der <strong>Runlevels</strong>: <strong>Sieben definierte
+        System-Zustände</strong>, in die der Computer nach dem Boot gebracht
+        werden konnte. Heute (mit systemd) sind sie offiziell überholt — aber
+        sie sind in jeder Prüfung Thema, und du musst die Mapping-Tabelle
+        können.</p>
+
+        <h4>Die klassische Runlevel-Tabelle</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Runlevel</th><th>Bedeutung</th><th>systemd-Target (modern)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>0</strong></td><td>System herunterfahren (Halt)</td><td><code>poweroff.target</code></td></tr>
+              <tr><td><strong>1</strong></td><td>Single-User-Modus (Rescue)</td><td><code>rescue.target</code></td></tr>
+              <tr><td><strong>2</strong></td><td>Multi-User, ohne Netzwerk</td><td><code>multi-user.target</code></td></tr>
+              <tr><td><strong>3</strong></td><td>Multi-User, ohne GUI (Server-Standard)</td><td><code>multi-user.target</code></td></tr>
+              <tr><td><strong>4</strong></td><td>Benutzerdefiniert (selten genutzt)</td><td>(je nach Distro)</td></tr>
+              <tr><td><strong>5</strong></td><td>Multi-User mit GUI</td><td><code>graphical.target</code></td></tr>
+              <tr><td><strong>6</strong></td><td>System neu starten (Reboot)</td><td><code>reboot.target</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Merksätze für die Prüfung</div>
+            <ul>
+              <li><strong>Runlevel 0</strong> = Shutdown (System aus)</li>
+              <li><strong>Runlevel 1</strong> = Rescue (für Notfälle, Single User)</li>
+              <li><strong>Runlevel 3</strong> = Server-Normal (Multi-User, kein GUI)</li>
+              <li><strong>Runlevel 5</strong> = Desktop-Normal (Multi-User mit GUI)</li>
+              <li><strong>Runlevel 6</strong> = Reboot (System neustart)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Eselsbrücke</div>
+            <p>Die Endpunkte (0 und 6) sind die <strong>einprägsamen</strong>:
+            <strong>0 = aus</strong>, <strong>6 = restart</strong>. Dazwischen:
+            <strong>3 = Server</strong> (am häufigsten in der Praxis),
+            <strong>5 = Desktop</strong>. Den Rest brauchst du selten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.2 SYSTEMD ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.2</span>
+        <h2 class="timeblock-title">systemd — der moderne init</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>systemd</strong> hat seit 2015 das alte SysV-init in fast allen
+        großen Distributionen ersetzt. Es ist der <strong>erste Prozess</strong>,
+        den der Kernel startet (PID 1) und der <strong>Vater aller anderen
+        Prozesse</strong>. Es ist viel mehr als nur ein init — es ist ein
+        <strong>Service-Manager</strong>.</p>
+
+        <!-- SVG: systemd Architektur -->
+        <div style="margin: 1.5rem 0; overflow-x: auto;">
+          <svg viewBox="0 0 880 420" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 880px; height: auto; font-family: 'Courier New', monospace;">
+            <defs>
+              <linearGradient id="sysd-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a1a1a"/>
+                <stop offset="100%" style="stop-color:#0a0a0a"/>
+              </linearGradient>
+              <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#39ff14"/>
+              </marker>
+            </defs>
+
+            <!-- Titel -->
+            <text x="440" y="25" text-anchor="middle" fill="#39ff14" font-size="14" font-weight="bold">systemd-Architektur · Targets, Units &amp; Services</text>
+
+            <!-- Center: systemd -->
+            <rect x="350" y="170" width="180" height="80" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="3" rx="10"/>
+            <text x="440" y="200" text-anchor="middle" fill="#39ff14" font-size="16" font-weight="bold">systemd</text>
+            <text x="440" y="220" text-anchor="middle" fill="#cccccc" font-size="11">PID 1 · /sbin/init</text>
+            <text x="440" y="238" text-anchor="middle" fill="#aaaaaa" font-size="10">Service-Manager</text>
+
+            <!-- TARGETS (oben) -->
+            <text x="100" y="60" fill="#39ff14" font-size="12" font-weight="bold">TARGETS (Zustände)</text>
+            <line x1="60" y1="68" x2="200" y2="68" stroke="#39ff14" stroke-width="0.5"/>
+
+            <rect x="60" y="80" width="140" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="130" y="100" text-anchor="middle" fill="#cccccc" font-size="11">graphical.target</text>
+
+            <rect x="60" y="115" width="140" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="130" y="135" text-anchor="middle" fill="#cccccc" font-size="11">multi-user.target</text>
+
+            <rect x="60" y="150" width="140" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="130" y="170" text-anchor="middle" fill="#cccccc" font-size="11">rescue.target</text>
+
+            <rect x="60" y="185" width="140" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="130" y="205" text-anchor="middle" fill="#cccccc" font-size="11">poweroff.target</text>
+
+            <rect x="60" y="220" width="140" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="130" y="240" text-anchor="middle" fill="#cccccc" font-size="11">reboot.target</text>
+
+            <text x="130" y="270" text-anchor="middle" fill="#888" font-size="10" font-style="italic">= „Welcher Zustand?"</text>
+
+            <line x1="205" y1="140" x2="345" y2="195" stroke="#39ff14" stroke-width="1.5" opacity="0.7" marker-end="url(#arr2)"/>
+
+            <!-- UNITS (unten) -->
+            <text x="100" y="320" fill="#39ff14" font-size="12" font-weight="bold">UNIT-TYPEN</text>
+            <line x1="60" y1="328" x2="200" y2="328" stroke="#39ff14" stroke-width="0.5"/>
+
+            <text x="65" y="345" fill="#aaaaaa" font-size="11">• .service · Dienste</text>
+            <text x="65" y="362" fill="#aaaaaa" font-size="11">• .target  · Zustände</text>
+            <text x="65" y="379" fill="#aaaaaa" font-size="11">• .mount   · Mountpoints</text>
+            <text x="65" y="396" fill="#aaaaaa" font-size="11">• .timer   · Zeitgeber</text>
+            <text x="65" y="413" fill="#aaaaaa" font-size="11">• .socket  · Sockets</text>
+
+            <line x1="205" y1="370" x2="345" y2="225" stroke="#39ff14" stroke-width="1.5" opacity="0.7" marker-end="url(#arr2)"/>
+
+            <!-- SERVICES (rechts) -->
+            <text x="680" y="60" fill="#39ff14" font-size="12" font-weight="bold">SERVICES (Beispiele)</text>
+            <line x1="600" y1="68" x2="820" y2="68" stroke="#39ff14" stroke-width="0.5"/>
+
+            <rect x="600" y="80" width="220" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="710" y="100" text-anchor="middle" fill="#cccccc" font-size="11">sshd.service · SSH-Daemon</text>
+
+            <rect x="600" y="115" width="220" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="710" y="135" text-anchor="middle" fill="#cccccc" font-size="11">httpd.service · Webserver</text>
+
+            <rect x="600" y="150" width="220" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="710" y="170" text-anchor="middle" fill="#cccccc" font-size="11">NetworkManager.service</text>
+
+            <rect x="600" y="185" width="220" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="710" y="205" text-anchor="middle" fill="#cccccc" font-size="11">crond.service · Cron</text>
+
+            <rect x="600" y="220" width="220" height="30" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="1" rx="4"/>
+            <text x="710" y="240" text-anchor="middle" fill="#cccccc" font-size="11">firewalld.service</text>
+
+            <text x="710" y="275" text-anchor="middle" fill="#888" font-size="10" font-style="italic">= „Was läuft konkret?"</text>
+
+            <line x1="535" y1="195" x2="595" y2="140" stroke="#39ff14" stroke-width="1.5" opacity="0.7" marker-end="url(#arr2)"/>
+            <line x1="535" y1="215" x2="595" y2="235" stroke="#39ff14" stroke-width="1.5" opacity="0.7" marker-end="url(#arr2)"/>
+
+            <!-- systemctl (Steuerung) -->
+            <rect x="350" y="320" width="180" height="60" fill="url(#sysd-bg)" stroke="#39ff14" stroke-width="2" rx="8"/>
+            <text x="440" y="345" text-anchor="middle" fill="#39ff14" font-size="13" font-weight="bold">systemctl</text>
+            <text x="440" y="365" text-anchor="middle" fill="#aaaaaa" font-size="10">dein Steuer-Tool</text>
+
+            <line x1="440" y1="255" x2="440" y2="315" stroke="#39ff14" stroke-width="2" marker-end="url(#arr2)"/>
+          </svg>
+        </div>
+
+        <h4>Die zwei wichtigsten Konzepte: Targets &amp; Services</h4>
+
+        <p><strong>Targets</strong> sind <em>System-Zustände</em> — wie die alten
+        Runlevels. „<code>multi-user.target</code>" bedeutet: das System ist
+        bereit, mehrere User können sich einloggen, Services laufen, aber keine
+        grafische Oberfläche. „<code>graphical.target</code>" bedeutet:
+        zusätzlich noch die GUI.</p>
+
+        <p><strong>Services</strong> sind <em>einzelne Programme/Dienste</em>:
+        der SSH-Server (<code>sshd.service</code>), der Webserver
+        (<code>httpd.service</code>), der Netzwerk-Manager
+        (<code>NetworkManager.service</code>). Du kannst sie einzeln
+        <strong>starten</strong>, <strong>stoppen</strong>, <strong>aktivieren</strong>
+        (= bei Boot mitstarten) oder <strong>deaktivieren</strong>.</p>
+
+        <p>Beide werden mit <strong>einem einzigen Werkzeug</strong> gesteuert:
+        <code>systemctl</code>.</p>
+
+        <details class="callout-deepdive">
+          <summary>▶ Tiefer einsteigen: Warum war systemd so umstritten?</summary>
+          <p>Als systemd 2010 vorgestellt wurde, gab es heftige Debatten in der
+          Linux-Community. Vorher: SysV-init startete Services <strong>einzeln,
+          nacheinander, mit Shell-Skripten</strong>. Simpel, gut zu debuggen,
+          aber langsam (10–30 Sekunden Boot-Zeit war normal).</p>
+          <p>systemd dagegen: startet Services <strong>parallel</strong>, kümmert
+          sich um Abhängigkeiten, hat eingebautes Logging
+          (<code>journalctl</code>), behandelt Timer (Cron-Ersatz), Mountpoints,
+          Sockets — alles in einem. Dadurch: Boot in 3–5 Sekunden.</p>
+          <p>Kritiker: systemd macht zu viel, ist zu komplex, widerspricht dem
+          Unix-Prinzip „eine Sache, dafür gut". Befürworter: moderne Hardware
+          und Services brauchen eben moderne Lösungen. Heute (2026) ist die
+          Debatte praktisch entschieden: systemd ist Standard auf allen großen
+          Distributionen außer ein paar puristischen (Devuan, Alpine, Gentoo).</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 2.3 SYSTEMCTL TARGET-UNIT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.3</span>
+        <h2 class="timeblock-title">systemctl · Target-Unit (Zustände wechseln)</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Mit <code>systemctl</code> und Target-Befehlen kontrollierst du den
+        <strong>gesamten System-Zustand</strong>: GUI an, GUI aus, Rescue-Modus,
+        Reboot.</p>
+
+        <h4>Die wichtigsten Target-Befehle</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>systemctl get-default</code></td><td>Zeigt das <strong>default Target</strong> (welches beim Boot angefahren wird)</td></tr>
+              <tr><td><code>sudo systemctl set-default [TARGET]</code></td><td><strong>Default Target ändern</strong> (wirkt erst beim nächsten Boot)</td></tr>
+              <tr><td><code>sudo systemctl isolate [TARGET]</code></td><td><strong>Sofort</strong> zum Target wechseln (ohne Reboot!)</td></tr>
+              <tr><td><code>systemctl list-units --type=target</code></td><td>Alle aktiven Targets anzeigen</td></tr>
+              <tr><td><code>telinit [0-6]</code></td><td>Klassischer Befehl, wechselt zum Runlevel (Wrapper für isolate)</td></tr>
+              <tr><td><code>runlevel</code></td><td>Aktuellen "Runlevel" anzeigen (Legacy-Befehl)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Aktuelles Default-Target anzeigen
+systemctl get-default
+# → multi-user.target  (auf Minimal-Installation)
+# oder graphical.target  (auf Desktop-Installation)
+
+# Default auf graphical setzen (wirkt beim NÄCHSTEN Boot)
+sudo systemctl set-default graphical.target
+
+# SOFORT zu multi-user wechseln (ohne Reboot)
+sudo systemctl isolate multi-user.target
+
+# Über Runlevel-Nummer (Klassik)
+sudo telinit 3       # entspricht multi-user
+sudo telinit 5       # entspricht graphical
+sudo telinit 6       # neu starten
+sudo telinit 0       # herunterfahren</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">isolate vs. set-default</div>
+            <p><strong><code>set-default</code></strong> ändert das Target, das beim
+            <strong>nächsten Boot</strong> angefahren wird. <strong>Jetzt
+            passiert nichts.</strong></p>
+            <p><strong><code>isolate</code></strong> wechselt das Target
+            <strong>sofort</strong> — aber nur für die aktuelle Sitzung. Beim
+            nächsten Boot ist alles wieder wie in <code>get-default</code>
+            steht.</p>
+            <p><strong>Beste Praxis:</strong> erst <code>isolate</code> testen
+            (kein Reboot nötig), wenn alles funktioniert, mit
+            <code>set-default</code> dauerhaft setzen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.4 SYSTEMCTL SERVICE-UNIT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.4</span>
+        <h2 class="timeblock-title">systemctl · Service-Unit (Dienste steuern)</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Hier wirst du als Admin täglich arbeiten: einzelne Dienste starten,
+        stoppen, prüfen.</p>
+
+        <h4>Die wichtigsten Service-Befehle</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sudo systemctl status [DIENST]</code></td><td>Status anzeigen (läuft, gestoppt, Fehler?)</td></tr>
+              <tr><td><code>sudo systemctl start [DIENST]</code></td><td>Dienst <strong>jetzt</strong> starten</td></tr>
+              <tr><td><code>sudo systemctl stop [DIENST]</code></td><td>Dienst <strong>jetzt</strong> stoppen</td></tr>
+              <tr><td><code>sudo systemctl restart [DIENST]</code></td><td>Dienst neu starten (stop + start)</td></tr>
+              <tr><td><code>sudo systemctl reload [DIENST]</code></td><td>Config neu laden (ohne Restart, wenn Dienst es unterstützt)</td></tr>
+              <tr><td><code>sudo systemctl enable [DIENST]</code></td><td>Dienst beim <strong>Boot mitstarten</strong> (dauerhaft)</td></tr>
+              <tr><td><code>sudo systemctl disable [DIENST]</code></td><td>Beim Boot <strong>nicht mehr</strong> starten</td></tr>
+              <tr><td><code>sudo systemctl is-active [DIENST]</code></td><td>Schnell-Check: läuft? (gibt nur „active" oder „inactive" zurück)</td></tr>
+              <tr><td><code>sudo systemctl is-enabled [DIENST]</code></td><td>Schnell-Check: wird beim Boot gestartet?</td></tr>
+              <tr><td><code>sudo journalctl -u [DIENST]</code></td><td>Logs des Dienstes anzeigen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Status SSH-Server
+sudo systemctl status sshd
+# ● sshd.service - OpenSSH server daemon
+#    Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled)
+#    Active: active (running) since Mon 2026-05-27 08:15:23 CEST
+#    ...
+
+# Starten / stoppen / neustarten
+sudo systemctl start sshd
+sudo systemctl stop sshd
+sudo systemctl restart sshd
+
+# Beim Boot mitstarten (dauerhaft aktivieren)
+sudo systemctl enable sshd
+
+# Bei Boot NICHT mehr mitstarten
+sudo systemctl disable sshd
+
+# Beides in einem: enable + start jetzt
+sudo systemctl enable --now sshd</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">start vs. enable — der häufigste Verständnis-Fehler</div>
+            <p><strong><code>start</code></strong> = Dienst jetzt anwerfen
+            (aber: beim nächsten Boot ist er wieder aus, falls nicht enabled).</p>
+            <p><strong><code>enable</code></strong> = bei jedem Boot automatisch
+            mitstarten (aber: er läuft jetzt noch nicht, wenn nicht zusätzlich
+            <code>start</code>).</p>
+            <p><strong>Kombi-Trick:</strong> <code>systemctl enable --now sshd</code>
+            macht beides in einem Befehl — sofort starten UND beim Boot
+            aktivieren.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2.5 HERUNTERFAHREN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.5</span>
+        <h2 class="timeblock-title">Herunterfahren &amp; Neustarten</h2>
+        <span class="timeblock-badge badge-vortrag">Praxis</span>
+      </div>
+
+      <div class="subblock">
+        <p>Es gibt mehrere Wege, ein Linux-System herunterzufahren oder neu zu
+        starten. Alle modernen sind <strong>systemctl-Befehle</strong> — die
+        klassischen wie <code>shutdown</code> und <code>reboot</code>
+        funktionieren aber weiterhin (sind Wrapper).</p>
+
+        <h4>Herunterfahren</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sudo shutdown</code></td><td>Herunterfahren in <strong>1 Minute</strong> (Default)</td></tr>
+              <tr><td><code>sudo shutdown now</code></td><td>Sofort herunterfahren</td></tr>
+              <tr><td><code>sudo shutdown +5</code></td><td>In 5 Minuten herunterfahren</td></tr>
+              <tr><td><code>sudo shutdown -c</code></td><td>Geplanten Shutdown <strong>abbrechen</strong></td></tr>
+              <tr><td><code>sudo poweroff</code></td><td>Sofort herunterfahren (wie Stromtrennung)</td></tr>
+              <tr><td><code>sudo systemctl poweroff</code></td><td>Moderner Weg — sofort herunterfahren</td></tr>
+              <tr><td><code>sudo halt</code></td><td>Anhalten ohne Strom abschalten (Legacy)</td></tr>
+              <tr><td><code>sudo telinit 0</code></td><td>Klassik-Variante: Runlevel 0 = halt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Neustarten</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sudo reboot</code></td><td>Sofort neustarten</td></tr>
+              <tr><td><code>sudo shutdown -r now</code></td><td>Sofort neustarten</td></tr>
+              <tr><td><code>sudo shutdown -r +5</code></td><td>In 5 Minuten neustarten</td></tr>
+              <tr><td><code>sudo systemctl reboot</code></td><td>Moderner Weg — sofort neustarten</td></tr>
+              <tr><td><code>sudo telinit 6</code></td><td>Klassik-Variante: Runlevel 6 = reboot</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">In Produktionsumgebungen</div>
+            <p>Auf Servern <strong>niemals einfach</strong>
+            <code>sudo poweroff</code>. Stattdessen:</p>
+            <ul>
+              <li><code>sudo shutdown +10 "Wartung — Server fährt in 10 Min runter"</code> — User werden gewarnt</li>
+              <li>Vorher prüfen: Wer ist noch eingeloggt? <code>who</code></li>
+              <li>Wichtige Dienste sauber stoppen (<code>systemctl stop ...</code>)</li>
+              <li>Mit <code>sudo shutdown -c</code> kannst du einen geplanten Shutdown abbrechen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 3.2 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🧪</span>
+        <h2 class="timeblock-title">Lab 3.2 — Targets &amp; Services beherrschen</h2>
+        <span class="timeblock-badge badge-lab">Lab · 55 min</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📧</div>
+          <div class="callout-content">
+            <div class="callout-title">Auftrag von Markus (Mail-Fortsetzung)</div>
+            <p style="margin-top: 0.5rem;">Hallo Tim,</p>
+            <p>nächste Aufgabe: <strong>systemctl beherrschen</strong>. Das ist
+            wirklich das Werkzeug, das du nächste Woche jeden Tag benutzen
+            wirst. Du sollst:</p>
+            <ol>
+              <li>SSH-Service anschauen, stoppen, starten, neu starten</li>
+              <li>Targets ausprobieren — multi-user und rescue</li>
+              <li>Aus deiner Minimal-Installation einen Desktop machen
+                  (graphical.target installieren und isolieren)</li>
+            </ol>
+            <p>Das letzte ist der „<strong>Aha!</strong>"-Moment des Tages.
+            Aus einem Server-Terminal wird per Befehl eine grafische
+            Oberfläche.</p>
+            <p style="margin-bottom: 0;">— Markus</p>
+          </div>
+        </div>
+
+        <div class="callout callout-warn" style="margin-top: 1.5rem;">
+          <div class="callout-icon">📸</div>
+          <div class="callout-content">
+            <div class="callout-title">VOR dem Lab: Snapshot!</div>
+            <p>Mach <strong>jetzt</strong> einen Snapshot <code>vor-targets</code>.
+            Falls etwas mit dem Target-Wechsel schief geht (z. B. Anmeldung im
+            rescue.target verweigert), bist du in Sekunden wieder da.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-info" style="margin-top: 1.5rem;">
+          <div class="callout-icon">⏳</div>
+          <div class="callout-content">
+            <div class="callout-title">Voraussetzung — GUI-Installation läuft im Hintergrund</div>
+            <p>Falls noch nicht gestartet (Trainer hat das normalerweise zu Beginn
+            des Tages gemacht), starte JETZT in einem <strong>zweiten
+            Terminal</strong> (oder Ctrl+Alt+F3 für Konsole, dann zurück mit
+            Ctrl+Alt+F1):</p>
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; overflow-x: auto;"><code>sudo dnf groupinstall "Server with GUI" -y</code></pre>
+            <p>Das dauert 5–15 Min und läuft im Hintergrund. Du kannst Teil A
+            und Teil B des Labs in der Zwischenzeit machen.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil A — Service-Steuerung üben (15 min)</div>
+        <ol class="lab-tasks">
+          <li>Schau dir den <strong>Status des SSH-Daemons</strong> an mit
+            <code>systemctl status sshd</code>. Ist er aktiv? Ist er enabled?</li>
+          <li>Stoppe den SSH-Dienst. Prüfe danach den Status nochmal — wie sieht
+            es jetzt aus?</li>
+          <li>Starte den SSH-Dienst wieder.</li>
+          <li>Mache einen <strong>restart</strong> des SSH-Dienstes und schau dir
+            danach den Status an. Wann wurde er gestartet? (Schau auf
+            „Active: active (running) since ...")</li>
+          <li>Prüfe mit <code>is-active</code> und <code>is-enabled</code> jeweils
+            kurz, ob SSH läuft und ob er beim Boot startet.</li>
+          <li>Schau dir die letzten <strong>10 Log-Zeilen</strong> von SSH an mit
+            <code>journalctl</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1) Status anzeigen
+sudo systemctl status sshd
+# Active: active (running) since ...
+# Loaded: enabled
+
+# 2) Stoppen
+sudo systemctl stop sshd
+sudo systemctl status sshd
+# Active: inactive (dead)
+
+# 3) Wieder starten
+sudo systemctl start sshd
+
+# 4) Restart
+sudo systemctl restart sshd
+sudo systemctl status sshd
+# "Active: active (running) since &lt;jetzt&gt;"
+
+# 5) Schnell-Checks
+sudo systemctl is-active sshd
+# active
+
+sudo systemctl is-enabled sshd
+# enabled
+
+# 6) Logs
+sudo journalctl -u sshd -n 10</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Die
+            ganze Service-Kontrolle ist <em>einheitlich</em> mit
+            <code>systemctl</code>. Egal ob SSH, Webserver, Firewall —
+            <strong>immer dieselben Befehle</strong>.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Target-Wechsel (15 min)</div>
+        <ol class="lab-tasks" start="7">
+          <li>Zeige das <strong>aktuelle default Target</strong> mit
+            <code>systemctl get-default</code>. Was ist es? (Sollte
+            <code>multi-user.target</code> sein bei Minimal-Installation.)</li>
+          <li>Liste <strong>alle aktiven Targets</strong>:
+            <code>systemctl list-units --type=target</code>. Was siehst du?</li>
+          <li><strong>Mini-Übung:</strong> Wechsle mit <code>isolate</code> in
+            den <code>rescue.target</code>. <strong>Achtung:</strong> Du wirst
+            dein Passwort eingeben müssen. Tipp: Vorher Snapshot prüfen!</li>
+          <li>Im Rescue-Modus angekommen: Welche User sind eingeloggt?
+            Befehl: <code>who</code>. Welche Services laufen?
+            <code>systemctl list-units --type=service --state=active | head</code></li>
+          <li>Zurück in den normalen Multi-User-Modus mit
+            <code>sudo systemctl isolate multi-user.target</code>.</li>
+          <li>Setze das default Target dauerhaft auf
+            <code>multi-user.target</code> (das ist es jetzt schon — testen,
+            ob's noch da ist).</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 7) Default Target
+systemctl get-default
+# → multi-user.target
+
+# 8) Alle aktiven Targets
+systemctl list-units --type=target
+# basic.target, multi-user.target, sysinit.target ...
+
+# 9) In rescue wechseln (Passwort erforderlich!)
+sudo systemctl isolate rescue.target
+
+# 10) Im Rescue-Modus
+who
+# admin    pts/0    2026-05-27 10:30
+
+systemctl list-units --type=service --state=active | head
+# nur essentielle Services laufen
+
+# 11) Zurück zu multi-user
+sudo systemctl isolate multi-user.target
+
+# 12) Default-Target prüfen/setzen
+systemctl get-default
+sudo systemctl set-default multi-user.target
+# (sollte bereits multi-user sein)</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Im
+            Rescue-Modus sind plötzlich kaum Services aktiv. Das ist gewollt —
+            für Notfälle, wenn du z. B. eine kaputte Festplatte reparieren
+            musst, ohne dass alle Dienste dazwischenfunken.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Graphical Target installieren &amp; isolieren (20 min)</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <p style="margin: 0;"><strong>Der Aha-Moment des Tages.</strong>
+            Du verwandelst deine schwarze Minimal-Installation in einen
+            grafischen Desktop — per Befehl.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="13">
+          <li><strong>Prüfen, ob die GUI-Installation fertig ist</strong> (sollte
+            seit Morgenstart laufen). Tipp: in zweitem Terminal mit
+            <code>ps aux | grep dnf</code> schauen. Wenn kein dnf-Prozess mehr
+            läuft, ist sie fertig.</li>
+          <li><strong>Falls noch nicht installiert</strong>, jetzt starten und
+            warten (5–15 Min):
+            <code>sudo dnf groupinstall "Server with GUI" -y</code></li>
+          <li>Setze das default Target auf <strong>graphical.target</strong>:
+            <code>sudo systemctl set-default graphical.target</code></li>
+          <li>Wechsle <strong>JETZT</strong> mit isolate ohne Reboot in den
+            grafischen Modus:
+            <code>sudo systemctl isolate graphical.target</code> →
+            <strong>Aha!</strong></li>
+          <li>Du solltest jetzt einen <strong>grafischen Login-Bildschirm</strong>
+            sehen. Logge dich grafisch ein, schau dich kurz um.</li>
+          <li>Öffne ein Terminal im Desktop und prüfe das aktuelle Target:
+            <code>systemctl get-default</code> und
+            <code>systemctl list-units --type=target | grep active</code></li>
+          <li><strong>Zurück zum Server-Modus:</strong>
+            <code>sudo systemctl isolate multi-user.target</code> — du landest
+            wieder im Terminal.</li>
+          <li><strong>Optional:</strong> default auch wieder zurücksetzen:
+            <code>sudo systemctl set-default multi-user.target</code></li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 13) Prüfen ob dnf noch läuft
+ps aux | grep dnf | grep -v grep
+
+# 14) Falls nicht installiert
+sudo dnf groupinstall "Server with GUI" -y
+# (5-15 Minuten warten)
+
+# 15) Default auf graphical
+sudo systemctl set-default graphical.target
+# Created symlink ...
+
+# 16) SOFORT zum graphical Target wechseln
+sudo systemctl isolate graphical.target
+# → Bildschirm wird schwarz, dann grafischer Login!
+
+# 17) Im Desktop: Terminal öffnen, prüfen
+systemctl get-default
+# graphical.target
+systemctl list-units --type=target | grep active | head
+
+# 18) Zurück zum Multi-User
+sudo systemctl isolate multi-user.target
+
+# 19) Default wieder auf multi-user (optional)
+sudo systemctl set-default multi-user.target</code></pre>
+            </div>
+            <p style="margin-top: 0.8rem;"><strong>Aha-Moment:</strong> Du
+            hast soeben aus einer „Server-Box" einen „Desktop" gemacht — und
+            wieder zurück. <strong>Ohne Reboot</strong>. Das ist die Magie von
+            systemd-Targets.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+
+        <ol class="lab-tasks" start="20">
+          <li><strong>Zweiten Service erkunden:</strong> Schau dir den Status von
+            <code>firewalld</code> an. Wenn er nicht läuft, starte ihn. Was
+            zeigt der Status?</li>
+          <li><strong>Boot-Performance:</strong> Welche Services brauchen am
+            längsten beim Boot? Befehl: <code>systemd-analyze blame</code>.
+            Hängt das vom Target ab? (Tipp: nach Wechsel zu graphical werden
+            mehr Services geladen.)</li>
+          <li><strong>Geplantes Herunterfahren:</strong> Plane einen Shutdown in 5
+            Minuten mit einer Nachricht, dann breche ihn ab.
+            Tipp: <code>shutdown +5 "Wartung..."</code> und
+            <code>shutdown -c</code>.</li>
+          <li><strong>Failed Services:</strong> Gibt es Services, die nicht starten
+            wollen? <code>systemctl list-units --state=failed</code>. Hoffentlich
+            keiner — aber das ist die erste Stelle, an der man bei Boot-Problemen
+            schaut.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 20) Firewalld
+sudo systemctl status firewalld
+sudo systemctl start firewalld   # falls nötig
+sudo systemctl status firewalld
+
+# 21) Boot-Performance
+systemd-analyze blame
+# Liste sortiert nach Startdauer
+
+# 22) Geplanter Shutdown + Abbruch
+sudo shutdown +5 "Wartung läuft an"
+# → Broadcast-Nachricht an alle eingeloggten User
+sudo shutdown -c
+# → "Shutdown scheduled ... has been cancelled"
+
+# 23) Failed Services
+systemctl list-units --state=failed
+# Hoffentlich: "0 loaded units listed"</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 3.2 geschafft?</div>
+            <p>Mega! Du hast jetzt <code>systemctl</code> in der Hand — das
+            wichtigste Werkzeug eines Linux-Admins. Du kannst Services steuern,
+            Targets wechseln, sogar einen Desktop „herbeizaubern" — alles ohne
+            Reboot. <strong>Das ist Senior-Admin-Niveau für so viel
+            Eigenwissen.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TYPISCHE FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">2.6</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — start ohne enable</div>
+            <p>„Dienst läuft, alles OK!" → Reboot → Dienst läuft nicht mehr.
+            Grund: <code>start</code> ist nur für jetzt. Für „bei Boot
+            mitstarten" brauchst du <code>enable</code>. Beste Praxis:
+            <code>enable --now</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Target falsch eingegeben</div>
+            <p><code>systemctl isolate multi-user</code> → Fehler. Korrekt:
+            <code>systemctl isolate multi-user.target</code>. Die Endung
+            <code>.target</code> nicht vergessen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — set-default mit Reboot verwechseln</div>
+            <p>„Ich habe set-default graphical gemacht und nichts passiert!" —
+            Richtig, <code>set-default</code> wirkt erst beim nächsten Boot
+            oder mit zusätzlichem <code>isolate</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — sudo vergessen</div>
+            <p>Alle Service-Änderungen brauchen <strong>sudo</strong>:
+            <code>start</code>, <code>stop</code>, <code>enable</code>,
+            <code>disable</code>, <code>isolate</code>, <code>set-default</code>.
+            Nur <code>status</code>, <code>is-active</code>,
+            <code>list-units</code> gehen ohne sudo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wofür wird Runlevel 0 verwendet?</li>
+          <li>Welches systemd-Target entspricht Runlevel 5?</li>
+          <li>Du bist im graphical.target und willst sofort zum multi-user.target
+            wechseln. Welcher Befehl?</li>
+          <li>Was ist der Unterschied zwischen <code>start</code> und
+            <code>enable</code>?</li>
+          <li>Welche zwei Befehle (Auswahl: shutdown, reboot, poweroff, telinit,
+            systemctl) können das System ausschalten?</li>
+          <li>Welche PID hat systemd?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li>Runlevel 0 = <strong>System herunterfahren (Shutdown)</strong>.</li>
+              <li>Runlevel 5 = <code>graphical.target</code></li>
+              <li><code>sudo systemctl isolate multi-user.target</code></li>
+              <li><strong><code>start</code></strong> startet den Dienst sofort
+                (aber nicht beim nächsten Boot).
+                <strong><code>enable</code></strong> macht ihn boot-persistent
+                (startet aber nicht jetzt). Kombi: <code>enable --now</code>.</li>
+              <li><strong><code>shutdown</code></strong> und
+                <strong><code>systemctl poweroff</code></strong>. (auch
+                <code>poweroff</code> und <code>telinit 0</code> wären richtig)</li>
+              <li><strong>PID 1</strong></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="01-bootprozess.html">
+        <span class="nav-eyebrow">← Kapitel 01</span>
+        <span class="nav-title">Bootprozess, BIOS/UEFI &amp; Bootloader</span>
+      </a>
+      <a href="03-prozessverwaltung.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 03 →</span>
+        <span class="nav-title">Prozessverwaltung</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

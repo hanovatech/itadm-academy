@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz · Tag 3 · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Quiz · Hausaufgabe</div>
+    <h1 class="page-title">
+      Tages-<span class="highlight">Quiz</span> Tag 3
+    </h1>
+    <p class="page-subtitle">
+      Zwölf Fragen quer durch alle Themen von Tag 3 — Bootprozess, systemd,
+      Prozesse, Pakete, Variablen und Skripte. Im <strong>Prüfungs-Stil</strong>
+      gehalten, mit der gleichen Formulierung, die du in der IHK-Prüfung
+      erwartest. Selbstkontrolle mit Sofort-Feedback. Als Hausaufgabe gedacht,
+      aber auch zwischendurch nutzbar.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> 12 Fragen</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 15 min</span>
+      <span class="meta-item"><span class="meta-item-icon">🎯</span> Selbstkontrolle</span>
+    </div>
+  </section>
+
+  <article>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">📝</div>
+      <div class="callout-content">
+        <div class="callout-title">So funktioniert das Quiz</div>
+        <p>Klicke deine Antwort an — bei Mehrfachauswahl alle zutreffenden!
+        Sofort siehst du, ob richtig oder falsch, und bekommst eine kurze
+        Erklärung. Keine Wertung, keine Sammlung — das Quiz ist nur für dich
+        selbst, damit du sehen kannst, was sitzt und wo du nochmal nachsehen
+        solltest.</p>
+      </div>
+    </div>
+
+    <!-- ============ FRAGE 1 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q1</span>
+        <h2 class="timeblock-title">Bootvorgang</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Während des System-Bootvorgangs — welches Programm wird nach
+        dem BIOS ausgeführt?</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q1" value="a"> <span>a) Bootloader</span></label>
+          <label class="q2-item"><input type="radio" name="q1" value="b"> <span>b) das init-Programm</span></label>
+          <label class="q2-item"><input type="radio" name="q1" value="c"> <span>c) der Kernel</span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> Nach dem BIOS-POST übergibt das BIOS die
+            Kontrolle an den <strong>Bootloader</strong> (z.B. GRUB2), der dann
+            den Kernel lädt. Reihenfolge: BIOS/UEFI → Bootloader → Kernel → init/systemd.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Reihenfolge: BIOS/UEFI → <strong>Bootloader</strong>
+            (z.B. GRUB2) → Kernel → init/systemd. Der Bootloader ist die Brücke
+            zwischen Firmware und Betriebssystem.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 2 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q2</span>
+        <h2 class="timeblock-title">systemctl &amp; Targets</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>graphical.target ist aktiv. Mit welchem Befehl können Sie zum
+        multi-user.target wechseln?</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q2" value="a"> <span>a) <code>systemctl isolate multi-user.target</code></span></label>
+          <label class="q2-item"><input type="radio" name="q2" value="b"> <span>b) <code>systemctl isolate graphical.target</code></span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> Mit <code>isolate</code> wechselst du das
+            aktive Target. <code>multi-user.target</code> ist die textbasierte
+            Multi-User-Umgebung (Runlevel 3 im alten SysV-Schema). Antwort b
+            würde im graphical.target bleiben — also nichts ändern.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> <code>systemctl isolate</code> wechselt zu
+            dem angegebenen Target. Wenn du zu multi-user willst, musst du auch
+            <code>multi-user.target</code> als Ziel angeben — also Antwort a.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 3 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q3</span>
+        <h2 class="timeblock-title">dnf — System aktualisieren</h2>
+        <span class="timeblock-badge badge-quiz">Multiple Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Welche Optionen kann man mit dem dnf-Kommando benutzen, um das
+        System zu aktualisieren?</strong> (mehrere Antworten möglich)</p>
+
+        <form class="q2-form" data-correct="b,c" data-multi="true">
+          <label class="q2-item"><input type="checkbox" name="q3" value="a"> <span>a) install</span></label>
+          <label class="q2-item"><input type="checkbox" name="q3" value="b"> <span>b) update</span></label>
+          <label class="q2-item"><input type="checkbox" name="q3" value="c"> <span>c) upgrade</span></label>
+          <label class="q2-item"><input type="checkbox" name="q3" value="d"> <span>d) check-update</span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> Bei dnf sind <code>update</code> und
+            <code>upgrade</code> identisch — beide installieren neuere Versionen
+            der Pakete. <code>check-update</code> zeigt nur an, was verfügbar
+            wäre, ohne zu installieren. <code>install</code> installiert neue
+            Pakete, aktualisiert aber kein Bestehendes.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Richtig sind <strong>b) update</strong>
+            und <strong>c) upgrade</strong>. Beide tun bei dnf das Gleiche.
+            <code>check-update</code> zeigt nur, was verfügbar wäre, ohne zu
+            installieren. <code>install</code> installiert neue Pakete, aktualisiert
+            aber nicht das System.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 4 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q4</span>
+        <h2 class="timeblock-title">GRUB-Konfiguration</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Was ist der richtige Name der Konfigurations-Datei für GNU GRUB?</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q4" value="a"> <span>a) <code>grub.cfg</code></span></label>
+          <label class="q2-item"><input type="radio" name="q4" value="b"> <span>b) <code>grubenv</code></span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> Die Haupt-Konfigurationsdatei heißt
+            <code>grub.cfg</code> und liegt unter <code>/boot/grub2/grub.cfg</code>
+            (auf Rocky/RHEL). Sie wird mit <code>grub2-mkconfig</code> aus
+            <code>/etc/default/grub</code> generiert. <code>grubenv</code> ist
+            eine Umgebungsvariablen-Datei für GRUB, aber nicht die Hauptkonfiguration.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Die richtige Datei heißt
+            <code>grub.cfg</code> (a). <code>grubenv</code> ist eine separate
+            Umgebungsvariablen-Datei, aber nicht die Hauptkonfiguration.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 5 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q5</span>
+        <h2 class="timeblock-title">Umgebungsvariablen — Schreibweise</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Umgebungsvariablen werden standardmäßig komplett:</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q5" value="a"> <span>a) Großgeschrieben</span></label>
+          <label class="q2-item"><input type="radio" name="q5" value="b"> <span>b) kleingeschrieben</span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> Umgebungsvariablen werden per Konvention
+            <strong>GROSSGESCHRIEBEN</strong>: <code>PATH</code>,
+            <code>HOME</code>, <code>USER</code>, <code>SHELL</code>. Das hilft,
+            sie optisch von normalen Shell-Variablen (meist klein) zu unterscheiden.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Konvention: Umgebungsvariablen sind
+            <strong>GROSSGESCHRIEBEN</strong>. Beispiele: PATH, HOME, USER, SHELL.
+            Eigene Shell-Variablen schreibt man meist klein zur Unterscheidung.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 6 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q6</span>
+        <h2 class="timeblock-title"><code>export</code></h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Mit <code>export</code> wird eine Umgebungsvariable:</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q6" value="a"> <span>a) bekannt gemacht (für das System)</span></label>
+          <label class="q2-item"><input type="radio" name="q6" value="b"> <span>b) gelöscht</span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <code>export</code> macht eine Variable
+            für Kind-Prozesse (z.B. Skripte) sichtbar. Zum Löschen einer
+            Variablen nimmst du <code>unset</code>.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> <code>export</code> <strong>exportiert</strong>
+            eine Variable an Kind-Prozesse — macht sie also bekannt. Zum Löschen
+            verwendet man <code>unset</code>.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 7 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q7</span>
+        <h2 class="timeblock-title">Maschine ausschalten</h2>
+        <span class="timeblock-badge badge-quiz">Multiple Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Mit welchem Befehl kann man die Linux-Maschine ausschalten?</strong>
+        (mehrere Antworten möglich)</p>
+
+        <form class="q2-form" data-correct="a,c" data-multi="true">
+          <label class="q2-item"><input type="checkbox" name="q7" value="a"> <span>a) <code>shutdown</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q7" value="b"> <span>b) <code>shutdown -r</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q7" value="c"> <span>c) <code>systemctl poweroff</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q7" value="d"> <span>d) <code>reboot</code></span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <code>shutdown</code> ohne Option fährt
+            herunter (nach 1 Minute), <code>systemctl poweroff</code> ebenfalls.
+            <code>shutdown -r</code> und <code>reboot</code> sind <strong>Neustart</strong>-Befehle.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Richtig sind <strong>a) shutdown</strong>
+            und <strong>c) systemctl poweroff</strong>. Beides fährt das System
+            herunter. <code>shutdown -r</code> und <code>reboot</code> sind
+            Neustart-Befehle, nicht Ausschalten.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 8 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q8</span>
+        <h2 class="timeblock-title">Prozess beenden</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Mit welchem Befehl können Sie einen Prozess beenden?</strong></p>
+
+        <form class="q2-form" data-correct="c">
+          <label class="q2-item"><input type="radio" name="q8" value="a"> <span>a) <code>renice</code></span></label>
+          <label class="q2-item"><input type="radio" name="q8" value="b"> <span>b) <code>nice</code></span></label>
+          <label class="q2-item"><input type="radio" name="q8" value="c"> <span>c) <code>kill</code></span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <code>kill</code> sendet ein Signal an
+            einen Prozess — Default ist SIGTERM (15) zum sauberen Beenden.
+            <code>nice</code> und <code>renice</code> ändern nur die Priorität,
+            beenden aber nichts.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> <code>kill</code> beendet Prozesse
+            (sendet ein Signal). <code>nice</code> und <code>renice</code> setzen
+            die Priorität (Niceness), beenden aber keinen Prozess.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 9 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q9</span>
+        <h2 class="timeblock-title">Niceness ändern</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Ein Prozess läuft im Hintergrund und hat den PID 2398. Wählen
+        Sie den richtigen Befehl, um den „Niceness"-Wert des Prozesses auf
+        <code>-10</code> umzustellen:</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q9" value="a"> <span>a) <code>renice -10 -p 2398</code></span></label>
+          <label class="q2-item"><input type="radio" name="q9" value="b"> <span>b) <code>nice -10 2398</code></span></label>
+          <label class="q2-item"><input type="radio" name="q9" value="c"> <span>c) <code>kill 2398</code></span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <code>renice</code> ändert die Niceness
+            eines <strong>laufenden</strong> Prozesses. Syntax:
+            <code>renice WERT -p PID</code>. <code>nice</code> wird nur beim
+            <strong>Starten</strong> eines Prozesses verwendet, nicht später.
+            Für negativen Wert braucht es übrigens sudo.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Richtig ist <code>renice -10 -p 2398</code>.
+            <code>renice</code> ändert die Niceness laufender Prozesse,
+            <code>-p</code> sagt: gemeint ist eine PID. <code>nice</code>
+            funktioniert nur beim Start, nicht später.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 10 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q10</span>
+        <h2 class="timeblock-title"><code>jobs</code></h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Mit dem Befehl <code>jobs</code> kann man:</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q10" value="a"> <span>a) Prozesse, die der angemeldete Benutzer gestartet hat, auflisten</span></label>
+          <label class="q2-item"><input type="radio" name="q10" value="b"> <span>b) Prozesse beenden</span></label>
+          <label class="q2-item"><input type="radio" name="q10" value="c"> <span>c) den Niceness-Wert eines Prozesses ändern</span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <code>jobs</code> listet die
+            Hintergrund-Jobs der <strong>aktuellen Shell</strong> auf — also
+            das, was du selbst mit <code>&amp;</code> in den Hintergrund
+            geschickt hast. Nicht alle Prozesse, nicht die anderer User.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> <code>jobs</code> <strong>listet</strong>
+            die eigenen Hintergrund-Jobs der aktuellen Shell. Beenden →
+            <code>kill</code>. Niceness → <code>renice</code>.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 11 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q11</span>
+        <h2 class="timeblock-title">Maschine neustarten</h2>
+        <span class="timeblock-badge badge-quiz">Multiple Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong>Mit welchem Befehl kann man die Linux-Maschine neustarten?</strong>
+        (mehrere Antworten möglich)</p>
+
+        <form class="q2-form" data-correct="c,e" data-multi="true">
+          <label class="q2-item"><input type="checkbox" name="q11" value="a"> <span>a) <code>poweroff</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q11" value="b"> <span>b) <code>telinit 0</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q11" value="c"> <span>c) <code>reboot</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q11" value="d"> <span>d) <code>systemctl halt</code></span></label>
+          <label class="q2-item"><input type="checkbox" name="q11" value="e"> <span>e) <code>shutdown -r</code></span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <code>reboot</code> startet sofort neu,
+            <code>shutdown -r</code> nach einer Minute (oder <code>-r now</code>
+            sofort). <code>poweroff</code>, <code>telinit 0</code> und
+            <code>systemctl halt</code> fahren herunter, starten aber NICHT neu.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Richtig sind <strong>c) reboot</strong>
+            und <strong>e) shutdown -r</strong>. <code>poweroff</code> /
+            <code>telinit 0</code> / <code>systemctl halt</code> sind alles
+            Herunterfahr-Befehle, kein Neustart.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ FRAGE 12 ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">Q12</span>
+        <h2 class="timeblock-title">Shebang</h2>
+        <span class="timeblock-badge badge-quiz">Single Choice</span>
+      </div>
+
+      <div class="subblock">
+        <p><strong><code>#!/bin/bash</code> wird allgemein als _________
+        bezeichnet:</strong></p>
+
+        <form class="q2-form" data-correct="a">
+          <label class="q2-item"><input type="radio" name="q12" value="a"> <span>a) Shebang</span></label>
+          <label class="q2-item"><input type="radio" name="q12" value="b"> <span>b) Hashban</span></label>
+          <label class="q2-item"><input type="radio" name="q12" value="c"> <span>c) Shehash</span></label>
+
+          <div class="q2-expl-correct">
+            <strong>✓ Richtig!</strong> <strong>Shebang</strong> (manchmal auch
+            „Hashbang") — aus <strong>Sh</strong>arp (#) + <strong>Bang</strong> (!).
+            Sagt dem System, welcher Interpreter das Skript ausführen soll.
+            Steht immer in der ersten Zeile.
+          </div>
+          <div class="q2-expl-wrong">
+            <strong>✗ Nicht ganz.</strong> Der Begriff lautet <strong>Shebang</strong>
+            (oder Hashbang, beides geht). Aus den englischen Wörtern
+            <strong>Sh</strong>arp (#) und <strong>Bang</strong> (!).
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ ABSCHLUSS ============ -->
+    <section style="margin-top: 4rem;">
+      <div class="callout callout-tip">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-content">
+          <div class="callout-title">Quiz durchgearbeitet?</div>
+          <p>Wie waren deine Trefferquote? Wenn du <strong>9 von 12</strong>
+          richtig hattest, sitzt der Stoff. Bei weniger: kein Stress — schau dir
+          die entsprechenden Kapitel nochmal an. Das Quiz ist genau dafür da:
+          Lücken finden, bevor sie in der Prüfung zum Problem werden.</p>
+          <p style="margin-top: 0.5rem;"><strong>Wenn du dich gut fühlst:</strong>
+          Schau dir das Cheat-Sheet an, drucke es aus, hänge es neben deinen
+          Monitor.</p>
+        </div>
+      </div>
+
+      <div class="callout callout-info" style="margin-top: 1.5rem;">
+        <div class="callout-icon">📚</div>
+        <div class="callout-content">
+          <div class="callout-title">Wo du nachschlagen kannst</div>
+          <ul>
+            <li><strong>Q1, Q4</strong> (Boot, GRUB) → <a href="01-bootprozess.html">Kapitel 01 · Bootprozess</a></li>
+            <li><strong>Q2, Q7, Q11</strong> (Targets, Shutdown, Reboot) → <a href="02-runlevels-systemd.html">Kapitel 02 · systemd</a></li>
+            <li><strong>Q8, Q9, Q10</strong> (kill, renice, jobs) → <a href="03-prozessverwaltung.html">Kapitel 03 · Prozesse</a></li>
+            <li><strong>Q3</strong> (dnf update/upgrade) → <a href="04-paketverwaltung.html">Kapitel 04 · dnf</a></li>
+            <li><strong>Q5, Q6</strong> (Variablen, export) → <a href="05-umgebungsvariablen.html">Kapitel 05 · Umgebungsvariablen</a></li>
+            <li><strong>Q12</strong> (Shebang) → <a href="06-skripte.html">Kapitel 06 · Skripte</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="06-skripte.html">
+        <span class="nav-eyebrow">← Kapitel 06</span>
+        <span class="nav-title">Bash-Skripte schreiben</span>
+      </a>
+      <a href="08-cheat-sheet.html" class="nav-next">
+        <span class="nav-eyebrow">Finale →</span>
+        <span class="nav-title">Cheat-Sheet &amp; Kursabschluss</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

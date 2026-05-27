@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 03 · Prozessverwaltung · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Kapitel 03 von 6</div>
+    <h1 class="page-title">
+      <span class="highlight">Prozessverwaltung</span>
+    </h1>
+    <p class="page-subtitle">
+      Wenn was klemmt, willst du gezielt eingreifen — nicht panisch rebooten.
+      Heute lernst du Prozesse zu <strong>beobachten</strong> (<code>ps</code>,
+      <code>top</code>), in den <strong>Hintergrund</strong> zu schicken
+      (<code>&amp;</code>, <code>jobs</code>, <code>fg</code>/<code>bg</code>),
+      zu <strong>beenden</strong> (<code>kill</code>) und zu
+      <strong>priorisieren</strong> (<code>nice</code>/<code>renice</code>).
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 03</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 45 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.3</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 3.1 WAS IST EIN PROZESS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.1</span>
+        <h2 class="timeblock-title">Was ist ein Prozess?</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p>Ein <strong>Prozess</strong> ist ein laufendes Programm. Wenn du
+        <code>nano</code> öffnest, wird aus dem Programm auf der Disk ein
+        <em>Prozess</em> im RAM. Wenn du es schließt, verschwindet der Prozess.
+        Der Kernel verwaltet alle Prozesse, weist ihnen CPU-Zeit und Speicher zu.</p>
+
+        <p>Jeder Prozess hat eine <strong>PID</strong> (Process ID) — eine eindeutige
+        Nummer. PID <strong>1</strong> ist immer <code>systemd</code> (der erste
+        Prozess nach dem Bootvorgang). Alle anderen Prozesse stammen direkt oder
+        indirekt von PID 1 ab.</p>
+
+        <h4>Prozess-Anatomie auf einen Blick</h4>
+        <div class="ascii-box">  ┌─────────────────────────────────────────────┐
+  │  Prozess: nano /etc/hosts                    │
+  ├─────────────────────────────────────────────┤
+  │  PID:    4711       (eindeutige Nummer)      │
+  │  PPID:   3892       (Parent — wer hat mich gestartet?)
+  │  USER:   admin      (wem gehört der Prozess?)
+  │  STATE:  S          (R running, S sleeping, Z zombie, T stopped)
+  │  CPU:    0.2 %                              │
+  │  MEM:    0.1 %                              │
+  │  CMD:    nano /etc/hosts                    │
+  └─────────────────────────────────────────────┘</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Programm vs. Prozess</div>
+            <p>Ein <strong>Programm</strong> ist eine Datei auf der Disk
+            (<code>/usr/bin/nano</code>). Ein <strong>Prozess</strong> ist ein
+            laufendes Programm im RAM. Du kannst dasselbe Programm
+            <strong>mehrfach</strong> starten — dann gibt es mehrere Prozesse mit
+            verschiedenen PIDs. Drei nano-Fenster offen = drei Prozesse.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wozu Prozesse verstehen?</div>
+            <ul>
+              <li><strong>Hängender Browser?</strong> → finden, gezielt beenden, nicht rebooten</li>
+              <li><strong>Server zu langsam?</strong> → wer frisst die CPU? <code>top</code> zeigt's</li>
+              <li><strong>Backup soll laufen, aber nicht stören:</strong> → mit <code>nice</code> niedriger priorisieren</li>
+              <li><strong>Mehrere Sachen gleichzeitig im Terminal:</strong> → <code>&amp;</code> + <code>jobs</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3.2 PS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.2</span>
+        <h2 class="timeblock-title"><code>ps</code> — Prozess-Schnappschuss</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>ps</code> = <strong>p</strong>rocess <strong>s</strong>tatus.
+        Macht einen <em>Schnappschuss</em> der laufenden Prozesse. Ohne Optionen
+        zeigt es nur die Prozesse deiner aktuellen Shell — meist enttäuschend wenig.</p>
+
+        <h4>Die wichtigsten ps-Varianten</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Zeigt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>ps</code></td><td>Nur Prozesse der aktuellen Shell (meist 2–3)</td></tr>
+              <tr><td><code>ps -e</code> oder <code>ps -A</code></td><td><strong>Alle Prozesse</strong> auf dem System</td></tr>
+              <tr><td><code>ps -ef</code></td><td>Alle Prozesse, <strong>F</strong>ull-Format (mit PPID, Zeit)</td></tr>
+              <tr><td><code>ps aux</code></td><td>BSD-Stil — alle Prozesse mit CPU% und MEM% (der Klassiker)</td></tr>
+              <tr><td><code>ps -u admin</code></td><td>Nur Prozesse des Benutzers <code>admin</code></td></tr>
+              <tr><td><code>ps -ef | grep nginx</code></td><td>Filter: nur Prozesse mit „nginx" im Namen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>So liest du <code>ps aux</code></h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>$ ps aux | head -5
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.4 173456 13892 ?        Ss   08:00   0:02 /usr/lib/systemd/systemd
+root         2  0.0  0.0      0     0 ?        S    08:00   0:00 [kthreadd]
+admin     3892  0.1  0.5  22884  5612 pts/0    Ss   08:15   0:00 -bash
+admin     4711  0.0  0.2  19384  2104 pts/0    S+   09:23   0:00 nano /etc/hosts</code></pre>
+        </div>
+
+        <ul>
+          <li><strong>USER</strong> — wem gehört der Prozess</li>
+          <li><strong>PID</strong> — Process ID (eindeutig)</li>
+          <li><strong>%CPU / %MEM</strong> — wie viel CPU/RAM frisst er</li>
+          <li><strong>STAT</strong> — Zustand (R=running, S=sleeping, Z=zombie, T=stopped, +=im Vordergrund)</li>
+          <li><strong>COMMAND</strong> — welches Programm</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Der Klassiker zum Auswendiglernen</div>
+            <p><code>ps aux | grep BEFEHL</code> — findet alle Prozesse mit dem
+            Namen, zeigt deren PID. Wenn du den PID weißt, kannst du gezielt
+            <code>kill</code>en. Beispiel: <code>ps aux | grep firefox</code> →
+            siehst die PID → <code>kill 12345</code>.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Mehr ps-Tricks für später</summary>
+          <ul>
+            <li><code>ps -ef --forest</code> — Prozess-Baum (zeigt Eltern-Kind-Beziehungen)</li>
+            <li><code>ps -eo pid,user,%cpu,%mem,comm --sort=-%cpu | head</code> — Top-CPU-Fresser</li>
+            <li><code>ps -eo pid,user,%cpu,%mem,comm --sort=-%mem | head</code> — Top-RAM-Fresser</li>
+            <li><code>pgrep BEFEHL</code> — kürzer: nur die PID(s) zu einem Namen</li>
+            <li><code>pidof BEFEHL</code> — ähnlich, exakter Name-Match</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 3.3 TOP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.3</span>
+        <h2 class="timeblock-title"><code>top</code> — live, was läuft</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>top</code> ist der <strong>Live-Monitor</strong>. Während
+        <code>ps</code> einen Schnappschuss zeigt, aktualisiert <code>top</code>
+        sich alle 3 Sekunden. Genial, um zu sehen, was <em>gerade jetzt</em>
+        die CPU oder den RAM frisst.</p>
+
+        <h4>top starten und verstehen</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>$ top
+
+top - 10:23:45 up 2:23, 1 user, load average: 0.15, 0.22, 0.18
+Tasks: 124 total,  1 running, 123 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  2.3 us,  1.1 sy,  0.0 ni, 96.5 id,  0.1 wa,  0.0 hi,  0.0 si
+MiB Mem :   3934.2 total,   1234.5 free,   1421.0 used,   1278.7 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2256.1 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 4711 admin     20   0   19384   2104   1856 S   0.3   0.1   0:00.15 nano
+ 3892 admin     20   0   22884   5612   3340 S   0.0   0.1   0:00.42 bash
+    1 root      20   0  173456  13892   8124 S   0.0   0.4   0:02.31 systemd</code></pre>
+        </div>
+
+        <h4>Die wichtigsten Tasten in <code>top</code></h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Taste</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><kbd>q</kbd></td><td><strong>quit</strong> — top beenden</td></tr>
+              <tr><td><kbd>h</kbd></td><td>Hilfe einblenden</td></tr>
+              <tr><td><kbd>M</kbd></td><td>nach <strong>M</strong>emory sortieren</td></tr>
+              <tr><td><kbd>P</kbd></td><td>nach CPU (<strong>P</strong>rocessor) sortieren — default</td></tr>
+              <tr><td><kbd>k</kbd></td><td><strong>k</strong>ill — PID eingeben, dann Signal</td></tr>
+              <tr><td><kbd>r</kbd></td><td><strong>r</strong>enice — Priorität ändern</td></tr>
+              <tr><td><kbd>u</kbd></td><td>Filter nach <strong>u</strong>ser</td></tr>
+              <tr><td><kbd>1</kbd></td><td>einzelne CPU-Kerne anzeigen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title"><code>htop</code> — die schönere Alternative</div>
+            <p><code>htop</code> ist top mit Farben, Maus-Support, Prozess-Baum und
+            besserer Bedienung. Auf einer Minimal-Installation muss man's installieren —
+            das machen wir in Kapitel 04 (Paketverwaltung). Nicht standardmäßig dabei,
+            aber jeder Admin installiert es als erstes nach dem Login.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Was bedeutet "load average"?</summary>
+          <p>Die drei Zahlen oben in top (z.B. <code>0.15, 0.22, 0.18</code>) sind
+          die <strong>Load-Average</strong> für die letzten 1, 5 und 15 Minuten.
+          Grob: wie viele Prozesse warten gerade darauf, dass die CPU sie ausführt.</p>
+          <ul>
+            <li>Wert &lt; Anzahl der CPU-Kerne = entspannt</li>
+            <li>Wert = Anzahl Kerne = ausgelastet, aber nicht überlastet</li>
+            <li>Wert &gt; Anzahl Kerne = überlastet, Prozesse warten</li>
+          </ul>
+          <p>Auf einem 4-Kerne-Server ist <code>load 3.5</code> okay, <code>load 8.0</code>
+          ist Stress.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 3.4 HINTERGRUND-PROZESSE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.4</span>
+        <h2 class="timeblock-title">Hintergrund-Prozesse: <code>&amp;</code>, <code>jobs</code>, <code>fg</code>, <code>bg</code></h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Im Terminal kannst du Befehle in den <strong>Hintergrund</strong>
+        schicken — dein Prompt kommt sofort zurück, und du kannst gleichzeitig
+        anderes machen, während der Befehl weiterläuft.</p>
+
+        <h4>Der Werkzeugkasten</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>BEFEHL &amp;</code></td><td>Startet im <strong>Hintergrund</strong>, Prompt kommt sofort zurück</td></tr>
+              <tr><td><code>jobs</code></td><td>Listet <strong>deine</strong> Hintergrund-Jobs</td></tr>
+              <tr><td><code>fg %1</code></td><td>Job 1 in den <strong>f</strong>ore<strong>g</strong>round holen</td></tr>
+              <tr><td><code>bg %1</code></td><td>Gestoppten Job 1 im <strong>b</strong>ack<strong>g</strong>round weiterlaufen lassen</td></tr>
+              <tr><td><kbd>Strg</kbd>+<kbd>Z</kbd></td><td>Vordergrund-Prozess <strong>anhalten</strong> (stoppen, nicht beenden)</td></tr>
+              <tr><td><kbd>Strg</kbd>+<kbd>C</kbd></td><td>Vordergrund-Prozess <strong>beenden</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Typischer Workflow</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Großen Download im Hintergrund starten
+wget https://example.com/big.iso &amp;
+# → [1] 5234   (Job-Nummer 1, PID 5234)
+
+# Was läuft gerade im Hintergrund?
+jobs
+# → [1]+ Running    wget https://example.com/big.iso &amp;
+
+# Job 1 wieder in den Vordergrund holen
+fg %1
+
+# Im Vordergrund: anhalten mit Strg+Z
+# → [1]+ Stopped    wget ...
+
+# Gestoppten Job im Hintergrund weiterlaufen lassen
+bg %1
+# → [1]+ wget ... &amp;</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Q15-Klassiker: Was zeigt <code>jobs</code>?</div>
+            <p><strong>Nur die Prozesse, die du in deiner Shell gestartet hast.</strong>
+            Nicht alle Prozesse des Systems (dafür ist <code>ps</code> da), nicht
+            die Prozesse anderer User. <code>jobs</code> ist <em>deine</em>
+            Job-Übersicht — was läuft in <em>deiner</em> aktuellen Shell.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Was passiert, wenn ich das Terminal schließe?</summary>
+          <p>Normalerweise: <strong>Hintergrund-Jobs werden mit beendet</strong>, weil
+          sie an die Shell-Session gekoppelt sind. Wenn du das verhindern willst:</p>
+          <ul>
+            <li><code>nohup BEFEHL &amp;</code> — Job überlebt Terminal-Schließen, Output landet in <code>nohup.out</code></li>
+            <li><code>disown %1</code> — Job aus der Shell-Verantwortung entlassen</li>
+            <li><code>screen</code> oder <code>tmux</code> — separate Terminal-Sessions (Profi-Werkzeug, kommt später)</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 3.5 KILL ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.5</span>
+        <h2 class="timeblock-title"><code>kill</code> — Prozesse beenden</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>kill</code> klingt brutal, ist aber eigentlich nur „schick diesem
+        Prozess ein <strong>Signal</strong>". Manche Signale beenden den Prozess,
+        andere stoppen ihn nur kurz, wieder andere laden Konfiguration neu.</p>
+
+        <h4>Die wichtigsten Signale</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Signal</th><th>Nummer</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>SIGTERM</code></td><td><strong>15</strong></td><td><strong>höflich beenden</strong> — Prozess darf aufräumen (default!)</td></tr>
+              <tr><td><code>SIGKILL</code></td><td><strong>9</strong></td><td><strong>sofort beenden</strong> — kann NICHT ignoriert werden, kein Aufräumen</td></tr>
+              <tr><td><code>SIGHUP</code></td><td>1</td><td>"Konfig neu laden" (bei vielen Services)</td></tr>
+              <tr><td><code>SIGINT</code></td><td>2</td><td>was Strg+C macht</td></tr>
+              <tr><td><code>SIGSTOP</code></td><td>19</td><td>Prozess pausieren (wie Strg+Z)</td></tr>
+              <tr><td><code>SIGCONT</code></td><td>18</td><td>pausierten Prozess fortsetzen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>kill in der Praxis</h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Höflich beenden (default = SIGTERM)
+kill 5234
+
+# Wenn das nicht hilft: harter Schuss
+kill -9 5234
+# Identisch:
+kill -KILL 5234
+kill -SIGKILL 5234
+
+# Mehrere auf einmal
+kill 5234 5235 5236
+
+# Per Name statt PID
+pkill firefox
+killall firefox
+
+# Konfig neu laden, ohne Prozess zu beenden (z.B. nginx)
+kill -HUP 5234
+# Oder:
+sudo systemctl reload nginx   # die saubere systemd-Variante!</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Erst <code>kill</code>, dann <code>kill -9</code></div>
+            <p>Default-<code>kill</code> ist SIGTERM (15) — der Prozess kann
+            <strong>aufräumen</strong> (Datei zumachen, RAM freigeben, „auf Wiedersehen"
+            in Logs schreiben). Erst wenn er nicht reagiert, <code>kill -9</code>
+            (SIGKILL) — das ist der Notausschalter, der Prozess hat keine Chance
+            mehr, etwas zu retten. <strong>Kann zu Daten-Verlust führen.</strong></p>
+          </div>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🛡️</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel: <code>kill -9</code> ist letzte Option</div>
+            <ul>
+              <li>1. Versuch: <code>kill PID</code> (SIGTERM, höflich)</li>
+              <li>2. Versuch nach 5 Sekunden: <code>kill PID</code> nochmal</li>
+              <li>3. Wenn immer noch hängt: <code>kill -9 PID</code></li>
+            </ul>
+            <p style="margin-top: 0.6rem;">Bei Services <strong>immer</strong>
+            erst <code>systemctl stop SERVICE</code> versuchen — das ist die
+            saubere Variante.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3.6 NICE / RENICE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.6</span>
+        <h2 class="timeblock-title"><code>nice</code> &amp; <code>renice</code> — Priorität steuern</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Jeder Prozess hat einen <strong>Niceness-Wert</strong> (NI in <code>top</code>)
+        von <strong>-20 bis +19</strong>. Je „nicer" ein Prozess ist, desto
+        <em>höflicher</em> tritt er anderen die CPU ab.</p>
+
+        <div class="ascii-box">  NICENESS-SKALA
+  ────────────────────────────────────────────────
+  -20 ◄── HÖCHSTE Priorität (nur für root)
+       │  Echtzeit-nah, "ich brauche CPU JETZT"
+       │
+    0  ◄── DEFAULT (normaler Prozess)
+       │
+  +19  ◄── NIEDRIGSTE Priorität
+          "ich warte gerne, andere zuerst"</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Merksatz: "nice = höflich"</div>
+            <p>Je <em>höher</em> die Zahl, desto <em>höflicher</em> der Prozess.
+            Höfliche Prozesse lassen andere zuerst. Ein Backup mit
+            <code>nice 19</code> stört niemanden — es läuft nur, wenn sonst nichts
+            zu tun ist.</p>
+            <p><strong>Negative Niceness</strong> = unhöflich = hohe Priorität.
+            Das darf nur root, weil sonst jeder TN seine eigenen Prozesse
+            bevorzugen würde.</p>
+          </div>
+        </div>
+
+        <h4>Prozess MIT Niceness starten: <code>nice</code></h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Backup mit niedriger Priorität starten (nicht störend)
+nice -n 19 tar -czf backup.tar.gz /home/admin/
+
+# Default-Niceness ist 10, wenn keine Zahl angegeben
+nice tar -czf backup.tar.gz /home/admin/
+
+# Hohe Priorität (nur als root!)
+sudo nice -n -10 wichtige-rechnung.sh</code></pre>
+        </div>
+
+        <h4>Laufenden Prozess umpriorisieren: <code>renice</code></h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Prozess mit PID 2398 auf Niceness -10 setzen
+sudo renice -10 -p 2398
+
+# Den Niceness eines Prozesses höflicher machen (15)
+renice 15 -p 2398
+
+# Alle Prozesse eines Users umpriorisieren
+sudo renice 10 -u admin</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Wichtige Syntax-Regeln</div>
+            <ul>
+              <li><strong>Negative Niceness</strong> (höhere Priorität) braucht <code>sudo</code></li>
+              <li><strong><code>nice -n WERT</code></strong> (mit -n) vs. <strong><code>renice WERT</code></strong> (ohne -n, direkt die Zahl)</li>
+              <li><strong><code>-p PID</code></strong> bei renice — sonst denkt es, du meinst einen User</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 3.3 ============ -->
+    <section class="timeblock" id="lab33">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🧪</span>
+        <h2 class="timeblock-title">Lab 3.3 — Prozesse beobachten und steuern</h2>
+        <span class="timeblock-badge badge-quiz">Selbstständig · 45 min</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">📧</div>
+          <div class="callout-content">
+            <div class="callout-title">Mail von Sandra Reuter &lt;sandra.reuter@hanovatech.de&gt;</div>
+            <p><strong>Betreff:</strong> Server kriecht — kannst du mal nachschauen?</p>
+            <p>Hi Tim,</p>
+            <p>der Test-Server ist seit heute Morgen extrem langsam. Markus ist in Berlin,
+            deshalb schreibe ich dich an. Kannst du:</p>
+            <ol>
+              <li>nachschauen, welcher Prozess die CPU frisst</li>
+              <li>einen langlaufenden Job, den ich aus Versehen gestartet habe, in den
+                Hintergrund schicken und seine Priorität runterdrehen, damit er meinen
+                Code-Build nicht stört</li>
+              <li>am Ende einen hängenden Test-Prozess sauber beenden</li>
+            </ol>
+            <p>Mach das bitte heute, sonst kommt der Sprint-Plan in Verzug. Wenn du
+            unsicher bist, einfach den Lösungs-Toggle aufmachen — kein Drama.</p>
+            <p style="margin-bottom: 0;">Danke!<br>— Sandra</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil A — Beobachten mit ps und top (10 min)</div>
+        <ol class="lab-tasks">
+          <li>Liste mit <code>ps</code> nur die Prozesse deiner aktuellen Shell auf.
+            Wie viele sind es?</li>
+          <li>Liste mit <code>ps aux</code> ALLE Prozesse auf, leite die Ausgabe an
+            <code>head -10</code> weiter. Was ist der Prozess mit PID 1?</li>
+          <li>Finde mit <code>ps aux | grep bash</code>, welche Bash-Prozesse laufen.</li>
+          <li>Starte <code>top</code>. Drücke <kbd>M</kbd> (Memory-Sort). Welcher
+            Prozess frisst am meisten RAM? Drücke <kbd>P</kbd> (CPU-Sort). Welcher
+            am meisten CPU? Beende top mit <kbd>q</kbd>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1) Nur eigene Shell-Prozesse
+ps
+# → meist nur 2: bash + ps selbst
+
+# 2) Alle Prozesse, gekürzt
+ps aux | head -10
+# PID 1 ist IMMER /usr/lib/systemd/systemd (siehe Kap. 02)
+
+# 3) Bash-Prozesse finden
+ps aux | grep bash
+# Zeigt deine Login-Shell + ggf. den grep-Befehl selbst
+
+# 4) top mit Memory- und CPU-Sortierung
+top
+# Im top: M drücken (Memory-Sort), beobachten, dann P drücken (CPU)
+# Mit q beenden</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Hintergrund-Jobs (10 min)</div>
+        <ol class="lab-tasks" start="5">
+          <li>Starte einen Job, der 60 Sekunden schläft, im Hintergrund:
+            <code>sleep 60 &amp;</code>. Was zeigt die Ausgabe?</li>
+          <li>Starte zwei weitere: <code>sleep 120 &amp;</code> und <code>sleep 180 &amp;</code>.
+            Liste deine Jobs mit <code>jobs</code> auf.</li>
+          <li>Hole Job 2 in den Vordergrund (<code>fg %2</code>). Stoppe ihn mit
+            <kbd>Strg</kbd>+<kbd>Z</kbd>. Was sagt <code>jobs</code> jetzt?</li>
+          <li>Lass den gestoppten Job im Hintergrund weiterlaufen mit
+            <code>bg %2</code>. Prüfe nochmal mit <code>jobs</code>.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 5) Erster Hintergrund-Job
+sleep 60 &amp;
+# → [1] 4711  (Job-Nummer 1, PID 4711)
+
+# 6) Zwei weitere
+sleep 120 &amp;
+sleep 180 &amp;
+jobs
+# → [1]   Running    sleep 60 &amp;
+# → [2]-  Running    sleep 120 &amp;
+# → [3]+  Running    sleep 180 &amp;
+
+# 7) Job 2 in den Vordergrund
+fg %2
+# Jetzt blockiert die Shell. Strg+Z drücken:
+# → [2]+  Stopped    sleep 120
+jobs
+# → Status von Job 2 = "Stopped"
+
+# 8) Wieder in den Hintergrund
+bg %2
+# → [2]+  sleep 120 &amp;
+jobs
+# → alle drei wieder "Running"</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Niceness setzen (10 min)</div>
+        <ol class="lab-tasks" start="9">
+          <li>Starte ein langes <code>sleep</code> mit <strong>niedriger Priorität</strong>
+            (höflich): <code>nice -n 15 sleep 300 &amp;</code>. Notiere die PID
+            (steht in der Ausgabe).</li>
+          <li>Prüfe in <code>top</code>: ist der NI-Wert wirklich 15?
+            (Spalte NI). Beende top.</li>
+          <li>Setze mit <code>renice</code> den Niceness deines sleep-Prozesses auf 5.
+            Tipp: <code>renice 5 -p PID</code>.</li>
+          <li>Versuche, den Niceness auf <strong>-5</strong> zu setzen (ohne sudo).
+            Was passiert?</li>
+          <li>Setze ihn mit <code>sudo renice -5 -p PID</code>. Klappt das?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 9) Job mit niedriger Priorität
+nice -n 15 sleep 300 &amp;
+# → [4] 5234
+# PID merken: 5234
+
+# 10) Prüfen in top
+top
+# Spalte NI sollte 15 zeigen für diesen Prozess
+# q zum Beenden
+
+# 11) Auf 5 umstellen (höhere Prio als 15)
+renice 5 -p 5234
+# → 5234 (process ID) old priority 15, new priority 5
+
+# 12) Negativ ohne sudo
+renice -5 -p 5234
+# → renice: failed to set priority for 5234: Permission denied
+# Nur root darf negative Niceness setzen!
+
+# 13) Mit sudo
+sudo renice -5 -p 5234
+# → 5234 (process ID) old priority 5, new priority -5
+# Klappt!</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Prozesse beenden (10 min)</div>
+        <ol class="lab-tasks" start="14">
+          <li>Liste deine Jobs mit <code>jobs</code> auf. Finde die PIDs mit
+            <code>jobs -l</code>.</li>
+          <li>Beende einen der <code>sleep</code>-Prozesse <strong>höflich</strong>
+            mit <code>kill PID</code>. Was sagt die nächste Ausgabe von
+            <code>jobs</code>?</li>
+          <li>Beende einen weiteren mit <code>kill -9 PID</code>. Unterschied?</li>
+          <li>Beende alle restlichen <code>sleep</code>-Prozesse auf einmal mit
+            <code>pkill sleep</code>.</li>
+          <li>Prüfe mit <code>jobs</code>: sind alle weg?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 14) Jobs mit PIDs anzeigen
+jobs -l
+# → [1] 4711 Running   sleep 60 &amp;
+# → [2] 4812 Running   sleep 120 &amp;
+# → [3] 4913 Running   sleep 180 &amp;
+
+# 15) Höflich beenden
+kill 4711
+jobs
+# → [1]+  Terminated  sleep 60
+
+# 16) Hart beenden
+kill -9 4812
+# Beim nächsten Enter zeigt die Shell:
+# → [2]+  Killed      sleep 120
+# Unterschied zu kill: "Killed" statt "Terminated"
+
+# 17) Per Name beenden
+pkill sleep
+# Beendet ALLE sleep-Prozesse des aktuellen Users
+
+# 18) Prüfen
+jobs
+# → leer (oder noch kurz "Terminated"-Einträge)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <p style="margin: 0;">Im Bonus übst du Prozess-Bäume und die echte
+            Admin-Routine: "wer frisst mein System?"</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="19">
+          <li><strong>Top-5-CPU-Fresser:</strong> Liste die fünf Prozesse mit der
+            höchsten CPU-Last auf. Tipp:
+            <code>ps -eo pid,user,%cpu,comm --sort=-%cpu | head -6</code></li>
+          <li><strong>Top-5-RAM-Fresser:</strong> Dasselbe für Speicher.</li>
+          <li><strong>Prozess-Baum:</strong> Zeige den ganzen Prozess-Baum mit
+            <code>ps -ef --forest | head -30</code>. Welcher Prozess ist der
+            Großvater von allen?</li>
+          <li><strong>Eigener Hänger:</strong> Starte einen Endlos-Prozess
+            (<code>yes &gt; /dev/null &amp;</code>) und finde ihn mit
+            <code>top</code>. Beende ihn mit <code>kill</code>. Schau dir
+            vor dem Kill an, wie viel CPU er frisst.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 19) Top CPU
+ps -eo pid,user,%cpu,comm --sort=-%cpu | head -6
+
+# 20) Top RAM
+ps -eo pid,user,%mem,comm --sort=-%mem | head -6
+
+# 21) Prozess-Baum
+ps -ef --forest | head -30
+# Der "Großvater von allen" ist systemd (PID 1)
+
+# 22) yes-Endlos-Prozess
+yes &gt; /dev/null &amp;
+# → [1] 5678
+# In top sehen: yes frisst ~100% einer CPU
+top
+# q zum Beenden
+kill 5678
+# Höflich reicht hier — yes hat nichts zu sichern</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 3.3 geschafft?</div>
+            <p>Sehr gut! Du kannst jetzt: Prozesse <strong>beobachten</strong>,
+            in den <strong>Hintergrund</strong> schicken, <strong>priorisieren</strong>
+            und <strong>beenden</strong>. Das ist exakt das Toolset, mit dem
+            Admins täglich hängende Services und CPU-Fresser entschärfen.
+            Sandra kann beruhigt weiterarbeiten — du hast den Server wieder
+            unter Kontrolle.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">3.7</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — Sofort <code>kill -9</code></div>
+            <p>„Geht nicht? <code>kill -9</code>!" Falsch. SIGKILL (-9) lässt dem
+            Prozess keine Zeit, Dateien zu schließen, RAM freizugeben oder
+            Datenbank-Verbindungen sauber zu trennen. <strong>Erst SIGTERM
+            (default), dann erst -9, wenn nichts passiert.</strong></p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — Service mit <code>kill</code> statt <code>systemctl stop</code></div>
+            <p>Bei Services (nginx, sshd, postgresql, ...) <strong>immer</strong>
+            erst <code>sudo systemctl stop SERVICE</code> nehmen. systemd weiß,
+            wie der Service sauber zu stoppen ist. <code>kill</code> ist nur die
+            Notlösung, wenn systemd selbst hängt.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — <code>nice -10</code> vs. <code>nice -n 10</code></div>
+            <p>Bei <code>nice</code> muss <strong>-n</strong> vor die Zahl, sonst
+            interpretiert es die <code>-10</code> als Niceness <em>-10</em> (nicht
+            10). Bei <code>renice</code> ist es <em>umgekehrt</em>: dort wird die
+            Zahl <strong>direkt</strong> geschrieben (z.B. <code>renice 10 -p PID</code>).
+            Verwirrend, aber so ist es historisch gewachsen.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Falsche PID killen</div>
+            <p>Wenn <code>ps aux | grep firefox</code> mehrere Zeilen zeigt, ist
+            <strong>eine davon der grep-Befehl selbst</strong>. Diese PID nicht
+            killen — gefährlicher aber: nicht den richtigen Firefox-Prozess
+            killen, sondern z.B. systemd-Komponenten. <strong>Tipp:</strong>
+            <code>pgrep firefox</code> ist sicherer — listet nur die echten
+            Treffer, kein grep-Müll.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Was ist der Unterschied zwischen einem Programm und einem Prozess?</li>
+          <li>Welcher Prozess hat immer PID 1, und warum?</li>
+          <li>Was zeigt <code>jobs</code> — und was nicht?</li>
+          <li>Welches Signal ist default bei <code>kill PID</code>? Was ist
+            der Unterschied zu <code>kill -9 PID</code>?</li>
+          <li>Welcher Niceness-Wert bedeutet die <strong>höchste</strong> Priorität,
+            und wer darf den setzen?</li>
+          <li>Wie startest du einen Befehl direkt mit niedriger Priorität (Niceness 15)?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li>Ein <strong>Programm</strong> ist eine Datei auf der Disk. Ein
+                <strong>Prozess</strong> ist ein laufendes Programm im RAM.
+                Dasselbe Programm kann mehrfach als Prozess laufen.</li>
+              <li><strong>systemd</strong> hat PID 1, weil es der erste Prozess
+                nach dem Kernel-Start ist und alle weiteren Prozesse von ihm
+                abstammen (Init-Prozess).</li>
+              <li><code>jobs</code> zeigt <strong>nur</strong> die Hintergrund-Jobs
+                der <strong>aktuellen Shell</strong>. Nicht alle Prozesse des
+                Systems, nicht Prozesse anderer User.</li>
+              <li>Default ist <strong>SIGTERM (15)</strong> — der Prozess darf
+                aufräumen. <strong>SIGKILL (9)</strong> beendet sofort ohne
+                Aufräumen — Notlösung.</li>
+              <li><strong>-20</strong> ist die höchste Priorität. Nur
+                <strong>root</strong> darf negative Niceness setzen
+                (mit <code>sudo</code>).</li>
+              <li><code>nice -n 15 BEFEHL</code> — Achtung:
+                <code>-n</code> vor der Zahl!</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="02-runlevels-systemd.html">
+        <span class="nav-eyebrow">← Kapitel 02</span>
+        <span class="nav-title">Runlevels, systemd &amp; Targets</span>
+      </a>
+      <a href="04-paketverwaltung.html" class="nav-next">
+        <span class="nav-eyebrow">Kapitel 04 →</span>
+        <span class="nav-title">Paketverwaltung mit dnf</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux · Tag 3 · Übersicht · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 von 3 · Übersicht</div>
+    <h1 class="page-title">
+      Tag 3 — <span class="highlight">Selbstständig</span> als Junior-Admin
+    </h1>
+    <p class="page-subtitle">
+      Heute schließt sich der Kreis. Du verstehst, was zwischen Power-Knopf und
+      Login-Prompt passiert, kontrollierst Services mit <code>systemctl</code>,
+      überwachst und steuerst Prozesse, installierst Software, konfigurierst
+      deine Shell-Umgebung und schreibst dein erstes eigenes Bash-Skript.
+      Tag 3 ist dein <strong>Selbstständigkeits-Tag</strong>.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📅</span> Tag 3 von 3</span>
+      <span class="meta-item"><span class="meta-item-icon">⏰</span> 08:00 – 16:45</span>
+      <span class="meta-item"><span class="meta-item-icon">📚</span> 6 Kapitel</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> 6 Labs · 1 Cheat-Sheet · 1 Quiz</span>
+      <span class="meta-item"><span class="meta-item-icon">🐧</span> Rocky Linux 9</span>
+    </div>
+  </section>
+
+  <!-- ============ MARKUS' MAIL ============ -->
+  <section style="margin-top: 3rem;">
+    <div class="callout callout-info">
+      <div class="callout-icon">📧</div>
+      <div class="callout-content">
+        <div class="callout-title">E-Mail vom Vorabend · Von: Markus Becker &lt;markus.becker@hanovatech.de&gt;</div>
+        <p style="margin-top: 0.5rem;"><strong>Betreff:</strong> Morgen ist dein Tag — bitte vorbereiten</p>
+        <p>Hallo Tim,</p>
+        <p>kurze Nachricht für morgen früh: Ich bin den ganzen Tag im Strategie-Meeting
+        in Berlin und nicht erreichbar. Sandra ist da, falls du nicht weiterkommst,
+        aber sie hat selbst viel zu tun mit dem Webserver-Relaunch.</p>
+        <p>Ich habe dir bewusst <strong>einen vollen Lerntag</strong> hingelegt, bei dem
+        du das durcharbeitest, was du ab nächster Woche selbst können musst:</p>
+        <ul>
+          <li><strong>Bootprozess verstehen</strong> — wenn ein Server nicht hochkommt,
+            musst du wissen, an welchem Punkt es klemmt</li>
+          <li><strong>Services kontrollieren</strong> — starten, stoppen, neu laden, beim
+            Boot aktivieren</li>
+          <li><strong>Prozesse überwachen und steuern</strong> — wenn was hängt, willst
+            du gezielt eingreifen können statt panisch zu rebooten</li>
+          <li><strong>Software installieren</strong> — selbstständig, ohne mich zu fragen</li>
+          <li><strong>Deine Shell-Umgebung konfigurieren</strong> — Aliase, Variablen,
+            PATH</li>
+          <li><strong>Einfache Skripte schreiben</strong> — wiederkehrende Aufgaben
+            automatisieren</li>
+        </ul>
+        <p>Du schaffst das. Du hast Tag 1 und Tag 2 sehr ordentlich gemacht. Heute
+        zeigst du dir selbst, dass du eigenständig arbeiten kannst. Mach Snapshots vor
+        gefährlichen Experimenten — du hast einen Rettungsanker.</p>
+        <p>Am Ende des Tages bist du <strong>kein Junior-Admin im Lernmodus mehr</strong>,
+        sondern jemand, der auf einem Rocky-Server eigenständig handlungsfähig ist.</p>
+        <p style="margin-bottom: 0;">Viel Erfolg,<br>
+        — Markus</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LERNZIELE ============ -->
+  <div class="callout callout-info" style="margin-top: 2rem;">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-content">
+      <div class="callout-title">Am Ende des Tages kannst du …</div>
+      <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+        <li>den Bootprozess in seinen vier Phasen erklären (Firmware → Bootloader → Kernel → systemd)</li>
+        <li>BIOS und UEFI gegenüberstellen und einordnen, was MBR und GPT damit zu tun haben</li>
+        <li>die klassischen Runlevels (0–6) den systemd-Targets zuordnen und gezielt wechseln</li>
+        <li>Services mit <code>systemctl</code> starten, stoppen, aktivieren und ihren Status prüfen</li>
+        <li>Prozesse mit <code>ps</code>, <code>top</code>, <code>jobs</code> beobachten und mit <code>kill</code>, <code>nice</code>, <code>renice</code> steuern</li>
+        <li>Software mit <code>yum</code>/<code>dnf</code> installieren, aktualisieren und entfernen — RPM-Pakete verstehen</li>
+        <li>Umgebungsvariablen lesen, setzen, exportieren und den <code>PATH</code> erweitern</li>
+        <li>ein eigenes Bash-Skript mit Shebang, Befehlen und Ausführungsrechten schreiben und ausführen</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TAGESPLAN ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Tagesplan</h2>
+    <p class="section-subtitle">
+      6 Blöcke à 45–90 Minuten, mit Pausen und Mittag. Tag 3 ist
+      <strong>lab-lastig</strong> (~60 % Lab, ~40 % Theorie) und auf
+      <strong>selbstständiges Arbeiten</strong> ausgelegt. Markus ist im Meeting —
+      du arbeitest dich durch die Labs, der Lösungs-Toggle hilft, wenn du hängst.
+    </p>
+
+    <ul class="schedule-list">
+      <li><span class="schedule-time">08:00 – 08:30</span>
+          <span class="schedule-label">Einstieg · Quiz Tag 2 + Markus' Mail + Snapshot
+            <small>Snapshot <code>tag3-start</code> · Quiz-Paar-Abfrage Tag 2 ·
+            GUI-Installation im Hintergrund starten</small></span></li>
+      <li><span class="schedule-time">08:30 – 09:45</span>
+          <span class="schedule-label">Block 1 · Bootprozess + BIOS/UEFI + Bootloader
+            <small>Die vier Boot-Phasen + GRUB2 + Lab 3.1 (Boot-Reise &amp; GRUB sichern)</small></span></li>
+      <li><span class="schedule-time">09:45 – 10:00</span>
+          <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
+      <li><span class="schedule-time">10:00 – 11:30</span>
+          <span class="schedule-label">Block 2 · Runlevels + systemd + Targets
+            <small>Runlevels 0–6, systemctl-Architektur, Target-Unit + Service-Unit +
+            Lab 3.2 (Targets wechseln, GUI isolieren)</small></span></li>
+      <li><span class="schedule-time">11:30 – 11:45</span>
+          <span class="schedule-label">☕ Kurze Pause (15 min)</span></li>
+      <li><span class="schedule-time">11:45 – 13:00</span>
+          <span class="schedule-label">Block 3 · Prozessverwaltung
+            <small>ps, top, jobs, fg/bg, kill, nice/renice +
+            Lab 3.3 (Prozesse steuern)</small></span></li>
+      <li><span class="schedule-time">13:00 – 13:45</span>
+          <span class="schedule-label">🍽️ Mittagspause (45 min)</span></li>
+      <li><span class="schedule-time">13:45 – 14:30</span>
+          <span class="schedule-label">Block 4 · Paketverwaltung (kompakt)
+            <small>RPM-Grundlagen + yum/dnf install/remove/update/search +
+            Lab 3.4 (Tools installieren)</small></span></li>
+      <li><span class="schedule-time">14:30 – 15:15</span>
+          <span class="schedule-label">Block 5 · Umgebungsvariablen + PATH (kompakt)
+            <small>env, export, PATH, .bashrc + Lab 3.5</small></span></li>
+      <li><span class="schedule-time">15:15 – 15:30</span>
+          <span class="schedule-label">☕ Kaffeepause (15 min)</span></li>
+      <li><span class="schedule-time">15:30 – 16:30</span>
+          <span class="schedule-label">Block 6 · Bash-Skripte (Höhepunkt)
+            <small>Shebang, echo, Variablen, Ausführungsrechte +
+            Lab 3.6 (eigenes Skript bauen)</small></span></li>
+      <li><span class="schedule-time">16:30 – 16:45</span>
+          <span class="schedule-label">Wrap-Up · Cheat-Sheet-Bingo + Kursabschluss
+            <small>Quiz Tag 3 als Hausaufgabe — Linux-Kurs ist hiermit zu Ende</small></span></li>
+    </ul>
+
+    <div class="callout callout-trainer">
+      <div class="callout-icon">🎓</div>
+      <div class="callout-content">
+        <div class="callout-title">Trainer-Hinweis · Zeitdisziplin Tag 3</div>
+        <p><strong>Tag 3 ist eng getaktet — strikte Zeitdisziplin nötig.</strong>
+        Jedes Lab hat eine harte Zeitangabe. Wenn ein TN nach der angegebenen Zeit
+        noch hängt, Lösungs-Toggle zeigen lassen, weitermachen. Diskussion und
+        Vertiefung in die Pause oder Bonus-Phase verlagern.</p>
+        <p><strong>Wichtig — GUI-Install früh starten:</strong> Direkt zu Beginn (08:20)
+        in einer separaten Terminal-Session starten lassen:</p>
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; overflow-x: auto;"><code>sudo dnf groupinstall "Server with GUI" -y &amp;</code></pre>
+        <p>Läuft im Hintergrund während Block 1 und ist zu Block 2 fertig
+        (~600 MB Download, je nach Netz 5–15 min). Falls Netz schwach:
+        Plan B → Lab 3.2 nur den Target-Wechsel
+        <code>multi-user</code> ↔ <code>rescue</code> üben, GUI-Teil weglassen.</p>
+        <p><strong>Markus' Mail laut vorlesen!</strong> Das ist der emotionale
+        Rahmen für den ganzen Tag — TN sollen das Gefühl mitnehmen
+        „heute zeige ich's mir selbst".</p>
+      </div>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top: 1.5rem;">
+      <div class="callout-icon">📸</div>
+      <div class="callout-content">
+        <div class="callout-title">Snapshot-Strategie für Tag 3</div>
+        <p><strong>Vor Tag 3:</strong> Snapshot <code>tag3-start</code> machen
+        (Rückkehr-Punkt). <strong>Vor Lab 3.1 (GRUB):</strong> Snapshot
+        <code>vor-grub</code> — bei GRUB-Änderungen kann das System sonst nicht
+        mehr booten. <strong>Vor Lab 3.2 (Targets):</strong> Snapshot
+        <code>vor-targets</code>, falls der Target-Wechsel die falsche Konsole
+        bringt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KAPITEL-KACHELN ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Die Kapitel im Überblick</h2>
+    <p class="section-subtitle">
+      Sechs Themenblöcke — vier davon mit großem Lab, zwei kompakter.
+      Plus Cheat-Sheet und Tages-Quiz am Ende.
+    </p>
+
+    <div class="chapter-grid">
+
+      <a href="01-bootprozess.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 01 ]</div>
+        <div class="chapter-card-title">Bootprozess, BIOS/UEFI &amp; Bootloader</div>
+        <p class="chapter-card-desc">
+          Vom Power-Knopf bis zum Login-Prompt — die vier Phasen, BIOS vs. UEFI,
+          MBR vs. GPT, und wie GRUB2 deinen Kernel lädt.
+        </p>
+        <span class="chapter-card-badge">Lab 3.1</span>
+      </a>
+
+      <a href="02-runlevels-systemd.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 02 ]</div>
+        <div class="chapter-card-title">Runlevels, systemd &amp; Targets</div>
+        <p class="chapter-card-desc">
+          Von SysV-Runlevels (0–6) zu systemd-Targets. <code>systemctl</code>
+          beherrschen — Target-Unit und Service-Unit. Aus Minimal wird Graphical.
+        </p>
+        <span class="chapter-card-badge">Lab 3.2</span>
+      </a>
+
+      <a href="03-prozessverwaltung.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 03 ]</div>
+        <div class="chapter-card-title">Prozessverwaltung</div>
+        <p class="chapter-card-desc">
+          <code>ps</code>, <code>top</code>, <code>jobs</code>,
+          <code>fg</code>/<code>bg</code>, <code>kill</code>,
+          <code>nice</code>/<code>renice</code> — Prozesse beobachten und
+          steuern.
+        </p>
+        <span class="chapter-card-badge">Lab 3.3</span>
+      </a>
+
+      <a href="04-paketverwaltung.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 04 ]</div>
+        <div class="chapter-card-title">Paketverwaltung (RPM, yum/dnf)</div>
+        <p class="chapter-card-desc">
+          RPM-Welt, Repositories, die Standardbefehle für 90 % aller Fälle:
+          <code>install</code>, <code>remove</code>, <code>update</code>,
+          <code>upgrade</code>, <code>search</code>.
+        </p>
+        <span class="chapter-card-badge">Lab 3.4</span>
+      </a>
+
+      <a href="05-umgebungsvariablen.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 05 ]</div>
+        <div class="chapter-card-title">Umgebungsvariablen &amp; PATH</div>
+        <p class="chapter-card-desc">
+          <code>env</code>, <code>export</code>, <code>$PATH</code>,
+          <code>.bashrc</code> — DESHALB findet das Terminal manche Befehle
+          nicht.
+        </p>
+        <span class="chapter-card-badge">Lab 3.5</span>
+      </a>
+
+      <a href="06-skripte.html" class="chapter-card">
+        <div class="chapter-card-number">[ KAPITEL 06 ]</div>
+        <div class="chapter-card-title">Bash-Skripte schreiben</div>
+        <p class="chapter-card-desc">
+          Shebang, <code>echo</code>, Befehle hintereinander, Ausführungsrechte —
+          dein erstes eigenes Programm läuft.
+        </p>
+        <span class="chapter-card-badge">Lab 3.6</span>
+      </a>
+
+      <a href="07-quiz.html" class="chapter-card">
+        <div class="chapter-card-number">[ HAUSAUFGABE ]</div>
+        <div class="chapter-card-title">Tages-Quiz Tag 3</div>
+        <p class="chapter-card-desc">
+          15 Fragen quer durch alle Themen von Tag 3 — Prüfungsformat mit
+          Sofort-Feedback. Als Hausaufgabe oder zwischendurch.
+        </p>
+        <span class="chapter-card-badge">Quiz</span>
+      </a>
+
+      <a href="08-cheat-sheet.html" class="chapter-card">
+        <div class="chapter-card-number">[ FINALE ]</div>
+        <div class="chapter-card-title">Cheat-Sheet + Kursabschluss</div>
+        <p class="chapter-card-desc">
+          Druckbare Befehls-Referenz Tag 3, Tag-3-Wrap-Up und der Abschluss des
+          Linux-Kurses. Brücke zu Windows und Server.
+        </p>
+        <span class="chapter-card-badge">Cheat-Sheet</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ LERNZIELE DETAIL ============ -->
+  <section style="margin-top: 4rem;">
+    <h2 class="section-title">Tageslernziele im Detail</h2>
+    <p class="section-subtitle">
+      Was wir am Ende von Tag 3 gemeinsam abhaken wollen — die Messlatte für das
+      Quiz und die Selbsteinschätzung.
+    </p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Bereich</th><th>Konkretes Ziel</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Boot</strong></td><td>Du kannst die vier Boot-Phasen (Firmware → Bootloader → Kernel → systemd/init) in eigenen Worten erklären, BIOS von UEFI abgrenzen und die GRUB-Konfigurationsdatei nennen.</td></tr>
+          <tr><td><strong>Runlevels</strong></td><td>Du ordnest Runlevels 0–6 den systemd-Targets zu und kannst gezielt wechseln (<code>isolate</code>) oder dauerhaft setzen (<code>set-default</code>).</td></tr>
+          <tr><td><strong>systemctl</strong></td><td>Du kannst Services starten, stoppen, aktivieren/deaktivieren, neu starten und den Status mit <code>systemctl</code> prüfen.</td></tr>
+          <tr><td><strong>Prozesse</strong></td><td>Du beobachtest mit <code>ps</code>/<code>top</code>, schickst Jobs in den Hintergrund, beendest sie mit <code>kill</code> und priorisierst sie mit <code>nice</code>/<code>renice</code>.</td></tr>
+          <tr><td><strong>Pakete</strong></td><td>Du installierst, entfernst, aktualisierst und suchst Pakete mit <code>yum</code>/<code>dnf</code> und kennst die wichtigsten <code>rpm</code>-Abfragen.</td></tr>
+          <tr><td><strong>Variablen</strong></td><td>Du liest und setzt Umgebungsvariablen, verstehst <code>$PATH</code> und kannst persistent in <code>.bashrc</code> eintragen.</td></tr>
+          <tr><td><strong>Skripte</strong></td><td>Du schreibst ein ausführbares Bash-Skript mit Shebang, mehreren Befehlen und sinnvollen <code>echo</code>-Ausgaben.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top: 1.5rem;">
+      <div class="callout-icon">💡</div>
+      <div class="callout-content">
+        <div class="callout-title">Lerntipp für Tag 3</div>
+        <p>Heute gilt: <strong>erst selbst probieren, dann Lösungs-Toggle</strong>.
+        Wer den Toggle zu früh aufmacht, lernt halb. Wer 5 Minuten ringt, dann den
+        Toggle aufmacht und „aha!" denkt, hat richtig gelernt. Markus ist im
+        Meeting — heute ist der Tag, an dem du dir selbst zeigst, was du kannst.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NAV ============ -->
+  <nav class="chapter-nav">
+    <a href="../tag2/08-cheat-sheet.html">
+      <span class="nav-eyebrow">← Tag 2</span>
+      <span class="nav-title">Cheat-Sheet &amp; Wrap-Up Tag 2</span>
+    </a>
+    <a href="01-bootprozess.html" class="nav-next">
+      <span class="nav-eyebrow">Kapitel 01 →</span>
+      <span class="nav-title">Bootprozess, BIOS/UEFI &amp; Bootloader</span>
+    </a>
+  </nav>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kap. 06 · Bash-Skripte schreiben · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Kapitel 06 von 6 · Höhepunkt</div>
+    <h1 class="page-title">
+      <span class="highlight">Bash-Skripte</span> schreiben
+    </h1>
+    <p class="page-subtitle">
+      Du hast den ganzen Tag Befehle einzeln eingetippt. Jetzt sammelst du sie
+      in einer <strong>Datei</strong>, machst sie ausführbar — und kannst
+      ganze Befehlsabfolgen mit einem einzigen Aufruf starten. Das ist der
+      Anfang von <strong>Automatisierung</strong>. Heute schreibst du dein
+      erstes eigenes Skript.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 06</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 20 min Theorie + 40 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 3.6</span>
+      <span class="meta-item"><span class="meta-item-icon">🏆</span> Tages-Höhepunkt</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ 6.1 WAS IST EIN SKRIPT ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.1</span>
+        <h2 class="timeblock-title">Was ist ein Skript?</h2>
+        <span class="timeblock-badge badge-vortrag">Grundlage</span>
+      </div>
+
+      <div class="subblock">
+        <p>Ein <strong>Bash-Skript</strong> ist nichts anderes als eine
+        <strong>Textdatei</strong> mit Bash-Befehlen, die <em>Zeile für Zeile</em>
+        abgearbeitet werden, sobald du die Datei ausführst.</p>
+
+        <div class="ascii-box">  GEDANKE
+  „Ich tippe jeden Tag dieselben 5 Befehle nacheinander..."
+
+  LÖSUNG
+  ┌─────────────────────────────────────────┐
+  │  täglich.sh                              │
+  ├─────────────────────────────────────────┤
+  │  #!/bin/bash                             │
+  │  echo "Starte Backup..."                 │
+  │  tar -czf backup.tar.gz /home/admin/      │
+  │  echo "Update..."                        │
+  │  sudo dnf update -y                      │
+  │  echo "Fertig!"                          │
+  └─────────────────────────────────────────┘
+
+  Statt 5 Befehle → ein einziger:
+  $ ./täglich.sh</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">🧠</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum Skripte?</div>
+            <ul>
+              <li><strong>Wiederholbar</strong> — die gleiche Aufgabe macht das Skript jedes Mal exakt gleich</li>
+              <li><strong>Schnell</strong> — ein Aufruf statt 10 Befehle tippen</li>
+              <li><strong>Dokumentation</strong> — das Skript IST die Anleitung</li>
+              <li><strong>Automatisch</strong> — kann zeitgesteuert per cron laufen</li>
+              <li><strong>Teilbar</strong> — Kollege kann dein Skript einfach übernehmen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6.2 SHEBANG ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.2</span>
+        <h2 class="timeblock-title">Die Shebang — <code>#!/bin/bash</code></h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Jedes anständige Bash-Skript beginnt mit einer <strong>Shebang-Zeile</strong>
+        (sprich: „<em>schi-bäng</em>"). Sie sagt dem System, mit welchem Interpreter
+        die Datei ausgeführt werden soll.</p>
+
+        <div class="ascii-box">  ZEILE 1 IMMER:
+
+    #!/bin/bash
+    ▲▲
+    ││
+    │└─── ! Bang
+    └──── # Sharp / Hash
+          → zusammen "Shebang"
+
+  Dahinter: Pfad zum Interpreter
+    /bin/bash   → Bash-Shell
+    /bin/sh     → POSIX-Shell (sparsamer)
+    /usr/bin/python3 → Python-Skript
+    /usr/bin/env bash → portabler (sucht bash im PATH)</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <div class="callout-title">Q19-Klassiker: Wie heißt <code>#!/bin/bash</code>?</div>
+            <p>Der Begriff lautet <strong>Shebang</strong> (manchmal auch
+            „Hashbang" genannt). Aus <strong>Sh</strong>arp + <strong>Bang</strong>
+            (# + !). Steht <strong>immer</strong> in der ersten Zeile, ohne
+            Leerzeichen davor.</p>
+          </div>
+        </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Warum überhaupt eine Shebang?</summary>
+          <p>Wenn du <code>./skript.sh</code> aufrufst, weiß der Kernel sonst nicht,
+          welches Programm die Datei interpretieren soll. Die Shebang sagt es ihm.</p>
+          <p>Ohne Shebang läuft das Skript trotzdem, <em>wenn</em> du es mit
+          <code>bash skript.sh</code> startest — dann sagst du selbst, womit.
+          Aber das ist unpraktisch. Mit Shebang reicht <code>./skript.sh</code>.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ 6.3 ECHO & KOMMENTARE ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.3</span>
+        <h2 class="timeblock-title"><code>echo</code> &amp; Kommentare</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p><code>echo</code> gibt Text auf dem Bildschirm aus — das wichtigste
+        Werkzeug, um zu sehen, was dein Skript gerade tut.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Einfacher Text
+echo "Hallo Welt"
+# → Hallo Welt
+
+# Variable einbauen
+name="Tim"
+echo "Hallo $name"
+# → Hallo Tim
+
+# Leere Zeile
+echo ""
+
+# Ohne Zeilenumbruch am Ende
+echo -n "Lade..."
+
+# Mit Escape-Sequenzen (-e)
+echo -e "Zeile 1\nZeile 2"</code></pre>
+        </div>
+
+        <h4>Kommentare</h4>
+        <p>Alles nach <code>#</code> wird ignoriert (außer in der Shebang-Zeile,
+        die ist Sonderfall). Gut, um zu erklären, was das Skript macht.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>#!/bin/bash
+# Mein erstes Skript
+# Autor: Tim Schulz, HanovaTech
+# Datum: 27.05.2026
+
+echo "Hallo Welt"   # gibt einen Gruß aus
+
+# Hier kommt der Backup-Teil
+tar -czf backup.tar.gz /home/admin/</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Faustregel: Skript-Anfang dokumentieren</div>
+            <p>Schreib in den ersten 3–5 Zeilen (nach der Shebang) als Kommentar
+            rein: <strong>Was macht das Skript?</strong>,
+            <strong>Wer ist der Autor?</strong>, <strong>Wann zuletzt geändert?</strong>.
+            In sechs Monaten weißt du sonst nicht mehr, was das war.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6.4 AUSFÜHRBAR MACHEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.4</span>
+        <h2 class="timeblock-title">Skript ausführbar machen</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Eine reine Textdatei ist noch kein Programm. Du musst das
+        <strong>Execute-Bit</strong> setzen (kennst du noch aus Tag 2!).
+        Erinnerung: <code>chmod +x</code>.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Skript anlegen
+nano mein_skript.sh
+
+# Rechte prüfen — noch NICHT ausführbar
+ls -l mein_skript.sh
+# → -rw-r--r--  ← kein x irgendwo!
+
+# Ausführbar machen
+chmod +x mein_skript.sh
+
+# Jetzt:
+ls -l mein_skript.sh
+# → -rwxr-xr-x  ← x da, für alle drei Gruppen
+
+# Ausführen
+./mein_skript.sh
+# Punkt-Slash, weil "." (aktuelles Verzeichnis) NICHT im PATH ist</code></pre>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Warum <code>./</code> vor dem Skript-Namen?</div>
+            <p>Aus <strong>Sicherheitsgründen</strong> liegt das aktuelle
+            Verzeichnis (<code>.</code>) <strong>nicht</strong> im PATH. Sonst
+            könnte ein Angreifer ein bösartiges Skript namens <code>ls</code>
+            irgendwo platzieren, und du würdest es aus Versehen ausführen.</p>
+            <p>Deswegen: bei lokalen Skripten <code>./skript.sh</code> tippen.
+            Wenn dich das nervt, leg das Skript in <code>~/skripte/</code>
+            und nimm das in den PATH auf (Kapitel 05) — dann reicht
+            <code>skript.sh</code>.</p>
+          </div>
+        </div>
+
+        <h4>Alternativen zu <code>chmod +x</code></h4>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Variante 1: Execute-Bit setzen, dann normal ausführen
+chmod +x mein_skript.sh
+./mein_skript.sh
+
+# Variante 2: Explizit mit bash starten — geht OHNE +x
+bash mein_skript.sh
+
+# Variante 3: Oktal-Rechte setzen (kennst du aus Tag 2)
+chmod 755 mein_skript.sh   # rwx für Owner, rx für Group/Others</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6.5 BEFEHLE NACHEINANDER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.5</span>
+        <h2 class="timeblock-title">Befehle nacheinander &amp; Variablen im Skript</h2>
+        <span class="timeblock-badge badge-vortrag">Pflicht</span>
+      </div>
+
+      <div class="subblock">
+        <p>Im Skript stehen Befehle <strong>untereinander</strong>. Bash arbeitet
+        sie von oben nach unten ab. Eine Zeile = ein Befehl.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>#!/bin/bash
+# Beispiel: drei Befehle nacheinander
+
+echo "Schritt 1: Wechsele in /tmp"
+cd /tmp
+
+echo "Schritt 2: Liste Inhalt"
+ls -la
+
+echo "Schritt 3: Fertig"</code></pre>
+        </div>
+
+        <h4>Variablen im Skript</h4>
+        <p>Genau wie in der Shell — Variablen setzen mit <code>=</code> (keine
+        Leerzeichen!), auslesen mit <code>$</code>.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>#!/bin/bash
+# Variablen im Skript
+
+# Variable setzen
+name="Tim"
+ordner="/home/admin/projekte"
+datum=$(date +%Y-%m-%d)   # Befehl in Variable speichern!
+
+# Ausgeben
+echo "Hallo $name"
+echo "Arbeitsordner: $ordner"
+echo "Heute ist $datum"
+
+# In Befehlen verwenden
+cd $ordner
+echo "Ich bin jetzt in $PWD"</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Command Substitution: <code>$(befehl)</code></div>
+            <p>Mit <code>$(...)</code> kannst du die <strong>Ausgabe eines Befehls</strong>
+            in eine Variable speichern. Beispiel:
+            <code>datum=$(date +%Y-%m-%d)</code> → die Variable
+            <code>$datum</code> enthält das heutige Datum.</p>
+            <p>Sehr nützlich für Backup-Skripte:
+            <code>backup_name="backup-$(date +%Y-%m-%d).tar.gz"</code></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAB 3.6 — DER HÖHEPUNKT ============ -->
+    <section class="timeblock" id="lab36">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🧪</span>
+        <h2 class="timeblock-title">Lab 3.6 — Dein erstes Skript</h2>
+        <span class="timeblock-badge badge-quiz">Höhepunkt · 40 min</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-practice">
+          <div class="callout-icon">📧</div>
+          <div class="callout-content">
+            <div class="callout-title">Mail von Markus Becker</div>
+            <p><strong>Betreff:</strong> Dein erstes eigenes Skript</p>
+            <p>Hi Tim,</p>
+            <p>jetzt der Höhepunkt des Tages: dein erstes eigenes Bash-Skript.
+            Ich gebe dir eine kleine Aufgabe als Übung — eine Datei-Verwaltung,
+            die zeigt, dass du Befehle in eine Datei packen, mit Berechtigungen
+            arbeiten und das Ergebnis prüfen kannst.</p>
+            <p>Mach die Snapshot-Sicherung <code>vor-skript</code>, bevor du
+            anfängst — das Skript löscht Dateien.</p>
+            <p>Wenn du das hinkriegst, bist du offiziell <strong>Skript-fähig</strong>.
+            Ab dann ist dein Admin-Leben deutlich entspannter.</p>
+            <p style="margin-bottom: 0;">— Markus</p>
+          </div>
+        </div>
+
+        <div class="callout callout-warn" style="margin-top: 1.5rem;">
+          <div class="callout-icon">📸</div>
+          <div class="callout-content">
+            <div class="callout-title">Vor dem Lab: Snapshot</div>
+            <p>Bevor du loslegst, mache einen Snapshot
+            <code>vor-skript</code> in deiner VM. Das Lab löscht Dateien — wenn
+            du das Skript an der falschen Stelle ausführst, hilft der Snapshot.</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil A — Vorbereitung: Ordner und Dateien (5 min)</div>
+        <ol class="lab-tasks">
+          <li>Wechsle in dein Home-Verzeichnis: <code>cd ~</code>.</li>
+          <li>Erstelle einen Ordner namens <code>autos</code>:
+            <code>mkdir autos</code>.</li>
+          <li>Wechsle in den Ordner: <code>cd autos</code>.</li>
+          <li>Lege drei leere Dateien an:
+            <code>touch bmw nissan opel</code>.</li>
+          <li>Prüfe mit <code>ls -l</code>. Was zeigt es? Welche Rechte haben
+            die Dateien?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil A zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 1) Home-Verzeichnis
+cd ~
+
+# 2) Ordner anlegen
+mkdir autos
+
+# 3) Rein wechseln
+cd autos
+
+# 4) Drei Dateien
+touch bmw nissan opel
+
+# 5) Prüfen
+ls -l
+# → -rw-r--r-- 1 admin admin 0 ... bmw
+# → -rw-r--r-- 1 admin admin 0 ... nissan
+# → -rw-r--r-- 1 admin admin 0 ... opel
+# Standard-Rechte: 644 (rw für Owner, r für Gruppe/Others)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil B — Das Skript schreiben (12 min)</div>
+        <ol class="lab-tasks" start="6">
+          <li>Bleib im Ordner <code>autos</code>. Öffne einen Editor und erstelle
+            eine neue Datei: <code>nano meinErstesSkript.sh</code>.</li>
+          <li>Schreibe in das Skript folgenden Inhalt:
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.5rem; overflow-x: auto;"><code>#!/bin/bash
+# Mein erstes Skript
+# Autor: Tim Schulz
+# Aufgabe: Datei-Verwaltung im Ordner autos
+
+echo "Hallo"
+chmod 644 bmw
+rm -f nissan
+ls -l
+echo "Wir haben es geschafft"</code></pre>
+          </li>
+          <li>Speichern und schließen: <kbd>Strg</kbd>+<kbd>O</kbd>, <kbd>Enter</kbd>,
+            <kbd>Strg</kbd>+<kbd>X</kbd>.</li>
+          <li>Prüfe mit <code>cat meinErstesSkript.sh</code>, ob alles richtig
+            drin steht.</li>
+          <li>Prüfe mit <code>ls -l meinErstesSkript.sh</code> die Rechte.
+            Hat es schon das Execute-Bit?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil B zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 6) Editor öffnen
+nano meinErstesSkript.sh
+
+# 7) Inhalt eintippen (siehe Aufgabe)
+
+# 8) Strg+O, Enter, Strg+X
+
+# 9) Inhalt prüfen
+cat meinErstesSkript.sh
+# Zeigt den ganzen Skript-Inhalt
+
+# 10) Rechte prüfen
+ls -l meinErstesSkript.sh
+# → -rw-r--r-- — KEIN Execute-Bit!
+# Das müssen wir gleich setzen (Teil C).</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil C — Ausführbar machen und testen (8 min)</div>
+        <ol class="lab-tasks" start="11">
+          <li>Versuche das Skript direkt auszuführen: <code>./meinErstesSkript.sh</code>.
+            Was passiert?</li>
+          <li>Mache es ausführbar: <code>chmod +x meinErstesSkript.sh</code>.</li>
+          <li>Prüfe nochmal mit <code>ls -l</code>. Was hat sich geändert?</li>
+          <li>Führe das Skript aus: <code>./meinErstesSkript.sh</code>.</li>
+          <li>Schau dir die Ausgabe genau an: welche Datei ist weg? Was ist mit
+            bmw und opel?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil C zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 11) Erster Versuch — geht NICHT
+./meinErstesSkript.sh
+# → bash: ./meinErstesSkript.sh: Permission denied
+# Weil kein x-Bit gesetzt ist!
+
+# 12) Execute-Bit setzen
+chmod +x meinErstesSkript.sh
+
+# 13) Rechte nochmal prüfen
+ls -l meinErstesSkript.sh
+# → -rwxr-xr-x — jetzt mit x für alle drei Gruppen
+
+# 14) Ausführen
+./meinErstesSkript.sh
+
+# Ausgabe sollte sein:
+# Hallo
+# -rw-r--r-- 1 admin admin 0 ... bmw       (chmod 644 wurde gesetzt)
+# -rwxr-xr-x 1 admin admin ... meinErstesSkript.sh
+# -rw-r--r-- 1 admin admin 0 ... opel
+# Wir haben es geschafft
+
+# 15) Beobachtung:
+# - nissan ist WEG (rm -f hat sie gelöscht)
+# - bmw existiert noch, hat aber explizit 644 (war ohnehin schon so)
+# - opel ist unverändert
+# - meinErstesSkript.sh selbst taucht jetzt im ls-Output auf</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Teil D — Verstehen, was passiert (5 min)</div>
+        <ol class="lab-tasks" start="16">
+          <li>Was passiert, wenn du das Skript ein <strong>zweites Mal</strong>
+            ausführst (<code>./meinErstesSkript.sh</code>)? Klappt es noch?</li>
+          <li>Warum benutzt das Skript <code>rm -f</code> und nicht nur
+            <code>rm</code>? Tipp: <code>-f</code> = force.</li>
+          <li>Erkläre einem Sitznachbarn (oder dir selbst laut), was jede
+            Zeile des Skripts macht.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Teil D zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <p><strong>16) Zweites Mal:</strong> Klappt — aber jetzt zeigt
+            <code>rm -f nissan</code> keinen Fehler, weil <code>-f</code>
+            (force) auch bei <em>nicht-existierender Datei</em> nicht meckert.
+            Ohne <code>-f</code> würde es sagen
+            "rm: cannot remove 'nissan': No such file or directory" und der Exit-Code
+            wäre nicht 0. Das Skript läuft trotzdem weiter, aber mit Fehler.</p>
+
+            <p><strong>17) Warum <code>-f</code>:</strong> Genau aus dem Grund —
+            es macht das Skript <strong>idempotent</strong> (wiederholt ausführbar
+            ohne Fehler). Auch nützlich bei Skripten, die Dateien aufräumen,
+            ohne sich um die Existenz zu kümmern.</p>
+
+            <p><strong>18) Zeile-für-Zeile:</strong></p>
+            <ul>
+              <li><code>#!/bin/bash</code> — Shebang, sagt: nutze Bash zum Ausführen</li>
+              <li><code># …</code> — Kommentare, nur für den Menschen</li>
+              <li><code>echo "Hallo"</code> — gibt „Hallo" aus</li>
+              <li><code>chmod 644 bmw</code> — setzt Rechte rw-r--r-- auf bmw</li>
+              <li><code>rm -f nissan</code> — löscht nissan ohne zu fragen</li>
+              <li><code>ls -l</code> — listet aktuellen Ordner als „long format"</li>
+              <li><code>echo "Wir haben es geschafft"</code> — Schluss-Ausgabe</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="lab-section-title">🌟 Bonus für schnelle Teilnehmer</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">📌</div>
+          <div class="callout-content">
+            <p style="margin: 0;">Bonus: Erweitere das Skript mit Variablen, Datum
+            und einem nützlichen Backup-Skript.</p>
+          </div>
+        </div>
+
+        <ol class="lab-tasks" start="19">
+          <li><strong>Variable einbauen:</strong> Erweitere das Skript, sodass
+            es am Anfang den Benutzernamen ausgibt:
+            <code>echo "Hallo $USER, das Skript startet..."</code></li>
+          <li><strong>Datum:</strong> Füge eine Zeile hinzu, die das aktuelle
+            Datum ausgibt: <code>echo "Heute: $(date +%Y-%m-%d)"</code></li>
+          <li><strong>Backup-Skript:</strong> Erstelle ein neues Skript
+            <code>~/skripte/backup.sh</code>, das den autos-Ordner als
+            tar.gz-Archiv ins Home-Verzeichnis sichert. Das Archiv soll das
+            Datum im Namen haben:
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.4rem; overflow-x: auto;"><code>#!/bin/bash
+# Backup des autos-Ordners
+
+datum=$(date +%Y-%m-%d_%H-%M)
+backup_name="autos-backup-$datum.tar.gz"
+
+echo "Erstelle Backup: $backup_name"
+tar -czf ~/$backup_name ~/autos/
+echo "Fertig! Backup liegt in ~/$backup_name"</code></pre>
+          </li>
+          <li>Mach das Backup-Skript ausführbar und führe es aus. Prüfe mit
+            <code>ls -lh ~/autos-backup-*</code>, ob das Archiv da ist.</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösung Bonus zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <div class="code-block">
+              <div class="code-header">
+                <div class="code-header-dots">
+                  <span class="code-dot code-dot-red"></span>
+                  <span class="code-dot code-dot-yellow"></span>
+                  <span class="code-dot code-dot-green"></span>
+                </div>
+                <span class="code-lang">bash</span>
+                <button class="copy-btn">📋 Kopieren</button>
+              </div>
+<pre><code># 19+20) Skript erweitern
+nano meinErstesSkript.sh
+
+# Inhalt komplett:
+#!/bin/bash
+echo "Hallo $USER, das Skript startet..."
+echo "Heute: $(date +%Y-%m-%d)"
+chmod 644 bmw
+rm -f nissan
+ls -l
+echo "Wir haben es geschafft"
+
+# 21) Backup-Skript anlegen
+mkdir -p ~/skripte
+nano ~/skripte/backup.sh
+
+# Inhalt wie in der Aufgabe
+
+# Ausführbar machen
+chmod +x ~/skripte/backup.sh
+
+# 22) Ausführen
+~/skripte/backup.sh
+
+# Prüfen
+ls -lh ~/autos-backup-*
+# → -rw-r--r-- 1 admin admin 220 ... autos-backup-2026-05-27_14-35.tar.gz</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip" style="margin-top: 1.5rem;">
+          <div class="callout-icon">🎉</div>
+          <div class="callout-content">
+            <div class="callout-title">Lab 3.6 geschafft? — DU BIST ADMIN!</div>
+            <p>Glückwunsch! Du hast gerade dein <strong>erstes eigenes
+            Programm</strong> geschrieben. Genau so fangen alle Admins, Entwickler
+            und DevOps-Engineers an. Aus diesen einfachen Skripten werden später
+            Backup-Pipelines, Deployment-Tools, Monitoring-Skripte — ganze
+            Infrastrukturen.</p>
+            <p>Wenn du heute Abend nach Hause gehst, weißt du:
+            <em>„Ich kann Befehle in eine Datei schreiben und sie ausführen lassen."</em>
+            Das ist der Übergang vom Klick-Admin zum Skript-Admin. Markus wird
+            stolz sein.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ANFÄNGER-FEHLER ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">6.6</span>
+        <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
+        <span class="timeblock-badge badge-warn">Vorsicht</span>
+      </div>
+
+      <div class="subblock">
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 1 — Shebang vergessen</div>
+            <p>Ohne <code>#!/bin/bash</code> in der ersten Zeile kann das Skript
+            zwar mit <code>bash skript.sh</code> ausgeführt werden, aber
+            <code>./skript.sh</code> funktioniert nicht zuverlässig.
+            <strong>Immer mit Shebang anfangen.</strong></p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 2 — <code>chmod +x</code> vergessen</div>
+            <p>„Permission denied" beim Ausführen?
+            <code>ls -l skript.sh</code> zeigt: kein <strong>x</strong> in den
+            Rechten. Lösung: <code>chmod +x skript.sh</code>. Klassiker
+            Nummer 1 bei Skript-Anfängern.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 3 — <code>./</code> vergessen</div>
+            <p>Du tippst <code>skript.sh</code> und bekommst „command not found",
+            obwohl die Datei direkt im Verzeichnis liegt. Grund: das aktuelle
+            Verzeichnis ist nicht im PATH. <strong>Immer</strong>
+            <code>./skript.sh</code> bei lokalen Skripten — oder ins
+            <code>~/skripte/</code>-Verzeichnis legen, das im PATH ist.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 4 — Leerzeichen bei Variablen-Zuweisung</div>
+            <p><code>name = "Tim"</code> im Skript → Fehlermeldung. Korrekt:
+            <code>name="Tim"</code> ohne Leerzeichen um das =. Der Fehler
+            kommt sehr häufig vor, weil normale Programmiersprachen Leerzeichen
+            ignorieren — Bash nicht.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-icon">❌</div>
+          <div class="callout-content">
+            <div class="callout-title">Fehler 5 — Editor speichert mit falscher Endung</div>
+            <p>Manche Editoren speichern als <code>skript.sh.txt</code>, wenn
+            man nicht aufpasst. Dann findet Bash die Datei nicht. <strong>Tipp:</strong>
+            <code>ls -la</code> nach dem Speichern, um den echten Dateinamen
+            zu sehen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLLFRAGEN ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎯</span>
+        <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
+        <span class="timeblock-badge badge-quiz">Selbst-Check</span>
+      </div>
+
+      <div class="subblock">
+        <ol class="lab-tasks">
+          <li>Wie heißt die Zeile <code>#!/bin/bash</code> in einem Skript?
+            (Tipp: Q19)</li>
+          <li>Welche drei Schritte brauchst du, um aus einer Textdatei ein
+            ausführbares Skript zu machen?</li>
+          <li>Warum musst du <code>./skript.sh</code> tippen statt nur
+            <code>skript.sh</code>?</li>
+          <li>Was macht <code>$(date +%Y-%m-%d)</code> in einem Skript?</li>
+          <li>Wie kommentierst du eine Zeile in einem Bash-Skript?</li>
+        </ol>
+
+        <div class="solution">
+          <button class="solution-toggle">
+            <span>Lösungen zeigen</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          <div class="solution-content">
+            <ol>
+              <li><strong>Shebang</strong> (manchmal auch Hashbang).
+                Aus <strong>Sh</strong>arp (#) und <strong>Bang</strong> (!).</li>
+              <li>(1) Datei mit Befehlen und Shebang erstellen
+                (z.B. mit nano), (2) Execute-Bit setzen mit
+                <code>chmod +x skript.sh</code>, (3) Ausführen mit
+                <code>./skript.sh</code>.</li>
+              <li>Aus Sicherheitsgründen ist das aktuelle Verzeichnis
+                (<code>.</code>) NICHT im PATH. Das verhindert, dass du
+                aus Versehen ein bösartiges Skript ausführst, das so heißt
+                wie ein normaler Befehl.</li>
+              <li><strong>Command Substitution</strong> — der Befehl
+                <code>date</code> wird ausgeführt, und seine
+                <strong>Ausgabe</strong> (z.B. „2026-05-27") wird an dieser
+                Stelle eingesetzt. Praktisch für Backup-Namen mit Datum.</li>
+              <li>Mit dem Zeichen <code>#</code> am Zeilenanfang. Alles dahinter
+                wird ignoriert. Auch nach einem Befehl möglich:
+                <code>ls   # listet das Verzeichnis</code>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="05-umgebungsvariablen.html">
+        <span class="nav-eyebrow">← Kapitel 05</span>
+        <span class="nav-title">Umgebungsvariablen &amp; PATH</span>
+      </a>
+      <a href="07-quiz.html" class="nav-next">
+        <span class="nav-eyebrow">Quiz →</span>
+        <span class="nav-title">Tages-Quiz Tag 3</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>

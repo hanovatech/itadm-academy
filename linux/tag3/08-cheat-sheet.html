@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheat-Sheet · Tag 3 · Kursabschluss · Lernwerkstatt</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐧</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="../../index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Start</a></li>
+      <li><a href="../index.html" class="active">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <section class="page-hero">
+    <div class="page-eyebrow">Linux · Tag 3 · Finale · Cheat-Sheet &amp; Abschluss</div>
+    <h1 class="page-title">
+      <span class="highlight">Cheat-Sheet</span> Tag 3 &amp; Kursabschluss
+    </h1>
+    <p class="page-subtitle">
+      Die druckbare Befehls-Referenz für Tag 3 — alles auf einer Seite,
+      direkt neben den Monitor hängen. Plus: der formelle Abschluss des
+      Linux-Kurses und der Blick nach vorn auf Windows und Server.
+    </p>
+    <div class="page-meta">
+      <span class="meta-item"><span class="meta-item-icon">📄</span> Druckbar</span>
+      <span class="meta-item"><span class="meta-item-icon">🏁</span> Kursabschluss Linux</span>
+      <span class="meta-item"><span class="meta-item-icon">🎓</span> Brücke zu Windows &amp; Server</span>
+    </div>
+  </section>
+
+  <article>
+
+    <!-- ============ TAG 3 WRAP-UP ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">📋</span>
+        <h2 class="timeblock-title">Tag 3 — was du heute gelernt hast</h2>
+        <span class="timeblock-badge badge-vortrag">Rückblick</span>
+      </div>
+
+      <div class="subblock">
+        <p>Heute Morgen warst du noch ein Junior-Admin, der bei jedem Befehl
+        überlegen musste, was er macht. Jetzt — neun Stunden später —
+        beherrschst du:</p>
+
+        <ul>
+          <li>den <strong>Bootprozess</strong> in vier Phasen: Firmware →
+            Bootloader → Kernel → systemd</li>
+          <li>den Unterschied zwischen <strong>BIOS und UEFI</strong>,
+            <strong>MBR und GPT</strong></li>
+          <li>die Welt von <strong>systemd</strong> — Targets statt Runlevels,
+            <code>systemctl</code> als Universal-Werkzeug</li>
+          <li>Services starten, stoppen, aktivieren, deren Status prüfen</li>
+          <li>Prozesse <strong>beobachten</strong> (<code>ps</code>,
+            <code>top</code>), in den <strong>Hintergrund schicken</strong>,
+            <strong>priorisieren</strong> und <strong>beenden</strong></li>
+          <li>Software mit <strong><code>dnf</code></strong> installieren,
+            aktualisieren, entfernen</li>
+          <li>Deine <strong>Shell-Umgebung</strong> einrichten — Variablen,
+            PATH, <code>.bashrc</code>, Aliase</li>
+          <li>Dein <strong>erstes eigenes Bash-Skript</strong> geschrieben,
+            ausführbar gemacht und erfolgreich gestartet</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🏆</div>
+          <div class="callout-content">
+            <div class="callout-title">Was Markus jetzt von dir erwartet</div>
+            <p>Ab Montag bist du <strong>einsatzbereit</strong>. Wenn ein
+            Service nicht startet, schaust du selbstständig mit
+            <code>systemctl status</code> nach. Wenn ein Prozess hängt, killst
+            du gezielt. Wenn ein Tool fehlt, <code>dnf install</code>. Wenn
+            eine Aufgabe sich wiederholt, schreibst du ein Skript.</p>
+            <p>Das ist <strong>Selbstständigkeit</strong>. Das macht den
+            Unterschied zwischen jemandem, der Linux <em>benutzt</em>, und
+            jemandem, der Linux <em>verwaltet</em>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHEAT-SHEET ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">📄</span>
+        <h2 class="timeblock-title">Cheat-Sheet — Alle Befehle Tag 3</h2>
+        <span class="timeblock-badge badge-vortrag">Druckbar</span>
+      </div>
+
+      <div class="subblock">
+
+        <h3>Shutdown &amp; Reboot</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Befehl</th><th>Wirkung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>shutdown</code></td><td>nach 1 min ausschalten</td></tr>
+              <tr><td><code>shutdown now</code></td><td>sofort ausschalten</td></tr>
+              <tr><td><code>shutdown +5</code></td><td>nach 5 min ausschalten</td></tr>
+              <tr><td><code>poweroff</code></td><td>sofort ausschalten</td></tr>
+              <tr><td><code>systemctl poweroff</code></td><td>sofort ausschalten (systemd)</td></tr>
+              <tr><td><code>shutdown -r</code></td><td>nach 1 min Neustart</td></tr>
+              <tr><td><code>shutdown -r now</code></td><td>sofort Neustart</td></tr>
+              <tr><td><code>reboot</code></td><td>sofort Neustart</td></tr>
+              <tr><td><code>systemctl reboot</code></td><td>sofort Neustart (systemd)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Runlevel ↔ systemd-Target</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Runlevel</th><th>systemd-Target</th><th>Beschreibung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td><code>poweroff.target</code></td><td>Herunterfahren</td></tr>
+              <tr><td>1</td><td><code>rescue.target</code></td><td>Single-User-Modus</td></tr>
+              <tr><td>2</td><td><code>multi-user.target</code></td><td>Multi-User ohne Netzwerk</td></tr>
+              <tr><td>3</td><td><code>multi-user.target</code></td><td>Multi-User ohne GUI</td></tr>
+              <tr><td>4</td><td>—</td><td>Benutzerdefiniert</td></tr>
+              <tr><td>5</td><td><code>graphical.target</code></td><td>Multi-User mit GUI</td></tr>
+              <tr><td>6</td><td><code>reboot.target</code></td><td>Neustart</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>systemctl — Targets</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Default-Target prüfen
+systemctl get-default
+
+# Default-Target ändern
+sudo systemctl set-default multi-user.target
+
+# Zu anderem Target wechseln (laufend)
+sudo systemctl isolate graphical.target
+
+# Klassisch (für Nostalgiker):
+telinit 6   # = reboot</code></pre>
+        </div>
+
+        <h3>systemctl — Services</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>sudo systemctl status sshd     # Status prüfen
+sudo systemctl start sshd      # starten
+sudo systemctl stop sshd       # stoppen
+sudo systemctl restart sshd    # neu starten
+sudo systemctl reload sshd     # Konfig neu laden (sanft)
+sudo systemctl enable sshd     # bei Boot aktivieren
+sudo systemctl disable sshd    # bei Boot deaktivieren
+sudo systemctl is-enabled sshd # Boot-Status prüfen</code></pre>
+        </div>
+
+        <h3>GRUB Bootloader</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># BACKUP der GRUB-Konfig (IMMER zuerst!)
+sudo cp /boot/grub2/grub.cfg /boot/grub2/grub.cfg.backup
+
+# Einstellungen bearbeiten
+sudo vim /etc/default/grub
+
+# Neue Konfig generieren
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code></pre>
+        </div>
+
+        <h3>Prozesse beobachten</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>ps              # eigene Shell-Prozesse
+ps aux          # alle Prozesse, BSD-Stil mit CPU%/MEM%
+ps -ef          # alle Prozesse, Full-Format
+ps aux | grep firefox  # filtern
+pgrep firefox   # nur PIDs
+top             # Live-Monitor (q=quit, M=memory, P=CPU, k=kill)
+htop            # schöneres top (muss installiert werden)</code></pre>
+        </div>
+
+        <h3>Prozesse steuern</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Hintergrund
+BEFEHL &amp;           # im Hintergrund starten
+jobs               # eigene Jobs listen
+jobs -l            # mit PIDs
+fg %1              # Job 1 in den Vordergrund
+bg %1              # gestoppten Job 1 im Hintergrund weiterlaufen
+Strg+Z             # laufenden Job anhalten
+Strg+C             # laufenden Job beenden
+
+# Beenden
+kill PID           # SIGTERM (höflich)
+kill -9 PID        # SIGKILL (sofort, kein Aufräumen)
+kill -HUP PID      # SIGHUP (Konfig neu laden)
+pkill BEFEHL       # per Name
+killall BEFEHL     # alle mit Namen
+
+# Priorität
+nice -n 15 BEFEHL          # mit Niceness 15 starten
+sudo nice -n -10 BEFEHL    # mit -10 starten (sudo!)
+renice 15 -p PID           # laufenden umstellen
+sudo renice -10 -p PID     # auf negativ (sudo!)</code></pre>
+        </div>
+
+        <h3>Paketverwaltung mit dnf</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Suchen &amp; Infos
+dnf search PAKET           # nach Paketen suchen
+dnf info PAKET             # Details zu einem Paket
+dnf list installed         # installierte Pakete
+dnf provides /usr/bin/htop # welches Paket liefert eine Datei?
+
+# Installieren &amp; entfernen
+sudo dnf install PAKET     # installieren
+sudo dnf install -y PAKET  # ohne Rückfrage
+sudo dnf remove PAKET      # entfernen
+sudo dnf autoremove        # verwaiste Abhängigkeiten
+
+# Aktualisieren
+dnf check-update           # was wäre verfügbar?
+sudo dnf update            # alles aktualisieren
+sudo dnf upgrade           # identisch zu update
+sudo dnf update PAKET      # nur ein Paket
+
+# Erweitert
+dnf history                # alle dnf-Aktionen
+dnf repolist               # aktive Repositories
+dnf group list             # Paketgruppen
+sudo dnf groupinstall "Server with GUI"  # GUI nachinstallieren</code></pre>
+        </div>
+
+        <h3>RPM Low-Level</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code>rpm -qa                    # alle installierten Pakete
+rpm -qi PAKET              # prüfen ob installiert
+rpm -qpi datei.rpm         # Infos zur .rpm-Datei
+rpm -qpl datei.rpm         # was würde es installieren?
+rpm -ivh datei.rpm         # lokales RPM installieren
+rpm -K datei.rpm           # Signatur prüfen</code></pre>
+        </div>
+
+        <h3>Umgebungsvariablen</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Lesen
+echo $HOME              # Wert ausgeben
+echo ${USER}            # mit Klammern
+env                     # alle Umgebungsvariablen
+printenv                # dito
+env | grep PATH         # filtern
+
+# Setzen
+name="Tim"              # Shell-Variable (KEINE Leerzeichen!)
+export PROJEKT="hano"   # Umgebungsvariable (auch für Kind-Prozesse)
+unset name              # löschen
+
+# PATH (NIE überschreiben — immer mit $PATH erweitern!)
+export PATH=$PATH:/neuer/pfad      # am Ende anhängen
+export PATH=/neuer/pfad:$PATH      # vorne (höhere Priorität)
+
+# Befehl finden
+which ls                # zeigt Pfad zum Befehl
+type ls                 # zeigt Typ (alias, builtin, file, ...)
+
+# .bashrc neu laden
+source ~/.bashrc        # oder kürzer:
+. ~/.bashrc</code></pre>
+        </div>
+
+        <h3>Bash-Skripte</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-header-dots">
+              <span class="code-dot code-dot-red"></span>
+              <span class="code-dot code-dot-yellow"></span>
+              <span class="code-dot code-dot-green"></span>
+            </div>
+            <span class="code-lang">bash</span>
+            <button class="copy-btn">📋 Kopieren</button>
+          </div>
+<pre><code># Grundgerüst
+#!/bin/bash                          # Shebang (immer Zeile 1)
+# Kommentar — wird ignoriert
+
+echo "Hallo"                         # Text ausgeben
+name="Tim"                           # Variable
+echo "Hallo $name"                   # Variable in Text
+datum=$(date +%Y-%m-%d)              # Command Substitution
+
+# Ausführen
+chmod +x skript.sh                   # ausführbar machen
+./skript.sh                          # ausführen
+bash skript.sh                       # alternativ, ohne +x
+
+# Skript-Pfad bequemer machen
+mkdir -p ~/skripte
+mv skript.sh ~/skripte/
+# In .bashrc:
+export PATH=$PATH:~/skripte
+# Dann reicht: skript.sh</code></pre>
+        </div>
+
+        <h3>Wichtige Pfade Tag 3</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Pfad</th><th>Inhalt</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/boot/grub2/grub.cfg</code></td><td>GRUB-Konfiguration</td></tr>
+              <tr><td><code>/etc/default/grub</code></td><td>GRUB-Vorlage (vor mkconfig editieren)</td></tr>
+              <tr><td><code>/etc/systemd/system/</code></td><td>eigene systemd-Units</td></tr>
+              <tr><td><code>/lib/systemd/system/</code></td><td>System-Unit-Dateien</td></tr>
+              <tr><td><code>/etc/yum.repos.d/</code></td><td>dnf-Repository-Definitionen</td></tr>
+              <tr><td><code>/var/log/dnf.log</code></td><td>dnf-Logs</td></tr>
+              <tr><td><code>~/.bashrc</code></td><td>deine Shell-Konfiguration</td></tr>
+              <tr><td><code>/etc/profile</code></td><td>System-weite Shell-Konfig</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ CHEAT-SHEET-BINGO ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎲</span>
+        <h2 class="timeblock-title">Cheat-Sheet-Bingo — letzte Runde</h2>
+        <span class="timeblock-badge badge-quiz">Spiel</span>
+      </div>
+
+      <div class="subblock">
+        <p>Zum Abschluss: <strong>Tippen-und-Erklären-Bingo</strong>. Trainer
+        nennt einen Begriff, TN tippt den Befehl und erklärt in einem Satz, was
+        er tut.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Begriff vom Trainer</th><th>Du tippst …</th><th>Erklärung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>„Was ist mein Default-Target?"</td><td><code>systemctl get-default</code></td><td>aktuelles Default-Target abfragen</td></tr>
+              <tr><td>„Wechsel sofort in den Text-Modus"</td><td><code>sudo systemctl isolate multi-user.target</code></td><td>laufend wechseln</td></tr>
+              <tr><td>„Wer frisst gerade meine CPU?"</td><td><code>top</code> oder <code>ps aux --sort=-%cpu | head</code></td><td>Live-Anzeige oder Top-Liste</td></tr>
+              <tr><td>„Kill Prozess 1234 sanft"</td><td><code>kill 1234</code></td><td>SIGTERM, höflich beenden</td></tr>
+              <tr><td>„Installiere htop"</td><td><code>sudo dnf install htop</code></td><td>Paketinstallation</td></tr>
+              <tr><td>„Was ist in meinem PATH?"</td><td><code>echo $PATH</code></td><td>Pfad-Variable ausgeben</td></tr>
+              <tr><td>„Ist sshd beim Boot aktiv?"</td><td><code>systemctl is-enabled sshd</code></td><td>Boot-Status prüfen</td></tr>
+              <tr><td>„Skript ausführbar machen"</td><td><code>chmod +x skript.sh</code></td><td>Execute-Bit setzen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🏁</div>
+          <div class="callout-content">
+            <p style="margin: 0;"><strong>Trainer-Hinweis:</strong> Bingo geht
+            5–10 Minuten, dann ist Schluss. Die Energie nach 8h Lab ist endlich
+            — Bingo dient dem letzten Aktivieren, nicht dem Drillen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KURSABSCHLUSS ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">🎓</span>
+        <h2 class="timeblock-title">Linux-Kurs Abschluss</h2>
+        <span class="timeblock-badge badge-vortrag">Finale</span>
+      </div>
+
+      <div class="subblock">
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">🐧</div>
+          <div class="callout-content">
+            <div class="callout-title">Drei Tage, ein Junior-Admin</div>
+            <p>Dies ist der <strong>Abschluss des Linux-Moduls</strong> der
+            IT-Administrator-Weiterbildung. Drei Tage haben dich von der
+            Installation eines Rocky-Linux-Systems über die Terminal-Grundlagen
+            und das Berechtigungs-System bis zu Prozessen, Paketen und ersten
+            Skripten geführt.</p>
+            <p>Das ist nicht alles, was Linux zu bieten hat — es ist
+            <strong>die Grundlage</strong>. Mit dem, was du jetzt kannst, bist
+            du auf jedem Rocky-, RHEL-, Alma- oder Fedora-Server arbeitsfähig.
+            Vieles, was später kommt — Netzwerke, Webserver, Datenbanken, Container
+            — baut auf genau diesem Fundament auf.</p>
+          </div>
+        </div>
+
+        <h3>Was du jetzt — nach drei Tagen — kannst</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Tag</th><th>Kernkompetenz</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Tag 1</strong></td><td>Rocky-Linux installieren, Terminal bedienen, Dateien und Ordner verwalten, Editoren nutzen, Wildcards und Redirection</td></tr>
+              <tr><td><strong>Tag 2</strong></td><td>Archivieren mit tar/gzip, Hard/Soft-Links und Inodes, Berechtigungen (chmod, chown, chgrp), Suchen mit find und locate</td></tr>
+              <tr><td><strong>Tag 3</strong></td><td>Bootprozess, systemd-Services, Prozessverwaltung, dnf-Paketverwaltung, Umgebungsvariablen, Bash-Skripte</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Was als Nächstes kommt</h3>
+        <p>Die IT-Administrator-Weiterbildung führt dich jetzt weiter:</p>
+
+        <div class="chapter-grid">
+          <div class="chapter-card" style="cursor: default;">
+            <div class="chapter-card-number">[ NÄCHSTES MODUL ]</div>
+            <div class="chapter-card-title">Windows-Administration</div>
+            <p class="chapter-card-desc">
+              Active Directory, Gruppenrichtlinien, PowerShell, Windows-Server-Rollen.
+              Vieles davon ist konzeptionell ähnlich zu dem, was du auf Linux
+              gelernt hast — Benutzer, Berechtigungen, Dienste — nur mit anderen
+              Werkzeugen.
+            </p>
+          </div>
+          <div class="chapter-card" style="cursor: default;">
+            <div class="chapter-card-number">[ DARAUF FOLGEND ]</div>
+            <div class="chapter-card-title">Server-Dienste</div>
+            <p class="chapter-card-desc">
+              Webserver (Apache, nginx), Datenbanken (MySQL, PostgreSQL),
+              Mailserver, DNS, DHCP. Alles auf Linux. Du wirst überrascht sein,
+              wie oft du auf das zurückgreifst, was du in diesen drei Tagen
+              gelernt hast.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout callout-info" style="margin-top: 2rem;">
+          <div class="callout-icon">📚</div>
+          <div class="callout-content">
+            <div class="callout-title">Linux geht weiter — auch nach diesem Kurs</div>
+            <p>Drei Tage sind <strong>der Anfang</strong>. Du wirst über die
+            Wochen und Monate noch viel lernen:</p>
+            <ul>
+              <li><strong>Netzwerk:</strong> ip, ss, firewalld, SELinux, SSH-Tunneling</li>
+              <li><strong>Logs:</strong> journalctl, /var/log/, logrotate</li>
+              <li><strong>Cron &amp; Timer:</strong> wiederkehrende Tasks automatisieren</li>
+              <li><strong>Container:</strong> Docker, Podman</li>
+              <li><strong>Konfigurations-Management:</strong> Ansible, Puppet</li>
+            </ul>
+            <p style="margin-top: 0.5rem;">Aber jetzt hast du das, was zählt:
+            <strong>ein Fundament, auf dem du alles weitere aufbauen kannst</strong>.
+            Du tippst <code>man BEFEHL</code> ohne Angst, du liest Fehlermeldungen,
+            statt sie zu ignorieren, du machst Snapshots, bevor du
+            experimentierst.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-recommendation">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-content">
+            <div class="callout-title">Tim Schulz — Stand der Dinge</div>
+            <p>Vor drei Tagen kanntest du Linux nur als „dieses schwarze Terminal,
+            das die Profis benutzen". Jetzt bist du einer von diesen Profis im
+            Anfangsstadium. <strong>Markus wird zufrieden sein</strong>. Er hat
+            in dich investiert — Zeit, Aufmerksamkeit, Vertrauen. Du hast das
+            zurückgezahlt.</p>
+            <p>Wenn du nach Hause gehst, denk dran: das war nicht nur Lernstoff.
+            Das war der Übergang vom Lehrling zum Junior-Admin. Ab morgen sieht
+            das Terminal nicht mehr aus wie eine schwarze Wand — sondern wie
+            dein Werkzeug.</p>
+            <p style="margin-bottom: 0;">Drei Tage. Eine Reise. Viel Erfolg
+            für alles, was kommt.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-trainer">
+          <div class="callout-icon">🎓</div>
+          <div class="callout-content">
+            <div class="callout-title">Trainer-Hinweis · Wrap-Up &amp; Abschluss</div>
+            <p><strong>Letzte 15 Minuten (16:30 – 16:45):</strong> Cheat-Sheet
+            ausdrucken lassen (Druck-Button im Browser),
+            Cheat-Sheet-Bingo spielen (5–10 min), dann <strong>Reflexionsrunde</strong>:
+            jeder TN sagt einen Satz, was sich heute am meisten verändert hat.</p>
+            <p><strong>Quiz als Hausaufgabe:</strong> Erwähnen, dass Quiz Tag 3
+            zur Selbstkontrolle gedacht ist — keine Bewertung, aber wichtig für
+            den eigenen Lernstand.</p>
+            <p><strong>Hinweis zur Tag-2-Ausblick-Diskrepanz:</strong> Falls am
+            Ende von Tag 2 ein anderer Tag-3-Inhalt skizziert wurde (z.B. mehr
+            Fokus auf einzelne Themen), das offen ansprechen: „Wir haben uns
+            entschieden, heute den Schwerpunkt auf <em>Selbstständigkeit</em> zu
+            legen — Boot, Services, Prozesse, Pakete, Skripte. Andere
+            Themen kommen in späteren Modulen wieder." Offen mit Anpassungen
+            umgehen, nichts verstecken.</p>
+            <p><strong>Brücke zu Windows-Modul:</strong> Wenn das nächste Modul
+            ansteht, hinweisen: konzeptionell <em>vieles ähnlich</em> (Benutzer,
+            Berechtigungen, Dienste), aber andere Werkzeuge. Nicht entmutigen —
+            das Fundament aus Linux hilft sehr.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ PRÜFUNGS-VORBEREITUNG ============ -->
+    <section class="timeblock">
+      <div class="timeblock-header">
+        <span class="timeblock-time">📝</span>
+        <h2 class="timeblock-title">Linux-Prüfungsvorbereitung</h2>
+        <span class="timeblock-badge badge-vortrag">IHK</span>
+      </div>
+
+      <div class="subblock">
+        <p>Für die IHK-Zwischen- und Abschlussprüfung sind aus dem Linux-Bereich
+        besonders relevant:</p>
+
+        <ul>
+          <li><strong>Befehls-Syntax</strong> auswendig kennen
+            (ls, cp, mv, rm, chmod, chown, tar, find, grep, ...)</li>
+          <li><strong>Berechtigungen</strong> als Oktalzahl umrechnen
+            (z.B. 755 = rwxr-xr-x)</li>
+          <li><strong>Bootprozess</strong> in der richtigen Reihenfolge
+            (BIOS → Bootloader → Kernel → init/systemd)</li>
+          <li><strong>Runlevels</strong> und ihre systemd-Targets kennen</li>
+          <li><strong>systemctl</strong> für Service-Verwaltung</li>
+          <li><strong>Prozess-Befehle</strong>: ps, top, kill, nice/renice</li>
+          <li><strong>Paketverwaltung</strong>: dnf install/remove/update/upgrade</li>
+          <li><strong>Shebang</strong> und Grundlagen Bash-Skripte</li>
+          <li><strong>Umgebungsvariablen</strong>: PATH, export-Syntax</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Lerntipp für die Prüfung</div>
+            <p>Spiele die Befehle mehrfach durch. Wer im Terminal regelmäßig
+            tippt, kann sich die Syntax nicht NICHT merken. Trockenes
+            Auswendiglernen hilft 30 %; Tippen hilft 100 %. <strong>Mach das
+            Quiz mehrmals in den nächsten Wochen</strong>, immer auch ohne
+            Lösungen — bis alle 12 Fragen sitzen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <nav class="chapter-nav">
+      <a href="07-quiz.html">
+        <span class="nav-eyebrow">← Quiz</span>
+        <span class="nav-title">Tages-Quiz Tag 3</span>
+      </a>
+      <a href="../index.html" class="nav-next">
+        <span class="nav-eyebrow">Linux-Modul →</span>
+        <span class="nav-title">Übersicht aller Linux-Tage</span>
+      </a>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
