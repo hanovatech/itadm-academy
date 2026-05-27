@@ -41,7 +41,7 @@
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> Kapitel 05</span>
-      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 25 min Theorie + 45 min Lab</span>
+      <span class="meta-item"><span class="meta-item-icon">⏱️</span> ca. 20 min Theorie + 45 min Lab</span>
       <span class="meta-item"><span class="meta-item-icon">🧪</span> Lab 2.5</span>
     </div>
   </section>
@@ -524,35 +524,30 @@ groups      # → admin wheel</code></pre>
       </div>
 
       <div class="subblock">
-        <div class="callout callout-info">
-          <div class="callout-icon">📌</div>
-          <div class="callout-content">
-            <p style="margin: 0;">Diese Sektion ist Bonus-Wissen — du musst es
-            heute nicht aktiv anwenden, solltest aber wissen, dass es
-            existiert.</p>
-          </div>
-        </div>
+        <!-- umask ist für Tag-2-Einsteiger Bonus-Stoff, nicht prüfungsrelevant -->
+        <details class="callout-deepdive">
+          <summary>🔵 Vertiefung für Neugierige: umask &amp; Default-Berechtigungen (optional)</summary>
 
-        <ul>
-          <li>Wenn du eine neue Datei mit <code>touch</code> anlegst, bekommt
-            sie <strong>automatisch</strong> Berechtigungen — meistens
-            <code>644</code> für Dateien und <code>755</code> für
-            Verzeichnisse.</li>
-          <li><strong>Warum genau diese?</strong> Das steuert die
-            <strong><code>umask</code></strong> (user mask) — eine Art
-            „Berechtigungs-Maske", die Rechte <strong>wegnimmt</strong>.</li>
-        </ul>
+          <ul>
+            <li>Wenn du eine neue Datei mit <code>touch</code> anlegst, bekommt
+              sie <strong>automatisch</strong> Berechtigungen — meistens
+              <code>644</code> für Dateien und <code>755</code> für
+              Verzeichnisse.</li>
+            <li><strong>Warum genau diese?</strong> Das steuert die
+              <strong><code>umask</code></strong> (user mask) — eine Art
+              „Berechtigungs-Maske", die Rechte <strong>wegnimmt</strong>.</li>
+          </ul>
 
-        <div class="code-block">
-          <div class="code-header">
-            <div class="code-header-dots">
-              <span class="code-dot code-dot-red"></span>
-              <span class="code-dot code-dot-yellow"></span>
-              <span class="code-dot code-dot-green"></span>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
             </div>
-            <span class="code-lang">bash</span>
-            <button class="copy-btn">📋 Kopieren</button>
-          </div>
 <pre><code># Aktuelle umask anzeigen
 umask
 # → 0022
@@ -561,18 +556,13 @@ umask
 # Es werden 022 von den maximalen Rechten abgezogen:
 # Dateien:       666 - 022 = 644  (rw-r--r--)
 # Verzeichnisse: 777 - 022 = 755  (rwxr-xr-x)</code></pre>
-        </div>
-
-        <div class="callout callout-info">
-          <div class="callout-icon">📌</div>
-          <div class="callout-content">
-            <div class="callout-title">Warum die umask wichtig ist</div>
-            <p>Die umask ist die Antwort auf „Wieso sind neue Dateien
-            automatisch <code>644</code>?". Auf Multi-User-Servern setzt man oft
-            <code>umask 077</code> — neue Dateien sind dann standardmäßig nur
-            für Owner sichtbar.</p>
           </div>
-        </div>
+
+          <p><strong>Warum die umask wichtig ist:</strong> Sie ist die Antwort
+          auf „Wieso sind neue Dateien automatisch <code>644</code>?". Auf
+          Multi-User-Servern setzt man oft <code>umask 077</code> — neue Dateien
+          sind dann standardmäßig nur für Owner sichtbar.</p>
+        </details>
       </div>
     </section>
 
