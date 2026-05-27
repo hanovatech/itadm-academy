@@ -373,16 +373,14 @@ nano ~/.bashrc
 
 # Eigene Variablen
 export EDITOR=nano
-export PROJEKT_DIR=~/hanovatech
 
 # Eigenes Skript-Verzeichnis im PATH
-export PATH=$PATH:~/meine-skripte
+export PATH=$PATH:$HOME/skripte
 
 # Aliase (Tipp-Abkürzungen)
 alias ll='ls -la'
-alias gs='git status'
 alias ..='cd ..'
-alias ...='cd ../..'
+alias df='df -h'
 
 # Speichern (Strg+O, Enter, Strg+X)
 
@@ -391,6 +389,25 @@ source ~/.bashrc
 # oder kürzer:
 . ~/.bashrc</code></pre>
         </div>
+
+        <details class="callout-deepdive">
+          <summary>▶ Warum <code>$HOME</code> statt <code>~</code> in PATH?</summary>
+          <p>Die Tilde <code>~</code> ist eine <strong>Abkürzung der Shell</strong>
+          für dein Home-Verzeichnis — aber sie wird nur an bestimmten Stellen
+          ersetzt: am Anfang eines Wortes oder direkt nach einem Doppelpunkt in
+          PATH-artigen Zuweisungen. In vielen anderen Zusammenhängen (etwa in
+          Anführungszeichen oder mitten in einem Wort) bleibt sie einfach das
+          Zeichen <code>~</code> stehen.</p>
+          <p><code>$HOME</code> dagegen ist eine <strong>echte Variable</strong>,
+          die überall zum vollen Pfad (<code>/home/admin</code>) expandiert —
+          zuverlässig, egal an welcher Stelle. Deshalb ist
+          <code>export PATH=$PATH:$HOME/skripte</code> die robustere Schreibweise:
+          sie funktioniert sicher, auch wenn die Zeile später in einem Skript oder
+          in Anführungszeichen landet.</p>
+          <p style="margin-bottom: 0;"><strong>Merksatz:</strong> <code>~</code>
+          ist bequem zum Tippen auf der Kommandozeile — <code>$HOME</code> ist
+          sicher zum Schreiben in Dateien.</p>
+        </details>
 
         <div class="callout callout-tip">
           <div class="callout-icon">💡</div>
@@ -432,20 +449,40 @@ source ~/.bashrc
           <div class="callout-icon">📧</div>
           <div class="callout-content">
             <div class="callout-title">Mail von Markus Becker</div>
-            <p><strong>Betreff:</strong> Richte dir die Shell ein, wie ein Profi</p>
+            <p><strong>Betreff:</strong> Richte dir deine Shell ein</p>
             <p>Hi Tim,</p>
-            <p>du wirst die nächsten Monate viel Zeit im Terminal verbringen.
-            Richte es dir bequem ein: ein paar Aliase, eine eigene
-            <code>PROJEKT_DIR</code>-Variable und ein
-            <code>~/skripte/</code>-Ordner im PATH, damit du deine eigenen
-            Skripte einfach aufrufen kannst.</p>
-            <p>Bonus: einen schönen Prompt mit Farben — die machen das Leben besser
-            (siehe Bonus-Aufgabe).</p>
-            <p style="margin-bottom: 0;">— Markus</p>
+            <p>du wirst die nächsten Monate viel Zeit im Terminal verbringen —
+            richte es dir bequem ein. Drei Dinge solltest du können, bevor wir
+            mit eigenen Skripten loslegen:</p>
+            <ul>
+              <li>verstehen, <strong>welche Standard-Variablen</strong> dir die
+              Shell schon mitgibt und wie du sie ausliest,</li>
+              <li>eine <strong>eigene Variable</strong> setzen und den
+              Unterschied zwischen „nur in dieser Shell" und „auch in
+              Kind-Prozessen" am eigenen Beispiel sehen,</li>
+              <li>einen <strong>eigenen Skript-Ordner</strong> so in den PATH
+              hängen, dass er auch nach einem Neustart des Terminals noch da
+              ist.</li>
+            </ul>
+            <p style="margin-bottom: 0;">Probier's einfach aus — die genaue
+            Umsetzung überlasse ich dir. — Markus</p>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil A — Variablen erkunden (5 min)</div>
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">Bevor du loslegst: Backup der .bashrc</div>
+            <p style="margin: 0;">In Phase 3 bearbeitest du deine
+            <code>~/.bashrc</code>. Mach dir gleich zu Beginn eine
+            Sicherungskopie, dann kannst du jederzeit zurück:
+            <code>cp ~/.bashrc ~/.bashrc.backup</code>. Falls du dir die Datei
+            zerschießt, hilft dir das Backup (und im Notfall: Terminal schließen
+            und neu öffnen).</p>
+          </div>
+        </div>
+
+        <div class="lab-section-title">Phase 1 — Standard-Variablen verstehen (8 min)</div>
         <ol class="lab-tasks">
           <li>Zeige die wichtigsten Umgebungsvariablen einzeln an:
             <code>echo $HOME</code>, <code>echo $USER</code>,
@@ -455,13 +492,13 @@ source ~/.bashrc
           <li>Finde mit <code>env | grep PATH</code> die PATH-Variable. Wie
             viele Verzeichnisse sind drin?
             (Tipp: zähle die Doppelpunkte + 1)</li>
-          <li>Wo liegt der <code>ls</code>-Befehl? Wo liegt <code>dnf</code>?
-            (mit <code>which</code>).</li>
+          <li>Wo liegt der <code>ls</code>-Befehl? Wo liegt <code>sleep</code>?
+            (mit <code>which</code>). In welchem PATH-Verzeichnis stecken die?</li>
         </ol>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil A zeigen</span>
+            <span>✅ Lösung Phase 1 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -492,13 +529,15 @@ env | grep PATH
 echo $PATH | tr ':' '\n' | wc -l
 
 # 4) Wo liegen Befehle?
-which ls   # → /usr/bin/ls
-which dnf  # → /usr/bin/dnf</code></pre>
+which ls      # → /usr/bin/ls
+which sleep   # → /usr/bin/sleep
+# Beide liegen in /usr/bin — und /usr/bin steht im PATH,
+# darum findet die Shell sie ohne vollen Pfad.</code></pre>
             </div>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil B — Eigene Variablen setzen (8 min)</div>
+        <div class="lab-section-title">Phase 2 — Eigene Variablen + PATH erweitern (12 min)</div>
         <ol class="lab-tasks" start="5">
           <li>Setze eine Shell-Variable <code>mein_name</code> mit deinem Vornamen.
             (Achtung: <strong>keine Leerzeichen</strong> um das =!)</li>
@@ -510,11 +549,19 @@ which dnf  # → /usr/bin/dnf</code></pre>
             gib die Variable aus. Unterschied?</li>
           <li>Lösche die Variable mit <code>unset mein_name</code> und prüfe
             mit <code>echo $mein_name</code>.</li>
+          <li>Erstelle einen Ordner für eigene Skripte: <code>mkdir ~/skripte</code>.</li>
+          <li>Lege darin ein einfaches Skript an:
+            <code>echo 'echo "Hallo aus meinem Skript!"' &gt; ~/skripte/hallo.sh</code>
+            und mache es ausführbar: <code>chmod +x ~/skripte/hallo.sh</code>.</li>
+          <li>Versuche es direkt aufzurufen: <code>hallo.sh</code>. Was passiert?</li>
+          <li>Erweitere PATH temporär: <code>export PATH=$PATH:$HOME/skripte</code>.</li>
+          <li>Jetzt nochmal <code>hallo.sh</code>. Klappt es?</li>
+          <li>Schließe das Terminal und öffne ein neues. Ist PATH noch erweitert?</li>
         </ol>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil B zeigen</span>
+            <span>✅ Lösung Phase 2 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -552,40 +599,9 @@ exit
 # 9) Löschen
 unset mein_name
 echo $mein_name
-# → (leer)</code></pre>
-            </div>
-          </div>
-        </div>
+# → (leer)
 
-        <div class="lab-section-title">Teil C — PATH erweitern (8 min)</div>
-        <ol class="lab-tasks" start="10">
-          <li>Erstelle einen Ordner für eigene Skripte: <code>mkdir ~/skripte</code>.</li>
-          <li>Lege darin ein einfaches Skript an:
-            <code>echo 'echo "Hallo aus meinem Skript!"' &gt; ~/skripte/hallo.sh</code>
-            und mache es ausführbar: <code>chmod +x ~/skripte/hallo.sh</code>.</li>
-          <li>Versuche es direkt aufzurufen: <code>hallo.sh</code>. Was passiert?</li>
-          <li>Erweitere PATH temporär: <code>export PATH=$PATH:~/skripte</code>.</li>
-          <li>Jetzt nochmal <code>hallo.sh</code>. Klappt es?</li>
-          <li>Schließe das Terminal und öffne ein neues. Ist PATH noch erweitert?</li>
-        </ol>
-
-        <div class="solution">
-          <button class="solution-toggle">
-            <span>Lösung Teil C zeigen</span>
-            <span class="toggle-arrow">▼</span>
-          </button>
-          <div class="solution-content">
-            <div class="code-block">
-              <div class="code-header">
-                <div class="code-header-dots">
-                  <span class="code-dot code-dot-red"></span>
-                  <span class="code-dot code-dot-yellow"></span>
-                  <span class="code-dot code-dot-green"></span>
-                </div>
-                <span class="code-lang">bash</span>
-                <button class="copy-btn">📋 Kopieren</button>
-              </div>
-<pre><code># 10) Ordner anlegen
+# 10) Ordner anlegen
 mkdir ~/skripte
 
 # 11) Mini-Skript
@@ -598,7 +614,7 @@ hallo.sh
 # Weil ~/skripte nicht im PATH ist!
 
 # 13) PATH erweitern
-export PATH=$PATH:~/skripte
+export PATH=$PATH:$HOME/skripte
 
 # 14) Nochmal — klappt!
 hallo.sh
@@ -608,30 +624,20 @@ hallo.sh
 # Im neuen Terminal:
 echo $PATH | grep skripte
 # → (leer) — die Änderung war nur in der alten Shell
-# Lösung: persistent in .bashrc speichern (Teil D!)</code></pre>
+# Lösung: persistent in .bashrc speichern (Phase 3!)</code></pre>
             </div>
           </div>
         </div>
 
-        <div class="lab-section-title">Teil D — Persistent in .bashrc (9 min)</div>
-
-        <div class="callout callout-warn">
-          <div class="callout-icon">⚠️</div>
-          <div class="callout-content">
-            <p style="margin: 0;"><strong>Vor Teil D:</strong> Mach kurz ein Backup
-            der bashrc: <code>cp ~/.bashrc ~/.bashrc.backup</code>. Falls was
-            schiefläuft, kannst du zurück.</p>
-          </div>
-        </div>
-
+        <div class="lab-section-title">Phase 3 — Persistent in .bashrc (10 min)</div>
         <ol class="lab-tasks" start="16">
-          <li>Mach ein Backup: <code>cp ~/.bashrc ~/.bashrc.backup</code>.</li>
+          <li>Falls noch nicht geschehen: Backup machen
+            (<code>cp ~/.bashrc ~/.bashrc.backup</code>).</li>
           <li>Öffne <code>~/.bashrc</code> in nano. Geh ganz ans Ende.</li>
           <li>Trage am Ende ein:
 <pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.5rem; overflow-x: auto;"><code># Meine Erweiterungen
 export EDITOR=nano
-export PROJEKT_DIR=~/hanovatech
-export PATH=$PATH:~/skripte
+export PATH=$PATH:$HOME/skripte
 
 # Aliase
 alias ll='ls -la'
@@ -639,15 +645,15 @@ alias ..='cd ..'</code></pre>
           </li>
           <li>Speichern (Strg+O, Enter, Strg+X).</li>
           <li>Lade die Datei neu: <code>source ~/.bashrc</code>.</li>
-          <li>Teste: <code>echo $EDITOR</code>, <code>echo $PROJEKT_DIR</code>,
-            <code>hallo.sh</code>, <code>ll</code>.</li>
-          <li>Öffne ein NEUES Terminal und prüfe nochmal — sind die Variablen
-            und Aliase auch dort?</li>
+          <li>Teste: <code>echo $EDITOR</code>, <code>hallo.sh</code>,
+            <code>ll</code>.</li>
+          <li>Öffne ein NEUES Terminal und prüfe nochmal — sind die Variable
+            und die Aliase auch dort?</li>
         </ol>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösung Teil D zeigen</span>
+            <span>✅ Lösung Phase 3 anzeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
@@ -666,8 +672,7 @@ cp ~/.bashrc ~/.bashrc.backup
 
 # 17) Datei öffnen
 nano ~/.bashrc
-# Mit Strg+_ und Eingabe einer Zeile ans Ende springen
-# Oder einfach Strg+End
+# Mit Strg+End ans Ende springen
 
 # 18) Am Ende einfügen (siehe Aufgabe)
 
@@ -678,7 +683,6 @@ source ~/.bashrc
 
 # 21) Testen
 echo $EDITOR        # → nano
-echo $PROJEKT_DIR   # → /home/admin/hanovatech
 hallo.sh            # → Hallo aus meinem Skript!
 ll                  # → ls -la-Ausgabe
 
@@ -693,23 +697,33 @@ ll                  # → ls -la-Ausgabe
         <div class="callout callout-info">
           <div class="callout-icon">📌</div>
           <div class="callout-content">
-            <p style="margin: 0;">Bonus: schöner Prompt + nützliche Aliase.</p>
+            <p style="margin: 0;">Bonus: ein paar Komfort-Einstellungen, die fast
+            jeder Admin früher oder später in seiner <code>.bashrc</code> hat.</p>
           </div>
         </div>
 
         <ol class="lab-tasks" start="23">
-          <li><strong>Bunter Prompt:</strong> Schau dir an, was deine
-            <code>$PS1</code>-Variable enthält: <code>echo $PS1</code>.
-            Setze sie in der .bashrc auf einen einfachen bunten Prompt:
-<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-top: 0.4rem; overflow-x: auto;"><code>export PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[0m\]\$ '</code></pre>
-          </li>
-          <li><strong>Mehr Aliase:</strong> Füge hinzu:
-            <code>alias grep='grep --color=auto'</code>,
-            <code>alias df='df -h'</code>,
-            <code>alias free='free -h'</code>.</li>
-          <li><strong>Geschichte länger:</strong> Setze in .bashrc:
-            <code>HISTSIZE=10000</code> (mehr Befehls-Geschichte).</li>
-          <li><strong>Source und testen.</strong></li>
+          <li><strong>Farbige Standard-Befehle:</strong> Füge in der
+            <code>.bashrc</code> hinzu:
+            <code>alias grep='grep --color=auto'</code> und
+            <code>alias ls='ls --color=auto'</code>. Damit hebt
+            <code>grep</code> die Treffer farbig hervor und <code>ls</code>
+            färbt Ordner, Dateien und Links unterschiedlich ein. Source und
+            probier's aus.</li>
+          <li><strong>Längere Befehls-Geschichte:</strong> Setze in der
+            <code>.bashrc</code> <code>HISTSIZE=10000</code>. Bash merkt sich
+            damit deutlich mehr alte Befehle. Drücke danach in einem neuen
+            Terminal <code>Strg+R</code> und tippe ein paar Buchstaben eines
+            früheren Befehls — Bash sucht rückwärts durch die History und
+            vervollständigt ihn. Mehrfaches <code>Strg+R</code> springt zu
+            älteren Treffern, <code>Enter</code> führt aus, <code>Strg+G</code>
+            bricht ab.</li>
+          <li><strong>Eigene Aliase entwerfen:</strong> Überleg dir
+            <strong>zwei</strong> Befehle, die du heute besonders oft getippt
+            hast, und bau dir dafür eigene Aliase (z.B.
+            <code>alias ll='ls -la'</code>). Trag sie in die <code>.bashrc</code>
+            ein, source neu und teste. Tipp: Mit <code>alias</code> (ohne
+            Argumente) siehst du alle gerade aktiven Aliase.</li>
         </ol>
 
         <div class="callout callout-tip" style="margin-top: 1.5rem;">
@@ -792,38 +806,50 @@ ll                  # → ls -la-Ausgabe
 
       <div class="subblock">
         <ol class="lab-tasks">
-          <li>Wie werden Umgebungsvariablen konventionell geschrieben — groß oder klein?
-            (Tipp: Q9)</li>
-          <li>Was bewirkt <code>export</code> bei einer Variable? (Tipp: Q10)</li>
-          <li>Wie zeigst du den Wert der Variable <code>$HOME</code> an?</li>
-          <li>Wofür braucht die Shell <code>$PATH</code>?</li>
+          <li>Was ist der Unterschied zwischen einer <strong>Shell-Variable</strong>
+            und einer <strong>exportierten</strong> (Umgebungs-)Variable?</li>
+          <li>Du tippst <code>which sleep</code>. Was sagt dir die Ausgabe — und
+            warum findet die Shell den Befehl überhaupt, ohne dass du den vollen
+            Pfad angibst?</li>
           <li>Was ist der KRITISCHE Unterschied zwischen
             <code>export PATH=$PATH:/neu</code> und
             <code>export PATH=/neu</code>?</li>
-          <li>In welcher Datei trägst du deine Aliase und PATH-Erweiterungen
-            ein, damit sie bei jedem neuen Terminal da sind?</li>
+          <li>In welcher Datei trägst du Variablen, Aliase und PATH-Erweiterungen
+            ein, damit sie bei JEDEM neuen Terminal automatisch da sind?</li>
+          <li>Was ist an <code>MEINNAME = Tim</code> falsch — und wie schreibt
+            man es richtig?</li>
+          <li>Du hast deine <code>.bashrc</code> geändert, aber in der laufenden
+            Shell tut sich nichts. Was tust du?</li>
         </ol>
 
         <div class="solution">
           <button class="solution-toggle">
-            <span>Lösungen zeigen</span>
+            <span>✅ Lösungen zeigen</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="solution-content">
             <ol>
-              <li><strong>GROSSGESCHRIEBEN</strong> — komplett, per Konvention
-                (PATH, HOME, USER, …).</li>
-              <li><code>export</code> macht die Variable für <strong>Kind-Prozesse
-                bekannt</strong> (z.B. Skripte). Ohne export sieht nur die
-                aktuelle Shell sie.</li>
-              <li><code>echo $HOME</code> — das Dollarzeichen vor dem Namen.</li>
-              <li>Damit sie weiß, in welchen Verzeichnissen sie nach Befehlen
-                suchen muss, wenn du z.B. <code>ls</code> tippst.</li>
-              <li>Variante 1 <strong>erweitert</strong> PATH (sicher). Variante 2
-                <strong>überschreibt</strong> PATH komplett — alle anderen
-                Befehle (ls, dnf, …) gehen dann nicht mehr.</li>
+              <li>Eine <strong>Shell-Variable</strong> kennt nur die aktuelle
+                Shell — Kind-Prozesse (z.B. Skripte oder eine neue
+                <code>bash</code>) sehen sie nicht. Mit <code>export</code> wird
+                sie zur <strong>Umgebungsvariable</strong> und damit an alle
+                Kind-Prozesse vererbt.</li>
+              <li><code>which sleep</code> gibt den vollen Pfad aus, z.B.
+                <code>/usr/bin/sleep</code>. Die Shell findet den Befehl, weil
+                <code>/usr/bin</code> in <code>$PATH</code> steht — sie sucht den
+                Namen der Reihe nach in allen PATH-Verzeichnissen ab.</li>
+              <li>Variante 1 <strong>erweitert</strong> PATH (sicher) — die alten
+                Verzeichnisse bleiben drin. Variante 2 <strong>überschreibt</strong>
+                PATH komplett: <code>ls</code>, <code>dnf</code> &amp; Co. werden
+                nicht mehr gefunden. Rettung: Terminal neu öffnen.</li>
               <li><code>~/.bashrc</code> — wird bei jedem interaktiven Terminal
                 gelesen.</li>
+              <li>Die <strong>Leerzeichen um das <code>=</code></strong> sind
+                falsch. Bash hält <code>MEINNAME</code> dann für einen Befehl.
+                Richtig: <code>MEINNAME=Tim</code> — direkt aneinander, ohne
+                Leerzeichen.</li>
+              <li><code>source ~/.bashrc</code> (lädt die Datei in die laufende
+                Shell) — oder einfach ein neues Terminal öffnen.</li>
             </ol>
           </div>
         </div>
