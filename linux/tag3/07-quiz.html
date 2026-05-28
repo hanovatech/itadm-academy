@@ -108,7 +108,7 @@
           <label class="q2-opt"><input type="radio" name="q2" value="a"><span class="q2-opt-text">a) <code>sudo systemctl set-default graphical.target</code></span></label>
           <label class="q2-opt q2-correct"><input type="radio" name="q2" value="b"><span class="q2-opt-text">b) <code>sudo systemctl isolate graphical.target</code></span></label>
           <label class="q2-opt"><input type="radio" name="q2" value="c"><span class="q2-opt-text">c) <code>sudo systemctl enable graphical.target</code></span></label>
-          <label class="q2-opt"><input type="radio" name="q2" value="d"><span class="q2-opt-text">d) <code>sudo systemctl start graphical.target</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q2" value="d"><span class="q2-opt-text">d) <code>sudo systemctl switch graphical.target</code></span></label>
         </div>
         <div class="q2-expl q2-expl-correct">
           <strong>✓ Richtig!</strong> <code>isolate</code> wechselt
@@ -119,9 +119,9 @@
         <div class="q2-expl q2-expl-wrong">
           <strong>✗ Nicht ganz.</strong> <code>set-default</code> ändert nur den
           <strong>nächsten Boot</strong>, wechselt jetzt nichts. <code>enable</code>
-          ist für Services, nicht für Targets. <code>start</code> gibt es so nicht
-          in der Target-Logik. <strong><code>isolate</code></strong> ist die
-          Antwort — wechselt sofort und beeinflusst den Default nicht.
+          ist für Services, nicht für Targets. <code>switch</code> existiert nicht.
+          <strong><code>isolate</code></strong> ist die Antwort — wechselt sofort
+          und beeinflusst den Default nicht.
         </div>
       </li>
 
@@ -224,11 +224,13 @@
           <span class="q2-badge">Q6</span>
           <span class="q2-badge">Single Choice</span>
         </div>
-        <div class="q2-q">In Terminal A führst du folgende Befehle aus:
+        <div class="q2-q">In einem Terminal gibst du nacheinander folgende Befehle ein:
 <pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin: 0.5rem 0; overflow-x: auto;"><code>NAME="Tim"
 bash
 echo $NAME</code></pre>
-        Was gibt der letzte <code>echo</code>-Befehl aus?</div>
+        Der dritte Befehl <code>echo $NAME</code> wird <strong>innerhalb der neu
+        gestarteten Bash</strong> ausgeführt (also direkt nach <code>bash</code>,
+        ohne vorheriges <code>exit</code>). Was gibt der <code>echo</code>-Befehl aus?</div>
         <div class="q2-opts">
           <label class="q2-opt"><input type="radio" name="q6" value="a"><span class="q2-opt-text">a) <code>Tim</code></span></label>
           <label class="q2-opt"><input type="radio" name="q6" value="b"><span class="q2-opt-text">b) <code>$NAME</code></span></label>
@@ -259,7 +261,7 @@ echo $NAME</code></pre>
           <span class="q2-badge">Multiple Choice</span>
         </div>
         <div class="q2-q">Welche der folgenden Befehle fahren ein Linux-System
-        tatsächlich herunter (nicht neu starten)? (mehrere richtig möglich)</div>
+        herunter UND schalten die Hardware ab? (mehrere richtig möglich)</div>
         <div class="q2-opts">
           <label class="q2-opt q2-correct"><input type="checkbox" name="q7" value="a"><span class="q2-opt-text">a) <code>sudo shutdown now</code></span></label>
           <label class="q2-opt q2-correct"><input type="checkbox" name="q7" value="b"><span class="q2-opt-text">b) <code>sudo poweroff</code></span></label>
@@ -268,18 +270,20 @@ echo $NAME</code></pre>
           <label class="q2-opt"><input type="checkbox" name="q7" value="e"><span class="q2-opt-text">e) <code>sudo reboot</code></span></label>
         </div>
         <div class="q2-expl q2-expl-correct">
-          <strong>✓ Richtig!</strong> Drei korrekte Wege zum Herunterfahren:
-          <code>shutdown now</code>, <code>poweroff</code>, und der systemd-Weg
-          <code>systemctl isolate poweroff.target</code>. <strong>halt</strong>
-          stoppt zwar das System, schaltet aber die Hardware nicht ab (Sonderfall,
-          heute selten). <strong>reboot</strong> ist ein Neustart, kein Herunterfahren.
+          <strong>✓ Richtig!</strong> <strong>Drei korrekte Wege zum vollständigen
+          Herunterfahren:</strong> <code>shutdown now</code>, <code>poweroff</code>,
+          und der systemd-Weg <code>systemctl isolate poweroff.target</code>.
+          <strong>Alle drei stoppen das System und schalten die Hardware ab.</strong>
+          <code>systemctl halt</code> stoppt zwar das System, <strong>schaltet die
+          Hardware aber NICHT ab</strong> — heute meist unerwünscht.
+          <code>reboot</code> ist ein Neustart.
         </div>
         <div class="q2-expl q2-expl-wrong">
-          <strong>✗ Nicht ganz.</strong> Richtig sind <code>shutdown now</code>,
-          <code>poweroff</code> und <code>systemctl isolate poweroff.target</code> —
-          alle drei fahren das System sauber herunter und schalten die Hardware ab.
-          <code>halt</code> stoppt nur, schaltet aber nicht ab. <code>reboot</code>
-          ist ein Neustart.
+          <strong>✗ Nicht ganz.</strong> Richtig sind <strong>a) shutdown now</strong>,
+          <strong>b) poweroff</strong> und <strong>d) systemctl isolate poweroff.target</strong>
+          — alle drei fahren herunter und schalten die Hardware ab.
+          <code>systemctl halt</code> stoppt zwar das System, schaltet die Hardware
+          <strong>nicht</strong> ab. <code>reboot</code> ist ein Neustart.
         </div>
       </li>
 
@@ -330,25 +334,28 @@ echo $NAME</code></pre>
         <div class="q2-opts">
           <label class="q2-opt"><input type="radio" name="q9" value="a"><span class="q2-opt-text">a) <code>nice -n 15 5421</code></span></label>
           <label class="q2-opt q2-correct"><input type="radio" name="q9" value="b"><span class="q2-opt-text">b) <code>sudo renice 15 -p 5421</code></span></label>
-          <label class="q2-opt"><input type="radio" name="q9" value="c"><span class="q2-opt-text">c) <code>sudo renice -n 15 5421</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q9" value="c"><span class="q2-opt-text">c) <code>sudo nice -n 15 -p 5421</code></span></label>
           <label class="q2-opt"><input type="radio" name="q9" value="d"><span class="q2-opt-text">d) <code>kill -15 5421</code></span></label>
         </div>
         <div class="q2-expl q2-expl-correct">
           <strong>✓ Richtig!</strong> <code>renice</code> ändert die Niceness
           <strong>laufender</strong> Prozesse — Syntax:
-          <strong><code>renice WERT -p PID</code></strong>. Positive Werte
-          (= „höflicher") dürfen normale User; negative Werte braucht es
-          <code>sudo</code>. <code>nice</code> ist nur beim <strong>Start</strong>
-          eines neuen Prozesses, nicht für laufende. <code>kill -15</code> ist
-          <code>SIGTERM</code> und beendet den Prozess komplett.
+          <strong><code>renice WERT -p PID</code></strong>.
+          <strong>Hinweis:</strong> Für positive Werte (= „höflicher", andere
+          Prozesse bekommen Vorrang) braucht es eigentlich kein <code>sudo</code> —
+          das schadet hier aber nicht. <strong>Negative</strong> Werte (höhere
+          Priorität) verlangen <code>sudo</code>. <code>nice -n 15</code> wäre für
+          einen <strong>neuen</strong> Prozess; ein <code>-p</code>-Flag kennt
+          <code>nice</code> nicht. <code>kill -15</code> ist <code>SIGTERM</code>
+          und beendet den Prozess komplett.
         </div>
         <div class="q2-expl q2-expl-wrong">
-          <strong>✗ Nicht ganz.</strong> Für laufende Prozesse ist
-          <strong><code>renice</code></strong> das Werkzeug. Mit <code>-p</code>
-          gibst du an, dass die Zahl eine PID ist (sonst wäre es ein User).
-          <code>nice</code> funktioniert nur beim <strong>Starten</strong> eines
-          Prozesses, nicht später. <code>kill -15</code> ist SIGTERM — würde den
-          Prozess beenden, nicht priorisieren.
+          <strong>✗ Nicht ganz.</strong> Für <strong>laufende</strong> Prozesse ist
+          <strong><code>renice</code></strong> das Werkzeug. Syntax:
+          <code>renice WERT -p PID</code>. <code>nice</code> kennt kein
+          <code>-p</code>-Flag und funktioniert nur beim <strong>Starten</strong>
+          eines Prozesses, nicht für laufende. <code>kill -15</code> ist SIGTERM
+          und würde den Prozess <em>beenden</em>, nicht priorisieren.
         </div>
       </li>
 
@@ -434,22 +441,24 @@ echo $NAME</code></pre>
           <label class="q2-opt"><input type="radio" name="q12" value="d"><span class="q2-opt-text">d) Bash wird automatisch ergänzt vor dem Ausführen</span></label>
         </div>
         <div class="q2-expl q2-expl-correct">
-          <strong>✓ Richtig!</strong> Ohne Shebang weiß der Kernel nicht, welcher
-          Interpreter die Datei ausführen soll. Manche Systeme nutzen dann die
-          aktuelle Shell als Fallback, andere geben einen Fehler aus —
-          <strong>das Verhalten ist nicht garantiert</strong>. Deshalb:
-          <strong>immer mit Shebang anfangen</strong>. Mit
-          <code>bash ./backup.sh</code> würde es dagegen funktionieren, weil du den
-          Interpreter explizit angibst.
+          <strong>✓ Richtig!</strong> Ohne Shebang fällt der Kernel je nach System
+          auf <code>/bin/sh</code> zurück (das auf vielen Linux-Distributionen ein
+          Symlink zu Bash ist, aber im POSIX-Modus läuft) — manchmal funktioniert
+          das, manchmal nicht. <strong>„Garantiert" ist es nicht</strong>:
+          bash-spezifische Syntax (z. B. <code>[[ ... ]]</code>, Arrays) kann im
+          POSIX-Modus brechen, andere Distros werfen Fehler. Deshalb:
+          <strong>immer mit Shebang anfangen</strong>. Alternativ explizit aufrufen
+          mit <code>bash ./backup.sh</code> — dann ist der Interpreter eindeutig.
         </div>
         <div class="q2-expl q2-expl-wrong">
           <strong>✗ Nicht ganz.</strong> Ohne Shebang ist das Verhalten
-          <strong>nicht zuverlässig</strong> — manche Systeme nehmen die aktuelle
-          Shell als Fallback, andere geben einen Fehler. Es gibt keine Garantie,
-          dass Bash benutzt wird. Deshalb gehört <code>#!/bin/bash</code> in
-          <strong>jede</strong> Skript-Datei als Zeile 1. Alternativ kann man das
-          Skript auch direkt mit <code>bash ./backup.sh</code> aufrufen — dann ist
-          der Interpreter explizit.
+          <strong>nicht zuverlässig</strong> — der Kernel fällt oft auf
+          <code>/bin/sh</code> zurück, das im POSIX-Modus läuft. Bash-spezifische
+          Syntax kann dann brechen, andere Distros werfen Fehler. <strong>„Garantiert
+          mit Bash"</strong> stimmt also nicht — Antwort a) ist zu absolut. Antwort
+          c) (zwingende Fehlermeldung) und d) (automatische Ergänzung) stimmen auch
+          nicht. <strong>Best Practice:</strong> <code>#!/bin/bash</code> in
+          <strong>jede</strong> Skript-Datei als Zeile 1.
         </div>
       </li>
 
