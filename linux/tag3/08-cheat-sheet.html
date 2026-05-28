@@ -65,10 +65,11 @@
           <li>den Unterschied zwischen <strong>BIOS und UEFI</strong>,
             <strong>MBR und GPT</strong></li>
           <li>die Welt von <strong>systemd</strong> — Targets statt Runlevels,
-            <code>systemctl</code> als Universal-Werkzeug</li>
+            <code>systemctl</code> als Universal-Werkzeug, plus <code>journalctl</code>
+            für Service-Logs</li>
           <li>Services starten, stoppen, aktivieren, deren Status prüfen</li>
-          <li>Prozesse <strong>beobachten</strong> (<code>ps</code>,
-            <code>top</code>), in den <strong>Hintergrund schicken</strong>,
+          <li>Prozesse <strong>beobachten</strong> (<code>ps -alf</code> mit
+            PRI/NI/PPID, <code>top</code>), in den <strong>Hintergrund schicken</strong>,
             <strong>priorisieren</strong> und <strong>beenden</strong></li>
           <li>Software mit <strong><code>dnf</code></strong> installieren,
             aktualisieren, entfernen</li>
@@ -221,12 +222,33 @@ sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code></pre>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code>ps              # eigene Shell-Prozesse
-ps aux          # alle Prozesse, BSD-Stil mit CPU%/MEM%
-ps -ef          # alle Prozesse, Full-Format
-ps aux | grep firefox  # filtern
-pgrep firefox   # nur PIDs
+ps -alf         # EMPFOHLEN: alle Prozesse mit Terminal, mit PRI/NI/PPID
+ps -ef          # alle Prozesse inkl. Daemons, Full-Format
+ps aux          # BSD-Stil: zeigt %CPU/%MEM, kein PRI/NI
+ps -ef | grep sleep    # filtern nach Name
+pgrep sleep            # nur PIDs zu einem Namen
 top             # Live-Monitor (q=quit, M=memory, P=CPU, k=kill)
-htop            # schöneres top (muss installiert werden)</code></pre>
+htop            # schöneres top (muss installiert werden — siehe Kap 04)</code></pre>
+        </div>
+
+        <h4 style="margin-top: 1.5rem;">Wichtige Spalten in <code>ps -alf</code> und <code>top</code></h4>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Spalte</th><th>Bedeutung</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>PID</strong></td><td>Eindeutige Prozess-Nummer</td></tr>
+              <tr><td><strong>PPID</strong></td><td>Parent-PID — wer hat den Prozess gestartet?</td></tr>
+              <tr><td><strong>S</strong> / <strong>STAT</strong></td><td>State: <code>R</code> running, <code>S</code> sleeping (Standard), <code>D</code> uninterruptible (I/O), <code>Z</code> zombie, <code>T</code> stopped</td></tr>
+              <tr><td><strong>PRI</strong> / <strong>PR</strong></td><td>Vom Kernel berechnete Priorität (kleiner = höher). Default 80 (ps) bzw. 20 (top)</td></tr>
+              <tr><td><strong>NI</strong></td><td>Niceness: User-setzbar, −20 bis +19, Default 0. Höher = höflicher.</td></tr>
+              <tr><td><strong>VIRT</strong> (top)</td><td>Reservierter Speicher (kann viel größer als wirklich genutzt sein)</td></tr>
+              <tr><td><strong>RES</strong> (top)</td><td>Tatsächlich belegter RAM — <strong>das ist der Wert, der zählt</strong></td></tr>
+              <tr><td><strong>%CPU</strong> / <strong>%MEM</strong></td><td>Aktueller CPU- bzw. RAM-Verbrauch (RES-basiert)</td></tr>
+            </tbody>
+          </table>
         </div>
 
         <h3>Prozesse steuern</h3>
@@ -287,10 +309,10 @@ sudo dnf remove PAKET      # entfernen
 sudo dnf autoremove        # verwaiste Abhängigkeiten
 
 # Aktualisieren
-dnf check-update           # was wäre verfügbar?
-sudo dnf update            # alles aktualisieren
-sudo dnf upgrade           # identisch zu update
-sudo dnf update PAKET      # nur ein Paket
+dnf check-update           # was wäre verfügbar? (read-only, harmlos)
+sudo dnf update PAKET      # nur ein bestimmtes Paket aktualisieren
+sudo dnf update            # alles aktualisieren — NUR im Wartungsfenster!
+sudo dnf upgrade           # identisch zu update (bei dnf)
 
 # Erweitert
 dnf history                # alle dnf-Aktionen
@@ -314,8 +336,11 @@ sudo dnf groupinstall "Server with GUI"  # GUI nachinstallieren</code></pre>
 rpm -qi PAKET              # prüfen ob installiert
 rpm -qpi datei.rpm         # Infos zur .rpm-Datei
 rpm -qpl datei.rpm         # was würde es installieren?
-rpm -ivh datei.rpm         # lokales RPM installieren
-rpm -K datei.rpm           # Signatur prüfen</code></pre>
+rpm -K datei.rpm           # Signatur prüfen
+
+# Lokales RPM installieren: zwei Varianten
+sudo dnf install ./datei.rpm    # EMPFOHLEN — prüft Abhängigkeiten
+sudo rpm -ivh datei.rpm         # Low-Level — ignoriert Abhängigkeiten</code></pre>
         </div>
 
         <h3>Umgebungsvariablen</h3>
@@ -430,12 +455,13 @@ export PATH=$PATH:~/skripte
             <tbody>
               <tr><td>„Was ist mein Default-Target?"</td><td><code>systemctl get-default</code></td><td>aktuelles Default-Target abfragen</td></tr>
               <tr><td>„Wechsel sofort in den Text-Modus"</td><td><code>sudo systemctl isolate multi-user.target</code></td><td>laufend wechseln</td></tr>
-              <tr><td>„Wer frisst gerade meine CPU?"</td><td><code>top</code> oder <code>ps aux --sort=-%cpu | head</code></td><td>Live-Anzeige oder Top-Liste</td></tr>
+              <tr><td>„Wer frisst gerade meine CPU?"</td><td><code>top</code> oder <code>ps -eo pid,user,%cpu,comm --sort=-%cpu | head</code></td><td>Live-Anzeige oder Top-Liste</td></tr>
               <tr><td>„Kill Prozess 1234 sanft"</td><td><code>kill 1234</code></td><td>SIGTERM, höflich beenden</td></tr>
               <tr><td>„Installiere htop"</td><td><code>sudo dnf install htop</code></td><td>Paketinstallation</td></tr>
               <tr><td>„Was ist in meinem PATH?"</td><td><code>echo $PATH</code></td><td>Pfad-Variable ausgeben</td></tr>
               <tr><td>„Ist sshd beim Boot aktiv?"</td><td><code>systemctl is-enabled sshd</code></td><td>Boot-Status prüfen</td></tr>
               <tr><td>„Skript ausführbar machen"</td><td><code>chmod +x skript.sh</code></td><td>Execute-Bit setzen</td></tr>
+              <tr><td>„Zeig mir Prozesse mit Priorität"</td><td><code>ps -alf | head</code></td><td>PRI, NI, PPID, State sehen</td></tr>
             </tbody>
           </table>
         </div>
@@ -492,32 +518,6 @@ export PATH=$PATH:~/skripte
           </table>
         </div>
 
-        <h3>Was als Nächstes kommt</h3>
-        <p>Die IT-Administrator-Weiterbildung führt dich jetzt weiter:</p>
-
-        <div class="chapter-grid">
-          <div class="chapter-card" style="cursor: default;">
-            <div class="chapter-card-number">[ NÄCHSTES MODUL ]</div>
-            <div class="chapter-card-title">Windows-Administration</div>
-            <p class="chapter-card-desc">
-              Active Directory, Gruppenrichtlinien, PowerShell, Windows-Server-Rollen.
-              Vieles davon ist konzeptionell ähnlich zu dem, was du auf Linux
-              gelernt hast — Benutzer, Berechtigungen, Dienste — nur mit anderen
-              Werkzeugen.
-            </p>
-          </div>
-          <div class="chapter-card" style="cursor: default;">
-            <div class="chapter-card-number">[ DARAUF FOLGEND ]</div>
-            <div class="chapter-card-title">Server-Dienste</div>
-            <p class="chapter-card-desc">
-              Webserver (Apache, nginx), Datenbanken (MySQL, PostgreSQL),
-              Mailserver, DNS, DHCP. Alles auf Linux. Du wirst überrascht sein,
-              wie oft du auf das zurückgreifst, was du in diesen drei Tagen
-              gelernt hast.
-            </p>
-          </div>
-        </div>
-
         <div class="callout callout-info" style="margin-top: 2rem;">
           <div class="callout-icon">📚</div>
           <div class="callout-content">
@@ -526,7 +526,11 @@ export PATH=$PATH:~/skripte
             Wochen und Monate noch viel lernen:</p>
             <ul>
               <li><strong>Netzwerk:</strong> ip, ss, firewalld, SELinux, SSH-Tunneling</li>
-              <li><strong>Logs:</strong> journalctl, /var/log/, logrotate</li>
+              <li><strong>Logs vertiefen:</strong> <code>journalctl</code> hast du in
+                Kap 02 schon kurz gesehen — mit Filtern (<code>-p err</code>,
+                <code>-f</code>, <code>--since</code>) wird es zum täglichen Werkzeug.
+                Dazu kommt <code>/var/log/</code> für ältere Log-Dateien und
+                <code>logrotate</code> für die Aufräumarbeiten.</li>
               <li><strong>Cron &amp; Timer:</strong> wiederkehrende Tasks automatisieren</li>
               <li><strong>Container:</strong> Docker, Podman</li>
               <li><strong>Konfigurations-Management:</strong> Ansible, Puppet</li>
@@ -598,7 +602,7 @@ export PATH=$PATH:~/skripte
         besonders relevant:</p>
 
         <ul>
-          <li><strong>Befehls-Syntax</strong> auswendig kennen
+          <li><strong>Befehls-Syntax</strong> flüssig anwenden können
             (ls, cp, mv, rm, chmod, chown, tar, find, grep, ...)</li>
           <li><strong>Berechtigungen</strong> als Oktalzahl umrechnen
             (z.B. 755 = rwxr-xr-x)</li>
@@ -618,9 +622,14 @@ export PATH=$PATH:~/skripte
             <div class="callout-title">Lerntipp für die Prüfung</div>
             <p>Spiele die Befehle mehrfach durch. Wer im Terminal regelmäßig
             tippt, kann sich die Syntax nicht NICHT merken. Trockenes
-            Auswendiglernen hilft 30 %; Tippen hilft 100 %. <strong>Mach das
-            Quiz mehrmals in den nächsten Wochen</strong>, immer auch ohne
-            Lösungen — bis alle 12 Fragen sitzen.</p>
+            Auswendiglernen hilft 30 %; Tippen hilft 100 %.</p>
+            <p style="margin-top: 0.5rem;"><strong>Mach das Quiz in den
+            nächsten Wochen mehrmals</strong> — nicht um Antworten zu
+            merken (die echte Prüfung hat andere Wortlaute), sondern um
+            zu prüfen, ob du <strong>die Konzepte</strong> sicher beherrschst.
+            Wenn du nach 8/12 oder mehr richtigen Antworten ein gutes Gefühl
+            hast, dass du jede Frage <em>begründen</em> könntest — dann sitzt
+            der Stoff.</p>
           </div>
         </div>
       </div>
