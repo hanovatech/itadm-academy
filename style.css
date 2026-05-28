@@ -2271,8 +2271,12 @@ details.callout-deepdive > summary:hover { text-decoration: underline; }
 .q2-expl strong { color: var(--text-primary); }
 .q2-expl-correct { background: rgba(100,200,100,0.08); border-left-color: #64c864; }
 .q2-expl-wrong   { background: rgba(220,100,100,0.08); border-left-color: #dc6464; }
-.q2-item:has(.q2-correct input:checked) .q2-expl-correct { display: block; }
-.q2-item:has(input:checked):not(:has(.q2-correct input:checked)) .q2-expl-wrong { display: block; }
+/* Single-Choice (Radio): reine CSS-:has()-Logik */
+.q2-item:not(.q2-multi):has(.q2-correct input:checked) .q2-expl-correct { display: block; }
+.q2-item:not(.q2-multi):has(input:checked):not(:has(.q2-correct input:checked)) .q2-expl-wrong { display: block; }
+/* Multi-Choice (Checkbox): Zustand kommt aus JS (q2-state-right/q2-state-wrong) */
+.q2-item.q2-multi.q2-state-right .q2-expl-correct { display: block; }
+.q2-item.q2-multi.q2-state-wrong .q2-expl-wrong { display: block; }
 .q2-expl-link { margin-top: 0.5rem; font-size: 0.9rem; font-family: var(--font-mono); }
 .q2-expl-link a { color: var(--accent); text-decoration: none; }
 .q2-expl-link a:hover { text-decoration: underline; }

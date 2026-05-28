@@ -74,6 +74,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* -------- QUIZ v2: MULTI-CHOICE STATE --------
+     Single-Choice (Radio) lassen wir komplett der CSS :has()-Logik.
+     Bei Multi-Choice (Checkbox) reicht CSS aber nicht: "ALLE richtigen
+     UND keine falsche" laesst sich nicht generisch in :has() ausdruecken.
+     Darum hier: pro Multi-Item ein Listener, der die Zustands-Klassen
+     q2-state-right / q2-state-wrong setzt; die Erklaerungs-Boxen werden
+     dann ueber CSS auf Basis dieser Klassen ein-/ausgeblendet. */
+  document.querySelectorAll('.q2-item').forEach(item => {
+    const checkboxes = item.querySelectorAll('input[type="checkbox"]');
+    if (checkboxes.length === 0) return; // Single-Choice -> CSS uebernimmt
+
+    item.classList.add('q2-multi');
+
+    const correctValues = new Set();
+    item.querySelectorAll('.q2-opt.q2-correct input').forEach(inp => {
+      correctValues.add(inp.value);
+    });
+
+    const update = () => {
+      let hasWrong = false;
+      const checkedCorrect = new Set();
+      checkboxes.forEach(cb => {
+        if (!cb.checked) return;
+        if (correctValues.has(cb.value)) checkedCorrect.add(cb.value);
+        else hasWrong = true;
+      });
+
+      item.classList.remove('q2-state-right', 'q2-state-wrong');
+      if (hasWrong) {
+        item.classList.add('q2-state-wrong');
+      } else if (checkedCorrect.size === correctValues.size && checkedCorrect.size > 0) {
+        item.classList.add('q2-state-right');
+      }
+    };
+
+    checkboxes.forEach(cb => cb.addEventListener('change', update));
+  });
+
   /* -------- SIDEBAR HIGHLIGHTING -------- */
   const sidebarLinks = document.querySelectorAll('.sidebar-list a');
   const sections = document.querySelectorAll('[id]');
