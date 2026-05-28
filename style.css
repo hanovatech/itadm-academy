@@ -2259,8 +2259,10 @@ details.callout-deepdive > summary:hover { text-decoration: underline; }
 .q2-opt:not(.q2-correct):has(input:checked) {
   background: rgba(220,100,100,0.15); border-color: #dc6464; color: #dc6464;
 }
-/* sobald eine Antwort gewaehlt ist: die korrekte immer gruen markieren */
-.q2-item:has(input:checked) .q2-opt.q2-correct { border-color: #64c864; }
+/* nur Single-Choice (radio): sobald eine Antwort gewaehlt ist, die korrekte
+   gruen markieren — bei Multi (checkbox) wuerde das die anderen richtigen
+   Antworten verraten, bevor der User sie selbst anklickt */
+.q2-item:has(input[type="radio"]:checked) .q2-opt.q2-correct { border-color: #64c864; }
 
 .q2-expl {
   display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px;
