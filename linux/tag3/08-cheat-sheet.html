@@ -286,10 +286,10 @@ htop            # schöneres top (muss installiert werden — siehe Kap 04)</cod
           </div>
 <pre><code># Hintergrund
 BEFEHL &amp;           # im Hintergrund starten
-jobs               # eigene Jobs listen
-jobs -l            # mit PIDs
-fg %1              # Job 1 in den Vordergrund
-bg %1              # gestoppten Job 1 im Hintergrund weiterlaufen
+jobs               # Bonus — eigene Jobs listen
+jobs -l            # Bonus — mit PIDs
+fg %1              # Bonus — Job 1 in den Vordergrund
+bg %1              # Bonus — gestoppten Job 1 im Hintergrund weiterlaufen
 Strg+Z             # laufenden Job anhalten
 Strg+C             # laufenden Job beenden
 
@@ -319,8 +319,8 @@ sudo renice -10 -p PID     # auf negativ (sudo!)</code></pre>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code># Suchen &amp; Infos
-dnf search PAKET           # nach Paketen suchen
-dnf info PAKET             # Details zu einem Paket
+dnf search PAKET           # Bonus — nach Paketen suchen
+dnf info PAKET             # Bonus — Details zu einem Paket
 dnf list installed         # installierte Pakete
 dnf provides /usr/bin/htop # welches Paket liefert eine Datei?
 
@@ -354,15 +354,15 @@ sudo dnf groupinstall "Server with GUI"  # GUI nachinstallieren</code></pre>
             <span class="code-lang">bash</span>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
-<pre><code>rpm -qa                    # alle installierten Pakete
-rpm -qi PAKET              # prüfen ob installiert
-rpm -qpi datei.rpm         # Infos zur .rpm-Datei
-rpm -qpl datei.rpm         # was würde es installieren?
-rpm -K datei.rpm           # Signatur prüfen
+<pre><code>rpm -qa                    # Bonus — alle installierten Pakete
+rpm -qi PAKET              # Bonus — prüfen ob installiert
+rpm -qpi datei.rpm         # Bonus — Infos zur .rpm-Datei
+rpm -qpl datei.rpm         # Bonus — was würde es installieren?
+rpm -K datei.rpm           # Bonus — Signatur prüfen
 
 # Lokales RPM installieren: zwei Varianten
 sudo dnf install ./datei.rpm    # EMPFOHLEN — prüft Abhängigkeiten
-sudo rpm -ivh datei.rpm         # Low-Level — ignoriert Abhängigkeiten</code></pre>
+sudo rpm -ivh datei.rpm         # Bonus — Low-Level, ignoriert Abhängigkeiten</code></pre>
         </div>
 
         <h3>Umgebungsvariablen</h3>
@@ -381,7 +381,7 @@ echo $HOME              # Wert ausgeben
 echo ${USER}            # mit Klammern
 env                     # alle Umgebungsvariablen
 printenv                # dito
-env | grep PATH         # filtern
+env | grep PATH         # Bonus — env nach Variable filtern
 
 # Setzen
 name="Tim"              # Shell-Variable (KEINE Leerzeichen!)
@@ -448,7 +448,7 @@ export PATH=$PATH:~/skripte
               <tr><td><code>/etc/yum.repos.d/</code></td><td>dnf-Repository-Definitionen</td></tr>
               <tr><td><code>/var/log/dnf.log</code></td><td>dnf-Logs</td></tr>
               <tr><td><code>~/.bashrc</code></td><td>deine Shell-Konfiguration</td></tr>
-              <tr><td><code>/etc/profile</code></td><td>System-weite Shell-Konfig</td></tr>
+              <tr><td><code>/etc/profile</code> <span class="timeblock-badge badge-warn" style="font-size: 0.7em;">Bonus</span></td><td>System-weite Shell-Konfig</td></tr>
             </tbody>
           </table>
         </div>

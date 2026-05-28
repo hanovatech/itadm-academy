@@ -104,8 +104,8 @@
         <li>BIOS und UEFI gegenüberstellen und einordnen, was MBR und GPT damit zu tun haben</li>
         <li>die klassischen Runlevels (0–6) den systemd-Targets zuordnen und gezielt wechseln</li>
         <li>Services mit <code>systemctl</code> starten, stoppen, aktivieren und ihren Status prüfen</li>
-        <li>Prozesse mit <code>ps</code>, <code>top</code>, <code>jobs</code> beobachten und mit <code>kill</code>, <code>nice</code>, <code>renice</code> steuern</li>
-        <li>Software mit <code>yum</code>/<code>dnf</code> installieren, aktualisieren und entfernen — RPM-Pakete verstehen</li>
+        <li>Prozesse mit <code>ps</code>, <code>top</code> beobachten und mit <code>kill</code>, <code>nice</code>, <code>renice</code> steuern (<code>jobs</code>/<code>fg</code>/<code>bg</code> als Bonus)</li>
+        <li>Software mit <code>yum</code>/<code>dnf</code> installieren, aktualisieren und entfernen (RPM-Direktbefehle als Bonus)</li>
         <li>Umgebungsvariablen lesen, setzen, exportieren und den <code>PATH</code> erweitern</li>
         <li>ein eigenes Bash-Skript mit Shebang, Befehlen und Ausführungsrechten schreiben und ausführen</li>
       </ul>
@@ -140,13 +140,13 @@
           <span class="schedule-label">☕ Kurze Pause (15 min)</span></li>
       <li><span class="schedule-time">11:45 – 13:00</span>
           <span class="schedule-label">Block 3 · Prozessverwaltung
-            <small>ps, top, jobs, fg/bg, kill, nice/renice +
+            <small>ps, top, kill, nice/renice (jobs, fg/bg als Bonus) +
             Lab 3.3 (Prozesse steuern)</small></span></li>
       <li><span class="schedule-time">13:00 – 13:45</span>
           <span class="schedule-label">🍽️ Mittagspause (45 min)</span></li>
       <li><span class="schedule-time">13:45 – 14:30</span>
           <span class="schedule-label">Block 4 · Paketverwaltung (kompakt)
-            <small>RPM-Grundlagen + yum/dnf install/remove/update/search +
+            <small>yum/dnf install/remove/update (RPM-Grundlagen, search/info als Bonus) +
             Lab 3.4 (Tools installieren)</small></span></li>
       <li><span class="schedule-time">14:30 – 15:15</span>
           <span class="schedule-label">Block 5 · Umgebungsvariablen + PATH (kompakt)
@@ -243,9 +243,9 @@
         <div class="chapter-card-number">[ KAPITEL 04 ]</div>
         <div class="chapter-card-title">Paketverwaltung (RPM, yum/dnf)</div>
         <p class="chapter-card-desc">
-          RPM-Welt, Repositories, die Standardbefehle für 90 % aller Fälle:
-          <code>install</code>, <code>remove</code>, <code>update</code>,
-          <code>upgrade</code>, <code>search</code>.
+          RPM-Welt, Repositories, die Pflicht-Befehle
+          <code>install</code>, <code>remove</code>, <code>update</code>
+          (<code>search</code>/<code>info</code> als Bonus).
         </p>
         <span class="chapter-card-badge">Lab 3.4</span>
       </a>
@@ -312,7 +312,7 @@
           <tr><td><strong>Runlevels</strong></td><td>Du ordnest Runlevels 0–6 den systemd-Targets zu und kannst gezielt wechseln (<code>isolate</code>) oder dauerhaft setzen (<code>set-default</code>).</td></tr>
           <tr><td><strong>systemctl</strong></td><td>Du kannst Services starten, stoppen, aktivieren/deaktivieren, neu starten und den Status mit <code>systemctl</code> prüfen.</td></tr>
           <tr><td><strong>Prozesse</strong></td><td>Du beobachtest mit <code>ps</code>/<code>top</code>, schickst Jobs in den Hintergrund, beendest sie mit <code>kill</code> und priorisierst sie mit <code>nice</code>/<code>renice</code>.</td></tr>
-          <tr><td><strong>Pakete</strong></td><td>Du installierst, entfernst, aktualisierst und suchst Pakete mit <code>yum</code>/<code>dnf</code> und kennst die wichtigsten <code>rpm</code>-Abfragen.</td></tr>
+          <tr><td><strong>Pakete</strong></td><td>Du installierst, entfernst und aktualisierst Pakete mit <code>yum</code>/<code>dnf</code> (Suchen mit <code>search</code>/<code>info</code> und <code>rpm</code>-Direktbefehle als Bonus).</td></tr>
           <tr><td><strong>Variablen</strong></td><td>Du liest und setzt Umgebungsvariablen, verstehst <code>$PATH</code> und kannst persistent in <code>.bashrc</code> eintragen.</td></tr>
           <tr><td><strong>Skripte</strong></td><td>Du schreibst ein ausführbares Bash-Skript mit Shebang, mehreren Befehlen und sinnvollen <code>echo</code>-Ausgaben.</td></tr>
         </tbody>

@@ -155,33 +155,37 @@
     <section class="timeblock" id="sec-4-2">
       <div class="timeblock-header">
         <span class="timeblock-time">4.2</span>
-        <h2 class="timeblock-title">Die vier dnf-Befehle für 90 % der Fälle</h2>
+        <h2 class="timeblock-title">Die drei dnf-Pflicht-Befehle — install, remove, update</h2>
         <span class="timeblock-badge badge-vortrag">Pflicht</span>
       </div>
 
       <div class="subblock">
-        <p>Du musst nicht alle 50 dnf-Optionen kennen. Diese vier reichen für den
+        <p>Du musst nicht alle 50 dnf-Optionen kennen. Diese drei reichen für den
         Großteil des Admin-Alltags:</p>
 
-        <h4>1 · <code>dnf search</code> — was gibt's überhaupt?</h4>
-        <div class="code-block">
-          <div class="code-header">
-            <div class="code-header-dots">
-              <span class="code-dot code-dot-red"></span>
-              <span class="code-dot code-dot-yellow"></span>
-              <span class="code-dot code-dot-green"></span>
+        <details class="callout-deepdive">
+          <summary>▶ Bonus (optional) – dnf search &amp; dnf info (Repos durchsuchen)</summary>
+
+          <h4><code>dnf search</code> — was gibt's überhaupt?</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
             </div>
-            <span class="code-lang">bash</span>
-            <button class="copy-btn">📋 Kopieren</button>
-          </div>
 <pre><code># Pakete mit "htop" im Namen oder der Beschreibung
 dnf search htop
 
 # Detaillierte Info zu einem Paket
 dnf info htop</code></pre>
-        </div>
+          </div>
+        </details>
 
-        <h4>2 · <code>dnf install</code> — installieren</h4>
+        <h4>1 · <code>dnf install</code> — installieren</h4>
         <div class="code-block">
           <div class="code-header">
             <div class="code-header-dots">
@@ -202,7 +206,7 @@ sudo dnf install htop tree nano
 sudo dnf install -y htop</code></pre>
         </div>
 
-        <h4>3 · <code>dnf update</code> — aktualisieren</h4>
+        <h4>2 · <code>dnf update</code> — aktualisieren</h4>
         <div class="code-block">
           <div class="code-header">
             <div class="code-header-dots">
@@ -238,7 +242,7 @@ sudo dnf upgrade</code></pre>
           </div>
         </div>
 
-        <h4>4 · <code>dnf remove</code> — entfernen</h4>
+        <h4>3 · <code>dnf remove</code> — entfernen</h4>
         <div class="code-block">
           <div class="code-header">
             <div class="code-header-dots">
@@ -291,6 +295,7 @@ sudo dnf autoremove</code></pre>
         <span class="timeblock-time">4.3</span>
         <h2 class="timeblock-title"><code>rpm</code> — die Low-Level-Ebene</h2>
         <span class="timeblock-badge badge-vortrag">Übersicht</span>
+        <span class="timeblock-badge badge-warn">Bonus</span>
       </div>
 
       <div class="subblock">
@@ -299,34 +304,31 @@ sudo dnf autoremove</code></pre>
         wichtigsten <code>rpm</code>-Befehle zu kennen — vor allem, wenn du
         ein lokales <code>.rpm</code>-File hast, das nicht aus einem Repo kommt.</p>
 
-        <div class="callout callout-recommendation">
-          <div class="callout-icon">💡</div>
-          <div class="callout-content">
-            <div class="callout-title">Übersicht — kurzer Blick genügt</div>
+        <details class="callout-deepdive">
+          <summary>▶ Bonus (optional) – RPM-Grundbefehle (selten direkt nötig)</summary>
 
-            <div class="table-wrapper" style="margin-top: 0.5rem;">
-              <table>
-                <thead>
-                  <tr><th>Befehl</th><th>Wirkung</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td><code>rpm -qa</code></td><td>liste <strong>a</strong>lle installierten Pakete</td></tr>
-                  <tr><td><code>rpm -qi PAKET</code></td><td>prüft, ob ein Paket installiert ist, zeigt Infos</td></tr>
-                  <tr><td><code>rpm -qpi datei.rpm</code></td><td>Infos zu einer <strong>p</strong>aket-Datei (nicht installiert)</td></tr>
-                  <tr><td><code>rpm -qpl datei.rpm</code></td><td>was würde dieses Paket installieren? (<strong>l</strong>iste)</td></tr>
-                  <tr><td><code>rpm -ivh datei.rpm</code></td><td>lokales Paket installieren (<strong>i</strong>nstall <strong>v</strong>erbose <strong>h</strong>ash)</td></tr>
-                  <tr><td><code>rpm -K datei.rpm</code></td><td>Signatur prüfen</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <p style="margin-top: 0.6rem;"><strong>Faustregel:</strong> wenn das
-            Paket aus einem Repo kommt → <code>dnf</code>. Wenn du ein einzelnes
-            <code>.rpm</code>-File hast (z.B. heruntergeladen von einer Hersteller-Seite)
-            → <code>rpm -ivh</code> oder auch <code>dnf install ./datei.rpm</code>
-            (kann dnf auch).</p>
+          <div class="table-wrapper" style="margin-top: 0.5rem;">
+            <table>
+              <thead>
+                <tr><th>Befehl</th><th>Wirkung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>rpm -qa</code></td><td>liste <strong>a</strong>lle installierten Pakete</td></tr>
+                <tr><td><code>rpm -qi PAKET</code></td><td>prüft, ob ein Paket installiert ist, zeigt Infos</td></tr>
+                <tr><td><code>rpm -qpi datei.rpm</code></td><td>Infos zu einer <strong>p</strong>aket-Datei (nicht installiert)</td></tr>
+                <tr><td><code>rpm -qpl datei.rpm</code></td><td>was würde dieses Paket installieren? (<strong>l</strong>iste)</td></tr>
+                <tr><td><code>rpm -ivh datei.rpm</code></td><td>lokales Paket installieren (<strong>i</strong>nstall <strong>v</strong>erbose <strong>h</strong>ash)</td></tr>
+                <tr><td><code>rpm -K datei.rpm</code></td><td>Signatur prüfen</td></tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+
+          <p style="margin-top: 0.6rem;"><strong>Faustregel:</strong> wenn das
+          Paket aus einem Repo kommt → <code>dnf</code>. Wenn du ein einzelnes
+          <code>.rpm</code>-File hast (z.B. heruntergeladen von einer Hersteller-Seite)
+          → <code>rpm -ivh</code> oder auch <code>dnf install ./datei.rpm</code>
+          (kann dnf auch).</p>
+        </details>
       </div>
     </section>
 
@@ -367,6 +369,14 @@ sudo dnf autoremove</code></pre>
         </div>
 
         <div class="lab-section-title">Phase 1 — Was habe ich, was suche ich? (10 min)</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">⭐</div>
+          <div class="callout-content">
+            <div class="callout-title">Bonus (optional)</div>
+            <p>Dieser Teil ist Bonus — bearbeite ihn, wenn du mit den Pflichtteilen fertig bist.</p>
+          </div>
+        </div>
 
         <div class="callout callout-practice">
           <div class="callout-icon">🎯</div>

@@ -426,41 +426,48 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2256.1 avail Mem
         <span class="timeblock-time">3.4</span>
         <h2 class="timeblock-title">Hintergrund-Prozesse: <code>&amp;</code>, <code>jobs</code>, <code>fg</code>, <code>bg</code></h2>
         <span class="timeblock-badge badge-vortrag">Pflicht</span>
+        <span class="timeblock-badge badge-warn">Bonus</span>
       </div>
 
       <div class="subblock">
         <p>Im Terminal kannst du Befehle in den <strong>Hintergrund</strong>
         schicken — dein Prompt kommt sofort zurück, und du kannst gleichzeitig
         anderes machen, während der Befehl weiterläuft.</p>
+        <p>Mit <code>&amp;</code> hängst du einen Befehl direkt an den Hintergrund.
+        Die ausführliche Steuerung mit <code>jobs</code>/<code>fg</code>/<code>bg</code>
+        zeigen wir als <strong>Bonus</strong> — Pflicht ist nur das <code>&amp;</code>-Konzept.</p>
 
-        <h4>Der Werkzeugkasten</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Befehl</th><th>Wirkung</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>BEFEHL &amp;</code></td><td>Startet im <strong>Hintergrund</strong>, Prompt kommt sofort zurück</td></tr>
-              <tr><td><code>jobs</code></td><td>Listet <strong>deine</strong> Hintergrund-Jobs</td></tr>
-              <tr><td><code>fg %1</code></td><td>Job 1 in den <strong>f</strong>ore<strong>g</strong>round holen</td></tr>
-              <tr><td><code>bg %1</code></td><td>Gestoppten Job 1 im <strong>b</strong>ack<strong>g</strong>round weiterlaufen lassen</td></tr>
-              <tr><td><kbd>Strg</kbd>+<kbd>Z</kbd></td><td>Vordergrund-Prozess <strong>anhalten</strong> (stoppen, nicht beenden)</td></tr>
-              <tr><td><kbd>Strg</kbd>+<kbd>C</kbd></td><td>Vordergrund-Prozess <strong>beenden</strong></td></tr>
-            </tbody>
-          </table>
-        </div>
+        <details class="callout-deepdive">
+          <summary>▶ Bonus (optional) – Hintergrund-Steuerung mit jobs, fg, bg</summary>
 
-        <h4>Typischer Workflow</h4>
-        <div class="code-block">
-          <div class="code-header">
-            <div class="code-header-dots">
-              <span class="code-dot code-dot-red"></span>
-              <span class="code-dot code-dot-yellow"></span>
-              <span class="code-dot code-dot-green"></span>
-            </div>
-            <span class="code-lang">bash</span>
-            <button class="copy-btn">📋 Kopieren</button>
+          <h4>Der Werkzeugkasten</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Befehl</th><th>Wirkung</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>BEFEHL &amp;</code></td><td>Startet im <strong>Hintergrund</strong>, Prompt kommt sofort zurück</td></tr>
+                <tr><td><code>jobs</code></td><td>Listet <strong>deine</strong> Hintergrund-Jobs</td></tr>
+                <tr><td><code>fg %1</code></td><td>Job 1 in den <strong>f</strong>ore<strong>g</strong>round holen</td></tr>
+                <tr><td><code>bg %1</code></td><td>Gestoppten Job 1 im <strong>b</strong>ack<strong>g</strong>round weiterlaufen lassen</td></tr>
+                <tr><td><kbd>Strg</kbd>+<kbd>Z</kbd></td><td>Vordergrund-Prozess <strong>anhalten</strong> (stoppen, nicht beenden)</td></tr>
+                <tr><td><kbd>Strg</kbd>+<kbd>C</kbd></td><td>Vordergrund-Prozess <strong>beenden</strong></td></tr>
+              </tbody>
+            </table>
           </div>
+
+          <h4>Typischer Workflow</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-header-dots">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+              </div>
+              <span class="code-lang">bash</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
 <pre><code># Großen Download im Hintergrund starten
 wget https://example.com/big.iso &amp;
 # → [1] 5234   (Job-Nummer 1, PID 5234)
@@ -478,18 +485,19 @@ fg %1
 # Gestoppten Job im Hintergrund weiterlaufen lassen
 bg %1
 # → [1]+ wget ... &amp;</code></pre>
-        </div>
-
-        <div class="callout callout-info">
-          <div class="callout-icon">📌</div>
-          <div class="callout-content">
-            <div class="callout-title">Was zeigt <code>jobs</code> — und was nicht?</div>
-            <p><strong>Nur die Prozesse, die du in deiner Shell gestartet hast.</strong>
-            Nicht alle Prozesse des Systems (dafür ist <code>ps</code> da), nicht
-            die Prozesse anderer User. <code>jobs</code> ist <em>deine</em>
-            Job-Übersicht — was läuft in <em>deiner</em> aktuellen Shell.</p>
           </div>
-        </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">📌</div>
+            <div class="callout-content">
+              <div class="callout-title">Was zeigt <code>jobs</code> — und was nicht?</div>
+              <p><strong>Nur die Prozesse, die du in deiner Shell gestartet hast.</strong>
+              Nicht alle Prozesse des Systems (dafür ist <code>ps</code> da), nicht
+              die Prozesse anderer User. <code>jobs</code> ist <em>deine</em>
+              Job-Übersicht — was läuft in <em>deiner</em> aktuellen Shell.</p>
+            </div>
+          </div>
+        </details>
 
         <details class="callout-deepdive">
           <summary>▶ Was passiert, wenn ich das Terminal schließe?</summary>
@@ -823,6 +831,14 @@ top
         </div>
 
         <div class="lab-section-title">Phase 2 — Hintergrund-Jobs steuern: jobs, fg, bg, Strg+Z (15 min)</div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">⭐</div>
+          <div class="callout-content">
+            <div class="callout-title">Bonus (optional)</div>
+            <p>Dieser Teil ist Bonus — bearbeite ihn, wenn du mit den Pflichtteilen fertig bist.</p>
+          </div>
+        </div>
 
         <div class="callout callout-practice">
           <div class="callout-icon">🎯</div>
