@@ -34,10 +34,12 @@
     </h1>
     <p class="page-subtitle">
       Zwölf Fragen quer durch alle Themen von Tag 3 — Bootprozess, systemd,
-      Prozesse, Pakete, Variablen und Skripte. Im <strong>Prüfungs-Stil</strong>
-      gehalten, mit der gleichen Formulierung, die du in der IHK-Prüfung
-      erwartest. Selbstkontrolle mit Sofort-Feedback. Als Hausaufgabe gedacht,
-      aber auch zwischendurch nutzbar.
+      Prozesse, Pakete, Variablen und Skripte. Die Fragen prüfen
+      <strong>dieselben Konzepte</strong> wie die IHK-Prüfung, aber mit anderen
+      Beispielen und Formulierungen. Wer die Konzepte versteht, besteht beide.
+      Wer hier nur Antworten auswendig lernt, fällt in der Prüfung durch.
+      Selbstkontrolle mit Sofort-Feedback. Als Hausaufgabe gedacht, aber auch
+      zwischendurch nutzbar.
     </p>
     <div class="page-meta">
       <span class="meta-item"><span class="meta-item-icon">📚</span> 12 Fragen</span>
@@ -60,390 +62,398 @@
       </div>
     </div>
 
-    <!-- ============ FRAGE 1 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q1</span>
-        <h2 class="timeblock-title">Bootvorgang</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
+    <ul class="q2-list q2">
 
-      <div class="subblock">
-        <p><strong>Während des System-Bootvorgangs — welches Programm wird nach
-        dem BIOS ausgeführt?</strong></p>
+      <!-- ============ FRAGE 1 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q1</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Du erklärst einem Praktikanten, in welcher Reihenfolge
+        die Komponenten beim Linux-Boot ausgeführt werden. Welche Reihenfolge ist
+        korrekt?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q1" value="a"><span class="q2-opt-text">a) Kernel → BIOS/UEFI → Bootloader → systemd</span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q1" value="b"><span class="q2-opt-text">b) BIOS/UEFI → Bootloader → Kernel → systemd</span></label>
+          <label class="q2-opt"><input type="radio" name="q1" value="c"><span class="q2-opt-text">c) BIOS/UEFI → Kernel → Bootloader → systemd</span></label>
+          <label class="q2-opt"><input type="radio" name="q1" value="d"><span class="q2-opt-text">d) Bootloader → BIOS/UEFI → Kernel → systemd</span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Korrekte Reihenfolge: <strong>BIOS/UEFI</strong>
+          (Firmware-Check) → <strong>Bootloader</strong> (GRUB2 lädt das gewählte
+          System) → <strong>Kernel</strong> (Linux übernimmt) → <strong>systemd</strong>
+          als PID 1 startet alle Services. Auf modernen Systemen ist statt BIOS
+          oft UEFI im Einsatz — die Reihenfolge bleibt gleich.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Reihenfolge ist: <strong>Firmware</strong>
+          (BIOS/UEFI) zuerst — sie kennt nur die Hardware. Dann der
+          <strong>Bootloader</strong> (GRUB2), der das Betriebssystem auswählt.
+          Dann der <strong>Kernel</strong>, der die Hardware übernimmt. Dann
+          <strong>systemd</strong> als erster User-Space-Prozess (PID 1).
+        </div>
+      </li>
 
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q1" value="a"> <span>a) Bootloader</span></label>
-          <label class="q2-item"><input type="radio" name="q1" value="b"> <span>b) das init-Programm</span></label>
-          <label class="q2-item"><input type="radio" name="q1" value="c"> <span>c) der Kernel</span></label>
+      <!-- ============ FRAGE 2 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q2</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Ein Kollege bittet dich, auf einem Test-Server kurzfristig
+        den grafischen Modus zu starten — ohne Reboot, ohne dass beim nächsten
+        Boot der GUI-Modus automatisch kommt. Welcher Befehl ist passend?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q2" value="a"><span class="q2-opt-text">a) <code>sudo systemctl set-default graphical.target</code></span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q2" value="b"><span class="q2-opt-text">b) <code>sudo systemctl isolate graphical.target</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q2" value="c"><span class="q2-opt-text">c) <code>sudo systemctl enable graphical.target</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q2" value="d"><span class="q2-opt-text">d) <code>sudo systemctl start graphical.target</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> <code>isolate</code> wechselt
+          <strong>sofort</strong> zum angegebenen Target, <strong>ohne</strong>
+          den Default beim nächsten Boot zu ändern. Genau das, was hier verlangt
+          war: live umschalten, aber temporär.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> <code>set-default</code> ändert nur den
+          <strong>nächsten Boot</strong>, wechselt jetzt nichts. <code>enable</code>
+          ist für Services, nicht für Targets. <code>start</code> gibt es so nicht
+          in der Target-Logik. <strong><code>isolate</code></strong> ist die
+          Antwort — wechselt sofort und beeinflusst den Default nicht.
+        </div>
+      </li>
 
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> Nach dem BIOS-POST übergibt das BIOS die
-            Kontrolle an den <strong>Bootloader</strong> (z.B. GRUB2), der dann
-            den Kernel lädt. Reihenfolge: BIOS/UEFI → Bootloader → Kernel → init/systemd.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Reihenfolge: BIOS/UEFI → <strong>Bootloader</strong>
-            (z.B. GRUB2) → Kernel → init/systemd. Der Bootloader ist die Brücke
-            zwischen Firmware und Betriebssystem.
-          </div>
-        </form>
-      </div>
-    </section>
+      <!-- ============ FRAGE 3 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q3</span>
+          <span class="q2-badge">Multiple Choice</span>
+        </div>
+        <div class="q2-q">Welche der folgenden Befehle aktualisieren installierte
+        Pakete auf neuere Versionen? (mehrere richtig möglich)</div>
+        <div class="q2-opts">
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q3" value="a"><span class="q2-opt-text">a) <code>sudo dnf update</code></span></label>
+          <label class="q2-opt"><input type="checkbox" name="q3" value="b"><span class="q2-opt-text">b) <code>dnf check-update</code></span></label>
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q3" value="c"><span class="q2-opt-text">c) <code>sudo dnf upgrade</code></span></label>
+          <label class="q2-opt"><input type="checkbox" name="q3" value="d"><span class="q2-opt-text">d) <code>sudo dnf install --refresh</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Bei <code>dnf</code> sind <strong>update</strong>
+          und <strong>upgrade</strong> identisch — beide installieren neuere
+          Versionen. <code>check-update</code> zeigt nur an, was es
+          <strong>gäbe</strong>, installiert aber nichts (read-only).
+          <code>--refresh</code> ist eine Option, kein eigenständiger Update-Befehl.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Die zwei richtigen sind <strong>update</strong>
+          und <strong>upgrade</strong> — bei <code>dnf</code> synonym.
+          <code>check-update</code> ist nur ein Trockenlauf.
+          <code>install --refresh</code> lädt die Repo-Metadaten neu, aktualisiert
+          aber keine installierten Pakete.
+        </div>
+      </li>
 
-    <!-- ============ FRAGE 2 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q2</span>
-        <h2 class="timeblock-title">systemctl &amp; Targets</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
+      <!-- ============ FRAGE 4 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q4</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Du hast in <code>/etc/default/grub</code> die Variable
+        <code>GRUB_TIMEOUT=10</code> gesetzt und gespeichert. Beim nächsten Reboot
+        ist das Bootmenü trotzdem nur 5 Sekunden sichtbar. Was hast du
+        wahrscheinlich vergessen?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q4" value="a"><span class="q2-opt-text">a) <code>sudo systemctl restart grub</code></span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q4" value="b"><span class="q2-opt-text">b) <code>sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q4" value="c"><span class="q2-opt-text">c) <code>sudo reboot --apply-grub</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q4" value="d"><span class="q2-opt-text">d) Den Wert direkt in <code>/boot/grub2/grub.cfg</code> zu ändern</span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> <code>/etc/default/grub</code> ist nur die
+          <strong>Vorlage</strong>. Die echte Konfiguration in
+          <code>/boot/grub2/grub.cfg</code> wird erst aktualisiert, wenn du
+          <strong><code>grub2-mkconfig -o /boot/grub2/grub.cfg</code></strong>
+          ausführst. Ohne diesen Schritt bleibt der alte Wert wirksam.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> GRUB hat keinen Daemon, den man neu
+          starten kann — Option a) gibt es nicht. <code>reboot --apply-grub</code>
+          existiert nicht. Direkt in <code>grub.cfg</code> editieren wäre falsch —
+          die Datei wird bei jedem <code>grub2-mkconfig</code> überschrieben.
+          <strong>Richtig:</strong> <code>grub2-mkconfig</code> aufrufen, das
+          schreibt die aktualisierte <code>grub.cfg</code> aus der Vorlage.
+        </div>
+      </li>
 
-      <div class="subblock">
-        <p><strong>graphical.target ist aktiv. Mit welchem Befehl können Sie zum
-        multi-user.target wechseln?</strong></p>
+      <!-- ============ FRAGE 5 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q5</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Welche der folgenden Variablen ist nach Konvention eine
+        Umgebungsvariable?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q5" value="a"><span class="q2-opt-text">a) <code>$path</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q5" value="b"><span class="q2-opt-text">b) <code>$Home</code></span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q5" value="c"><span class="q2-opt-text">c) <code>$JAVA_HOME</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q5" value="d"><span class="q2-opt-text">d) <code>$myEditor</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Umgebungsvariablen werden per Konvention
+          <strong>komplett GROSSGESCHRIEBEN</strong>, oft mit Unterstrich als
+          Trennzeichen — wie <strong><code>$JAVA_HOME</code></strong>,
+          <code>$HOME</code>, <code>$PATH</code>, <code>$LANG</code>. Eigene
+          Shell-Variablen schreibt man dagegen meist klein.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Standard-Umgebungsvariablen sind in
+          <strong>Großbuchstaben</strong> geschrieben — z. B. <code>$HOME</code>,
+          <code>$PATH</code>, <code>$JAVA_HOME</code>. <code>$path</code>,
+          <code>$Home</code>, <code>$myEditor</code> sehen nicht aus wie
+          System-Umgebungsvariablen. <strong>Richtig:</strong> <code>$JAVA_HOME</code>.
+        </div>
+      </li>
 
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q2" value="a"> <span>a) <code>systemctl isolate multi-user.target</code></span></label>
-          <label class="q2-item"><input type="radio" name="q2" value="b"> <span>b) <code>systemctl isolate graphical.target</code></span></label>
+      <!-- ============ FRAGE 6 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q6</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">In Terminal A führst du folgende Befehle aus:
+<pre style="background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin: 0.5rem 0; overflow-x: auto;"><code>NAME="Tim"
+bash
+echo $NAME</code></pre>
+        Was gibt der letzte <code>echo</code>-Befehl aus?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q6" value="a"><span class="q2-opt-text">a) <code>Tim</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q6" value="b"><span class="q2-opt-text">b) <code>$NAME</code></span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q6" value="c"><span class="q2-opt-text">c) Eine leere Zeile</span></label>
+          <label class="q2-opt"><input type="radio" name="q6" value="d"><span class="q2-opt-text">d) Eine Fehlermeldung „NAME not defined"</span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Ohne <code>export</code> ist <code>NAME</code>
+          nur eine <strong>Shell-Variable</strong> der ersten Bash. Die zweite Bash
+          (Kind-Prozess) erbt sie <strong>nicht</strong> — <code>$NAME</code> ist
+          dort leer, also gibt <code>echo</code> eine <strong>leere Zeile</strong>
+          aus. Erst mit <code>export NAME</code> wäre sie vererbt worden.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Variablen ohne <code>export</code> bleiben
+          <strong>in der aktuellen Shell</strong>. Wenn du eine neue Bash startest,
+          ist die Variable in der neuen Shell <strong>nicht definiert</strong>.
+          <code>echo</code> gibt für undefinierte Variablen eine <strong>leere
+          Zeile</strong> aus (keinen Fehler). Nur mit <code>export NAME</code>
+          würde die zweite Bash <code>Tim</code> ausgeben.
+        </div>
+      </li>
 
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> Mit <code>isolate</code> wechselst du das
-            aktive Target. <code>multi-user.target</code> ist die textbasierte
-            Multi-User-Umgebung (Runlevel 3 im alten SysV-Schema). Antwort b
-            würde im graphical.target bleiben — also nichts ändern.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> <code>systemctl isolate</code> wechselt zu
-            dem angegebenen Target. Wenn du zu multi-user willst, musst du auch
-            <code>multi-user.target</code> als Ziel angeben — also Antwort a.
-          </div>
-        </form>
-      </div>
-    </section>
+      <!-- ============ FRAGE 7 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q7</span>
+          <span class="q2-badge">Multiple Choice</span>
+        </div>
+        <div class="q2-q">Welche der folgenden Befehle fahren ein Linux-System
+        tatsächlich herunter (nicht neu starten)? (mehrere richtig möglich)</div>
+        <div class="q2-opts">
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q7" value="a"><span class="q2-opt-text">a) <code>sudo shutdown now</code></span></label>
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q7" value="b"><span class="q2-opt-text">b) <code>sudo poweroff</code></span></label>
+          <label class="q2-opt"><input type="checkbox" name="q7" value="c"><span class="q2-opt-text">c) <code>sudo systemctl halt</code></span></label>
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q7" value="d"><span class="q2-opt-text">d) <code>sudo systemctl isolate poweroff.target</code></span></label>
+          <label class="q2-opt"><input type="checkbox" name="q7" value="e"><span class="q2-opt-text">e) <code>sudo reboot</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Drei korrekte Wege zum Herunterfahren:
+          <code>shutdown now</code>, <code>poweroff</code>, und der systemd-Weg
+          <code>systemctl isolate poweroff.target</code>. <strong>halt</strong>
+          stoppt zwar das System, schaltet aber die Hardware nicht ab (Sonderfall,
+          heute selten). <strong>reboot</strong> ist ein Neustart, kein Herunterfahren.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Richtig sind <code>shutdown now</code>,
+          <code>poweroff</code> und <code>systemctl isolate poweroff.target</code> —
+          alle drei fahren das System sauber herunter und schalten die Hardware ab.
+          <code>halt</code> stoppt nur, schaltet aber nicht ab. <code>reboot</code>
+          ist ein Neustart.
+        </div>
+      </li>
 
-    <!-- ============ FRAGE 3 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q3</span>
-        <h2 class="timeblock-title">dnf — System aktualisieren</h2>
-        <span class="timeblock-badge badge-quiz">Multiple Choice</span>
-      </div>
+      <!-- ============ FRAGE 8 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q8</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Ein laufender <code>htop</code>-Prozess auf dem Server
+        reagiert nicht mehr auf Tastatureingaben. Du hast seine PID mit
+        <code>pgrep htop</code> zu <strong>8842</strong> ermittelt. Welcher
+        Befehl beendet ihn als ersten, höflichen Versuch?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q8" value="a"><span class="q2-opt-text">a) <code>kill -9 8842</code></span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q8" value="b"><span class="q2-opt-text">b) <code>kill 8842</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q8" value="c"><span class="q2-opt-text">c) <code>killall -9 htop</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q8" value="d"><span class="q2-opt-text">d) <code>terminate 8842</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> <strong><code>kill PID</code></strong> (ohne
+          Optionen) sendet <code>SIGTERM</code> — den <strong>höflichen</strong>
+          Beendigungs-Aufruf. Der Prozess kann noch aufräumen (Dateien schließen
+          etc.). <code>kill -9</code> ist <code>SIGKILL</code> — die Brachialvariante,
+          erst wenn höflich nicht reicht. <code>killall</code> mit <code>-9</code>
+          ist auch zu hart als erster Schritt. <code>terminate</code> gibt es nicht.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Faustregel: <strong>erst höflich</strong>,
+          dann brutal. <code>kill 8842</code> schickt <code>SIGTERM</code> — der
+          Prozess kann sich aufräumen. Erst wenn das nicht hilft (nach ~5 Sek.),
+          nimmt man <code>kill -9 8842</code> (SIGKILL). <code>terminate</code>
+          existiert nicht als Befehl.
+        </div>
+      </li>
 
-      <div class="subblock">
-        <p><strong>Welche Optionen kann man mit dem dnf-Kommando benutzen, um das
-        System zu aktualisieren?</strong> (mehrere Antworten möglich)</p>
+      <!-- ============ FRAGE 9 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q9</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Du startest in der Shell einen Backup-Job, der die CPU
+        stark beansprucht. Mit <code>ps -alf</code> siehst du, dass er PID
+        <strong>5421</strong> hat und aktuell mit NI=0 läuft. Du willst seinen
+        Niceness-Wert auf <strong>+15</strong> hochsetzen, damit andere Prozesse
+        Vorrang haben. Welcher Befehl ist richtig?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q9" value="a"><span class="q2-opt-text">a) <code>nice -n 15 5421</code></span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q9" value="b"><span class="q2-opt-text">b) <code>sudo renice 15 -p 5421</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q9" value="c"><span class="q2-opt-text">c) <code>sudo renice -n 15 5421</code></span></label>
+          <label class="q2-opt"><input type="radio" name="q9" value="d"><span class="q2-opt-text">d) <code>kill -15 5421</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> <code>renice</code> ändert die Niceness
+          <strong>laufender</strong> Prozesse — Syntax:
+          <strong><code>renice WERT -p PID</code></strong>. Positive Werte
+          (= „höflicher") dürfen normale User; negative Werte braucht es
+          <code>sudo</code>. <code>nice</code> ist nur beim <strong>Start</strong>
+          eines neuen Prozesses, nicht für laufende. <code>kill -15</code> ist
+          <code>SIGTERM</code> und beendet den Prozess komplett.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Für laufende Prozesse ist
+          <strong><code>renice</code></strong> das Werkzeug. Mit <code>-p</code>
+          gibst du an, dass die Zahl eine PID ist (sonst wäre es ein User).
+          <code>nice</code> funktioniert nur beim <strong>Starten</strong> eines
+          Prozesses, nicht später. <code>kill -15</code> ist SIGTERM — würde den
+          Prozess beenden, nicht priorisieren.
+        </div>
+      </li>
 
-        <form class="q2-form" data-correct="b,c" data-multi="true">
-          <label class="q2-item"><input type="checkbox" name="q3" value="a"> <span>a) install</span></label>
-          <label class="q2-item"><input type="checkbox" name="q3" value="b"> <span>b) update</span></label>
-          <label class="q2-item"><input type="checkbox" name="q3" value="c"> <span>c) upgrade</span></label>
-          <label class="q2-item"><input type="checkbox" name="q3" value="d"> <span>d) check-update</span></label>
+      <!-- ============ FRAGE 10 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q10</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">In Terminal A startest du einen Hintergrund-Job:
+        <code>sleep 600 &amp;</code>. In Terminal B (gleicher User, gleicher Server)
+        tippst du <code>jobs</code>. Was siehst du in Terminal B?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q10" value="a"><span class="q2-opt-text">a) Den <code>sleep 600</code>-Job aus Terminal A</span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q10" value="b"><span class="q2-opt-text">b) Eine leere Liste</span></label>
+          <label class="q2-opt"><input type="radio" name="q10" value="c"><span class="q2-opt-text">c) Eine Fehlermeldung „no permission"</span></label>
+          <label class="q2-opt"><input type="radio" name="q10" value="d"><span class="q2-opt-text">d) Alle Prozesse des Users (inklusive sleep)</span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> <strong><code>jobs</code> zeigt nur Jobs der
+          aktuellen Shell</strong> — also nur Hintergrund-Prozesse, die DU
+          <strong>in genau dieser Terminal-Session</strong> mit <code>&amp;</code>
+          gestartet hast. Terminal B ist eine andere Shell-Session, kennt deshalb
+          die Jobs aus Terminal A nicht. Für eine systemweite Sicht nimmst du
+          <code>ps -ef | grep sleep</code>.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> <code>jobs</code> ist eine
+          <strong>Shell-lokale Liste</strong> — nur die Jobs, die in DIESER Shell
+          mit <code>&amp;</code> in den Hintergrund geschickt wurden. Terminal B ist
+          eine andere Shell und sieht deshalb <strong>eine leere Liste</strong>.
+          Wenn du alle sleep-Prozesse systemweit sehen willst:
+          <code>ps -ef | grep sleep</code>.
+        </div>
+      </li>
 
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> Bei dnf sind <code>update</code> und
-            <code>upgrade</code> identisch — beide installieren neuere Versionen
-            der Pakete. <code>check-update</code> zeigt nur an, was verfügbar
-            wäre, ohne zu installieren. <code>install</code> installiert neue
-            Pakete, aktualisiert aber kein Bestehendes.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Richtig sind <strong>b) update</strong>
-            und <strong>c) upgrade</strong>. Beide tun bei dnf das Gleiche.
-            <code>check-update</code> zeigt nur, was verfügbar wäre, ohne zu
-            installieren. <code>install</code> installiert neue Pakete, aktualisiert
-            aber nicht das System.
-          </div>
-        </form>
-      </div>
-    </section>
+      <!-- ============ FRAGE 11 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q11</span>
+          <span class="q2-badge">Multiple Choice</span>
+        </div>
+        <div class="q2-q">Welche der folgenden Befehle starten ein Linux-System
+        tatsächlich neu? (mehrere richtig möglich)</div>
+        <div class="q2-opts">
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q11" value="a"><span class="q2-opt-text">a) <code>sudo reboot</code></span></label>
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q11" value="b"><span class="q2-opt-text">b) <code>sudo shutdown -r now</code></span></label>
+          <label class="q2-opt q2-correct"><input type="checkbox" name="q11" value="c"><span class="q2-opt-text">c) <code>sudo systemctl reboot</code></span></label>
+          <label class="q2-opt"><input type="checkbox" name="q11" value="d"><span class="q2-opt-text">d) <code>sudo init 0</code></span></label>
+          <label class="q2-opt"><input type="checkbox" name="q11" value="e"><span class="q2-opt-text">e) <code>sudo shutdown -h now</code></span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Drei korrekte Neustart-Befehle:
+          <strong>reboot</strong>, <strong>shutdown -r now</strong> (r = restart),
+          und der systemd-Weg <strong>systemctl reboot</strong>.
+          <strong>init 0</strong> fährt das System herunter (Runlevel 0 = Halt).
+          <strong>shutdown -h now</strong> fährt herunter (h = halt, nicht reboot).
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Für Neustart: <code>reboot</code>,
+          <code>shutdown -r now</code>, <code>systemctl reboot</code>. Der Buchstabe
+          <strong><code>-r</code></strong> im shutdown-Befehl steht für
+          <code>restart</code>. <strong>init 0</strong> und
+          <strong>shutdown -h now</strong> sind zum Herunterfahren (h = halt,
+          0 = Halt-Runlevel).
+        </div>
+      </li>
 
-    <!-- ============ FRAGE 4 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q4</span>
-        <h2 class="timeblock-title">GRUB-Konfiguration</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
+      <!-- ============ FRAGE 12 ============ -->
+      <li class="q2-item">
+        <div class="q2-meta">
+          <span class="q2-badge">Q12</span>
+          <span class="q2-badge">Single Choice</span>
+        </div>
+        <div class="q2-q">Du hast ein Bash-Skript <code>backup.sh</code> geschrieben,
+        aber <strong>keine</strong> Shebang-Zeile (<code>#!/bin/bash</code>) eingefügt.
+        Du machst es mit <code>chmod +x backup.sh</code> ausführbar. Was passiert
+        beim Aufruf von <code>./backup.sh</code>?</div>
+        <div class="q2-opts">
+          <label class="q2-opt"><input type="radio" name="q12" value="a"><span class="q2-opt-text">a) Die Datei läuft garantiert mit Bash</span></label>
+          <label class="q2-opt q2-correct"><input type="radio" name="q12" value="b"><span class="q2-opt-text">b) Das Verhalten ist nicht zuverlässig — abhängig von Shell und System</span></label>
+          <label class="q2-opt"><input type="radio" name="q12" value="c"><span class="q2-opt-text">c) Es kommt zwingend eine Fehlermeldung „missing shebang"</span></label>
+          <label class="q2-opt"><input type="radio" name="q12" value="d"><span class="q2-opt-text">d) Bash wird automatisch ergänzt vor dem Ausführen</span></label>
+        </div>
+        <div class="q2-expl q2-expl-correct">
+          <strong>✓ Richtig!</strong> Ohne Shebang weiß der Kernel nicht, welcher
+          Interpreter die Datei ausführen soll. Manche Systeme nutzen dann die
+          aktuelle Shell als Fallback, andere geben einen Fehler aus —
+          <strong>das Verhalten ist nicht garantiert</strong>. Deshalb:
+          <strong>immer mit Shebang anfangen</strong>. Mit
+          <code>bash ./backup.sh</code> würde es dagegen funktionieren, weil du den
+          Interpreter explizit angibst.
+        </div>
+        <div class="q2-expl q2-expl-wrong">
+          <strong>✗ Nicht ganz.</strong> Ohne Shebang ist das Verhalten
+          <strong>nicht zuverlässig</strong> — manche Systeme nehmen die aktuelle
+          Shell als Fallback, andere geben einen Fehler. Es gibt keine Garantie,
+          dass Bash benutzt wird. Deshalb gehört <code>#!/bin/bash</code> in
+          <strong>jede</strong> Skript-Datei als Zeile 1. Alternativ kann man das
+          Skript auch direkt mit <code>bash ./backup.sh</code> aufrufen — dann ist
+          der Interpreter explizit.
+        </div>
+      </li>
 
-      <div class="subblock">
-        <p><strong>Was ist der richtige Name der Konfigurations-Datei für GNU GRUB?</strong></p>
-
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q4" value="a"> <span>a) <code>grub.cfg</code></span></label>
-          <label class="q2-item"><input type="radio" name="q4" value="b"> <span>b) <code>grubenv</code></span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> Die Haupt-Konfigurationsdatei heißt
-            <code>grub.cfg</code> und liegt unter <code>/boot/grub2/grub.cfg</code>
-            (auf Rocky/RHEL). Sie wird mit <code>grub2-mkconfig</code> aus
-            <code>/etc/default/grub</code> generiert. <code>grubenv</code> ist
-            eine Umgebungsvariablen-Datei für GRUB, aber nicht die Hauptkonfiguration.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Die richtige Datei heißt
-            <code>grub.cfg</code> (a). <code>grubenv</code> ist eine separate
-            Umgebungsvariablen-Datei, aber nicht die Hauptkonfiguration.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 5 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q5</span>
-        <h2 class="timeblock-title">Umgebungsvariablen — Schreibweise</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Umgebungsvariablen werden standardmäßig komplett:</strong></p>
-
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q5" value="a"> <span>a) Großgeschrieben</span></label>
-          <label class="q2-item"><input type="radio" name="q5" value="b"> <span>b) kleingeschrieben</span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> Umgebungsvariablen werden per Konvention
-            <strong>GROSSGESCHRIEBEN</strong>: <code>PATH</code>,
-            <code>HOME</code>, <code>USER</code>, <code>SHELL</code>. Das hilft,
-            sie optisch von normalen Shell-Variablen (meist klein) zu unterscheiden.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Konvention: Umgebungsvariablen sind
-            <strong>GROSSGESCHRIEBEN</strong>. Beispiele: PATH, HOME, USER, SHELL.
-            Eigene Shell-Variablen schreibt man meist klein zur Unterscheidung.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 6 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q6</span>
-        <h2 class="timeblock-title"><code>export</code></h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Mit <code>export</code> wird eine Umgebungsvariable:</strong></p>
-
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q6" value="a"> <span>a) bekannt gemacht (für das System)</span></label>
-          <label class="q2-item"><input type="radio" name="q6" value="b"> <span>b) gelöscht</span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <code>export</code> macht eine Variable
-            für Kind-Prozesse (z.B. Skripte) sichtbar. Zum Löschen einer
-            Variablen nimmst du <code>unset</code>.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> <code>export</code> <strong>exportiert</strong>
-            eine Variable an Kind-Prozesse — macht sie also bekannt. Zum Löschen
-            verwendet man <code>unset</code>.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 7 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q7</span>
-        <h2 class="timeblock-title">Maschine ausschalten</h2>
-        <span class="timeblock-badge badge-quiz">Multiple Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Mit welchem Befehl kann man die Linux-Maschine ausschalten?</strong>
-        (mehrere Antworten möglich)</p>
-
-        <form class="q2-form" data-correct="a,c" data-multi="true">
-          <label class="q2-item"><input type="checkbox" name="q7" value="a"> <span>a) <code>shutdown</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q7" value="b"> <span>b) <code>shutdown -r</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q7" value="c"> <span>c) <code>systemctl poweroff</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q7" value="d"> <span>d) <code>reboot</code></span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <code>shutdown</code> ohne Option fährt
-            herunter (nach 1 Minute), <code>systemctl poweroff</code> ebenfalls.
-            <code>shutdown -r</code> und <code>reboot</code> sind <strong>Neustart</strong>-Befehle.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Richtig sind <strong>a) shutdown</strong>
-            und <strong>c) systemctl poweroff</strong>. Beides fährt das System
-            herunter. <code>shutdown -r</code> und <code>reboot</code> sind
-            Neustart-Befehle, nicht Ausschalten.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 8 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q8</span>
-        <h2 class="timeblock-title">Prozess beenden</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Mit welchem Befehl können Sie einen Prozess beenden?</strong></p>
-
-        <form class="q2-form" data-correct="c">
-          <label class="q2-item"><input type="radio" name="q8" value="a"> <span>a) <code>renice</code></span></label>
-          <label class="q2-item"><input type="radio" name="q8" value="b"> <span>b) <code>nice</code></span></label>
-          <label class="q2-item"><input type="radio" name="q8" value="c"> <span>c) <code>kill</code></span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <code>kill</code> sendet ein Signal an
-            einen Prozess — Default ist SIGTERM (15) zum sauberen Beenden.
-            <code>nice</code> und <code>renice</code> ändern nur die Priorität,
-            beenden aber nichts.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> <code>kill</code> beendet Prozesse
-            (sendet ein Signal). <code>nice</code> und <code>renice</code> setzen
-            die Priorität (Niceness), beenden aber keinen Prozess.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 9 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q9</span>
-        <h2 class="timeblock-title">Niceness ändern</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Ein Prozess läuft im Hintergrund und hat den PID 2398. Wählen
-        Sie den richtigen Befehl, um den „Niceness"-Wert des Prozesses auf
-        <code>-10</code> umzustellen:</strong></p>
-
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q9" value="a"> <span>a) <code>renice -10 -p 2398</code></span></label>
-          <label class="q2-item"><input type="radio" name="q9" value="b"> <span>b) <code>nice -10 2398</code></span></label>
-          <label class="q2-item"><input type="radio" name="q9" value="c"> <span>c) <code>kill 2398</code></span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <code>renice</code> ändert die Niceness
-            eines <strong>laufenden</strong> Prozesses. Syntax:
-            <code>renice WERT -p PID</code>. <code>nice</code> wird nur beim
-            <strong>Starten</strong> eines Prozesses verwendet, nicht später.
-            Für negativen Wert braucht es übrigens sudo.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Richtig ist <code>renice -10 -p 2398</code>.
-            <code>renice</code> ändert die Niceness laufender Prozesse,
-            <code>-p</code> sagt: gemeint ist eine PID. <code>nice</code>
-            funktioniert nur beim Start, nicht später.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 10 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q10</span>
-        <h2 class="timeblock-title"><code>jobs</code></h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Mit dem Befehl <code>jobs</code> kann man:</strong></p>
-
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q10" value="a"> <span>a) Prozesse, die der angemeldete Benutzer gestartet hat, auflisten</span></label>
-          <label class="q2-item"><input type="radio" name="q10" value="b"> <span>b) Prozesse beenden</span></label>
-          <label class="q2-item"><input type="radio" name="q10" value="c"> <span>c) den Niceness-Wert eines Prozesses ändern</span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <code>jobs</code> listet die
-            Hintergrund-Jobs der <strong>aktuellen Shell</strong> auf — also
-            das, was du selbst mit <code>&amp;</code> in den Hintergrund
-            geschickt hast. Nicht alle Prozesse, nicht die anderer User.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> <code>jobs</code> <strong>listet</strong>
-            die eigenen Hintergrund-Jobs der aktuellen Shell. Beenden →
-            <code>kill</code>. Niceness → <code>renice</code>.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 11 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q11</span>
-        <h2 class="timeblock-title">Maschine neustarten</h2>
-        <span class="timeblock-badge badge-quiz">Multiple Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong>Mit welchem Befehl kann man die Linux-Maschine neustarten?</strong>
-        (mehrere Antworten möglich)</p>
-
-        <form class="q2-form" data-correct="c,e" data-multi="true">
-          <label class="q2-item"><input type="checkbox" name="q11" value="a"> <span>a) <code>poweroff</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q11" value="b"> <span>b) <code>telinit 0</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q11" value="c"> <span>c) <code>reboot</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q11" value="d"> <span>d) <code>systemctl halt</code></span></label>
-          <label class="q2-item"><input type="checkbox" name="q11" value="e"> <span>e) <code>shutdown -r</code></span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <code>reboot</code> startet sofort neu,
-            <code>shutdown -r</code> nach einer Minute (oder <code>-r now</code>
-            sofort). <code>poweroff</code>, <code>telinit 0</code> und
-            <code>systemctl halt</code> fahren herunter, starten aber NICHT neu.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Richtig sind <strong>c) reboot</strong>
-            und <strong>e) shutdown -r</strong>. <code>poweroff</code> /
-            <code>telinit 0</code> / <code>systemctl halt</code> sind alles
-            Herunterfahr-Befehle, kein Neustart.
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ FRAGE 12 ============ -->
-    <section class="timeblock">
-      <div class="timeblock-header">
-        <span class="timeblock-time">Q12</span>
-        <h2 class="timeblock-title">Shebang</h2>
-        <span class="timeblock-badge badge-quiz">Single Choice</span>
-      </div>
-
-      <div class="subblock">
-        <p><strong><code>#!/bin/bash</code> wird allgemein als _________
-        bezeichnet:</strong></p>
-
-        <form class="q2-form" data-correct="a">
-          <label class="q2-item"><input type="radio" name="q12" value="a"> <span>a) Shebang</span></label>
-          <label class="q2-item"><input type="radio" name="q12" value="b"> <span>b) Hashban</span></label>
-          <label class="q2-item"><input type="radio" name="q12" value="c"> <span>c) Shehash</span></label>
-
-          <div class="q2-expl-correct">
-            <strong>✓ Richtig!</strong> <strong>Shebang</strong> (manchmal auch
-            „Hashbang") — aus <strong>Sh</strong>arp (#) + <strong>Bang</strong> (!).
-            Sagt dem System, welcher Interpreter das Skript ausführen soll.
-            Steht immer in der ersten Zeile.
-          </div>
-          <div class="q2-expl-wrong">
-            <strong>✗ Nicht ganz.</strong> Der Begriff lautet <strong>Shebang</strong>
-            (oder Hashbang, beides geht). Aus den englischen Wörtern
-            <strong>Sh</strong>arp (#) und <strong>Bang</strong> (!).
-          </div>
-        </form>
-      </div>
-    </section>
+    </ul>
 
     <!-- ============ ABSCHLUSS ============ -->
     <section style="margin-top: 4rem;">
@@ -451,10 +461,10 @@
         <div class="callout-icon">🎯</div>
         <div class="callout-content">
           <div class="callout-title">Quiz durchgearbeitet?</div>
-          <p>Wie waren deine Trefferquote? Wenn du <strong>9 von 12</strong>
-          richtig hattest, sitzt der Stoff. Bei weniger: kein Stress — schau dir
-          die entsprechenden Kapitel nochmal an. Das Quiz ist genau dafür da:
-          Lücken finden, bevor sie in der Prüfung zum Problem werden.</p>
+          <p>Wie waren deine Trefferquote? Wenn du <strong>8 von 12</strong> oder
+          mehr richtig hattest, sitzt der Stoff solide. Bei weniger: schau dir die
+          entsprechenden Kapitel nochmal an — die Konzepte sind das Wichtige, nicht
+          die Antwortauswahl auswendig zu lernen.</p>
           <p style="margin-top: 0.5rem;"><strong>Wenn du dich gut fühlst:</strong>
           Schau dir das Cheat-Sheet an, drucke es aus, hänge es neben deinen
           Monitor.</p>
