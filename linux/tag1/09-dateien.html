@@ -57,9 +57,24 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">9.1</span><a href="#sec-9-1">touch — eigentlich gar nicht zum Erstellen gedacht</a></li>
+        <li><span class="toc-time">9.2</span><a href="#sec-9-2">mkdir — Verzeichnisse anlegen</a></li>
+        <li><span class="toc-time">9.3</span><a href="#sec-9-3">cp — kopieren mit vielen Spielarten</a></li>
+        <li><span class="toc-time">9.4</span><a href="#sec-9-4">mv — verschieben und umbenennen in einem</a></li>
+        <li><span class="toc-time">9.5</span><a href="#sec-9-5">rm — der gefährlichste Befehl überhaupt</a></li>
+        <li><span class="toc-time">9.6</span><a href="#sec-9-6">file und stat — was steckt drin?</a></li>
+        <li><span class="toc-time">9.7</span><a href="#sec-9-7">Dateien anschauen: cat, less, head, tail</a></li>
+        <li><span class="toc-time">🛠️</span><a href="#mini-uebungen-gleich-mitmachen-15-min">Mini-Übungen — gleich mitmachen (15 Min)</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ TOUCH ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-1">
       <div class="timeblock-header">
         <span class="timeblock-time">9.1</span>
         <h2 class="timeblock-title"><code>touch</code> — eigentlich gar nicht zum Erstellen gedacht</h2>
@@ -130,7 +145,7 @@ touch -d "2023-12-24 18:00" datei.txt</code></pre>
     </section>
 
     <!-- ============ MKDIR ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-2">
       <div class="timeblock-header">
         <span class="timeblock-time">9.2</span>
         <h2 class="timeblock-title"><code>mkdir</code> — Verzeichnisse anlegen</h2>
@@ -187,7 +202,7 @@ mkdir -p firma/{buchhaltung,it,personal}/{aktiv,archiv}</code></pre>
     </section>
 
     <!-- ============ CP ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-3">
       <div class="timeblock-header">
         <span class="timeblock-time">9.3</span>
         <h2 class="timeblock-title"><code>cp</code> — kopieren mit vielen Spielarten</h2>
@@ -268,7 +283,7 @@ cp --backup nginx.conf /etc/nginx/
     </section>
 
     <!-- ============ MV ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-4">
       <div class="timeblock-header">
         <span class="timeblock-time">9.4</span>
         <h2 class="timeblock-title"><code>mv</code> — verschieben und umbenennen in einem</h2>
@@ -344,7 +359,7 @@ mv ~/Downloads/datei.txt ~/projekte/neuer-name.txt</code></pre>
     </section>
 
     <!-- ============ RM ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-5">
       <div class="timeblock-header">
         <span class="timeblock-time">9.5</span>
         <h2 class="timeblock-title"><code>rm</code> — der gefährlichste Befehl überhaupt</h2>
@@ -495,7 +510,7 @@ alias mv='mv -i'</code></pre>
     </section>
 
     <!-- ============ FILE STAT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-6">
       <div class="timeblock-header">
         <span class="timeblock-time">9.6</span>
         <h2 class="timeblock-title"><code>file</code> und <code>stat</code> — was steckt drin?</h2>
@@ -581,7 +596,7 @@ file /etc/*</code></pre>
     </section>
 
     <!-- ============ ANZEIGE ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-9-7">
       <div class="timeblock-header">
         <span class="timeblock-time">9.7</span>
         <h2 class="timeblock-title">Dateien anschauen: <code>cat</code>, <code>less</code>, <code>head</code>, <code>tail</code></h2>
@@ -645,7 +660,7 @@ sudo tail -f /var/log/secure
     </section>
 
     <!-- ============ MINI ÜBUNG ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="mini-uebungen-gleich-mitmachen-15-min">
       <div class="timeblock-header">
         <span class="timeblock-time">🛠️</span>
         <h2 class="timeblock-title">Mini-Übungen — gleich mitmachen (15 Min)</h2>
@@ -732,7 +747,7 @@ stat /etc/hostname
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

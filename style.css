@@ -2323,3 +2323,62 @@ details.callout-deepdive > summary:hover { text-decoration: underline; }
 .breadcrumbs .breadcrumbs-current {
   color: var(--text-primary);
 }
+
+/* ========== CHAPTER-TOC — klappbares Inhaltsverzeichnis oben im Kapitel ========== */
+.chapter-toc {
+  margin: 1.5rem 0 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+}
+.chapter-toc summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+.chapter-toc summary::-webkit-details-marker { display: none; }
+.chapter-toc summary::before {
+  content: '▼';
+  display: inline-block;
+  margin-right: 0.55rem;
+  color: var(--accent);
+  font-size: 0.7rem;
+  transition: transform 0.15s ease;
+}
+.chapter-toc:not([open]) summary::before { transform: rotate(-90deg); }
+.chapter-toc summary strong { color: var(--text-primary); }
+.chapter-toc ul {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.chapter-toc li {
+  padding: 0.2rem 0;
+  display: flex;
+  gap: 0.7rem;
+}
+.chapter-toc .toc-time {
+  color: var(--accent);
+  min-width: 2.6rem;
+  flex-shrink: 0;
+}
+.chapter-toc a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.chapter-toc a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}

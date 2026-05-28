@@ -57,9 +57,29 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">7.1</span><a href="#sec-7-1">Was ist der Filesystem Hierarchy Standard?</a></li>
+        <li><span class="toc-time">7.2</span><a href="#sec-7-2">„Alles ist eine Datei“ — die Unix-Philosophie</a></li>
+        <li><span class="toc-time">7.3</span><a href="#sec-7-3">Der Linux-Verzeichnisbaum auf einen Blick</a></li>
+        <li><span class="toc-time">7.4</span><a href="#sec-7-4">/bin · /sbin · /usr/bin · /usr/sbin</a></li>
+        <li><span class="toc-time">7.5</span><a href="#sec-7-5">/etc — das Herz der Konfiguration</a></li>
+        <li><span class="toc-time">7.6</span><a href="#sec-7-6">/home und /root — wo die User wohnen</a></li>
+        <li><span class="toc-time">7.7</span><a href="#sec-7-7">/var — alles, was sich verändert</a></li>
+        <li><span class="toc-time">7.8</span><a href="#sec-7-8">/tmp — temporär heißt wirklich temporär</a></li>
+        <li><span class="toc-time">7.9</span><a href="#sec-7-9">/opt vs. /usr/local — wohin mit eigener Software?</a></li>
+        <li><span class="toc-time">7.10</span><a href="#sec-7-10">Die magischen Verzeichnisse: /dev, /proc, /sys</a></li>
+        <li><span class="toc-time">7.11</span><a href="#sec-7-11">/boot — Kernel und Bootloader</a></li>
+        <li><span class="toc-time">7.12</span><a href="#sec-7-12">/mnt und /media — Mounten von Devices</a></li>
+        <li><span class="toc-time">7.13</span><a href="#sec-7-13">Mach mit: rein in den Baum</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ FHS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-1">
       <div class="timeblock-header">
         <span class="timeblock-time">7.1</span>
         <h2 class="timeblock-title">Was ist der Filesystem Hierarchy Standard?</h2>
@@ -108,7 +128,7 @@
     </section>
 
     <!-- ============ ALLES IST DATEI ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-2">
       <div class="timeblock-header">
         <span class="timeblock-time">7.2</span>
         <h2 class="timeblock-title">„Alles ist eine Datei“ — die Unix-Philosophie</h2>
@@ -176,7 +196,7 @@ head -c 1024 /dev/zero | wc -c</code></pre>
     </section>
 
     <!-- ============ BAUM ÜBERSICHT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-3">
       <div class="timeblock-header">
         <span class="timeblock-time">7.3</span>
         <h2 class="timeblock-title">Der Linux-Verzeichnisbaum auf einen Blick</h2>
@@ -234,7 +254,7 @@ head -c 1024 /dev/zero | wc -c</code></pre>
     </section>
 
     <!-- ============ BIN SBIN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-4">
       <div class="timeblock-header">
         <span class="timeblock-time">7.4</span>
         <h2 class="timeblock-title"><code>/bin</code> · <code>/sbin</code> · <code>/usr/bin</code> · <code>/usr/sbin</code></h2>
@@ -278,7 +298,7 @@ head -c 1024 /dev/zero | wc -c</code></pre>
     </section>
 
     <!-- ============ /ETC ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-5">
       <div class="timeblock-header">
         <span class="timeblock-time">7.5</span>
         <h2 class="timeblock-title"><code>/etc</code> — das Herz der Konfiguration</h2>
@@ -327,7 +347,7 @@ head -c 1024 /dev/zero | wc -c</code></pre>
     </section>
 
     <!-- ============ /HOME /ROOT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-6">
       <div class="timeblock-header">
         <span class="timeblock-time">7.6</span>
         <h2 class="timeblock-title"><code>/home</code> und <code>/root</code> — wo die User wohnen</h2>
@@ -375,7 +395,7 @@ head -c 1024 /dev/zero | wc -c</code></pre>
     </section>
 
     <!-- ============ /VAR ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-7">
       <div class="timeblock-header">
         <span class="timeblock-time">7.7</span>
         <h2 class="timeblock-title"><code>/var</code> — alles, was sich verändert</h2>
@@ -421,7 +441,7 @@ head -c 1024 /dev/zero | wc -c</code></pre>
     </section>
 
     <!-- ============ /TMP ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-8">
       <div class="timeblock-header">
         <span class="timeblock-time">7.8</span>
         <h2 class="timeblock-title"><code>/tmp</code> — temporär heißt wirklich temporär</h2>
@@ -469,7 +489,7 @@ findmnt /tmp
     </section>
 
     <!-- ============ /OPT vs /USR/LOCAL ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-9">
       <div class="timeblock-header">
         <span class="timeblock-time">7.9</span>
         <h2 class="timeblock-title"><code>/opt</code> vs. <code>/usr/local</code> — wohin mit eigener Software?</h2>
@@ -513,7 +533,7 @@ findmnt /tmp
     </section>
 
     <!-- ============ /DEV /PROC /SYS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-10">
       <div class="timeblock-header">
         <span class="timeblock-time">7.10</span>
         <h2 class="timeblock-title">Die magischen Verzeichnisse: <code>/dev</code>, <code>/proc</code>, <code>/sys</code></h2>
@@ -615,7 +635,7 @@ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq</code></pre>
     </section>
 
     <!-- ============ /BOOT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-11">
       <div class="timeblock-header">
         <span class="timeblock-time">7.11</span>
         <h2 class="timeblock-title"><code>/boot</code> — Kernel und Bootloader</h2>
@@ -644,7 +664,7 @@ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq</code></pre>
     </section>
 
     <!-- ============ /MNT /MEDIA ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-12">
       <div class="timeblock-header">
         <span class="timeblock-time">7.12</span>
         <h2 class="timeblock-title"><code>/mnt</code> und <code>/media</code> — Mounten von Devices</h2>
@@ -699,7 +719,7 @@ findmnt</code></pre>
     </section>
 
     <!-- ============ PRAXIS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-7-13">
       <div class="timeblock-header">
         <span class="timeblock-time">7.13</span>
         <h2 class="timeblock-title">Mach mit: rein in den Baum</h2>
@@ -771,7 +791,7 @@ ls /dev/</code></pre>
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

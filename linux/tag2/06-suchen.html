@@ -59,9 +59,22 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">6.1</span><a href="#sec-6-1">Drei Suchwerkzeuge — wann was?</a></li>
+        <li><span class="toc-time">6.2</span><a href="#sec-6-2">find — der Profi-Sucher</a></li>
+        <li><span class="toc-time">6.3</span><a href="#sec-6-3">find mit Aktionen: -exec und -delete</a></li>
+        <li><span class="toc-time">6.4</span><a href="#sec-6-4">locate — die schnelle Alternative</a></li>
+        <li><span class="toc-time">6.5</span><a href="#sec-6-5">which & whereis — wo steckt das Programm?</a></li>
+        <li><span class="toc-time">6.7</span><a href="#sec-6-7">Typische Anfänger-Fehler</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ 6.1 DREI WERKZEUGE ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-6-1">
       <div class="timeblock-header">
         <span class="timeblock-time">6.1</span>
         <h2 class="timeblock-title">Drei Suchwerkzeuge — wann was?</h2>
@@ -103,7 +116,7 @@
     </section>
 
     <!-- ============ 6.2 FIND ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-6-2">
       <div class="timeblock-header">
         <span class="timeblock-time">6.2</span>
         <h2 class="timeblock-title"><code>find</code> — der Profi-Sucher</h2>
@@ -298,7 +311,7 @@ find /etc \( -name "*.log" -o -name "*.conf" \)</code></pre>
     </section>
 
     <!-- ============ 6.3 FIND AKTIONEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-6-3">
       <div class="timeblock-header">
         <span class="timeblock-time">6.3</span>
         <h2 class="timeblock-title"><code>find</code> mit Aktionen: <code>-exec</code> und <code>-delete</code></h2>
@@ -426,7 +439,7 @@ find /var/log -name "*.log" -mtime +30 -exec rm {} \;</code></pre>
     </section>
 
     <!-- ============ 6.4 LOCATE ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-6-4">
       <div class="timeblock-header">
         <span class="timeblock-time">6.4</span>
         <h2 class="timeblock-title"><code>locate</code> — die schnelle Alternative</h2>
@@ -502,7 +515,7 @@ sudo updatedb</code></pre>
     </section>
 
     <!-- ============ 6.5 WHICH WHEREIS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-6-5">
       <div class="timeblock-header">
         <span class="timeblock-time">6.5</span>
         <h2 class="timeblock-title"><code>which</code> &amp; <code>whereis</code> — wo steckt das Programm?</h2>
@@ -938,7 +951,7 @@ locate "*nginx*.conf"</code></pre>
     </section>
 
     <!-- ============ 6.7 ANFÄNGER-FEHLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-6-7">
       <div class="timeblock-header">
         <span class="timeblock-time">6.7</span>
         <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
@@ -1001,7 +1014,7 @@ locate "*nginx*.conf"</code></pre>
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

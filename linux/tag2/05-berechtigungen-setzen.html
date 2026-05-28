@@ -58,9 +58,21 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">5.1</span><a href="#sec-5-1">chmod — die symbolische Schreibweise</a></li>
+        <li><span class="toc-time">5.2</span><a href="#sec-5-2">chmod — die numerische Schreibweise (0–7)</a></li>
+        <li><span class="toc-time">5.3</span><a href="#sec-5-3">chown & chgrp — Eigentümer und Gruppe ändern</a></li>
+        <li><span class="toc-time">5.4</span><a href="#sec-5-4">Kurz angerissen: umask und Default-Berechtigungen</a></li>
+        <li><span class="toc-time">5.6</span><a href="#sec-5-6">Typische Anfänger-Fehler</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ 5.1 CHMOD SYMBOLISCH ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-1">
       <div class="timeblock-header">
         <span class="timeblock-time">5.1</span>
         <h2 class="timeblock-title"><code>chmod</code> — die symbolische Schreibweise</h2>
@@ -185,7 +197,7 @@ chmod u=rw,g=r,o= geheim.txt
     </section>
 
     <!-- ============ 5.2 CHMOD NUMERISCH ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-2">
       <div class="timeblock-header">
         <span class="timeblock-time">5.2</span>
         <h2 class="timeblock-title"><code>chmod</code> — die numerische Schreibweise (0–7)</h2>
@@ -378,7 +390,7 @@ chmod -R 755 /opt/meine-app/</code></pre>
     </section>
 
     <!-- ============ 5.3 CHOWN CHGRP ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-3">
       <div class="timeblock-header">
         <span class="timeblock-time">5.3</span>
         <h2 class="timeblock-title"><code>chown</code> &amp; <code>chgrp</code> — Eigentümer und Gruppe ändern</h2>
@@ -527,7 +539,7 @@ groups      # → admin wheel</code></pre>
     </section>
 
     <!-- ============ 5.4 UMASK ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-4">
       <div class="timeblock-header">
         <span class="timeblock-time">5.4</span>
         <h2 class="timeblock-title">Kurz angerissen: <code>umask</code> und Default-Berechtigungen</h2>
@@ -961,7 +973,7 @@ chmod ug+w,o= datei.txt
     </section>
 
     <!-- ============ 5.6 ANFÄNGER-FEHLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-6">
       <div class="timeblock-header">
         <span class="timeblock-time">5.6</span>
         <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
@@ -1023,7 +1035,7 @@ chmod ug+w,o= datei.txt
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

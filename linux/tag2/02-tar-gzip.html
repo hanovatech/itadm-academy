@@ -57,9 +57,22 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">2.1</span><a href="#sec-2-1">Worum geht's? Archivieren vs. Komprimieren</a></li>
+        <li><span class="toc-time">2.2</span><a href="#sec-2-2">tar — die Truhe</a></li>
+        <li><span class="toc-time">2.3</span><a href="#sec-2-3">gzip — die Vakuumpumpe</a></li>
+        <li><span class="toc-time">2.4</span><a href="#sec-2-4">tar + gzip kombiniert — der Klassiker</a></li>
+        <li><span class="toc-time">2.5</span><a href="#sec-2-5">Andere Komprimierer im Überblick</a></li>
+        <li><span class="toc-time">2.7</span><a href="#sec-2-7">Typische Anfänger-Fehler</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ 2.1 ARCHIVIEREN VS KOMPRIMIEREN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-1">
       <div class="timeblock-header">
         <span class="timeblock-time">2.1</span>
         <h2 class="timeblock-title">Worum geht's? Archivieren vs. Komprimieren</h2>
@@ -107,7 +120,7 @@
     </section>
 
     <!-- ============ 2.2 TAR ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-2">
       <div class="timeblock-header">
         <span class="timeblock-time">2.2</span>
         <h2 class="timeblock-title"><code>tar</code> — die Truhe</h2>
@@ -275,7 +288,7 @@ tar --occurrence=2 -xvf archiv.tar config.ini</code></pre>
     </section>
 
     <!-- ============ 2.3 GZIP ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-3">
       <div class="timeblock-header">
         <span class="timeblock-time">2.3</span>
         <h2 class="timeblock-title"><code>gzip</code> — die Vakuumpumpe</h2>
@@ -365,7 +378,7 @@ zless lang.txt.gz</code></pre>
     </section>
 
     <!-- ============ 2.4 TAR + GZIP ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-4">
       <div class="timeblock-header">
         <span class="timeblock-time">2.4</span>
         <h2 class="timeblock-title"><code>tar</code> + <code>gzip</code> kombiniert — der Klassiker</h2>
@@ -435,7 +448,7 @@ tar -czvf backup-$(date +%Y%m%d).tar.gz /etc/
     </section>
 
     <!-- ============ 2.5 ANDERE KOMPRIMIERER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-5">
       <div class="timeblock-header">
         <span class="timeblock-time">2.5</span>
         <h2 class="timeblock-title">Andere Komprimierer im Überblick</h2>
@@ -858,7 +871,7 @@ cat /tmp/test-restore/website/src/index.html
     </section>
 
     <!-- ============ 2.7 ANFÄNGER-FEHLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-7">
       <div class="timeblock-header">
         <span class="timeblock-time">2.7</span>
         <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
@@ -931,7 +944,7 @@ cat /tmp/test-restore/website/src/index.html
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

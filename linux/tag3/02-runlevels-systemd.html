@@ -58,9 +58,24 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">2.1</span><a href="#sec-2-1">Runlevels — die klassische Welt</a></li>
+        <li><span class="toc-time">2.2</span><a href="#sec-2-2">systemd — der moderne init</a></li>
+        <li><span class="toc-time">2.3</span><a href="#sec-2-3">systemctl · Target-Unit (Zustände wechseln)</a></li>
+        <li><span class="toc-time">2.4</span><a href="#sec-2-4">systemctl · Service-Unit (Dienste steuern)</a></li>
+        <li><span class="toc-time">2.5</span><a href="#sec-2-5">Herunterfahren & Neustarten</a></li>
+        <li><span class="toc-time">2.6</span><a href="#sec-2-6">Vorab fürs Lab: Logs lesen mit journalctl</a></li>
+        <li><span class="toc-time">🧪</span><a href="#lab">Lab 3.2 — Targets & Services beherrschen</a></li>
+        <li><span class="toc-time">2.6</span><a href="#sec-2-6-2">Typische Anfänger-Fehler</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ 2.1 RUNLEVELS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-1">
       <div class="timeblock-header">
         <span class="timeblock-time">2.1</span>
         <h2 class="timeblock-title">Runlevels — die klassische Welt</h2>
@@ -121,7 +136,7 @@
     </section>
 
     <!-- ============ 2.2 SYSTEMD ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-2">
       <div class="timeblock-header">
         <span class="timeblock-time">2.2</span>
         <h2 class="timeblock-title">systemd — der moderne init</h2>
@@ -359,7 +374,7 @@ WantedBy=multi-user.target</code></pre>
     </section>
 
     <!-- ============ 2.3 SYSTEMCTL TARGET-UNIT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-3">
       <div class="timeblock-header">
         <span class="timeblock-time">2.3</span>
         <h2 class="timeblock-title">systemctl · Target-Unit (Zustände wechseln)</h2>
@@ -436,7 +451,7 @@ sudo telinit 0       # herunterfahren</code></pre>
     </section>
 
     <!-- ============ 2.4 SYSTEMCTL SERVICE-UNIT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-4">
       <div class="timeblock-header">
         <span class="timeblock-time">2.4</span>
         <h2 class="timeblock-title">systemctl · Service-Unit (Dienste steuern)</h2>
@@ -543,7 +558,7 @@ sudo systemctl enable --now sshd</code></pre>
     </section>
 
     <!-- ============ 2.5 HERUNTERFAHREN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-5">
       <div class="timeblock-header">
         <span class="timeblock-time">2.5</span>
         <h2 class="timeblock-title">Herunterfahren &amp; Neustarten</h2>
@@ -609,7 +624,7 @@ sudo systemctl enable --now sshd</code></pre>
     </section>
 
     <!-- ============ VORAB JOURNALCTL ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-6">
       <div class="timeblock-header">
         <span class="timeblock-time">2.6</span>
         <h2 class="timeblock-title">Vorab fürs Lab: Logs lesen mit journalctl</h2>
@@ -647,7 +662,7 @@ sudo systemctl enable --now sshd</code></pre>
     </section>
 
     <!-- ============ LAB 3.2 ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="lab">
       <div class="timeblock-header">
         <span class="timeblock-time">🧪</span>
         <h2 class="timeblock-title">Lab 3.2 — Targets &amp; Services beherrschen</h2>
@@ -1021,7 +1036,7 @@ systemctl list-units --state=failed
     </section>
 
     <!-- ============ TYPISCHE FEHLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-2-6-2">
       <div class="timeblock-header">
         <span class="timeblock-time">2.6</span>
         <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
@@ -1075,7 +1090,7 @@ systemctl list-units --state=failed
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

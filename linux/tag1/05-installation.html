@@ -70,9 +70,30 @@
   </div>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">5.1</span><a href="#sec-5-1">Was ist Anaconda?</a></li>
+        <li><span class="toc-time">5.2</span><a href="#sec-5-2">VM starten und ins Boot-Menü</a></li>
+        <li><span class="toc-time">5.3</span><a href="#sec-5-3">Sprache & Tastaturlayout</a></li>
+        <li><span class="toc-time">5.4</span><a href="#sec-5-4">Installationsziel: automatisch vs. manuell</a></li>
+        <li><span class="toc-time">5.5</span><a href="#sec-5-5">Software-Auswahl: Minimal vs. Server vs. Workstation</a></li>
+        <li><span class="toc-time">5.6</span><a href="#sec-5-6">Netzwerk & Hostname konfigurieren</a></li>
+        <li><span class="toc-time">5.7</span><a href="#sec-5-7">Root-Passwort und Benutzer anlegen</a></li>
+        <li><span class="toc-time">5.8</span><a href="#sec-5-8">Installation starten und ersten Reboot</a></li>
+        <li><span class="toc-time">5.9</span><a href="#sec-5-9">Warum NIE direkt als root arbeiten? — das sudo-Konzept</a></li>
+        <li><span class="toc-time">5.10</span><a href="#sec-5-10">Was passiert eigentlich beim Boot?</a></li>
+        <li><span class="toc-time">5.11</span><a href="#sec-5-11">open-vm-tools installieren</a></li>
+        <li><span class="toc-time">5.12</span><a href="#sec-5-12">JETZT einen Snapshot anlegen!</a></li>
+        <li><span class="toc-time">5.13</span><a href="#sec-5-13">Häufige Installations-Fehler</a></li>
+        <li><span class="toc-time">5.14</span><a href="#sec-5-14">VM sauber herunterfahren — Logout vs. Shutdown</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ ANACONDA ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-1">
       <div class="timeblock-header">
         <span class="timeblock-time">5.1</span>
         <h2 class="timeblock-title">Was ist Anaconda?</h2>
@@ -105,7 +126,7 @@
     </section>
 
     <!-- ============ BOOT INS INSTALLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-2">
       <div class="timeblock-header">
         <span class="timeblock-time">5.2</span>
         <h2 class="timeblock-title">VM starten und ins Boot-Menü</h2>
@@ -147,7 +168,7 @@
     </section>
 
     <!-- ============ SPRACHE ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-3">
       <div class="timeblock-header">
         <span class="timeblock-time">5.3</span>
         <h2 class="timeblock-title">Sprache &amp; Tastaturlayout</h2>
@@ -226,7 +247,7 @@
     </section>
 
     <!-- ============ INSTALLATIONSZIEL ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-4">
       <div class="timeblock-header">
         <span class="timeblock-time">5.4</span>
         <h2 class="timeblock-title">Installationsziel: automatisch vs. manuell</h2>
@@ -300,7 +321,7 @@
     </section>
 
     <!-- ============ SOFTWARE-AUSWAHL ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-5">
       <div class="timeblock-header">
         <span class="timeblock-time">5.5</span>
         <h2 class="timeblock-title">Software-Auswahl: Minimal vs. Server vs. Workstation</h2>
@@ -368,7 +389,7 @@
     </section>
 
     <!-- ============ NETZWERK ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-6">
       <div class="timeblock-header">
         <span class="timeblock-time">5.6</span>
         <h2 class="timeblock-title">Netzwerk &amp; Hostname konfigurieren</h2>
@@ -417,7 +438,7 @@
     </section>
 
     <!-- ============ ROOT + USER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-7">
       <div class="timeblock-header">
         <span class="timeblock-time">5.7</span>
         <h2 class="timeblock-title">Root-Passwort und Benutzer anlegen</h2>
@@ -483,7 +504,7 @@
     </section>
 
     <!-- ============ INSTALLATION ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-8">
       <div class="timeblock-header">
         <span class="timeblock-time">5.8</span>
         <h2 class="timeblock-title">Installation starten und ersten Reboot</h2>
@@ -547,7 +568,7 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
     </section>
 
     <!-- ============ SUDO ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-9">
       <div class="timeblock-header">
         <span class="timeblock-time">5.9</span>
         <h2 class="timeblock-title">Warum NIE direkt als root arbeiten? — das sudo-Konzept</h2>
@@ -641,7 +662,7 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
     </section>
 
     <!-- ============ BOOT-PROZESS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-10">
       <div class="timeblock-header">
         <span class="timeblock-time">5.10</span>
         <h2 class="timeblock-title">Was passiert eigentlich beim Boot?</h2>
@@ -703,7 +724,7 @@ Password: linux123    ← du siehst NICHTS beim Tippen, das ist OK!
     </section>
 
     <!-- ============ VMWARE TOOLS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-11">
       <div class="timeblock-header">
         <span class="timeblock-time">5.11</span>
         <h2 class="timeblock-title">open-vm-tools installieren</h2>
@@ -747,7 +768,7 @@ systemctl status vmtoolsd</code></pre>
     </section>
 
     <!-- ============ SNAPSHOT ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-12">
       <div class="timeblock-header">
         <span class="timeblock-time">5.12</span>
         <h2 class="timeblock-title">JETZT einen Snapshot anlegen!</h2>
@@ -780,7 +801,7 @@ systemctl status vmtoolsd</code></pre>
     </section>
 
     <!-- ============ HÄUFIGE FEHLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-13">
       <div class="timeblock-header">
         <span class="timeblock-time">5.13</span>
         <h2 class="timeblock-title">Häufige Installations-Fehler</h2>
@@ -865,7 +886,7 @@ systemctl status vmtoolsd</code></pre>
     </section>
 
     <!-- ============ POWEROFF / SHUTDOWN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-5-14">
       <div class="timeblock-header">
         <span class="timeblock-time">5.14</span>
         <h2 class="timeblock-title">VM sauber herunterfahren — Logout vs. Shutdown</h2>
@@ -979,7 +1000,7 @@ sudo reboot</code></pre>
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>

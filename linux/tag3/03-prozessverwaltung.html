@@ -59,9 +59,24 @@
   </section>
 
   <article>
+    <details class="chapter-toc" open>
+      <summary><strong>Inhalt dieses Kapitels</strong></summary>
+      <ul>
+        <li><span class="toc-time">3.1</span><a href="#sec-3-1">Was ist ein Prozess?</a></li>
+        <li><span class="toc-time">3.2</span><a href="#sec-3-2">ps — Prozess-Schnappschuss</a></li>
+        <li><span class="toc-time">3.3</span><a href="#sec-3-3">top — live, was läuft</a></li>
+        <li><span class="toc-time">3.4</span><a href="#sec-3-4">Hintergrund-Prozesse: &, jobs, fg, bg</a></li>
+        <li><span class="toc-time">3.5</span><a href="#sec-3-5">kill — Prozesse beenden</a></li>
+        <li><span class="toc-time">3.6</span><a href="#sec-3-6">nice & renice — Priorität steuern</a></li>
+        <li><span class="toc-time">🧪</span><a href="#lab33">Lab 3.3 — Prozesse beobachten und steuern</a></li>
+        <li><span class="toc-time">3.7</span><a href="#sec-3-7">Typische Anfänger-Fehler</a></li>
+        <li><span class="toc-time">🎯</span><a href="#kontrollfragen">Kontrollfragen zum Kapitel</a></li>
+      </ul>
+    </details>
+
 
     <!-- ============ 3.1 WAS IST EIN PROZESS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-1">
       <div class="timeblock-header">
         <span class="timeblock-time">3.1</span>
         <h2 class="timeblock-title">Was ist ein Prozess?</h2>
@@ -120,7 +135,7 @@
     </section>
 
     <!-- ============ 3.2 PS ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-2">
       <div class="timeblock-header">
         <span class="timeblock-time">3.2</span>
         <h2 class="timeblock-title"><code>ps</code> — Prozess-Schnappschuss</h2>
@@ -270,7 +285,7 @@ root      4711  0.0  0.0   4936  1024 pts/0 S    09:23  0:00 sleep 444</code></p
     </section>
 
     <!-- ============ 3.3 TOP ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-3">
       <div class="timeblock-header">
         <span class="timeblock-time">3.3</span>
         <h2 class="timeblock-title"><code>top</code> — live, was läuft</h2>
@@ -406,7 +421,7 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2256.1 avail Mem
     </section>
 
     <!-- ============ 3.4 HINTERGRUND-PROZESSE ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-4">
       <div class="timeblock-header">
         <span class="timeblock-time">3.4</span>
         <h2 class="timeblock-title">Hintergrund-Prozesse: <code>&amp;</code>, <code>jobs</code>, <code>fg</code>, <code>bg</code></h2>
@@ -490,7 +505,7 @@ bg %1
     </section>
 
     <!-- ============ 3.5 KILL ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-5">
       <div class="timeblock-header">
         <span class="timeblock-time">3.5</span>
         <h2 class="timeblock-title"><code>kill</code> — Prozesse beenden</h2>
@@ -582,7 +597,7 @@ sudo systemctl reload nginx   # die saubere systemd-Variante!</code></pre>
     </section>
 
     <!-- ============ 3.6 NICE / RENICE ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-6">
       <div class="timeblock-header">
         <span class="timeblock-time">3.6</span>
         <h2 class="timeblock-title"><code>nice</code> &amp; <code>renice</code> — Priorität steuern</h2>
@@ -1062,7 +1077,7 @@ jobs
     </section>
 
     <!-- ============ ANFÄNGER-FEHLER ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="sec-3-7">
       <div class="timeblock-header">
         <span class="timeblock-time">3.7</span>
         <h2 class="timeblock-title">Typische Anfänger-Fehler</h2>
@@ -1120,7 +1135,7 @@ jobs
     </section>
 
     <!-- ============ KONTROLLFRAGEN ============ -->
-    <section class="timeblock">
+    <section class="timeblock" id="kontrollfragen">
       <div class="timeblock-header">
         <span class="timeblock-time">🎯</span>
         <h2 class="timeblock-title">Kontrollfragen zum Kapitel</h2>
