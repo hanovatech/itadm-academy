@@ -47,7 +47,20 @@ const entries = files.map(file => {
   const html = fs.readFileSync(file, 'utf8');
   const { title, description } = extractMeta(html);
   const bodyText = extractText(html);
-  return { url: rel, title, description, content: bodyText };
+
+  // Extract H1-H3 headings (prefer those inside main/article when available)
+  const headingMatches = [];
+  const scopeMatch = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i) || html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const scopeHtml = scopeMatch ? scopeMatch[1] : html;
+  let m;
+  const headingRe = /<(h[1-3])[^>]*>([\s\S]*?)<\/\1>/gi;
+  while ((m = headingRe.exec(scopeHtml))) {
+    const text = m[2].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (text) headingMatches.push(text);
+  }
+
+  const isCheat = /cheat(-|\s*)sheet/i.test(title + ' ' + rel);
+  return { url: rel, title, description, content: bodyText, headings: headingMatches, isCheatSheet: isCheat };
 });
 const jsonPath = path.join(root, 'search-index-data.json');
 fs.writeFileSync(jsonPath, JSON.stringify(entries, null, 2), 'utf8');
