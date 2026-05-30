@@ -658,10 +658,7 @@ const siteSearchIndex = [
 const SEARCH_CONFIG = {
   cheatSheetPenalty: 0.15,
   excludeCheatSheets: false,
-  headingBoost: 8,
-  fuzzyThreshold: 0.8,
-  fuzzyMinTermLength: 5,
-  fuzzyMaxEdits: 1
+  headingBoost: 8
 };
 
 const SEARCH_BLACKLIST = new Set([
@@ -793,42 +790,6 @@ const STOP_WORDS = new Set([
   'the','a','an','of','to','and','is','are','was','were','it','that','this','as','for','on','by','be','or','not'
 ]);
 
-function levenshtein(a, b) {
-  if (!a || !b) return Math.max(a.length, b.length);
-  const m = a.length, n = b.length;
-  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1));
-  for (let i = 0; i <= m; i++) dp[i][0] = i;
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-    }
-  }
-  return dp[m][n];
-}
-
-function fuzzyScore(term, text) {
-  if (!term || !text) return 0;
-  const t = term.toLowerCase();
-  const s = text.toLowerCase();
-  if (s.includes(t)) return 1;
-  if (t.length < SEARCH_CONFIG.fuzzyMinTermLength) return 0;
-  const words = s.split(/\s+/).filter(Boolean);
-  let best = 0;
-  for (const w of words) {
-    if (Math.abs(w.length - t.length) > SEARCH_CONFIG.fuzzyMaxEdits) continue;
-    const maxLen = Math.max(w.length, t.length);
-    if (maxLen === 0) continue;
-    const d = levenshtein(t, w);
-    if (d > SEARCH_CONFIG.fuzzyMaxEdits) continue;
-    const score = 1 - d / maxLen;
-    if (score > best) best = score;
-    if (best >= 1) break;
-  }
-  return Math.max(0, best);
-}
-
 function buildSearchMeta() {
   if (_searchMeta.built) return;
   const df = Object.create(null);
@@ -882,18 +843,6 @@ function runSiteSearch(query) {
         const headingHits = countOccurrences(headingText, term);
 
         if (titleHits + descriptionHits + contentHits + urlHits + headingHits === 0) {
-          // try fuzzy matching before giving up
-          const fuzzyTitle = fuzzyScore(term, title);
-          const fuzzyDesc = fuzzyScore(term, description);
-          const fuzzyContent = fuzzyScore(term, content);
-          const fuzzyUrl = fuzzyScore(term, url);
-          const fuzzyHeading = fuzzyScore(term, headingText);
-          const bestFuzzy = Math.max(fuzzyTitle, fuzzyDesc, fuzzyContent, fuzzyUrl, fuzzyHeading);
-          if (bestFuzzy >= SEARCH_CONFIG.fuzzyThreshold) {
-            const idf = idfFor(term);
-            score += bestFuzzy * 2 * idf; // small fuzzy reward
-            continue;
-          }
           missing = true;
           break;
         }
