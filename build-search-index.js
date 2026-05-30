@@ -14,11 +14,20 @@ function walk(dir) {
 }
 
 function extractText(html) {
-  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  const content = bodyMatch ? bodyMatch[1] : html;
-  const noScripts = content.replace(/<script[\s\S]*?<\/script>/gi, ' ');
-  const noStyles = noScripts.replace(/<style[\s\S]*?<\/style>/gi, ' ');
-  const noTags = noStyles.replace(/<[^>]+>/g, ' ');
+  // Prefer main or article content when available
+  let match = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i) || html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+  let content = match ? match[1] : (html.match(/<body[^>]*>([\s\S]*?)<\/body>/i) || [null, html])[1];
+
+  // Remove common layout elements that may remain inside main/article
+  content = content.replace(/<nav[\s\S]*?<\/nav>/gi, ' ');
+  content = content.replace(/<header[\s\S]*?<\/header>/gi, ' ');
+  content = content.replace(/<aside[\s\S]*?<\/aside>/gi, ' ');
+  content = content.replace(/<footer[\s\S]*?<\/footer>/gi, ' ');
+  content = content.replace(/<script[\s\S]*?<\/script>/gi, ' ');
+  content = content.replace(/<style[\s\S]*?<\/style>/gi, ' ');
+
+  // Strip tags and normalize whitespace
+  const noTags = String(content).replace(/<[^>]+>/g, ' ');
   const normalized = noTags.replace(/\s+/g, ' ').trim();
   return normalized;
 }
@@ -40,6 +49,26 @@ const entries = files.map(file => {
   const bodyText = extractText(html);
   return { url: rel, title, description, content: bodyText };
 });
-
-fs.writeFileSync(path.join(root, 'search-index-data.json'), JSON.stringify(entries, null, 2), 'utf8');
+const jsonPath = path.join(root, 'search-index-data.json');
+fs.writeFileSync(jsonPath, JSON.stringify(entries, null, 2), 'utf8');
 console.log('search-index-data.json generated');
+
+// Embed into script.js by replacing the existing `siteSearchIndex` array
+try {
+  const scriptPath = path.join(root, 'script.js');
+  let scriptSrc = fs.readFileSync(scriptPath, 'utf8');
+  const replacement = 'const siteSearchIndex = ' + JSON.stringify(entries, null, 2) + ';';
+  if (/const\s+siteSearchIndex\s*=\s*\[([\s\S]*?)\];/m.test(scriptSrc)) {
+    scriptSrc = scriptSrc.replace(/const\s+siteSearchIndex\s*=\s*\[[\s\S]*?\];/m, replacement);
+  } else if (/const\s+siteSearchIndex\s*=\s*\[[\s\S]*$/m.test(scriptSrc)) {
+    // fallback: append
+    scriptSrc = scriptSrc.replace(/const\s+siteSearchIndex\s*=\s*\[[\s\S]*$/m, replacement);
+  } else {
+    // insert at top
+    scriptSrc = replacement + '\n\n' + scriptSrc;
+  }
+  fs.writeFileSync(scriptPath, scriptSrc, 'utf8');
+  console.log('script.js updated with search index content');
+} catch (e) {
+  console.error('Failed to embed index into script.js:', e.message);
+}
