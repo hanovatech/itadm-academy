@@ -731,11 +731,14 @@ function extractSnippet(text, terms, length = 180) {
   const normalizedLines = lines.map(line => line.toLowerCase());
   for (const term of terms) {
     for (let i = 0; i < normalizedLines.length; i++) {
-      if (normalizedLines[i].includes(term)) {
+      const lineText = normalizedLines[i];
+      const index = lineText.indexOf(term);
+      if (index !== -1) {
         const line = lines[i];
-        return line.length <= length
-          ? line
-          : `${line.slice(0, length).trim()}…`;
+        if (line.length <= length) return line;
+        const start = Math.max(0, index - Math.floor((length - term.length) / 2));
+        const snippet = line.slice(start, start + length).trim();
+        return `${start > 0 ? '…' : ''}${snippet}${start + length < line.length ? '…' : ''}`;
       }
     }
   }
