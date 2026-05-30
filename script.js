@@ -425,13 +425,29 @@ function renderHeaderSearchDropdown(results, query) {
 
   const items = results.slice(0, 5).map(result => {
     const terms = normalizeSearchText(query).split(/\s+/).filter(Boolean);
+    let snippetText = result.snippet || '';
+    if (!snippetText && result.content) {
+      const lower = result.content.toLowerCase();
+      let pos = -1;
+      for (const term of terms) {
+        const p = lower.indexOf(term);
+        if (p !== -1 && (pos === -1 || p < pos)) pos = p;
+      }
+      if (pos !== -1) {
+        const start = Math.max(0, pos - 40);
+        snippetText = (start > 0 ? '…' : '') + result.content.slice(start, start + 120).replace(/\s+/g, ' ') + (pos + 120 < result.content.length ? '…' : '');
+      }
+    }
+
     return `
       <a class="nav-search-item" href="${result.url}">
         <span class="nav-search-title">${highlightSearchMatches(result.title, terms)}</span>
+        ${snippetText ? `<span class="nav-search-snippet">${highlightSearchMatches(snippetText, terms)}</span>` : ''}
         <span class="nav-search-url">${result.url}</span>
       </a>
     `;
   });
+
 
   if (results.length > 5) {
     const searchPath = getSearchPagePath();

@@ -257,6 +257,17 @@ body::after {
   color: var(--text-faint);
 }
 
+.nav-search-snippet {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  max-height: 3.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .nav-search-item mark {
   background: rgba(57, 255, 20, 0.18);
   padding: 0 0.1rem;
