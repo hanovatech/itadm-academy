@@ -279,6 +279,24 @@ function highlightSearchMatches(text, terms) {
 
 function extractSnippet(text, terms, length = 180) {
   if (!text || terms.length === 0) return '';
+
+  const lines = text
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  const normalizedLines = lines.map(line => line.toLowerCase());
+  for (const term of terms) {
+    for (let i = 0; i < normalizedLines.length; i++) {
+      if (normalizedLines[i].includes(term)) {
+        const line = lines[i];
+        return line.length <= length
+          ? line
+          : `${line.slice(0, length).trim()}…`;
+      }
+    }
+  }
+
   const lower = text.toLowerCase();
   let index = -1;
   for (const term of terms) {
@@ -287,37 +305,74 @@ function extractSnippet(text, terms, length = 180) {
       index = pos;
     }
   }
+
   if (index === -1) {
     return text.slice(0, length) + (text.length > length ? '…' : '');
   }
+
   const start = Math.max(0, index - Math.floor(length / 3));
   const snippet = text.slice(start, start + length);
   return `${start > 0 ? '…' : ''}${snippet}${index + length < text.length ? '…' : ''}`;
 }
 
+function countOccurrences(text, term) {
+  if (!text || !term) return 0;
+  return (text.match(new RegExp(escapeRegExp(term), 'g')) || []).length;
+}
+
+function positionBonus(text, term) {
+  const pos = text.indexOf(term);
+  if (pos === -1) return 0;
+  return Math.max(0, 5 - Math.floor(pos / 80));
+}
+
 function runSiteSearch(query) {
-  const terms = normalizeSearchText(query).split(/\s+/).filter(Boolean);
+  const normalizedQuery = normalizeSearchText(query);
+  const terms = normalizedQuery.split(/\s+/).filter(Boolean);
   if (terms.length === 0) return [];
 
   return siteSearchIndex
     .map(entry => {
-      const haystack = normalizeSearchText(entry.title + ' ' + entry.description + ' ' + entry.content + ' ' + entry.url);
+      const title = normalizeSearchText(entry.title);
+      const description = normalizeSearchText(entry.description);
+      const content = normalizeSearchText(entry.content);
+      const url = normalizeSearchText(entry.url);
       let score = 0;
+      let missing = false;
+
       for (const term of terms) {
-        if (haystack.includes(term)) {
-          score += 1;
-          if (normalizeSearchText(entry.title).includes(term)) score += 3;
-          if (normalizeSearchText(entry.description).includes(term)) score += 2;
-          if (normalizeSearchText(entry.content).includes(term)) score += 1;
-          if (entry.url.toLowerCase().includes(term)) score += 0.5;
-        } else {
-          return null;
+        const titleHits = countOccurrences(title, term);
+        const descriptionHits = countOccurrences(description, term);
+        const contentHits = countOccurrences(content, term);
+        const urlHits = countOccurrences(url, term);
+
+        if (titleHits + descriptionHits + contentHits + urlHits === 0) {
+          missing = true;
+          break;
         }
+
+        score += titleHits * 8;
+        score += descriptionHits * 4;
+        score += contentHits * 1.5;
+        score += urlHits * 0.5;
+
+        score += positionBonus(title, term) * 2;
+        score += positionBonus(description, term);
+        score += positionBonus(content, term) * 0.2;
       }
+
+      if (terms.length > 1) {
+        const phrase = terms.join(' ');
+        if (title.includes(phrase)) score += 10;
+        if (description.includes(phrase)) score += 6;
+        if (content.includes(phrase)) score += 3;
+      }
+
+      if (missing) return null;
       const snippet = extractSnippet(entry.content, terms);
-      return score > 0 ? { ...entry, score, snippet } : null;
+      return { ...entry, score, snippet };
     })
-    .filter(Boolean)
+    .filter(result => result && result.score > 0)
     .sort((a, b) => b.score - a.score);
 }
 
