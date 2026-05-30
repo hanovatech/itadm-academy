@@ -43,6 +43,13 @@ const siteSearchIndex = [
 ];
 
 function getSearchPagePath() {
+  const scriptEl = document.querySelector('script[src$="script.js"]');
+  const scriptSrc = scriptEl?.getAttribute('src');
+  if (scriptSrc) {
+    const prefix = scriptSrc.replace(/script\.js$/, '');
+    return `${prefix}search.html`;
+  }
+
   const parts = window.location.pathname.split('/');
   const last = parts.pop();
   const hasFile = last && last.includes('.');
@@ -59,15 +66,9 @@ function createSearchNav() {
 
   const searchPath = getSearchPagePath();
 
-  if (!navLinks.querySelector(`a[href="${searchPath}"]`)) {
-    const searchTab = document.createElement('li');
-    searchTab.innerHTML = `<a href="${searchPath}">Suche</a>`;
-    navLinks.appendChild(searchTab);
-  }
-
   if (!navLinks.querySelector('.nav-search-form')) {
     const searchForm = document.createElement('li');
-    searchForm.innerHTML = `<form class="nav-search-form" action="${searchPath}" method="get"><label class="visually-hidden" for="nav-search-input">Suche</label><input id="nav-search-input" name="q" type="search" placeholder="Suchen…" autocomplete="off"></form>`;
+    searchForm.innerHTML = `<form class="nav-search-form" action="${searchPath}" method="get" autocomplete="off"><label class="visually-hidden" for="nav-search-input">Suche</label><input id="nav-search-input" name="q" type="search" placeholder="Suchen…" autocomplete="off"><div class="nav-search-dropdown" role="listbox" aria-label="Suchergebnisse"></div></form>`;
     navLinks.appendChild(searchForm);
   }
 }
@@ -142,6 +143,80 @@ function renderSearchResults(results, query) {
       <div class="search-url">${result.url}</div>
     </article>
   `).join('');
+}
+
+function renderHeaderSearchDropdown(results, query) {
+  const dropdown = document.querySelector('.nav-search-dropdown');
+  if (!dropdown) return;
+
+  if (!query) {
+    dropdown.innerHTML = '';
+    dropdown.classList.remove('open');
+    return;
+  }
+
+  if (results.length === 0) {
+    dropdown.innerHTML = '<div class="nav-search-empty">Keine Ergebnisse gefunden.</div>';
+    dropdown.classList.add('open');
+    return;
+  }
+
+  const items = results.slice(0, 5).map(result => {
+    const terms = normalizeSearchText(query).split(/\s+/).filter(Boolean);
+    return `
+      <a class="nav-search-item" href="${result.url}">
+        <span class="nav-search-title">${highlightSearchMatches(result.title, terms)}</span>
+        <span class="nav-search-url">${result.url}</span>
+      </a>
+    `;
+  });
+
+  if (results.length > 5) {
+    const searchPath = getSearchPagePath();
+    items.push(`
+      <a class="nav-search-more" href="${searchPath}?q=${encodeURIComponent(query)}">Weitere Ergebnisse anzeigen</a>
+    `);
+  }
+
+  dropdown.innerHTML = items.join('');
+  dropdown.classList.add('open');
+}
+
+function setupHeaderSearch() {
+  const searchInput = document.getElementById('nav-search-input');
+  if (!searchInput) return;
+
+  const searchForm = searchInput.closest('.nav-search-form');
+  const dropdown = searchForm?.querySelector('.nav-search-dropdown');
+  if (!searchForm || !dropdown) return;
+
+  const update = () => {
+    const query = searchInput.value.trim();
+    renderHeaderSearchDropdown(runSiteSearch(query), query);
+  };
+
+  searchInput.addEventListener('input', update);
+  searchInput.addEventListener('focus', update);
+
+  searchForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const query = searchInput.value.trim();
+    if (!query) return;
+    window.location.href = `${getSearchPagePath()}?q=${encodeURIComponent(query)}`;
+  });
+
+  document.addEventListener('click', event => {
+    if (!searchForm.contains(event.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+
+  searchInput.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      dropdown.classList.remove('open');
+      searchInput.blur();
+    }
+  });
 }
 
 function initSearchPage() {
@@ -306,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   createSearchNav();
+  setupHeaderSearch();
   initSearchPage();
 
   /* -------- TRAINER MODE -------- */
