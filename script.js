@@ -659,7 +659,9 @@ const SEARCH_CONFIG = {
   cheatSheetPenalty: 0.15,
   excludeCheatSheets: false,
   headingBoost: 8,
-  fuzzyThreshold: 0.65
+  fuzzyThreshold: 0.8,
+  fuzzyMinTermLength: 5,
+  fuzzyMaxEdits: 1
 };
 
 const SEARCH_BLACKLIST = new Set([
@@ -811,15 +813,15 @@ function fuzzyScore(term, text) {
   const t = term.toLowerCase();
   const s = text.toLowerCase();
   if (s.includes(t)) return 1;
-  // prefix match
-  if (s.indexOf(t) !== -1) return 0.85;
-  // try levenshtein against words in text
+  if (t.length < SEARCH_CONFIG.fuzzyMinTermLength) return 0;
   const words = s.split(/\s+/).filter(Boolean);
   let best = 0;
   for (const w of words) {
+    if (Math.abs(w.length - t.length) > SEARCH_CONFIG.fuzzyMaxEdits) continue;
     const maxLen = Math.max(w.length, t.length);
     if (maxLen === 0) continue;
     const d = levenshtein(t, w);
+    if (d > SEARCH_CONFIG.fuzzyMaxEdits) continue;
     const score = 1 - d / maxLen;
     if (score > best) best = score;
     if (best >= 1) break;
