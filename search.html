@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suche · itadm-academy</title>
+  <meta name="description" content="Suche in der itadm-academy Lernwerkstatt nach Inhalten, Kapiteln und Übungen.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body class="search-page">
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="index.html" class="brand">
+      <span class="brand-prompt">$</span>
+      <span class="brand-name">itadm-academy</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Start</a></li>
+      <li><a href="linux/index.html">Linux</a></li>
+      <li><a href="#" class="disabled">Windows</a></li>
+      <li><a href="#" class="disabled">Server</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+  <section class="search-hero">
+    <h1 class="hero-title">Schnell finden, statt lange suchen</h1>
+    <p class="hero-subtitle">Mit der Suche findest du Kapitel, Übungen und Cheat-Sheets in der Lernwerkstatt direkt per Stichwort.</p>
+
+    <form id="search-form">
+      <label class="visually-hidden" for="site-search">Suche</label>
+      <input id="site-search" name="q" type="search" placeholder="Was möchtest du finden?" autocomplete="off">
+    </form>
+
+    <div id="search-status">Gib oben einen Suchbegriff ein, um die Seiten der Lernwerkstatt zu durchsuchen.</div>
+    <div id="search-results" class="search-results"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-main"><strong>itadm-academy</strong> · Lernwerkstatt für IT-Administration</p>
+    <p class="footer-powered">
+      powered by <a href="https://hanovatech.de" target="_blank" rel="noopener">HanovaTech GmbH</a>
+    </p>
+    <nav class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-separator">·</span>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <span class="footer-separator">·</span>
+      <a href="/haftung.html">Haftungsausschluss</a>
+      <span class="footer-separator">·</span>
+      <a href="#" onclick="openCookieSettings(); return false;">Cookie-Einstellungen</a>
+    </nav>
+    <p class="footer-copyright">© 2026 HanovaTech GmbH. Alle Rechte vorbehalten.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
