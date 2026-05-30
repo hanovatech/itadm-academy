@@ -177,11 +177,11 @@
               <span class="code-lang">bash</span>
               <button class="copy-btn">📋 Kopieren</button>
             </div>
-<pre><code># Pakete mit "htop" im Namen oder der Beschreibung
-dnf search htop
+<pre><code># Pakete mit "nmap" im Namen oder der Beschreibung
+dnf search nmap
 
 # Detaillierte Info zu einem Paket
-dnf info htop</code></pre>
+dnf info nmap</code></pre>
           </div>
         </details>
 
@@ -197,13 +197,13 @@ dnf info htop</code></pre>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code># Ein Paket installieren (sudo wegen Schreibrechten in /usr/)
-sudo dnf install htop
+sudo dnf install nmap
 
 # Mehrere auf einmal
-sudo dnf install htop tree nano
+sudo dnf install nmap tree nano
 
 # Ohne Rückfrage (Achtung: keine Sicherheitsabfrage!)
-sudo dnf install -y htop</code></pre>
+sudo dnf install -y nmap</code></pre>
         </div>
 
         <h4>2 · <code>dnf update</code> — aktualisieren</h4>
@@ -224,7 +224,7 @@ dnf check-update
 sudo dnf update
 
 # Nur ein bestimmtes Paket aktualisieren
-sudo dnf update htop
+sudo dnf update nmap
 
 # Alias: dnf upgrade macht das Gleiche
 sudo dnf upgrade</code></pre>
@@ -254,10 +254,10 @@ sudo dnf upgrade</code></pre>
             <button class="copy-btn">📋 Kopieren</button>
           </div>
 <pre><code># Paket entfernen
-sudo dnf remove htop
+sudo dnf remove nmap
 
 # Mehrere
-sudo dnf remove htop tree
+sudo dnf remove nmap tree
 
 # Verwaiste Abhängigkeiten aufräumen
 sudo dnf autoremove</code></pre>
@@ -437,15 +437,15 @@ rpm -qi nano
 # Wenn nicht: "package nano is not installed"
 
 # 3) Suchen nach passenden Tools
-dnf search "interactive process"
-# → htop.x86_64 : Interactive process viewer
+dnf search "network scanner"
+# → nmap.x86_64 : Network exploration tool and security scanner
 dnf search tree
 # → tree.x86_64 : File system tree viewer
 dnf search wget
 # → wget.x86_64 : A utility for retrieving files using HTTP, HTTPS, and FTP
 
 # 4) Details ansehen, bevor du installierst
-dnf info htop
+dnf info nmap
 # Zeigt: Version, Architektur, Größe (Download + installiert),
 #        Repository, Beschreibung</code></pre>
             </div>
@@ -484,10 +484,11 @@ dnf info htop
         </details>
 
         <details class="callout-deepdive">
-          <summary>💡 Hint 3 — Wie sehe ich htop und tree in Aktion?</summary>
-          <p>Nach Installation: <code>htop</code> starten (F10 oder q zum Beenden).
-          <code>tree -L 2 /etc/</code> zeigt die ersten zwei Verzeichnis-Ebenen —
-          beeindruckend! Für <code>wget</code>: einfach <code>wget --version</code>.</p>
+          <summary>💡 Hint 3 — Wie sehe ich nmap und tree in Aktion?</summary>
+          <p>Nach Installation: <code>nmap --version</code> starten, oder <code>nmap localhost</code>
+          ausführen, um einen kurzen Scan zu testen. <code>tree -L 2 /etc/</code> zeigt die ersten zwei
+          Verzeichnis-Ebenen — beeindruckend! Für <code>wget</code>: einfach
+          <code>wget --version</code>.</p>
         </details>
 
         <div class="solution">
@@ -507,17 +508,16 @@ dnf info htop
                 <button class="copy-btn">📋 Kopieren</button>
               </div>
 <pre><code># 1) Installieren (mehrere in einem Befehl)
-sudo dnf install htop tree wget
+sudo dnf install nmap tree wget
 # Lies die Liste der Abhängigkeiten!
 # Bestätige mit y
 
 # Falls nano noch fehlt, jetzt nachinstallieren
 sudo dnf install nano
 
-# 2) htop ausprobieren — vergleiche mit top aus Kap 03!
-htop
-# Farben, Maus, F-Tasten — viel komfortabler als top
-# F10 oder q zum Beenden
+# 2) nmap ausprobieren — vergleiche mit den anderen Werkzeugen
+nmap --version
+# Zeigt die installierte Version und bestätigt, dass das Tool da ist
 
 # 3) tree mit /etc/-Beispiel (beeindruckender als ~)
 tree -L 2 /etc/
@@ -527,11 +527,11 @@ tree -L 2 /etc/
 wget --version
 # Zeigt installierte Version</code></pre>
             </div>
-            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong> <code>htop</code>
-            ist der Nachfolger von <code>top</code> (Kap 03) — viele Admins
-            installieren ihn als erstes Tool nach dem Login. Der Trick
-            <code>tree -L 2</code> zeigt nur die obersten zwei Ebenen — bei
-            <code>/etc/</code> schon eindrucksvoll.</p>
+            <p style="margin-top: 0.8rem;"><strong>Erklärung:</strong> <code>nmap</code>
+            ist ein klassischer Netzwerkscanner für Service-Discovery und
+            Host-Erkennung. <code>nmap --version</code> zeigt dir, dass das Tool
+            installiert ist. Der Trick <code>tree -L 2</code> zeigt nur die
+            obersten zwei Ebenen — bei <code>/etc/</code> schon eindrucksvoll.</p>
           </div>
         </div>
 
@@ -644,7 +644,7 @@ sudo dnf install -y tree
           <li><strong>Repo-Info:</strong> Welche Repos sind aktiviert?
             <code>dnf repolist</code>.</li>
           <li><strong>Welches Paket bringt einen Befehl mit?</strong>
-            <code>dnf provides /usr/bin/htop</code> — sagt dir, aus welchem
+            <code>dnf provides /usr/bin/nmap</code> — sagt dir, aus welchem
             Paket eine Datei kommt. Sehr nützlich!</li>
         </ol>
 
@@ -680,8 +680,8 @@ dnf repolist
 # Meist: baseos, appstream, extras
 
 # 19) Welches Paket liefert einen Befehl?
-dnf provides /usr/bin/htop
-# → procps-ng oder htop selbst</code></pre>
+dnf provides /usr/bin/nmap
+# → nmap.x86_64 oder nmap selbst</code></pre>
             </div>
           </div>
         </div>
